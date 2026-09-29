@@ -80,6 +80,7 @@ function renderCart() {
     : `<div class="cart__empty"><span>🛒</span>سلتك فاضية.. يلا نملاها!</div>`;
 
   store.set("gtech-cart", cart);
+  document.dispatchEvent(new Event("cartchange"));
 }
 
 function addToCart(id, qty = 1, opts = "") {
@@ -95,6 +96,7 @@ function toggleWish(id) {
   $$(`[data-wish="${id}"]`).forEach((b) => b.classList.toggle("active", on));
   bump($("#wishCount"), wishlist.length);
   store.set("gtech-wish", wishlist);
+  document.dispatchEvent(new Event("wishchange"));
   toast(on ? "❤️ تمت الإضافة للمفضلة" : "تمت الإزالة من المفضلة");
 }
 
@@ -128,10 +130,7 @@ document.addEventListener("keydown", (e) => e.key === "Escape" && openCart(false
 
 $("#checkoutBtn").addEventListener("click", () => {
   if (!cart.length) return toast("السلة فاضية! ضيف منتجات الأول 🛍️");
-  cart = [];
-  renderCart();
-  openCart(false);
-  toast("🎉 تم استلام طلبك بنجاح! هنتواصل معاك قريباً");
+  location.href = "checkout.html";
 });
 
 // ============ Toast ============

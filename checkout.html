@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GTECH | إتمام الشراء</title>
+  <meta name="description" content="GTECH - وجهتك الأولى لأحدث الهواتف واللابتوبات والسماعات والأجهزة الذكية بأفضل الأسعار وضمان رسمي." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a84ff'/><text x='32' y='44' font-size='36' font-family='Arial' font-weight='900' fill='white' text-anchor='middle'>G</text></svg>" />
+</head>
+<body class="checkout-page">
+
+  <!-- شريط علوي -->
+  <div class="topbar">
+    <div class="container topbar__inner">
+      <p>🚚 شحن مجاني للطلبات فوق 1000 ج.م — ضمان رسمي على جميع المنتجات</p>
+      <div class="topbar__links">
+        <a href="#">تتبع طلبك</a>
+        <a href="#">خدمة العملاء: 19999</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- الهيدر -->
+  <header class="header" id="header">
+    <div class="container header__inner">
+      <a href="index.html" class="logo" aria-label="GTECH الرئيسية">
+        <span class="logo__mark">G</span>
+        <span class="logo__text">TECH</span>
+      </a>
+
+      <nav class="nav" id="nav">
+        <a href="index.html#home">الرئيسية</a>
+        <a href="index.html#categories">الأقسام</a>
+        <a href="index.html#products">المنتجات</a>
+        <a href="index.html#offers">العروض</a>
+        <a href="#contact">تواصل معنا</a>
+      </nav>
+
+      <form class="search" role="search" action="index.html">
+        <input type="search" name="q" id="searchInput" placeholder="ابحث عن هاتف، لابتوب، سماعة..." aria-label="بحث" />
+        <button type="submit" aria-label="بحث">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        </button>
+      </form>
+
+      <div class="header__actions">
+        <a href="wishlist.html" class="icon-btn" aria-label="المفضلة">
+          <svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.3-9.2C1.3 8.2 3.7 4.5 7.4 4.5c2 0 3.4 1 4.6 2.6 1.2-1.6 2.6-2.6 4.6-2.6 3.7 0 6.1 3.7 4.7 7.3C19.5 16.4 12 21 12 21z"/></svg>
+          <span class="badge" id="wishCount">0</span>
+        </a>
+        <button class="icon-btn" id="cartBtn" aria-label="سلة التسوق">
+          <svg viewBox="0 0 24 24"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 2-1.5L21 8H6.2"/><circle cx="10" cy="20.5" r="1.3"/><circle cx="17" cy="20.5" r="1.3"/></svg>
+          <span class="badge" id="cartCount">0</span>
+        </button>
+        <button class="icon-btn menu-toggle" id="menuToggle" aria-label="القائمة">
+          <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+
+  <main>
+    <div class="container">
+      <nav class="breadcrumb" aria-label="مسار التصفح"><a href="index.html">الرئيسية</a><span>›</span><b>إتمام الشراء</b></nav>
+    </div>
+
+    <section class="section section--page" id="checkoutView">
+      <div class="container">
+        <ol class="steps">
+          <li class="done"><span>✓</span>السلة</li>
+          <li class="current"><span>٢</span>الشحن والدفع</li>
+          <li><span>٣</span>تأكيد الطلب</li>
+        </ol>
+
+        <div class="checkout">
+          <form class="checkout__form" id="checkoutForm" novalidate>
+            <fieldset class="card-box">
+              <legend><span>١</span>بيانات التواصل</legend>
+              <div class="fields">
+                <label class="field"><span>الاسم بالكامل *</span><input name="name" required minlength="3" autocomplete="name" placeholder="مثال: أحمد محمد" /><em></em></label>
+                <label class="field"><span>رقم الموبايل *</span><input name="phone" type="tel" required inputmode="numeric" autocomplete="tel" placeholder="01xxxxxxxxx" dir="ltr" /><em></em></label>
+                <label class="field field--full"><span>البريد الإلكتروني (اختياري)</span><input name="email" type="email" autocomplete="email" placeholder="name@example.com" dir="ltr" /><em></em></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="card-box">
+              <legend><span>٢</span>عنوان الشحن</legend>
+              <div class="fields">
+                <label class="field"><span>المحافظة *</span>
+                  <select name="gov" required>
+                  <option value="">اختار المحافظة</option>
+                  <option>القاهرة</option>
+                  <option>الجيزة</option>
+                  <option>الإسكندرية</option>
+                  <option>القليوبية</option>
+                  <option>الدقهلية</option>
+                  <option>الشرقية</option>
+                  <option>الغربية</option>
+                  <option>المنوفية</option>
+                  <option>البحيرة</option>
+                  <option>كفر الشيخ</option>
+                  <option>دمياط</option>
+                  <option>بورسعيد</option>
+                  <option>الإسماعيلية</option>
+                  <option>السويس</option>
+                  <option>الفيوم</option>
+                  <option>بني سويف</option>
+                  <option>المنيا</option>
+                  <option>أسيوط</option>
+                  <option>سوهاج</option>
+                  <option>قنا</option>
+                  <option>الأقصر</option>
+                  <option>أسوان</option>
+                  <option>البحر الأحمر</option>
+                  <option>مطروح</option>
+                  <option>شمال سيناء</option>
+                  <option>جنوب سيناء</option>
+                  <option>الوادي الجديد</option>
+                  </select><em></em>
+                </label>
+                <label class="field"><span>المدينة / المنطقة *</span><input name="city" required placeholder="مثال: مدينة نصر" /><em></em></label>
+                <label class="field field--full"><span>العنوان بالتفصيل *</span><input name="address" required minlength="8" autocomplete="street-address" placeholder="الشارع، رقم العمارة، الدور، الشقة" /><em></em></label>
+                <label class="field field--full"><span>ملاحظات للمندوب (اختياري)</span><textarea name="notes" rows="2" placeholder="مثال: علامة مميزة جنب العنوان"></textarea></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="card-box">
+              <legend><span>٣</span>طريقة الشحن</legend>
+              <div class="choices" id="shipChoices">
+                <label class="choice"><input type="radio" name="ship" value="standard" checked /><div><b>شحن عادي</b><small>خلال 2-4 أيام عمل</small></div><strong data-ship-price="standard"></strong></label>
+                <label class="choice"><input type="radio" name="ship" value="express" /><div><b>شحن سريع ⚡</b><small>خلال 24 ساعة (القاهرة والجيزة)</small></div><strong data-ship-price="express"></strong></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="card-box">
+              <legend><span>٤</span>طريقة الدفع</legend>
+              <div class="choices">
+                <label class="choice"><input type="radio" name="pay" value="cod" checked /><div><b>💵 الدفع عند الاستلام</b><small>ادفع كاش أو فيزا للمندوب</small></div></label>
+                <label class="choice"><input type="radio" name="pay" value="card" /><div><b>💳 بطاقة بنكية</b><small>فيزا / ماستركارد / ميزة — هيتم تحويلك لبوابة دفع آمنة</small></div></label>
+                <label class="choice"><input type="radio" name="pay" value="install" /><div><b>📆 تقسيط بدون فوائد</b><small>حتى 24 شهر مع valU وأمان وبنوك مختارة</small></div></label>
+                <label class="choice"><input type="radio" name="pay" value="wallet" /><div><b>📱 محفظة إلكترونية</b><small>فودافون كاش / إنستاباي</small></div></label>
+              </div>
+            </fieldset>
+
+            <label class="agree"><input type="checkbox" name="agree" required /> أوافق على <a href="#">الشروط والأحكام</a> و<a href="#">سياسة الاسترجاع</a></label>
+          </form>
+
+          <aside class="summary card-box" id="summary">
+            <h3>ملخص الطلب <small id="sumCount"></small></h3>
+            <div class="summary__items" id="sumItems"></div>
+            <form class="promo" id="promoForm">
+              <input name="code" placeholder="كود الخصم" aria-label="كود الخصم" dir="ltr" />
+              <button class="btn btn--ghost" type="submit">تطبيق</button>
+            </form>
+            <p class="promo__hint">جرّب الكود <b>GTECH10</b> لخصم 10%</p>
+            <dl class="totals">
+              <div><dt>المجموع الفرعي</dt><dd id="sumSub"></dd></div>
+              <div><dt>الشحن</dt><dd id="sumShip"></dd></div>
+              <div class="totals__discount" id="sumDiscRow" hidden><dt>الخصم</dt><dd id="sumDisc"></dd></div>
+              <div class="totals__grand"><dt>الإجمالي</dt><dd id="sumTotal"></dd></div>
+            </dl>
+            <button class="btn btn--primary btn--block" type="submit" form="checkoutForm" id="placeOrder">تأكيد الطلب</button>
+            <p class="secure">🔒 بياناتك محمية ومش بتتشارك مع أي حد</p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--page" id="emptyView" hidden>
+      <div class="container empty-block">
+        <span>🛒</span>
+        <h3>سلتك فاضية</h3>
+        <p>ضيف منتجات للسلة الأول عشان تكمّل عملية الشراء.</p>
+        <a href="index.html#products" class="btn btn--primary">تسوق الآن</a>
+      </div>
+    </section>
+
+    <section class="section section--page" id="successView" hidden>
+      <div class="container success">
+        <div class="success__icon">✓</div>
+        <h1>تم استلام طلبك بنجاح! 🎉</h1>
+        <p>شكراً <b id="okName"></b>، هنتواصل معاك على <b id="okPhone" dir="ltr"></b> لتأكيد الطلب.</p>
+        <div class="success__box card-box">
+          <div><span>رقم الطلب</span><b id="okId"></b></div>
+          <div><span>الإجمالي</span><b id="okTotal"></b></div>
+          <div><span>طريقة الدفع</span><b id="okPay"></b></div>
+          <div><span>التوصيل المتوقع</span><b id="okDate"></b></div>
+        </div>
+        <p class="success__addr">📍 <span id="okAddr"></span></p>
+        <a href="index.html" class="btn btn--primary">كمّل تسوق</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- الفوتر -->
+  <footer class="footer" id="contact">
+    <div class="container footer__grid">
+      <div class="footer__about">
+        <a href="index.html" class="logo"><span class="logo__mark">G</span><span class="logo__text">TECH</span></a>
+        <p>GTECH متجرك الموثوق للإلكترونيات الأصلية. بنوفرلك أحدث التكنولوجيا بأفضل سعر وأعلى جودة خدمة.</p>
+        <div class="socials">
+          <a href="#" aria-label="فيسبوك">f</a>
+          <a href="#" aria-label="إنستجرام">◎</a>
+          <a href="#" aria-label="إكس">𝕏</a>
+          <a href="#" aria-label="يوتيوب">▶</a>
+        </div>
+      </div>
+      <div>
+        <h4>الأقسام</h4>
+        <ul><li><a href="index.html?cat=phones#products">هواتف ذكية</a></li><li><a href="index.html?cat=laptops#products">لابتوبات</a></li><li><a href="index.html?cat=audio#products">سماعات</a></li><li><a href="index.html?cat=wearables#products">ساعات ذكية</a></li><li><a href="index.html?cat=accessories#products">إكسسوارات</a></li></ul>
+      </div>
+      <div>
+        <h4>خدمة العملاء</h4>
+        <ul><li><a href="#">تتبع الطلب</a></li><li><a href="#">سياسة الاسترجاع</a></li><li><a href="#">الضمان</a></li><li><a href="#">التقسيط</a></li><li><a href="#">الأسئلة الشائعة</a></li></ul>
+      </div>
+      <div>
+        <h4>تواصل معنا</h4>
+        <ul class="contact-list">
+          <li>📍 القاهرة، مصر</li>
+          <li>📞 19999</li>
+          <li>✉️ support@gtech.com</li>
+          <li>🕘 يومياً 10 ص – 11 م</li>
+        </ul>
+      </div>
+    </div>
+    <div class="container footer__bottom">
+      <p>© <span id="year"></span> GTECH. جميع الحقوق محفوظة.</p>
+      <div class="payments"><span>VISA</span><span>Mastercard</span><span>فوري</span><span>Vodafone Cash</span></div>
+    </div>
+  </footer>
+
+  <!-- سلة التسوق -->
+  <div class="overlay" id="overlay"></div>
+  <aside class="cart" id="cart" aria-label="سلة التسوق">
+    <div class="cart__head">
+      <h3>سلة التسوق</h3>
+      <button class="icon-btn" id="cartClose" aria-label="إغلاق">✕</button>
+    </div>
+    <div class="cart__items" id="cartItems"></div>
+    <div class="cart__foot">
+      <div class="cart__total"><span>الإجمالي</span><b id="cartTotal">0 ج.م</b></div>
+      <button class="btn btn--primary btn--block" id="checkoutBtn">إتمام الشراء</button>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="data.js"></script>
+  <script src="common.js"></script>
+  <script src="checkout.js"></script>
+</body>
+</html>
