@@ -319,7 +319,8 @@ const SMS_ERRORS = {
   "auth/session-expired": "الكود انتهت صلاحيته، اطلب كود جديد",
   "auth/network-request-failed": "في مشكلة في الإنترنت، اتأكد من الاتصال وجرّب تاني",
 };
-const smsError = (err) => SMS_ERRORS[err?.code] || "خدمة كود التأكيد مش متاحة دلوقتي، جرّب تاني بعد شوية أو كلمنا على واتساب";
+// الأخطاء اللي مش معروفة بيظهر كودها صغير عشان نعرف السبب بسرعة
+const smsError = (err) => SMS_ERRORS[err?.code] || `خدمة كود التأكيد مش متاحة دلوقتي، جرّب تاني بعد شوية أو كلمنا على واتساب (${err?.code || "unknown"})`;
 
 function setLoginBusy(text) {
   const b = $("#loginSubmit");
