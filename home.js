@@ -80,3 +80,65 @@ if (query) {
 
 reveal(".section__head, .category, .offer, .mini-offer, .review, .newsletter, .feature");
 setFilter(filter);
+
+// ============ شريط تتبع الطلب ============
+// بيظهر للعميل اللي داخل وعنده طلب شغال، وبيتحدث لوحده لما حالته تتغير
+const DISMISSED_KEY = "gtech-strip-dismissed"; // { orderId: الحالة اللي اتقفل عليها }
+const RECENT_MS = 2 * 86400000; // الطلب اللي اتوصّل أو اتلغى بيفضل ظاهر يومين
+let stopStrip = () => {};
+let stripNotify = statusChangeNotifier();
+
+function isActive(o) {
+  if (["new", "confirmed", "shipped"].includes(o.status)) return true;
+  return Date.now() - new Date(o.updatedAt || o.createdAt) < RECENT_MS;
+}
+
+function startOrderStrip() {
+  stopStrip();
+  stripNotify = statusChangeNotifier();
+  $("#orderStrip").hidden = true;
+  if (!user || !store.get(HAS_ORDERS_KEY, false)) return;
+  stopStrip = watchMyOrders(user.phone, renderOrderStrip, (err) => console.warn("order strip", err));
+}
+
+function renderOrderStrip(list) {
+  const orders = [...list].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  stripNotify(orders);
+  const dismissed = store.get(DISMISSED_KEY, {});
+  const active = orders.filter((o) => isActive(o) && dismissed[o.id] !== o.status);
+  const strip = $("#orderStrip");
+  if (!active.length) return (strip.hidden = true);
+
+  const o = active[0];
+  const more = active.length - 1;
+  strip.hidden = false;
+  strip.innerHTML = `
+    <div class="container order-strip__inner status-${o.status}">
+      <div class="order-strip__info">
+        <small>طلبك <b class="mono">${escapeHtml(o.id)}</b> · ${fmt(o.totals.total)}</small>
+        <div class="order-strip__status">${trackPill(o.status)}</div>
+        <p>${STATUS_HINTS[o.status]}</p>
+      </div>
+      <div class="order-strip__track">${trackBar(o.status)}</div>
+      <div class="order-strip__actions">
+        <a href="myorders.html" class="btn btn--primary btn--sm">تفاصيل الطلب${more ? ` <span class="order-strip__more">+${num(more)}</span>` : ""}</a>
+        <button class="icon-btn order-strip__close" data-dismiss="${escapeHtml(o.id)}" data-status="${o.status}" aria-label="إخفاء">✕</button>
+      </div>
+    </div>`;
+}
+
+$("#orderStrip").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-dismiss]");
+  if (!b) {
+    if (e.target.closest(".order-strip__info")) location.href = "myorders.html";
+    return;
+  }
+  // بيتخفى لحد ما حالة الطلب تتغير
+  const dismissed = store.get(DISMISSED_KEY, {});
+  dismissed[b.dataset.dismiss] = b.dataset.status;
+  store.set(DISMISSED_KEY, dismissed);
+  startOrderStrip();
+});
+
+document.addEventListener("userchange", startOrderStrip);
+startOrderStrip();

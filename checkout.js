@@ -152,6 +152,7 @@ async function placeOrder() {
   btn.textContent = "جاري إرسال الطلب...";
   try {
     await submitOrder(order);
+    store.set(HAS_ORDERS_KEY, true);
   } catch {
     btn.disabled = false;
     btn.textContent = "إرسال الطلب";
