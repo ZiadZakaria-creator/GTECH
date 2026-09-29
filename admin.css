@@ -1,8 +1,6 @@
 /* ============ لوحة التحكم ============ */
 .admin { background: var(--bg); }
 .ad-wrap { width: min(1400px, 100% - 32px); margin-inline: auto; }
-.btn--sm { padding: 8px 16px; font-size: .88rem; }
-.mono { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: .9em; letter-spacing: .2px; }
 .danger { color: var(--danger); }
 
 .ad-top { position: sticky; top: 0; z-index: 50; background: rgba(7,11,20,.85); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
@@ -65,13 +63,6 @@
 .orders tbody tr { cursor: pointer; transition: background .15s; }
 .orders tbody tr:hover { background: var(--surface-2); }
 .orders tr.is-new td:first-child { box-shadow: inset -3px 0 0 #fbbf24; }
-
-.pill-status { display: inline-flex; align-items: center; gap: 4px; padding: 3px 12px; border-radius: 999px; font-size: .8rem; font-weight: 700; white-space: nowrap; }
-.pill-status--new { background: rgba(251,191,36,.15); color: #fbbf24; }
-.pill-status--confirmed { background: rgba(10,132,255,.15); color: #5eb0ff; }
-.pill-status--shipped { background: rgba(124,92,255,.18); color: #a996ff; }
-.pill-status--delivered { background: rgba(34,197,94,.15); color: var(--success); }
-.pill-status--cancelled { background: rgba(255,77,109,.14); color: var(--danger); }
 
 .ad-empty { display: grid; justify-items: center; gap: 6px; padding: 50px 0; color: var(--muted); }
 .ad-empty[hidden] { display: none; }

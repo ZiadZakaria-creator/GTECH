@@ -3,6 +3,7 @@
 //   submitOrder(order)          العميل بيبعت طلب
 //   watchOrders(onData, onErr)  الداشبورد بيتابع الطلبات لحظة بلحظة
 //   updateOrder(id, changes)    الداشبورد بيغيّر حالة الطلب
+//   watchMyOrders(phone, ...)   العميل بيتابع طلباته في صفحة "طلباتي"
 //
 // لو FIREBASE_CONFIG فاضي: الطلبات بتتحفظ في المتصفح بس (وضع تجريبي).
 // لو متحط: الطلبات بتتحفظ في Firestore وتوصل للداشبورد من أي جهاز.
@@ -36,6 +37,9 @@ const localOrders = {
       document.removeEventListener("orderschange", emit);
     };
   },
+  watchMine(phone, onData) {
+    return this.watch((all) => onData(all.filter((o) => o.customer.phone === phone)));
+  },
   async update(id, changes) {
     const orders = store.get(ORDERS_KEY, []);
     const order = orders.find((o) => o.id === id);
@@ -53,7 +57,23 @@ const firebaseOrders = {
   },
   async submit(order) {
     const col = await this.col();
+    // الطلب بيتربط بحساب Firebase بتاع العميل عشان يقدر يتابعه في "طلباتي"
+    try {
+      order.customer.uid = (await ensureCustomerAuth()).uid;
+    } catch (err) {
+      console.warn("customer auth unavailable", err);
+    }
     await col.doc(order.id).set({ ...order, serverTime: firebase.firestore.FieldValue.serverTimestamp() });
+  },
+  watchMine(phone, onData, onError) {
+    let stop = () => {};
+    Promise.all([this.col(), ensureCustomerAuth()]).then(([col, u]) => {
+      stop = col.where("customer.uid", "==", u.uid).onSnapshot(
+        (snap) => onData(snap.docs.map((d) => { const { serverTime, ...o } = d.data(); return o; }).filter((o) => o.customer.phone === phone)),
+        onError
+      );
+    }, onError);
+    return () => stop();
   },
   watch(onData, onError) {
     let stop = () => {};
@@ -71,10 +91,25 @@ const firebaseOrders = {
   },
 };
 
+// حساب Firebase للعميل: لو داخل بـ Google يبقى هو، وإلا حساب مجهول (Anonymous)
+// محفوظ في المتصفح، وبيفضل ثابت عشان العميل يلاقي طلباته لما يرجع
+function firebaseAuthReady() {
+  return new Promise((resolve) => {
+    const stop = firebase.auth().onAuthStateChanged((u) => { stop(); resolve(u); });
+  });
+}
+async function ensureCustomerAuth() {
+  await loadFirebase(["auth", "firestore"]);
+  const current = await firebaseAuthReady();
+  if (current) return current;
+  return (await firebase.auth().signInAnonymously()).user;
+}
+
 const ordersBackend = USE_FIREBASE ? firebaseOrders : localOrders;
 const submitOrder = (order) => ordersBackend.submit(order);
 const watchOrders = (onData, onError) => ordersBackend.watch(onData, onError);
 const updateOrder = (id, changes) => ordersBackend.update(id, changes);
+const watchMyOrders = (phone, onData, onError) => ordersBackend.watchMine(phone, onData, onError);
 
 // رقم طلب مقروء وصعب يتكرر: GT-يوم الشهر-4 أرقام عشوائية
 function newOrderId() {

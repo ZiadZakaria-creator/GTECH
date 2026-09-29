@@ -180,6 +180,7 @@ function renderAccount() {
     btn.innerHTML = `<span class="account__avatar">${escapeHtml(user.name.trim()[0])}</span><span class="account__name">${escapeHtml(user.name.split(" ")[0])}</span>`;
     $("#accountMenu").innerHTML = `
       <div class="account__info"><b>${escapeHtml(user.name)}</b><small dir="ltr">${user.phone}</small></div>
+      <a href="myorders.html">📦 طلباتي</a>
       <a href="wishlist.html">❤️ المفضلة</a>
       <button id="logoutBtn">↩ تسجيل الخروج</button>`;
   } else {
@@ -216,7 +217,8 @@ $("#accountBtn").addEventListener("click", (e) => {
 document.addEventListener("click", (e) => {
   if (!e.target.closest(".account")) $("#accountMenu").hidden = true;
   if (e.target.id === "logoutBtn") {
-    if (window.firebase?.apps?.length) firebase.auth().signOut().catch(() => {});
+    const fbUser = window.firebase?.apps?.length && firebase.auth().currentUser;
+    if (fbUser && !fbUser.isAnonymous) firebase.auth().signOut().catch(() => {});
     user = null;
     store.set("gtech-user", null);
     renderAccount();

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GTECH | تفاصيل المنتج</title>
+  <title>GTECH | طلباتي</title>
   <meta name="description" content="GTECH - وجهتك الأولى لأحدث الهواتف واللابتوبات والسماعات والأجهزة الذكية بأفضل الأسعار وضمان رسمي." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="styles.css" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a84ff'/><text x='32' y='44' font-size='36' font-family='Arial' font-weight='900' fill='white' text-anchor='middle'>G</text></svg>" />
 </head>
-<body class="product-page">
+<body class="myorders-page">
 
   <!-- شريط علوي -->
   <div class="topbar">
@@ -66,32 +66,39 @@
 
   <main>
     <div class="container">
-      <nav class="breadcrumb" id="breadcrumb" aria-label="مسار التصفح"></nav>
+      <nav class="breadcrumb" aria-label="مسار التصفح"><a href="index.html">الرئيسية</a><span>›</span><b>طلباتي</b></nav>
     </div>
 
-    <section class="pd" id="productDetail"></section>
-
-    <div class="container">
-      <div class="pd-tabs" id="pdTabs" role="tablist">
-        <button class="pd-tab active" data-panel="desc" role="tab">الوصف</button>
-        <button class="pd-tab" data-panel="specs" role="tab">المواصفات</button>
-        <button class="pd-tab" data-panel="reviews" role="tab">التقييمات</button>
-      </div>
-      <div class="pd-panel active" id="panel-desc"></div>
-      <div class="pd-panel" id="panel-specs"></div>
-      <div class="pd-panel" id="panel-reviews"></div>
-    </div>
-
-    <section class="section" id="related">
+    <section class="section section--page">
       <div class="container">
         <div class="section__head">
           <div>
-            <span class="eyebrow">ممكن يعجبك كمان</span>
-            <h2>منتجات مشابهة</h2>
+            <span class="eyebrow">📦 تابع طلباتك</span>
+            <h2>طلباتي <small class="count" id="ordersCount"></small></h2>
           </div>
-          <a href="index.html#products" class="link-more">كل المنتجات ←</a>
+          <p class="muted live-note" id="liveNote" hidden>🟢 الحالة بتتحدث لوحدها أول ما نغيّرها</p>
         </div>
-        <div class="products" id="relatedGrid"></div>
+
+        <div class="empty-block" id="myLogin" hidden>
+          <span>🔐</span>
+          <h3>سجّل دخولك الأول</h3>
+          <p>ادخل بنفس الاسم ورقم الموبايل اللي طلبت بيهم عشان تشوف طلباتك.</p>
+          <button class="btn btn--primary" id="myLoginBtn">تسجيل الدخول</button>
+        </div>
+
+        <div class="empty-block" id="myLoading" hidden>
+          <span class="spinner"></span>
+          <p>جاري تحميل طلباتك...</p>
+        </div>
+
+        <div class="empty-block" id="myEmpty" hidden>
+          <span>📭</span>
+          <h3>مفيش طلبات لسه</h3>
+          <p id="myEmptyText">أول ما تطلب هتلاقي طلبك هنا وتتابع حالته خطوة بخطوة.</p>
+          <a href="index.html#products" class="btn btn--primary">تسوق الآن</a>
+        </div>
+
+        <div class="my-orders" id="myOrders"></div>
       </div>
     </section>
   </main>
@@ -154,6 +161,7 @@
   <script src="firebase-config.js"></script>
   <script src="core.js"></script>
   <script src="common.js"></script>
-  <script src="product.js"></script>
+  <script src="api.js"></script>
+  <script src="myorders.js"></script>
 </body>
 </html>

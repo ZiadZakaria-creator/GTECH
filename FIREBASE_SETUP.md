@@ -25,7 +25,11 @@
    - Document ID: الصق الـ UID
    - ضيف حقل: `role` = `owner` ← **Save**.
 
-## 5. تسجيل الدخول بـ Google و Facebook (اختياري)
+## 5. صفحة "طلباتي" للعملاء
+- **Authentication ← Sign-in method ← Add new provider ← Anonymous ← Enable**.
+- العميل بياخد حساب مجهول في المتصفح، والطلب بيتربط بيه عشان يشوف طلباته هو بس.
+
+## 6. تسجيل الدخول بـ Google و Facebook (اختياري)
 - **Authentication ← Sign-in method ← Google ← Enable**.
 - **Facebook**: محتاج تطبيق من https://developers.facebook.com (App ID + App Secret) تحطهم في Firebase، وتنسخ الـ OAuth redirect URI من Firebase لإعدادات تطبيق Facebook.
 - **Authentication ← Settings ← Authorized domains ← Add domain**: `ziadzakaria-creator.github.io`
