@@ -112,7 +112,14 @@
               <option value="out">نفد</option>
             </select>
           </div>
-          <button class="btn btn--primary btn--sm" id="newProductBtn">＋ منتج جديد</button>
+          <div class="ad-toolbar__side">
+            <button class="btn btn--ghost btn--sm" id="excelExportBtn" title="نزّل كل المنتجات في ملف Excel">⬇ تصدير Excel</button>
+            <label class="btn btn--ghost btn--sm" id="excelImportBtn" title="ارفع ملف Excel لإضافة أو تحديث المنتجات">
+              ⬆ استيراد من Excel
+              <input type="file" id="excelFile" accept=".xlsx,.xls,.csv" hidden />
+            </label>
+            <button class="btn btn--primary btn--sm" id="newProductBtn">＋ منتج جديد</button>
+          </div>
         </div>
         <div class="table-wrap">
           <table class="orders products-table">
@@ -179,6 +186,19 @@
     </form>
   </aside>
 
+  <!-- مراجعة ملف Excel قبل الحفظ -->
+  <div class="modal" id="excelModal" hidden role="dialog" aria-modal="true" aria-labelledby="excelTitle">
+    <div class="modal__box card-box excel-box">
+      <button type="button" class="icon-btn modal__close" data-close-excel aria-label="إغلاق">✕</button>
+      <h3 id="excelTitle">مراجعة ملف Excel</h3>
+      <div id="excelSummary"></div>
+      <div class="excel-actions">
+        <button class="btn btn--ghost" data-close-excel>إلغاء</button>
+        <button class="btn btn--primary" id="excelApply">حفظ في قاعدة البيانات</button>
+      </div>
+    </div>
+  </div>
+
   <div class="toast" id="toast"></div>
 
   <script src="data.js"></script>
@@ -188,5 +208,6 @@
   <script src="api.js"></script>
   <script src="admin.js"></script>
   <script src="admin-products.js"></script>
+  <script src="admin-excel.js"></script>
 </body>
 </html>

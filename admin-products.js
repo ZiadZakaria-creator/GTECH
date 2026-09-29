@@ -26,9 +26,11 @@ const productsStore = USE_FIREBASE
       async removeImage(key) { await (await this.db()).collection("productImages").doc(key).delete(); },
       async importAll(list) {
         const db = await this.db();
-        const batch = db.batch();
-        list.forEach((p) => batch.set(db.collection("products").doc(String(p.id)), p));
-        await batch.commit();
+        for (let i = 0; i < list.length; i += 400) {
+          const batch = db.batch();
+          list.slice(i, i + 400).forEach((p) => batch.set(db.collection("products").doc(String(p.id)), p));
+          await batch.commit();
+        }
       },
       async adjustStock(changes) {
         const db = await this.db();
@@ -65,7 +67,11 @@ const productsStore = USE_FIREBASE
         delete imgs[key];
         store.set(LOCAL_IMAGES, imgs);
       },
-      async importAll(list) { this.write(list); },
+      async importAll(list) {
+        const byId = new Map(this.read().map((p) => [p.id, p]));
+        list.forEach((p) => byId.set(p.id, p));
+        this.write([...byId.values()]);
+      },
       async adjustStock(changes) {
         this.write(this.read().map((p) => {
           const c = changes.find((x) => x.id === p.id);

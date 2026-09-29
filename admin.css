@@ -208,3 +208,21 @@
 .sms-meter--full .sms-meter__icon { background: rgba(255,77,109,.15); }
 .sms-meter--full .sms-meter__bar i { background: var(--danger); }
 .sms-meter--full small { color: #ff8fa3; }
+
+/* ============ Excel ============ */
+#excelImportBtn { cursor: pointer; }
+.excel-box { width: min(560px, 100%); text-align: right; max-height: 90vh; overflow-y: auto; }
+.excel-box h3 { text-align: center; }
+.excel-box h4 { font-size: .95rem; margin-top: 4px; }
+.excel-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.excel-stat { display: grid; justify-items: center; padding: 12px 6px; border-radius: 12px; background: var(--bg-2); border: 1px solid var(--border); }
+.excel-stat b { font-size: 1.5rem; font-weight: 900; }
+.excel-stat span { font-size: .78rem; color: var(--muted); }
+.excel-stat--new b { color: var(--success); }
+.excel-stat--upd b { color: var(--primary-2); }
+.excel-stat--err b { color: var(--danger); }
+.excel-list { display: grid; gap: 6px; padding-inline-start: 18px; font-size: .9rem; }
+.excel-list small { color: var(--muted); }
+.excel-list--err li { color: #ff8fa3; }
+.excel-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 6px; }
+@media (max-width: 600px) { .excel-stats { grid-template-columns: 1fr 1fr; } }
