@@ -483,7 +483,7 @@ async function socialLogin(kind) {
     (f.name.value ? f.phone : f.name).focus();
   } catch (err) {
     if (!["auth/popup-closed-by-user", "auth/cancelled-popup-request"].includes(err?.code)) {
-      toast(`❌ مقدرناش ندخل بـ ${providerNames[kind]}، جرّب تاني`);
+      toast(`❌ مقدرناش ندخل بـ ${providerNames[kind]}، جرّب تاني (${err?.code || "unknown"})`);
     }
   } finally {
     btn.disabled = false;
