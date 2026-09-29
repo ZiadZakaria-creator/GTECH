@@ -19,3 +19,12 @@
 - `common.js` — السلة والمفضلة والهيدر (مشتركة بين الصفحات)
 - `home.js` — الصفحة الرئيسية
 - `product.js` — صفحة المنتج
+
+## النشر (Deploy)
+الموقع بيتنشر تلقائياً على GitHub Pages مع كل push على الفرع الافتراضي
+عن طريق `.github/workflows/deploy.yml`.
+
+الرابط: https://ziadzakaria-creator.github.io/GTECH/
+
+إعداد لمرة واحدة: Settings → Pages → Source: **GitHub Actions**
+(الريبو لازم يكون Public، أو حساب GitHub Pro لو Private).
