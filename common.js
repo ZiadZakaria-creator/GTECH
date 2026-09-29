@@ -177,6 +177,12 @@ document.body.insertAdjacentHTML("beforeend", `
       <div class="modal__icon">${userIcon}</div>
       <h3 id="loginTitle">تسجيل الدخول</h3>
       <p class="muted" id="loginReason">ادخل اسمك ورقم موبايلك عشان تقدر تطلب</p>
+      <div class="social" id="socialBox">
+        <button type="button" class="social__btn social__btn--google" data-social="google"><svg viewBox="0 0 48 48" class="brand-ico"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg><span>المتابعة بحساب Google</span></button>
+        <button type="button" class="social__btn social__btn--facebook" data-social="facebook"><svg viewBox="0 0 24 24" class="brand-ico"><path fill="#fff" d="M13.5 21v-7.5h2.5l.4-3h-2.9V8.6c0-.9.3-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.2H8v3h2.4V21h3.1z"/></svg><span>المتابعة بحساب Facebook</span></button>
+        <div class="divider"><span>أو ادخل بياناتك</span></div>
+      </div>
+      <p class="social-linked" id="socialLinked" hidden></p>
       <label class="field"><span>الاسم بالكامل</span><input name="name" autocomplete="name" placeholder="مثال: أحمد محمد" maxlength="40" /><em></em></label>
       <label class="field"><span>رقم الموبايل</span><input name="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="01xxxxxxxxx" dir="ltr" maxlength="14" /><em></em></label>
       <button class="btn btn--primary btn--block" type="submit">دخول</button>
@@ -201,6 +207,7 @@ function renderAccount() {
 
 function openLogin(reason) {
   $("#loginReason").textContent = reason || "ادخل اسمك ورقم موبايلك عشان تقدر تطلب";
+  resetSocial();
   $("#loginModal").hidden = false;
   document.body.classList.add("no-scroll");
   setTimeout(() => $("#loginForm").name.focus(), 50);
@@ -226,6 +233,7 @@ $("#accountBtn").addEventListener("click", (e) => {
 document.addEventListener("click", (e) => {
   if (!e.target.closest(".account")) $("#accountMenu").hidden = true;
   if (e.target.id === "logoutBtn") {
+    if (window.firebase?.apps?.length) firebase.auth().signOut().catch(() => {});
     user = null;
     store.set("gtech-user", null);
     renderAccount();
@@ -253,7 +261,8 @@ $("#loginForm").addEventListener("submit", (e) => {
   const bad = checks.find(([, res]) => res !== true);
   if (bad) return bad[0].focus();
 
-  user = { name: f.name.value.trim().replace(/\s+/g, " "), phone: normalizePhone(f.phone.value) };
+  user = { name: f.name.value.trim().replace(/\s+/g, " "), phone: normalizePhone(f.phone.value), ...(socialInfo || {}) };
+  socialInfo = null;
   store.set("gtech-user", user);
   renderAccount();
   document.dispatchEvent(new Event("userchange"));
@@ -262,6 +271,62 @@ $("#loginForm").addEventListener("submit", (e) => {
   f.reset();
   toast(`أهلاً ${user.name.split(" ")[0]} 👋`);
   if (action) action();
+});
+
+// ============ الدخول بـ Google و Facebook ============
+// Google و Facebook بيدّوا الاسم والإيميل بس، فبعدها العميل لازم يكمّل رقم موبايله
+const FIREBASE_SDK = "https://www.gstatic.com/firebasejs/10.12.2/";
+const providerNames = { google: "Google", facebook: "Facebook" };
+let socialInfo = null;
+
+const loadScript = (src) => new Promise((ok, fail) => {
+  const s = document.createElement("script");
+  s.src = src; s.onload = ok; s.onerror = fail;
+  document.head.appendChild(s);
+});
+
+async function loadFirebase() {
+  if (!window.firebase) {
+    await loadScript(FIREBASE_SDK + "firebase-app-compat.js");
+    await loadScript(FIREBASE_SDK + "firebase-auth-compat.js");
+  }
+  if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+}
+
+function resetSocial() {
+  socialInfo = null;
+  $("#socialBox").hidden = false;
+  $("#socialLinked").hidden = true;
+}
+
+async function socialLogin(kind) {
+  if (!FIREBASE_CONFIG) return toast(`الدخول بـ ${providerNames[kind]} هيتفعل قريب — استخدم الاسم ورقم الموبايل دلوقتي`);
+  const btn = $(`[data-social="${kind}"]`);
+  btn.disabled = true;
+  try {
+    await loadFirebase();
+    const provider = kind === "google" ? new firebase.auth.GoogleAuthProvider() : new firebase.auth.FacebookAuthProvider();
+    const { user: fbUser } = await firebase.auth().signInWithPopup(provider);
+    socialInfo = { provider: kind, uid: fbUser.uid, email: fbUser.email || "" };
+
+    const f = $("#loginForm");
+    if (fbUser.displayName) f.name.value = fbUser.displayName;
+    $("#socialBox").hidden = true;
+    $("#socialLinked").hidden = false;
+    $("#socialLinked").innerHTML = `✔ تم الربط بحساب ${providerNames[kind]}${fbUser.email ? ` <small dir="ltr">(${escapeHtml(fbUser.email)})</small>` : ""}<br>فاضل تكتب رقم موبايلك عشان نتواصل معاك بخصوص الطلب`;
+    (f.name.value ? f.phone : f.name).focus();
+  } catch (err) {
+    if (!["auth/popup-closed-by-user", "auth/cancelled-popup-request"].includes(err?.code)) {
+      toast(`❌ مقدرناش ندخل بـ ${providerNames[kind]}، جرّب تاني`);
+    }
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+$("#socialBox").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-social]");
+  if (b) socialLogin(b.dataset.social);
 });
 
 renderAccount();

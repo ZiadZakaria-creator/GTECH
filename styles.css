@@ -699,6 +699,23 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 .modal__box small { font-size: .8rem; }
 body.no-scroll { overflow: hidden; }
 
+.social { display: grid; gap: 10px; }
+.social[hidden] { display: none; }
+.social__btn {
+  display: flex; align-items: center; justify-content: center; gap: 10px; height: 48px; border-radius: 12px;
+  font-weight: 700; font-size: .95rem; transition: transform .15s, filter .15s, opacity .15s;
+}
+.social__btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
+.social__btn:disabled { opacity: .6; cursor: wait; }
+.social__btn .brand-ico { width: 22px; height: 22px; stroke: none; }
+.social__btn--google { background: #fff; color: #1f1f1f; }
+.social__btn--facebook { background: #1877f2; color: #fff; }
+.divider { display: flex; align-items: center; gap: 12px; margin: 4px 0; color: var(--muted); font-size: .85rem; }
+.divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+.social-linked { padding: 10px 14px; border-radius: 12px; background: rgba(34,197,94,.1); border: 1px solid rgba(34,197,94,.3); font-size: .9rem; line-height: 1.8; }
+.social-linked[hidden] { display: none; }
+.social-linked small { color: var(--muted); }
+
 .account-note { padding: 10px 14px; border-radius: 12px; background: rgba(34,197,94,.1); border: 1px solid rgba(34,197,94,.3); font-size: .92rem; }
 .account-note:empty { display: none; }
 .link-btn { color: var(--primary-2); text-decoration: underline; font-weight: 600; }
