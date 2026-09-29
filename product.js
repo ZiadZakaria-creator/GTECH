@@ -33,7 +33,10 @@ function notFound() {
   renderRelated(products.slice(0, 4));
 }
 
+let gallery = views;
+
 function renderDetail(p) {
+  if (p.images?.length) gallery = p.images.map((src, i) => ({ label: `صورة ${num(i + 1)}`, src }));
   const off = discount(p);
   const monthly = Math.ceil(p.price / 12);
   const lowStock = p.stock <= 5;
@@ -60,12 +63,12 @@ function renderDetail(p) {
       <div class="gallery">
         <div class="gallery__stage" id="stage" style="--tint:${p.tint}">
           ${p.tag ? `<span class="product__tag ${p.tag === "جديد" ? "product__tag--new" : ""}">${p.tag}</span>` : ""}
-          <span class="gallery__main" id="mainView">${p.icon}</span>
+          ${productVisual(p, gallery[0].src, 'class="gallery__main" id="mainView"')}
         </div>
         <div class="gallery__thumbs">
-          ${views.map((v, i) => `
-            <button class="thumb ${i === 0 ? "active" : ""}" data-view="${i}" style="--tint:${p.tint}" aria-label="${v.label}">
-              <span style="${v.style}">${v.icon || p.icon}</span><small>${v.label}</small>
+          ${gallery.map((v, i) => `
+            <button class="thumb ${v.src ? "thumb--img" : ""} ${i === 0 ? "active" : ""}" data-view="${i}" style="--tint:${p.tint}" aria-label="${v.label}">
+              ${v.src ? productVisual(p, v.src) : `<span style="${v.style}">${v.icon || p.icon}</span><small>${v.label}</small>`}
             </button>`).join("")}
         </div>
       </div>
@@ -116,7 +119,7 @@ function renderDetail(p) {
     </div>
 
     <div class="buybar" id="buybar">
-      <div class="buybar__info"><span>${p.icon}</span><div><small>${p.name}</small><b>${fmt(p.price)}</b></div></div>
+      <div class="buybar__info">${productVisual(p)}<div><small>${p.name}</small><b>${fmt(p.price)}</b></div></div>
       <button class="btn btn--primary" id="addBar">أضف للسلة</button>
     </div>`;
 
@@ -207,11 +210,16 @@ function bindDetail(p) {
   // المعرض
   $$(".thumb").forEach((t) =>
     t.addEventListener("click", () => {
-      const v = views[+t.dataset.view];
+      const v = gallery[+t.dataset.view];
       $$(".thumb").forEach((x) => x.classList.toggle("active", x === t));
-      const main = $("#mainView");
-      main.textContent = v.icon || p.icon;
-      main.style.cssText = v.style;
+      let main = $("#mainView");
+      if (v.src) {
+        main.outerHTML = productVisual(p, v.src, 'class="gallery__main" id="mainView"');
+        main = $("#mainView");
+      } else {
+        main.textContent = v.icon || p.icon;
+        main.style.cssText = v.style;
+      }
       main.classList.remove("swap");
       void main.offsetWidth;
       main.classList.add("swap");

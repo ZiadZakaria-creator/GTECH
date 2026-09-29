@@ -659,6 +659,19 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 .wa-float:hover { transform: scale(1.08); }
 .wa-float svg { width: 30px; height: 30px; }
 .product-page .wa-float { bottom: 90px; }
+/* ============ Product photos ============ */
+.product__media > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+.product:hover .product__media > img { transform: scale(1.06); }
+.product__media { overflow: hidden; }
+.product__media .product__tag { z-index: 1; }
+.gallery__stage > img.gallery__main { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: none; rotate: none; }
+.thumb--img { padding: 0; overflow: hidden; aspect-ratio: 1; }
+.thumb--img img { width: 100%; height: 100%; object-fit: cover; }
+.cart-item__icon, .sum-item__icon { overflow: hidden; }
+.cart-item__icon img, .buybar__info img { width: 100%; height: 100%; object-fit: cover; }
+.sum-item__icon { overflow: visible; }
+.sum-item__icon img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
+.buybar__info img { width: 44px; height: 44px; border-radius: 10px; flex: none; }
 
 /* ============ Responsive ============ */
 @media (max-width: 1100px) {

@@ -24,6 +24,21 @@ const cartPlusIcon = '<svg viewBox="0 0 24 24"><path d="M3 4h2l2.4 11.2a2 2 0 0 
 const stars = (r) => "★".repeat(Math.round(r)) + "☆".repeat(5 - Math.round(r));
 const discount = (p) => (p.old ? Math.round((1 - p.price / p.old) * 100) : 0);
 
+// ============ صور المنتجات ============
+// لو المنتج ليه صور في p.images بتظهر، ولو مفيش (أو الصورة مفتحتش) بيظهر الإيموجي
+function productVisual(p, src = p.images?.[0], attrs = "") {
+  return src
+    ? `<img src="${src}" alt="${p.name}" loading="lazy" data-icon="${p.icon}" onerror="imgFallback(this)" ${attrs}>`
+    : `<span ${attrs}>${p.icon}</span>`;
+}
+function imgFallback(img) {
+  const span = document.createElement("span");
+  span.textContent = img.dataset.icon;
+  if (img.id) span.id = img.id;
+  span.className = img.className;
+  img.replaceWith(span);
+}
+
 // ============ كارت المنتج ============
 function productCard(p, i = 0) {
   const url = productUrl(p.id);
@@ -31,7 +46,7 @@ function productCard(p, i = 0) {
     <article class="product" style="animation-delay:${i * 50}ms">
       <a href="${url}" class="product__media" style="--tint:${p.tint}" aria-label="${p.name}">
         ${p.tag ? `<span class="product__tag ${p.tag === "جديد" ? "product__tag--new" : ""}">${p.tag}</span>` : ""}
-        <span>${p.icon}</span>
+        ${productVisual(p)}
       </a>
       <button class="product__wish ${wishlist.includes(p.id) ? "active" : ""}" data-wish="${p.id}" aria-label="أضف للمفضلة">${heartIcon}</button>
       <div class="product__body">
@@ -68,7 +83,7 @@ function renderCart() {
         const p = findProduct(i.id);
         return `
         <div class="cart-item">
-          <a href="${productUrl(p.id)}" class="cart-item__icon">${p.icon}</a>
+          <a href="${productUrl(p.id)}" class="cart-item__icon">${productVisual(p)}</a>
           <div class="cart-item__info">
             <b>${p.name}</b>
             ${i.opts ? `<em>${i.opts}</em>` : ""}

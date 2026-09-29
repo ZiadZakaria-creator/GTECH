@@ -31,7 +31,7 @@ function renderSummary() {
     const p = findProduct(i.id);
     return `
       <div class="sum-item">
-        <span class="sum-item__icon">${p.icon}<i>${num(i.qty)}</i></span>
+        <span class="sum-item__icon">${productVisual(p)}<i>${num(i.qty)}</i></span>
         <div><b>${p.name}</b>${i.opts ? `<small>${i.opts}</small>` : ""}</div>
         <strong>${fmt(p.price * i.qty)}</strong>
       </div>`;

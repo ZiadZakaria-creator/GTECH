@@ -28,6 +28,7 @@ jobs:
         run: |
           mkdir _site
           cp *.html *.css *.js _site/
+          [ -d images ] && cp -r images _site/ || true
 
       - uses: actions/configure-pages@v5
 
