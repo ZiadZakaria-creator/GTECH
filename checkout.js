@@ -102,6 +102,40 @@ form.addEventListener("submit", (e) => {
   placeOrder();
 });
 
+// ============ رسالة الطلب على واتساب ============
+const shipLabels = { standard: "شحن عادي (2-4 أيام)", express: "شحن سريع (24 ساعة)" };
+const egp = (n) => n.toLocaleString("en-US") + " ج.م";
+
+function orderMessage(id, d, t) {
+  const items = cart.map((i, n) => {
+    const p = findProduct(i.id);
+    return `${n + 1}. ${p.name}${i.opts ? ` (${i.opts})` : ""}\n    ${i.qty} × ${egp(p.price)} = ${egp(p.price * i.qty)}`;
+  });
+  return [
+    `🛒 *طلب جديد من GTECH*`,
+    `رقم الطلب: *${id}*`,
+    ``,
+    `👤 *بيانات العميل*`,
+    `الاسم: ${d.name.trim()}`,
+    `الموبايل: ${toLatinDigits(d.phone).replace(/\s|-/g, "")}`,
+    d.email ? `الإيميل: ${d.email.trim()}` : null,
+    ``,
+    `📍 *العنوان*`,
+    `${d.gov} - ${d.city.trim()}`,
+    d.address.trim(),
+    d.notes.trim() ? `ملاحظات: ${d.notes.trim()}` : null,
+    ``,
+    `📦 *المنتجات*`,
+    ...items,
+    ``,
+    `المجموع الفرعي: ${egp(t.sub)}`,
+    `الشحن: ${t.ship ? egp(t.ship) : "مجاناً"} — ${shipLabels[d.ship]}`,
+    t.disc ? `الخصم (${promo}): -${egp(t.disc)}` : null,
+    `💰 *الإجمالي: ${egp(t.total)}*`,
+    `💳 الدفع: ${payLabels[d.pay]}`,
+  ].filter((l) => l !== null).join("\n");
+}
+
 // ============ تأكيد الطلب ============
 function placeOrder() {
   const t = totals();
@@ -109,6 +143,9 @@ function placeOrder() {
   const id = "GT-" + String(Date.now()).slice(-7);
   const days = d.ship === "express" ? 1 : 3;
   const date = new Date(Date.now() + days * 86400000).toLocaleDateString("ar-EG", { weekday: "long", day: "numeric", month: "long" });
+
+  const wa = waLink(orderMessage(id, d, t));
+  window.open(wa, "_blank", "noopener");
 
   const orders = store.get("gtech-orders", []);
   orders.unshift({ id, at: new Date().toISOString(), items: cart, ...t, customer: { name: d.name, phone: d.phone, gov: d.gov, city: d.city, address: d.address }, ship: d.ship, pay: d.pay });
@@ -118,6 +155,7 @@ function placeOrder() {
   cart = [];
   renderCart();
 
+  $("#waSend").href = wa;
   $("#okName").textContent = d.name.trim();
   $("#okPhone").textContent = toLatinDigits(d.phone);
   $("#okId").textContent = id;
@@ -128,7 +166,7 @@ function placeOrder() {
 
   $("#checkoutView").hidden = true;
   $("#successView").hidden = false;
-  document.title = "GTECH | تم تأكيد الطلب";
+  document.title = "GTECH | ابعت طلبك على واتساب";
   scrollTo({ top: 0, behavior: "smooth" });
 }
 

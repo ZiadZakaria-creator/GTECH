@@ -642,6 +642,23 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 .success__box span { color: var(--muted); font-size: .85rem; }
 .success__box b { font-size: 1.05rem; }
 .success__addr { color: var(--muted); margin-bottom: 8px; }
+/* ============ WhatsApp ============ */
+.wa-ico { fill: currentColor; stroke: none; }
+.btn--wa { background: #25d366; color: #fff; font-size: 1.05rem; padding: 15px 32px; box-shadow: 0 18px 40px -14px rgba(37,211,102,.7); }
+.btn--wa:hover { transform: translateY(-2px); background: #1ebe5a; }
+.btn--wa svg, #placeOrder svg { width: 22px; height: 22px; }
+.muted { color: var(--muted); }
+.contact-list a:hover { color: #25d366; }
+.wa-float {
+  position: fixed; bottom: 24px; right: 24px; z-index: 80; display: grid; place-items: center;
+  width: 58px; height: 58px; border-radius: 50%; background: #25d366; color: #fff;
+  box-shadow: 0 14px 30px -8px rgba(37,211,102,.7); transition: transform .2s;
+}
+.wa-float::before { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #25d366; opacity: .5; animation: waPulse 2.2s infinite; z-index: -1; }
+@keyframes waPulse { to { transform: scale(1.6); opacity: 0; } }
+.wa-float:hover { transform: scale(1.08); }
+.wa-float svg { width: 30px; height: 30px; }
+.product-page .wa-float { bottom: 90px; }
 
 /* ============ Responsive ============ */
 @media (max-width: 1100px) {
