@@ -136,9 +136,9 @@ function buildFromRow(row, existing, nextId) {
 
   if (!p.name || p.name.length < 2) errors.push("الاسم ناقص");
   if (!p.cat && !has("cat")) errors.push("القسم ناقص");
-  if (!(Number.isInteger(p.price) && p.price > 0)) errors.push("السعر لازم يكون رقم صحيح أكبر من صفر");
-  if (p.old !== null && p.old !== undefined && !(Number.isInteger(p.old) && p.old > p.price)) errors.push("السعر قبل الخصم لازم يكون أكبر من السعر");
-  if (!(Number.isInteger(p.stock) && p.stock >= 0)) errors.push("المخزون لازم يكون صفر أو أكتر");
+  if (!(Number.isInteger(p.price) && p.price > 0 && p.price <= MAX_PRICE)) errors.push("السعر لازم يكون رقم صحيح بين 1 و 100 مليون");
+  if (p.old !== null && p.old !== undefined && !(Number.isInteger(p.old) && p.old > p.price && p.old <= MAX_PRICE)) errors.push("السعر قبل الخصم لازم يكون أكبر من السعر وأقل من 100 مليون");
+  if (!(Number.isInteger(p.stock) && p.stock >= 0 && p.stock <= MAX_STOCK)) errors.push("المخزون لازم يكون من صفر لـ مليون");
   const badImg = (p.images || []).find((s) => !/^(https?:\/\/|images\/|fs:)/.test(s));
   if (badImg) errors.push(`رابط صورة مش صحيح: ${badImg.slice(0, 40)}`);
   return { product: p, errors };

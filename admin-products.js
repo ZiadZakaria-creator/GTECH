@@ -80,6 +80,10 @@ const productsStore = USE_FIREBASE
       },
     };
 
+// حدود منطقية للأرقام (عشان الأخطاء في الكتابة زي أصفار زيادة)
+const MAX_PRICE = 100000000;
+const MAX_STOCK = 1000000;
+
 // ============ الحالة ============
 let adminProducts = [];
 let productsLoaded = false;
@@ -320,9 +324,9 @@ function parseForm() {
   mark(f.name, f.name.value.trim().length < 2 && "اكتب اسم المنتج");
   mark(f.cat, !f.cat.value && "اختار القسم");
   const price = int(f.price), old = f.old.value === "" ? null : int(f.old), stock = int(f.stock);
-  mark(f.price, !(Number.isInteger(price) && price > 0) && "السعر لازم يكون رقم صحيح أكبر من صفر");
-  mark(f.old, old !== null && !(Number.isInteger(old) && old > price) && "لازم يكون أكبر من السعر الحالي، أو سيبه فاضي");
-  mark(f.stock, !(Number.isInteger(stock) && stock >= 0) && "الكمية لازم تكون صفر أو أكتر");
+  mark(f.price, !(Number.isInteger(price) && price > 0 && price <= MAX_PRICE) && "السعر لازم يكون رقم صحيح بين 1 و 100 مليون");
+  mark(f.old, old !== null && !(Number.isInteger(old) && old > price && old <= MAX_PRICE) && "لازم يكون أكبر من السعر الحالي (وأقل من 100 مليون)، أو سيبه فاضي");
+  mark(f.stock, !(Number.isInteger(stock) && stock >= 0 && stock <= MAX_STOCK) && "الكمية لازم تكون من صفر لـ مليون");
   if (errors.length) {
     errors[0].focus();
     return null;
