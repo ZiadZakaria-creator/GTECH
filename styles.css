@@ -938,3 +938,5 @@ img[data-fs].is-loaded { opacity: 1; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .reveal { opacity: 1; transform: none; }
 }
+.social__btn[hidden] { display: none; }
+.social--none { display: none !important; }

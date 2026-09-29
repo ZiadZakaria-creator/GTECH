@@ -20,6 +20,11 @@ const FIREBASE_CONFIG = {
   appId: "1:259915634001:web:e7ce53ddb4e55f4dbcaf70",
 };
 
+// ============ الدخول بحسابات التواصل ============
+// الأزرار اللي بتظهر في نافذة الدخول. لازم كل واحد يكون متفعّل في
+// Firebase ← Authentication ← Sign-in method. المتاح: "google"، "facebook"
+const SOCIAL_PROVIDERS = ["google"];
+
 // ============ كود تأكيد الموبايل (SMS) ============
 // true = العميل لازم يأكد رقمه بكود SMS قبل ما يطلب
 // false = مقفول (تقدر تجربه بس بإضافة ?sms=1 لآخر رابط الموقع)

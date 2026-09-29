@@ -490,6 +490,10 @@ async function socialLogin(kind) {
   }
 }
 
+// اخفي الأزرار اللي مش متفعّلة (ولو مفيش ولا واحد اخفي الجزء كله)
+$$("[data-social]").forEach((b) => (b.hidden = !!FIREBASE_CONFIG && !SOCIAL_PROVIDERS.includes(b.dataset.social)));
+if (FIREBASE_CONFIG && !SOCIAL_PROVIDERS.length) $("#socialBox").classList.add("social--none");
+
 $("#socialBox").addEventListener("click", (e) => {
   const b = e.target.closest("[data-social]");
   if (b) socialLogin(b.dataset.social);
