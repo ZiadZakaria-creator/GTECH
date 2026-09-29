@@ -126,7 +126,7 @@ document.addEventListener("userchange", renderSummary);
 // شكل الطلب ده هو اللي الداشبورد هيقراه بعدين
 function buildOrder(d, t) {
   return {
-    id: "GT-" + String(Date.now()).slice(-7),
+    id: newOrderId(),
     createdAt: new Date().toISOString(),
     status: "new",
     customer: { name: user.name, phone: user.phone, email: d.email.trim() },

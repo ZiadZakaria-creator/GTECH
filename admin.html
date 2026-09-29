@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>GTECH | لوحة التحكم</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="admin.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a84ff'/><text x='32' y='44' font-size='36' font-family='Arial' font-weight='900' fill='white' text-anchor='middle'>G</text></svg>" />
+</head>
+<body class="admin">
+
+  <header class="ad-top">
+    <div class="ad-wrap ad-top__inner">
+      <a href="admin.html" class="logo"><span class="logo__mark">G</span><span class="logo__text">TECH</span></a>
+      <span class="ad-top__title">لوحة التحكم</span>
+      <span class="mode-badge" id="modeBadge"></span>
+      <div class="ad-top__actions">
+        <button class="icon-btn" id="soundBtn" aria-label="صوت الإشعارات" title="صوت الإشعارات"></button>
+        <a href="index.html" class="btn btn--ghost btn--sm" target="_blank">عرض المتجر ↗</a>
+        <button class="btn btn--ghost btn--sm" id="adminLogout" hidden>خروج</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- دخول الأدمن (مع Firebase بس) -->
+  <section class="ad-gate" id="adminGate" hidden>
+    <form class="card-box ad-gate__box" id="adminLoginForm" novalidate>
+      <div class="modal__icon">🔐</div>
+      <h1>دخول صاحب المتجر</h1>
+      <p class="muted">سجّل بحساب الأدمن اللي عملته في Firebase</p>
+      <label class="field"><span>البريد الإلكتروني</span><input name="email" type="email" dir="ltr" autocomplete="username" required /><em></em></label>
+      <label class="field"><span>كلمة المرور</span><input name="password" type="password" dir="ltr" autocomplete="current-password" required /><em></em></label>
+      <button class="btn btn--primary btn--block" type="submit">دخول</button>
+    </form>
+  </section>
+
+  <main class="ad-wrap ad-main" id="dashboard" hidden>
+    <div class="demo-note" id="demoNote" hidden>
+      <div>
+        <b>🧪 وضع تجريبي</b>
+        <p>قاعدة البيانات لسه مش متوصلة، فاللوحة بتعرض الطلبات اللي اتعملت من <b>المتصفح ده بس</b>. أول ما نربط Firebase هتظهر هنا طلبات كل العملاء لحظة بلحظة.</p>
+      </div>
+      <div class="demo-note__actions">
+        <button class="btn btn--ghost btn--sm" id="seedBtn">إضافة طلبات تجريبية</button>
+        <button class="btn btn--ghost btn--sm danger" id="clearBtn">مسح كل الطلبات</button>
+      </div>
+    </div>
+
+    <section class="stats" id="stats"></section>
+
+    <section class="card-box ad-panel">
+      <div class="ad-toolbar">
+        <div class="status-tabs" id="statusTabs"></div>
+        <div class="ad-toolbar__side">
+          <select id="rangeSel" aria-label="الفترة">
+            <option value="all">كل الفترات</option>
+            <option value="today">النهارده</option>
+            <option value="7">آخر 7 أيام</option>
+            <option value="30">آخر 30 يوم</option>
+          </select>
+          <input type="search" id="searchBox" placeholder="بحث برقم الطلب، الاسم، الموبايل..." />
+          <button class="btn btn--ghost btn--sm" id="exportBtn">⬇ تصدير Excel</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="orders">
+          <thead>
+            <tr><th>رقم الطلب</th><th>التاريخ</th><th>العميل</th><th>المحافظة</th><th>المنتجات</th><th>الإجمالي</th><th>الدفع</th><th>الحالة</th></tr>
+          </thead>
+          <tbody id="ordersBody"></tbody>
+        </table>
+        <div class="ad-empty" id="ordersEmpty" hidden>
+          <span>📭</span>
+          <p id="emptyText">مفيش طلبات لسه</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- تفاصيل الطلب -->
+  <div class="overlay" id="overlay"></div>
+  <aside class="cart order-drawer" id="drawer" aria-label="تفاصيل الطلب">
+    <div class="cart__head">
+      <h3 id="drawerTitle">تفاصيل الطلب</h3>
+      <button class="icon-btn" id="drawerClose" aria-label="إغلاق">✕</button>
+    </div>
+    <div class="order-drawer__body" id="drawerBody"></div>
+  </aside>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="data.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="core.js"></script>
+  <script src="api.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

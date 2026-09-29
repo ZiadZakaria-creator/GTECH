@@ -1,0 +1,137 @@
+/* ============ لوحة التحكم ============ */
+.admin { background: var(--bg); }
+.ad-wrap { width: min(1400px, 100% - 32px); margin-inline: auto; }
+.btn--sm { padding: 8px 16px; font-size: .88rem; }
+.mono { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: .9em; letter-spacing: .2px; }
+.danger { color: var(--danger); }
+
+.ad-top { position: sticky; top: 0; z-index: 50; background: rgba(7,11,20,.85); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
+.ad-top__inner { display: flex; align-items: center; gap: 14px; height: 68px; }
+.ad-top .logo { font-size: 1.35rem; }
+.ad-top .logo__mark { width: 36px; height: 36px; }
+.ad-top__title { font-weight: 800; color: var(--muted); padding-inline-start: 14px; border-inline-start: 1px solid var(--border); }
+.ad-top__actions { display: flex; align-items: center; gap: 8px; margin-inline-start: auto; }
+.ad-top__actions [hidden] { display: none; }
+.mode-badge { padding: 3px 12px; border-radius: 999px; font-size: .78rem; font-weight: 700; }
+.mode-badge--demo { background: rgba(251,191,36,.14); color: #fbbf24; border: 1px solid rgba(251,191,36,.35); }
+.mode-badge--live { background: rgba(34,197,94,.14); color: var(--success); border: 1px solid rgba(34,197,94,.35); }
+
+.ad-gate { min-height: calc(100vh - 68px); display: grid; place-items: center; padding: 20px 16px; }
+.ad-gate[hidden] { display: none; }
+.ad-gate__box { width: min(400px, 100%); padding: 32px 28px; display: grid; gap: 14px; text-align: center; }
+.ad-gate__box .modal__icon { font-size: 1.8rem; }
+.ad-gate__box h1 { font-size: 1.4rem; }
+.ad-gate__box .field { text-align: right; }
+
+.ad-main { padding: 26px 0 60px; display: grid; gap: 20px; }
+.ad-main[hidden] { display: none; }
+
+.demo-note {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  padding: 16px 20px; border-radius: var(--radius); background: rgba(251,191,36,.07); border: 1px dashed rgba(251,191,36,.4);
+}
+.demo-note[hidden] { display: none; }
+.demo-note p { color: var(--muted); font-size: .92rem; max-width: 760px; }
+.demo-note p b { color: var(--text); }
+.demo-note__actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.stat { display: flex; align-items: center; gap: 16px; padding: 20px; }
+.stat__icon { display: grid; place-items: center; flex: none; width: 52px; height: 52px; border-radius: 14px; background: rgba(10,132,255,.12); font-size: 1.5rem; }
+.stat small { display: block; color: var(--muted); font-weight: 600; }
+.stat b { display: block; font-size: 1.5rem; font-weight: 900; line-height: 1.4; }
+.stat em { font-style: normal; font-size: .8rem; color: var(--muted); }
+.stat--warn { border-color: rgba(251,191,36,.45); background: linear-gradient(135deg, rgba(251,191,36,.08), var(--surface)); }
+.stat--warn .stat__icon { background: rgba(251,191,36,.15); }
+
+.ad-panel { padding: 18px; overflow: hidden; }
+.ad-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 16px; }
+.status-tabs { display: flex; gap: 4px; padding: 4px; background: var(--bg-2); border: 1px solid var(--border); border-radius: 999px; overflow-x: auto; max-width: 100%; }
+.status-tabs .tab { white-space: nowrap; }
+.tab__count { display: inline-grid; place-items: center; min-width: 22px; height: 20px; padding: 0 6px; margin-inline-start: 4px; border-radius: 99px; background: rgba(255,255,255,.1); font-size: .75rem; }
+.ad-toolbar__side { display: flex; gap: 8px; flex-wrap: wrap; }
+.ad-toolbar__side input, .ad-toolbar__side select {
+  padding: 8px 14px; border-radius: 999px; font: inherit; font-size: .9rem; color: var(--text);
+  background: var(--bg-2); border: 1px solid var(--border); outline: 0;
+}
+.ad-toolbar__side input { width: 260px; }
+.ad-toolbar__side input:focus, .ad-toolbar__side select:focus { border-color: var(--primary); }
+
+.table-wrap { overflow-x: auto; }
+.orders { width: 100%; border-collapse: collapse; font-size: .92rem; }
+.orders th { text-align: right; padding: 10px 12px; color: var(--muted); font-weight: 700; font-size: .82rem; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.orders td { padding: 14px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; white-space: nowrap; }
+.orders td small { display: block; color: var(--muted); }
+.orders tbody tr { cursor: pointer; transition: background .15s; }
+.orders tbody tr:hover { background: var(--surface-2); }
+.orders tr.is-new td:first-child { box-shadow: inset -3px 0 0 #fbbf24; }
+
+.pill-status { display: inline-flex; align-items: center; gap: 4px; padding: 3px 12px; border-radius: 999px; font-size: .8rem; font-weight: 700; white-space: nowrap; }
+.pill-status--new { background: rgba(251,191,36,.15); color: #fbbf24; }
+.pill-status--confirmed { background: rgba(10,132,255,.15); color: #5eb0ff; }
+.pill-status--shipped { background: rgba(124,92,255,.18); color: #a996ff; }
+.pill-status--delivered { background: rgba(34,197,94,.15); color: var(--success); }
+.pill-status--cancelled { background: rgba(255,77,109,.14); color: var(--danger); }
+
+.ad-empty { display: grid; justify-items: center; gap: 6px; padding: 50px 0; color: var(--muted); }
+.ad-empty[hidden] { display: none; }
+.ad-empty span { font-size: 3rem; }
+
+/* ============ تفاصيل الطلب ============ */
+.order-drawer { width: min(480px, 100%); }
+.order-drawer__body { flex: 1; overflow-y: auto; padding: 18px 22px 30px; display: grid; align-content: start; gap: 16px; }
+.od-status { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.od-status small { color: var(--muted); }
+.od-steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.od-step { padding: 8px 4px; border-radius: 10px; font-size: .75rem; font-weight: 700; background: var(--surface); border: 1.5px solid var(--border); color: var(--muted); transition: all .15s; }
+.od-step:hover { color: var(--text); border-color: rgba(10,132,255,.5); }
+.od-step.active { color: var(--text); border-color: var(--primary); background: rgba(10,132,255,.15); }
+.od-step--cancelled.active { border-color: var(--danger); background: rgba(255,77,109,.14); }
+.od-sec { padding: 16px; border-radius: 14px; background: var(--surface); border: 1px solid var(--border); display: grid; gap: 4px; }
+.od-sec h4 { font-size: .95rem; margin-bottom: 6px; }
+.od-sec p { color: #c3cde3; }
+.od-note { margin-top: 6px; padding: 8px 12px; border-radius: 10px; background: rgba(251,191,36,.08); }
+.od-contact { display: flex; gap: 8px; margin-top: 10px; }
+.od-item { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 10px 0; border-bottom: 1px dashed var(--border); }
+.od-item:last-child { border-bottom: 0; }
+.od-item small { display: block; color: var(--muted); font-size: .8rem; }
+.od-item span { color: var(--muted); font-size: .85rem; }
+.od-item strong { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+.od-sec .totals { border-top: 0; padding-top: 0; }
+.od-pay { margin-top: 10px; font-weight: 700; }
+.totals dt small { font-size: .8rem; }
+
+/* ============ موبايل ============ */
+@media (max-width: 1000px) {
+  .stats { grid-template-columns: 1fr 1fr; }
+  .ad-toolbar__side input { width: 100%; flex: 1 1 200px; }
+}
+@media (max-width: 720px) {
+  .ad-top__title, .ad-top__actions .btn--ghost:not(#adminLogout) { display: none; }
+  .stats { gap: 10px; }
+  .stat { padding: 14px; gap: 10px; }
+  .stat__icon { display: none; }
+  .stat b { font-size: 1.1rem; }
+  .ad-panel { padding: 12px; }
+  .orders thead { display: none; }
+  .orders, .orders tbody, .orders tr, .orders td { display: block; width: 100%; }
+  .orders tr { margin-bottom: 10px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 14px; background: var(--bg-2); display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; }
+  .orders tr.is-new { border-color: rgba(251,191,36,.5); }
+  .orders tr.is-new td:first-child { box-shadow: none; }
+  .orders td { padding: 0; border: 0; white-space: normal; }
+  .orders td[data-label="الدفع"], .orders td[data-label="المحافظة"] { display: none; }
+  .orders td[data-label="الحالة"], .orders td[data-label="الإجمالي"] { text-align: left; }
+  .orders td[data-label="التاريخ"], .orders td[data-label="المنتجات"] { color: var(--muted); font-size: .82rem; }
+  .od-steps { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ============ طباعة الفاتورة ============ */
+@media print {
+  body.admin { background: #fff; color: #000; }
+  .ad-top, .ad-main, .overlay, .toast, #drawerClose, .od-steps, .od-contact, #printBtn { display: none !important; }
+  .order-drawer { position: static; transform: none !important; width: 100%; background: #fff; border: 0; }
+  .order-drawer__body { overflow: visible; }
+  .od-sec { background: #fff; border-color: #ccc; }
+  .od-sec p, .totals dt, .totals dd, .od-item span, .od-item small { color: #000 !important; }
+  .pill-status { border: 1px solid #999; color: #000 !important; background: none !important; }
+}

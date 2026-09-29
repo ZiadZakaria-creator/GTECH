@@ -1,24 +1,7 @@
-// ============ الإعدادات ============
-// رقم واتساب المتجر بالصيغة الدولية (مصر = 20) — الطلبات والاستفسارات بتوصل عليه
-const WHATSAPP = "201100053123";
-const waLink = (text) => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`;
-
 // ============ أدوات مشتركة ============
-const fmt = (n) => n.toLocaleString("ar-EG") + " ج.م";
-const num = (n) => n.toLocaleString("ar-EG");
-const $ = (s) => document.querySelector(s);
-const $$ = (s) => document.querySelectorAll(s);
 const findProduct = (id) => products.find((p) => p.id === id);
-const toLatinDigits = (s) => s.replace(/[٠-٩]/g, (d) => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
-const normalizePhone = (s) => toLatinDigits(s).replace(/[\s-]/g, "");
-const isValidPhone = (s) => /^01[0125]\d{8}$/.test(normalizePhone(s));
-const escapeHtml = (s) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 const productUrl = (id) => `product.html?id=${id}`;
 
-const store = {
-  get(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } },
-  set(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch {} },
-};
 let cart = store.get("gtech-cart", []).filter((i) => findProduct(i.id));
 let wishlist = store.get("gtech-wish", []);
 
@@ -275,23 +258,8 @@ $("#loginForm").addEventListener("submit", (e) => {
 
 // ============ الدخول بـ Google و Facebook ============
 // Google و Facebook بيدّوا الاسم والإيميل بس، فبعدها العميل لازم يكمّل رقم موبايله
-const FIREBASE_SDK = "https://www.gstatic.com/firebasejs/10.12.2/";
 const providerNames = { google: "Google", facebook: "Facebook" };
 let socialInfo = null;
-
-const loadScript = (src) => new Promise((ok, fail) => {
-  const s = document.createElement("script");
-  s.src = src; s.onload = ok; s.onerror = fail;
-  document.head.appendChild(s);
-});
-
-async function loadFirebase() {
-  if (!window.firebase) {
-    await loadScript(FIREBASE_SDK + "firebase-app-compat.js");
-    await loadScript(FIREBASE_SDK + "firebase-auth-compat.js");
-  }
-  if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
-}
 
 function resetSocial() {
   socialInfo = null;
@@ -304,7 +272,7 @@ async function socialLogin(kind) {
   const btn = $(`[data-social="${kind}"]`);
   btn.disabled = true;
   try {
-    await loadFirebase();
+    await loadFirebase(["auth"]);
     const provider = kind === "google" ? new firebase.auth.GoogleAuthProvider() : new firebase.auth.FacebookAuthProvider();
     const { user: fbUser } = await firebase.auth().signInWithPopup(provider);
     socialInfo = { provider: kind, uid: fbUser.uid, email: fbUser.email || "" };
@@ -331,15 +299,6 @@ $("#socialBox").addEventListener("click", (e) => {
 
 renderAccount();
 
-// ============ Toast ============
-let toastTimer;
-function toast(msg) {
-  const t = $("#toast");
-  t.textContent = msg;
-  t.classList.add("show");
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
-}
 
 // ============ ظهور العناصر عند التمرير ============
 const revealObserver = new IntersectionObserver((entries) => {
