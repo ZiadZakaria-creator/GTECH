@@ -82,8 +82,9 @@
             <fieldset class="card-box">
               <legend><span>١</span>بيانات التواصل</legend>
               <div class="fields">
-                <label class="field"><span>الاسم بالكامل *</span><input name="name" required minlength="3" autocomplete="name" placeholder="مثال: أحمد محمد" /><em></em></label>
-                <label class="field"><span>رقم الموبايل *</span><input name="phone" type="tel" required inputmode="numeric" autocomplete="tel" placeholder="01xxxxxxxxx" dir="ltr" /><em></em></label>
+                <p class="field--full account-note" id="accountNote"></p>
+                <label class="field"><span>الاسم بالكامل *</span><input name="name" readonly required minlength="3" autocomplete="name" placeholder="مثال: أحمد محمد" /><em></em></label>
+                <label class="field"><span>رقم الموبايل *</span><input name="phone" type="tel" readonly required inputmode="numeric" autocomplete="tel" placeholder="01xxxxxxxxx" dir="ltr" /><em></em></label>
                 <label class="field field--full"><span>البريد الإلكتروني (اختياري)</span><input name="email" type="email" autocomplete="email" placeholder="name@example.com" dir="ltr" /><em></em></label>
               </div>
             </fieldset>
@@ -168,6 +169,15 @@
             <p class="secure">💬 هيتفتح واتساب برسالة فيها تفاصيل طلبك، دوس إرسال عشان يوصلنا</p>
           </aside>
         </div>
+      </div>
+    </section>
+
+    <section class="section section--page" id="loginView" hidden>
+      <div class="container empty-block">
+        <span>🔐</span>
+        <h3>سجّل دخولك الأول</h3>
+        <p>لازم تدخل اسمك ورقم موبايلك عشان تقدر تكمّل عملية الشراء.</p>
+        <button class="btn btn--primary" id="loginGateBtn">تسجيل الدخول</button>
       </div>
     </section>
 

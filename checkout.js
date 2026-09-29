@@ -8,8 +8,6 @@ const form = $("#checkoutForm");
 let promo = null;
 let placed = false;
 
-const toLatinDigits = (s) => s.replace(/[٠-٩]/g, (d) => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
-
 function totals() {
   const sub = cart.reduce((s, i) => s + i.qty * findProduct(i.id).price, 0);
   const method = form.ship.value;
@@ -21,9 +19,16 @@ function totals() {
 function renderSummary() {
   if (placed) return;
   const empty = !cart.length;
-  $("#checkoutView").hidden = empty;
+  const locked = !empty && !user;
+  $("#checkoutView").hidden = empty || locked;
   $("#emptyView").hidden = !empty;
-  if (empty) return;
+  $("#loginView").hidden = !locked;
+  if (empty || locked) return;
+
+  // بيانات التواصل جاية من الحساب
+  form.elements.name.value = user.name;
+  form.elements.phone.value = user.phone;
+  $("#accountNote").innerHTML = `✔ داخل باسم <b>${escapeHtml(user.name)}</b> — <button type="button" class="link-btn" id="switchUser">مش إنت؟ غيّر الحساب</button>`;
 
   const count = cart.reduce((s, i) => s + i.qty, 0);
   $("#sumCount").textContent = `(${num(count)} منتج)`;
@@ -66,7 +71,7 @@ $("#promoForm").addEventListener("submit", (e) => {
 // ============ التحقق من البيانات ============
 const rules = {
   name: (v) => v.trim().length >= 3 || "اكتب اسمك بالكامل",
-  phone: (v) => /^01[0125]\d{8}$/.test(toLatinDigits(v).replace(/\s|-/g, "")) || "رقم موبايل غير صحيح (11 رقم يبدأ بـ 01)",
+  phone: (v) => isValidPhone(v) || "رقم موبايل غير صحيح (11 رقم يبدأ بـ 01)",
   email: (v) => !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || "البريد الإلكتروني غير صحيح",
   gov: (v) => !!v || "اختار المحافظة",
   city: (v) => v.trim().length >= 2 || "اكتب المدينة أو المنطقة",
@@ -117,7 +122,7 @@ function orderMessage(id, d, t) {
     ``,
     `👤 *بيانات العميل*`,
     `الاسم: ${d.name.trim()}`,
-    `الموبايل: ${toLatinDigits(d.phone).replace(/\s|-/g, "")}`,
+    `الموبايل: ${normalizePhone(d.phone)}`,
     d.email ? `الإيميل: ${d.email.trim()}` : null,
     ``,
     `📍 *العنوان*`,
@@ -136,8 +141,22 @@ function orderMessage(id, d, t) {
   ].filter((l) => l !== null).join("\n");
 }
 
+// ============ الدخول ============
+const gate = () => requireLogin(renderSummary, "سجّل دخولك عشان تكمّل الطلب");
+$("#loginGateBtn").addEventListener("click", gate);
+form.addEventListener("click", (e) => {
+  if (e.target.id !== "switchUser") return;
+  user = null;
+  store.set("gtech-user", null);
+  renderAccount();
+  renderSummary();
+  gate();
+});
+document.addEventListener("userchange", renderSummary);
+
 // ============ تأكيد الطلب ============
 function placeOrder() {
+  if (!user) return gate();
   const t = totals();
   const d = Object.fromEntries(new FormData(form));
   const id = "GT-" + String(Date.now()).slice(-7);
@@ -157,7 +176,7 @@ function placeOrder() {
 
   $("#waSend").href = wa;
   $("#okName").textContent = d.name.trim();
-  $("#okPhone").textContent = toLatinDigits(d.phone);
+  $("#okPhone").textContent = normalizePhone(d.phone);
   $("#okId").textContent = id;
   $("#okTotal").textContent = fmt(t.total);
   $("#okPay").textContent = payLabels[d.pay];
@@ -172,3 +191,4 @@ function placeOrder() {
 
 document.addEventListener("cartchange", renderSummary);
 renderSummary();
+if (cart.length && !user) gate();

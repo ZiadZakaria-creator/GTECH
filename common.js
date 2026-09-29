@@ -9,6 +9,10 @@ const num = (n) => n.toLocaleString("ar-EG");
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => document.querySelectorAll(s);
 const findProduct = (id) => products.find((p) => p.id === id);
+const toLatinDigits = (s) => s.replace(/[٠-٩]/g, (d) => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
+const normalizePhone = (s) => toLatinDigits(s).replace(/[\s-]/g, "");
+const isValidPhone = (s) => /^01[0125]\d{8}$/.test(normalizePhone(s));
+const escapeHtml = (s) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 const productUrl = (id) => `product.html?id=${id}`;
 
 const store = {
@@ -150,8 +154,117 @@ document.addEventListener("keydown", (e) => e.key === "Escape" && openCart(false
 
 $("#checkoutBtn").addEventListener("click", () => {
   if (!cart.length) return toast("السلة فاضية! ضيف منتجات الأول 🛍️");
-  location.href = "checkout.html";
+  openCart(false);
+  requireLogin(() => (location.href = "checkout.html"), "سجّل دخولك عشان تكمّل الطلب");
 });
+
+// ============ تسجيل الدخول ============
+// الحساب محفوظ في المتصفح بس (مفيش سيرفر): الاسم ورقم الموبايل
+let user = store.get("gtech-user", null);
+let afterLogin = null;
+const userIcon = '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>';
+
+$(".header__actions").insertAdjacentHTML("afterbegin", `
+  <div class="account">
+    <button class="icon-btn account__btn" id="accountBtn" aria-label="حسابي" aria-haspopup="true"></button>
+    <div class="account__menu" id="accountMenu" hidden></div>
+  </div>`);
+
+document.body.insertAdjacentHTML("beforeend", `
+  <div class="modal" id="loginModal" hidden role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+    <form class="modal__box card-box" id="loginForm" novalidate>
+      <button type="button" class="icon-btn modal__close" data-close aria-label="إغلاق">✕</button>
+      <div class="modal__icon">${userIcon}</div>
+      <h3 id="loginTitle">تسجيل الدخول</h3>
+      <p class="muted" id="loginReason">ادخل اسمك ورقم موبايلك عشان تقدر تطلب</p>
+      <label class="field"><span>الاسم بالكامل</span><input name="name" autocomplete="name" placeholder="مثال: أحمد محمد" maxlength="40" /><em></em></label>
+      <label class="field"><span>رقم الموبايل</span><input name="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="01xxxxxxxxx" dir="ltr" maxlength="14" /><em></em></label>
+      <button class="btn btn--primary btn--block" type="submit">دخول</button>
+      <small class="muted">هنستخدم رقمك للتواصل معاك بخصوص طلباتك بس.</small>
+    </form>
+  </div>`);
+
+function renderAccount() {
+  const btn = $("#accountBtn");
+  if (user) {
+    btn.classList.add("account__btn--in");
+    btn.innerHTML = `<span class="account__avatar">${escapeHtml(user.name.trim()[0])}</span><span class="account__name">${escapeHtml(user.name.split(" ")[0])}</span>`;
+    $("#accountMenu").innerHTML = `
+      <div class="account__info"><b>${escapeHtml(user.name)}</b><small dir="ltr">${user.phone}</small></div>
+      <a href="wishlist.html">❤️ المفضلة</a>
+      <button id="logoutBtn">↩ تسجيل الخروج</button>`;
+  } else {
+    btn.classList.remove("account__btn--in");
+    btn.innerHTML = `${userIcon}<span class="account__name">دخول</span>`;
+  }
+}
+
+function openLogin(reason) {
+  $("#loginReason").textContent = reason || "ادخل اسمك ورقم موبايلك عشان تقدر تطلب";
+  $("#loginModal").hidden = false;
+  document.body.classList.add("no-scroll");
+  setTimeout(() => $("#loginForm").name.focus(), 50);
+}
+function closeLogin() {
+  $("#loginModal").hidden = true;
+  document.body.classList.remove("no-scroll");
+  afterLogin = null;
+}
+
+// ينفّذ الإجراء لو المستخدم داخل، وإلا يطلب منه يسجل الأول
+function requireLogin(action, reason) {
+  if (user) return action();
+  afterLogin = action;
+  openLogin(reason);
+}
+
+$("#accountBtn").addEventListener("click", (e) => {
+  e.stopPropagation();
+  if (!user) return openLogin();
+  $("#accountMenu").hidden = !$("#accountMenu").hidden;
+});
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".account")) $("#accountMenu").hidden = true;
+  if (e.target.id === "logoutBtn") {
+    user = null;
+    store.set("gtech-user", null);
+    renderAccount();
+    document.dispatchEvent(new Event("userchange"));
+    toast("👋 تم تسجيل الخروج");
+  }
+});
+
+$("#loginModal").addEventListener("click", (e) => {
+  if (e.target.id === "loginModal" || e.target.closest("[data-close]")) closeLogin();
+});
+document.addEventListener("keydown", (e) => e.key === "Escape" && !$("#loginModal").hidden && closeLogin());
+
+$("#loginForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const f = e.target;
+  const checks = [
+    [f.name, f.name.value.trim().length >= 3 || "اكتب اسمك بالكامل"],
+    [f.phone, isValidPhone(f.phone.value) || "رقم موبايل غير صحيح (11 رقم يبدأ بـ 01)"],
+  ];
+  checks.forEach(([el, res]) => {
+    el.closest(".field").classList.toggle("invalid", res !== true);
+    el.closest(".field").querySelector("em").textContent = res === true ? "" : res;
+  });
+  const bad = checks.find(([, res]) => res !== true);
+  if (bad) return bad[0].focus();
+
+  user = { name: f.name.value.trim().replace(/\s+/g, " "), phone: normalizePhone(f.phone.value) };
+  store.set("gtech-user", user);
+  renderAccount();
+  document.dispatchEvent(new Event("userchange"));
+  const action = afterLogin;
+  closeLogin();
+  f.reset();
+  toast(`أهلاً ${user.name.split(" ")[0]} 👋`);
+  if (action) action();
+});
+
+renderAccount();
 
 // ============ Toast ============
 let toastTimer;
