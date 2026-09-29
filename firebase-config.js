@@ -11,4 +11,11 @@
 // };
 //
 // لحد ما يتحط، أزرار Google و Facebook بتظهر رسالة إنها لسه مش متفعلة.
-const FIREBASE_CONFIG = null;
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCDeWPb6h3weh-bOX6-c_yS6WU_adwehmY",
+  authDomain: "g-tech-4b9b1.firebaseapp.com",
+  projectId: "g-tech-4b9b1",
+  storageBucket: "g-tech-4b9b1.firebasestorage.app",
+  messagingSenderId: "259915634001",
+  appId: "1:259915634001:web:e7ce53ddb4e55f4dbcaf70",
+};
