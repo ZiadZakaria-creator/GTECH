@@ -1,6 +1,5 @@
 // ============ صفحة المنتج ============
 const productId = +new URLSearchParams(location.search).get("id");
-const product = findProduct(productId);
 
 const reviewPool = [
   { name: "أحمد محمود", city: "القاهرة", stars: 5, text: "المنتج أصلي ووصل في معاده، والتغليف ممتاز. أنصح بيه جداً." },
@@ -21,6 +20,12 @@ let qty = 1;
 let userReviews = [];
 
 function notFound() {
+  $("#pdTabs").parentElement.hidden = true;
+  $("#breadcrumb").innerHTML = "";
+  if (!catalogLoaded) {
+    $("#productDetail").innerHTML = `<div class="container pd-missing"><span class="spinner"></span><p>جاري تحميل المنتج...</p></div>`;
+    return;
+  }
   document.title = "GTECH | المنتج غير موجود";
   $("#productDetail").innerHTML = `
     <div class="container pd-missing">
@@ -29,32 +34,36 @@ function notFound() {
       <p>ممكن يكون الرابط غلط أو المنتج اتشال من المتجر.</p>
       <a href="index.html#products" class="btn btn--primary">تصفح المنتجات</a>
     </div>`;
-  $("#pdTabs").parentElement.remove();
-  renderRelated(products.slice(0, 4));
+  renderRelated(shopProducts().slice(0, 4));
 }
 
 let gallery = views;
 
 function renderDetail(p) {
-  if (p.images?.length) gallery = p.images.map((src, i) => ({ label: `صورة ${num(i + 1)}`, src }));
+  gallery = p.images?.length ? p.images.map((src, i) => ({ label: `صورة ${num(i + 1)}`, src })) : views;
+  $("#pdTabs").parentElement.hidden = false;
+  const esc = escapeHtml;
+  const tag = inStock(p) ? productTag(p) : "نفد";
   const off = discount(p);
   const monthly = Math.ceil(p.price / 12);
   const lowStock = p.stock <= 5;
+  const soldOut = !inStock(p);
   const delivery = new Date(Date.now() + 2 * 86400000).toLocaleDateString("ar-EG", { weekday: "long", day: "numeric", month: "long" });
 
   document.title = `${p.name} | GTECH`;
+  qty = 1;
   $('meta[name="description"]').setAttribute("content", p.desc);
 
   $("#breadcrumb").innerHTML = `
     <a href="index.html">الرئيسية</a><span>›</span>
     <a href="index.html?cat=${p.cat}#products">${categories[p.cat]}</a><span>›</span>
-    <b>${p.name}</b>`;
+    <b>${esc(p.name)}</b>`;
 
-  const optionsHtml = Object.entries(p.options).map(([label, values]) => `
+  const optionsHtml = Object.entries(p.options).filter(([, values]) => values?.length).map(([label, values]) => `
     <div class="pd-option">
-      <span class="pd-option__label">${label}: <b data-opt-value="${label}">${values[0]}</b></span>
-      <div class="chips" data-opt="${label}">
-        ${values.map((v, i) => `<button class="chip ${i === 0 ? "active" : ""}" data-value="${v}">${v}</button>`).join("")}
+      <span class="pd-option__label">${esc(label)}: <b data-opt-value="${esc(label)}">${esc(values[0])}</b></span>
+      <div class="chips" data-opt="${esc(label)}">
+        ${values.map((v, i) => `<button class="chip ${i === 0 ? "active" : ""}" data-value="${esc(v)}">${esc(v)}</button>`).join("")}
       </div>
     </div>`).join("");
 
@@ -62,7 +71,7 @@ function renderDetail(p) {
     <div class="container pd__grid">
       <div class="gallery">
         <div class="gallery__stage" id="stage" style="--tint:${p.tint}">
-          ${p.tag ? `<span class="product__tag ${p.tag === "جديد" ? "product__tag--new" : ""}">${p.tag}</span>` : ""}
+          ${tag ? `<span class="product__tag ${tag === "جديد" ? "product__tag--new" : tag === "نفد" ? "product__tag--out" : ""}">${esc(tag)}</span>` : ""}
           ${productVisual(p, gallery[0].src, 'class="gallery__main" id="mainView"')}
         </div>
         <div class="gallery__thumbs">
@@ -74,14 +83,14 @@ function renderDetail(p) {
       </div>
 
       <div class="pd__info">
-        <a href="index.html?q=${encodeURIComponent(p.brand)}" class="product__brand">${p.brand}</a>
-        <h1>${p.name}</h1>
+        <a href="index.html?q=${encodeURIComponent(p.brand)}" class="product__brand">${esc(p.brand)}</a>
+        <h1>${esc(p.name)}</h1>
         <div class="pd__meta">
           <span class="product__rating">${stars(p.rating)}</span>
           <b>${num(p.rating)}</b>
           <a href="#pdTabs" data-goto="reviews">(${num(p.reviews)} تقييم)</a>
           <span class="dot"></span>
-          <span class="stock ${lowStock ? "stock--low" : ""}">${lowStock ? `⚠️ باقي ${num(p.stock)} قطع بس` : "✔ متوفر في المخزون"}</span>
+          <span class="stock ${soldOut ? "stock--out" : lowStock ? "stock--low" : ""}">${soldOut ? "✖ نفد من المخزون" : lowStock ? `⚠️ باقي ${num(p.stock)} قطع بس` : "✔ متوفر في المخزون"}</span>
         </div>
 
         <div class="pd__price">
@@ -91,7 +100,7 @@ function renderDetail(p) {
         <p class="pd__install">💳 أو قسّطها على 12 شهر بـ <b>${fmt(monthly)}</b> شهرياً بدون فوائد</p>
 
         <ul class="pd__highlights">
-          ${p.highlights.map((h) => `<li>${h}</li>`).join("")}
+          ${p.highlights.map((h) => `<li>${esc(h)}</li>`).join("")}
         </ul>
 
         ${optionsHtml}
@@ -102,8 +111,8 @@ function renderDetail(p) {
             <span id="qtyVal">${num(qty)}</span>
             <button id="qtyMinus" aria-label="نقص">−</button>
           </div>
-          <button class="btn btn--primary" id="addMain">${cartPlusIcon} أضف للسلة</button>
-          <button class="btn btn--ghost" id="buyNow">اشتري الآن</button>
+          <button class="btn btn--primary" id="addMain" ${soldOut ? "disabled" : ""}>${soldOut ? "نفد من المخزون" : `${cartPlusIcon} أضف للسلة`}</button>
+          <button class="btn btn--ghost" id="buyNow" ${soldOut ? "disabled" : ""}>اشتري الآن</button>
           <button class="icon-btn pd__wish ${wishlist.includes(p.id) ? "active" : ""}" data-wish="${p.id}" aria-label="أضف للمفضلة">${heartIcon}</button>
           <button class="icon-btn" id="shareBtn" aria-label="مشاركة">
             <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>
@@ -119,27 +128,27 @@ function renderDetail(p) {
     </div>
 
     <div class="buybar" id="buybar">
-      <div class="buybar__info">${productVisual(p)}<div><small>${p.name}</small><b>${fmt(p.price)}</b></div></div>
-      <button class="btn btn--primary" id="addBar">أضف للسلة</button>
+      <div class="buybar__info">${productVisual(p)}<div><small>${esc(p.name)}</small><b>${fmt(p.price)}</b></div></div>
+      <button class="btn btn--primary" id="addBar" ${soldOut ? "disabled" : ""}>${soldOut ? "نفد" : "أضف للسلة"}</button>
     </div>`;
 
   $("#panel-desc").innerHTML = `
     <div class="desc">
       <div>
         <h3>عن المنتج</h3>
-        <p>${p.desc}</p>
+        <p>${esc(p.desc)}</p>
       </div>
       <div class="desc__grid">
-        ${p.highlights.map((h, i) => `<div class="desc__card"><span>${["⚡", "✨", "🔋", "🛡️"][i % 4]}</span><p>${h}</p></div>`).join("")}
+        ${p.highlights.map((h, i) => `<div class="desc__card"><span>${["⚡", "✨", "🔋", "🛡️"][i % 4]}</span><p>${esc(h)}</p></div>`).join("")}
       </div>
     </div>`;
 
   $("#panel-specs").innerHTML = `
     <table class="specs">
       <tbody>
-        <tr><th>الماركة</th><td>${p.brand}</td></tr>
+        <tr><th>الماركة</th><td>${esc(p.brand)}</td></tr>
         <tr><th>القسم</th><td>${categories[p.cat]}</td></tr>
-        ${Object.entries(p.specs).map(([k, v]) => `<tr><th>${k}</th><td>${v}</td></tr>`).join("")}
+        ${Object.entries(p.specs).map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join("")}
         <tr><th>الضمان</th><td>${p.cat === "accessories" ? "سنة" : "سنتين"} ضمان الوكيل</td></tr>
       </tbody>
     </table>`;
@@ -244,7 +253,7 @@ function bindDetail(p) {
   );
 
   // الكمية
-  const setQty = (n) => { qty = Math.max(1, Math.min(p.stock, n)); $("#qtyVal").textContent = num(qty); };
+  const setQty = (n) => { qty = Math.max(1, Math.min(Math.max(p.stock, 1), n)); $("#qtyVal").textContent = num(qty); };
   $("#qtyPlus").addEventListener("click", () => {
     if (qty >= p.stock) toast(`أقصى كمية متاحة ${num(p.stock)}`);
     setQty(qty + 1);
@@ -286,12 +295,22 @@ function renderRelated(list) {
   $("#relatedGrid").innerHTML = list.map(productCard).join("");
 }
 
-if (product) {
+// بيعرض المنتج، وبيتعاد لو بياناته اتغيرت من لوحة التحكم
+let shownVersion = null;
+function initPage() {
+  const product = findProduct(productId);
+  const visible = product && isForSale(product);
+  const version = visible ? JSON.stringify(product) : `missing:${catalogLoaded}`;
+  if (version === shownVersion) return;
+  shownVersion = version;
+  if (!visible) return notFound();
   renderDetail(product);
-  const same = products.filter((x) => x.cat === product.cat && x.id !== product.id);
-  const others = products.filter((x) => x.cat !== product.cat);
+  const same = shopProducts().filter((x) => x.cat === product.cat && x.id !== product.id);
+  const others = shopProducts().filter((x) => x.cat !== product.cat);
   renderRelated([...same, ...others].slice(0, 4));
-  reveal(".pd-tabs, #related .section__head");
-} else {
-  notFound();
 }
+
+document.addEventListener("productschange", initPage);
+document.addEventListener("catalogloaded", initPage);
+initPage();
+reveal(".pd-tabs, #related .section__head");

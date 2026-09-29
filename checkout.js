@@ -104,6 +104,8 @@ form.addEventListener("submit", (e) => {
     return toast("⚠️ راجع البيانات المطلوبة");
   }
   if (!form.agree.checked) return toast("⚠️ لازم توافق على الشروط والأحكام");
+  const soldOut = cart.map((i) => findProduct(i.id)).find((p) => !inStock(p));
+  if (soldOut) return toast(`😔 "${soldOut.name}" نفد من المخزون، شيله من السلة وكمّل`);
   placeOrder();
 });
 
@@ -180,5 +182,6 @@ async function placeOrder() {
 }
 
 document.addEventListener("cartchange", renderSummary);
+document.addEventListener("productschange", renderSummary);
 renderSummary();
 if (cart.length && !user) gate();

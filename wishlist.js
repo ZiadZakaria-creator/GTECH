@@ -1,6 +1,6 @@
 // ============ صفحة المفضلة ============
 function renderWishlist() {
-  const list = wishlist.map(findProduct).filter(Boolean);
+  const list = wishlist.map(findProduct).filter((p) => p && isForSale(p));
   const has = list.length > 0;
   $("#wishGrid").innerHTML = list.map(productCard).join("");
   $("#wishTotal").textContent = has ? `(${num(list.length)})` : "";
@@ -8,7 +8,7 @@ function renderWishlist() {
   $("#wishActions").hidden = !has;
 
   const cats = new Set(list.map((p) => p.cat));
-  const suggest = products
+  const suggest = shopProducts()
     .filter((p) => !wishlist.includes(p.id))
     .sort((a, b) => cats.has(b.cat) - cats.has(a.cat) || b.rating - a.rating)
     .slice(0, 4);
@@ -17,6 +17,8 @@ function renderWishlist() {
 
 $("#allToCart").addEventListener("click", () => {
   wishlist.forEach((id) => {
+    const p = findProduct(id);
+    if (!p || !isForSale(p) || !inStock(p)) return;
     const item = cart.find((i) => i.id === id && !i.opts);
     item ? item.qty++ : cart.push({ id, qty: 1, opts: "" });
   });
@@ -34,5 +36,6 @@ $("#clearWish").addEventListener("click", () => {
 });
 
 document.addEventListener("wishchange", renderWishlist);
+document.addEventListener("productschange", renderWishlist);
 renderWishlist();
 reveal(".section__head");

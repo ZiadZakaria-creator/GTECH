@@ -6,7 +6,7 @@ const grid = $("#productsGrid");
 
 function renderProducts() {
   const q = query.trim().toLowerCase();
-  const list = products.filter((p) =>
+  const list = shopProducts().filter((p) =>
     (filter === "all" || p.cat === filter) &&
     (!q || p.name.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q))
   );
@@ -77,6 +77,8 @@ if (query) {
   $("#searchInput").value = query;
   requestAnimationFrame(() => $("#products").scrollIntoView());
 }
+
+document.addEventListener("productschange", renderProducts);
 
 reveal(".section__head, .category, .offer, .mini-offer, .review, .newsletter, .feature");
 setFilter(filter);

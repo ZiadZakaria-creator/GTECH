@@ -3,49 +3,36 @@ const findProduct = (id) => products.find((p) => p.id === id);
 const productUrl = (id) => `product.html?id=${id}`;
 
 let cart = store.get("gtech-cart", []).filter((i) => findProduct(i.id));
+const pruneCart = () => (cart = cart.filter((i) => { const p = findProduct(i.id); return p && isForSale(p); }));
+pruneCart();
 let wishlist = store.get("gtech-wish", []);
 
 const heartIcon = '<svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.3-9.2C1.3 8.2 3.7 4.5 7.4 4.5c2 0 3.4 1 4.6 2.6 1.2-1.6 2.6-2.6 4.6-2.6 3.7 0 6.1 3.7 4.7 7.3C19.5 16.4 12 21 12 21z"/></svg>';
 const cartPlusIcon = '<svg viewBox="0 0 24 24"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 2-1.5L21 8H6.2"/><path d="M13 10v4M11 12h4"/></svg>';
 
 const stars = (r) => "★".repeat(Math.round(r)) + "☆".repeat(5 - Math.round(r));
-const discount = (p) => (p.old ? Math.round((1 - p.price / p.old) * 100) : 0);
-
-// ============ صور المنتجات ============
-// لو المنتج ليه صور في p.images بتظهر، ولو مفيش (أو الصورة مفتحتش) بيظهر الإيموجي
-function productVisual(p, src = p.images?.[0], attrs = "") {
-  return src
-    ? `<img src="${src}" alt="${p.name}" loading="lazy" data-icon="${p.icon}" onerror="imgFallback(this)" ${attrs}>`
-    : `<span ${attrs}>${p.icon}</span>`;
-}
-function imgFallback(img) {
-  const span = document.createElement("span");
-  span.textContent = img.dataset.icon;
-  if (img.id) span.id = img.id;
-  span.className = img.className;
-  img.replaceWith(span);
-}
 
 // ============ كارت المنتج ============
 function productCard(p, i = 0) {
   const url = productUrl(p.id);
+  const tag = inStock(p) ? productTag(p) : "نفد";
   return `
-    <article class="product" style="animation-delay:${i * 50}ms">
-      <a href="${url}" class="product__media" style="--tint:${p.tint}" aria-label="${p.name}">
-        ${p.tag ? `<span class="product__tag ${p.tag === "جديد" ? "product__tag--new" : ""}">${p.tag}</span>` : ""}
+    <article class="product ${inStock(p) ? "" : "product--soldout"}" style="animation-delay:${i * 50}ms">
+      <a href="${url}" class="product__media" style="--tint:${p.tint}" aria-label="${escapeHtml(p.name)}">
+        ${tag ? `<span class="product__tag ${tag === "جديد" ? "product__tag--new" : tag === "نفد" ? "product__tag--out" : ""}">${escapeHtml(tag)}</span>` : ""}
         ${productVisual(p)}
       </a>
       <button class="product__wish ${wishlist.includes(p.id) ? "active" : ""}" data-wish="${p.id}" aria-label="أضف للمفضلة">${heartIcon}</button>
       <div class="product__body">
-        <span class="product__brand">${p.brand}</span>
-        <h3 class="product__name"><a href="${url}">${p.name}</a></h3>
+        <span class="product__brand">${escapeHtml(p.brand)}</span>
+        <h3 class="product__name"><a href="${url}">${escapeHtml(p.name)}</a></h3>
         <div class="product__rating">${stars(p.rating)} <small>(${num(p.reviews)})</small></div>
         <div class="product__foot">
           <div class="product__price">
             ${p.old ? `<del>${fmt(p.old)}</del>` : ""}
             <b>${fmt(p.price)}</b>
           </div>
-          <button class="add-btn" data-add="${p.id}" aria-label="أضف للسلة">${cartPlusIcon}</button>
+          <button class="add-btn" data-add="${p.id}" aria-label="أضف للسلة" ${inStock(p) ? "" : "disabled"}>${cartPlusIcon}</button>
         </div>
       </div>
     </article>`;
@@ -91,6 +78,9 @@ function renderCart() {
 }
 
 function addToCart(id, qty = 1, opts = "") {
+  const p = findProduct(id);
+  if (!p || !isForSale(p)) return toast("المنتج ده مش متاح دلوقتي");
+  if (!inStock(p)) return toast("😔 المنتج ده نفد من المخزون");
   const item = cart.find((i) => i.id === id && (i.opts || "") === opts);
   item ? (item.qty += qty) : cart.push({ id, qty, opts });
   renderCart();
@@ -340,3 +330,9 @@ document.body.insertAdjacentHTML("beforeend", `
 $("#year").textContent = new Date().getFullYear();
 $("#wishCount").textContent = num(wishlist.length);
 renderCart();
+
+// لما المنتجات تتحدث من لوحة التحكم: شيل من السلة أي منتج اتشال واحسب بالأسعار الجديدة
+document.addEventListener("productschange", () => {
+  pruneCart();
+  renderCart();
+});

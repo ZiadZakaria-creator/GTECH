@@ -137,6 +137,8 @@ function visibleOrders() {
 function render() {
   const pending = orders.filter((o) => o.status === "new").length;
   document.title = (pending ? `(${pending}) ` : "") + "GTECH | لوحة التحكم";
+  $("#newCountBadge").hidden = !pending;
+  $("#newCountBadge").textContent = num(pending);
 
   renderStats();
   renderTabs();
@@ -286,7 +288,9 @@ $("#drawerBody").addEventListener("click", async (e) => {
   if (o.status === status) return;
   if (status === "cancelled" && !confirm(`متأكد إنك عايز تلغي الطلب ${o.id}؟`)) return;
   try {
+    const from = o.status;
     await updateOrder(openId, { status });
+    await syncStockForStatus(o, from, status);
     toast(`${STATUS_ICONS[status]} الطلب ${o.id} بقى "${ORDER_STATUSES[status]}"`);
   } catch {
     toast("❌ مقدرناش نحدّث الطلب، جرّب تاني");

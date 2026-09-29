@@ -51,36 +51,79 @@
       </div>
     </div>
 
+    <nav class="ad-sections" id="adSections">
+      <button class="ad-sec active" data-section="orders">📦 الطلبات <span class="tab__count" id="newCountBadge" hidden></span></button>
+      <button class="ad-sec" data-section="products">🛍️ المنتجات</button>
+    </nav>
+
+    <div id="ordersSection" class="ad-section">
     <section class="stats" id="stats"></section>
 
-    <section class="card-box ad-panel">
-      <div class="ad-toolbar">
-        <div class="status-tabs" id="statusTabs"></div>
-        <div class="ad-toolbar__side">
-          <select id="rangeSel" aria-label="الفترة">
-            <option value="all">كل الفترات</option>
-            <option value="today">النهارده</option>
-            <option value="7">آخر 7 أيام</option>
-            <option value="30">آخر 30 يوم</option>
-          </select>
-          <input type="search" id="searchBox" placeholder="بحث برقم الطلب، الاسم، الموبايل..." />
-          <button class="btn btn--ghost btn--sm" id="exportBtn">⬇ تصدير Excel</button>
+      <section class="card-box ad-panel">
+        <div class="ad-toolbar">
+          <div class="status-tabs" id="statusTabs"></div>
+          <div class="ad-toolbar__side">
+            <select id="rangeSel" aria-label="الفترة">
+              <option value="all">كل الفترات</option>
+              <option value="today">النهارده</option>
+              <option value="7">آخر 7 أيام</option>
+              <option value="30">آخر 30 يوم</option>
+            </select>
+            <input type="search" id="searchBox" placeholder="بحث برقم الطلب، الاسم، الموبايل..." />
+            <button class="btn btn--ghost btn--sm" id="exportBtn">⬇ تصدير Excel</button>
+          </div>
         </div>
+
+        <div class="table-wrap">
+          <table class="orders">
+            <thead>
+              <tr><th>رقم الطلب</th><th>التاريخ</th><th>العميل</th><th>المحافظة</th><th>المنتجات</th><th>الإجمالي</th><th>الدفع</th><th>الحالة</th></tr>
+            </thead>
+            <tbody id="ordersBody"></tbody>
+          </table>
+          <div class="ad-empty" id="ordersEmpty" hidden>
+            <span>📭</span>
+            <p id="emptyText">مفيش طلبات لسه</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div id="productsSection" class="ad-section" hidden>
+      <div class="import-note" id="importNote" hidden>
+        <div>
+          <b>📥 المنتجات لسه مش في قاعدة البيانات</b>
+          <p>المتجر بيعرض دلوقتي المنتجات الافتراضية (<span id="defaultCount"></span> منتج). استوردها مرة واحدة عشان تقدر تعدّلها من هنا.</p>
+        </div>
+        <button class="btn btn--primary btn--sm" id="importBtn">استيراد المنتجات</button>
       </div>
 
-      <div class="table-wrap">
-        <table class="orders">
-          <thead>
-            <tr><th>رقم الطلب</th><th>التاريخ</th><th>العميل</th><th>المحافظة</th><th>المنتجات</th><th>الإجمالي</th><th>الدفع</th><th>الحالة</th></tr>
-          </thead>
-          <tbody id="ordersBody"></tbody>
-        </table>
-        <div class="ad-empty" id="ordersEmpty" hidden>
-          <span>📭</span>
-          <p id="emptyText">مفيش طلبات لسه</p>
+      <section class="card-box ad-panel">
+        <div class="ad-toolbar">
+          <div class="ad-toolbar__side">
+            <input type="search" id="prodSearch" placeholder="بحث باسم المنتج أو الماركة..." />
+            <select id="prodCat" aria-label="القسم"><option value="all">كل الأقسام</option></select>
+            <select id="prodState" aria-label="الحالة">
+              <option value="all">الكل</option>
+              <option value="active">ظاهر في المتجر</option>
+              <option value="hidden">مخفي</option>
+              <option value="low">مخزون قليل (٥ أو أقل)</option>
+              <option value="out">نفد</option>
+            </select>
+          </div>
+          <button class="btn btn--primary btn--sm" id="newProductBtn">＋ منتج جديد</button>
         </div>
-      </div>
-    </section>
+        <div class="table-wrap">
+          <table class="orders products-table">
+            <thead>
+              <tr><th></th><th>المنتج</th><th>القسم</th><th>السعر</th><th>المخزون</th><th>الحالة</th></tr>
+            </thead>
+            <tbody id="productsBody"></tbody>
+          </table>
+          <div class="ad-empty" id="productsEmpty" hidden><span>🛍️</span><p>مفيش منتجات مطابقة</p></div>
+        </div>
+      </section>
+    </div>
   </main>
 
   <!-- تفاصيل الطلب -->
@@ -93,12 +136,56 @@
     <div class="order-drawer__body" id="drawerBody"></div>
   </aside>
 
+  <!-- إضافة / تعديل منتج -->
+  <aside class="cart order-drawer product-editor" id="editor" aria-label="تعديل المنتج">
+    <div class="cart__head">
+      <h3 id="editorTitle">منتج جديد</h3>
+      <button class="icon-btn" id="editorClose" aria-label="إغلاق">✕</button>
+    </div>
+    <form class="order-drawer__body pe-form" id="productForm" novalidate>
+      <section class="od-sec">
+        <h4>🖼️ الصور <small class="muted">(أول صورة هي الرئيسية)</small></h4>
+        <div class="pe-images" id="peImages"></div>
+        <label class="pe-upload">
+          <input type="file" id="peFiles" accept="image/*" multiple hidden />
+          <span>＋ إضافة صور</span>
+        </label>
+        <small class="muted">بنصغّر الصور لوحدنا عشان الموقع يفضل سريع.</small>
+      </section>
+
+      <section class="od-sec pe-grid">
+        <label class="field pe-full"><span>اسم المنتج *</span><input name="name" required maxlength="120" /><em></em></label>
+        <label class="field"><span>الماركة</span><input name="brand" maxlength="40" dir="ltr" placeholder="APPLE" /></label>
+        <label class="field"><span>القسم *</span><select name="cat" id="peCat" required></select><em></em></label>
+        <label class="field"><span>السعر (ج.م) *</span><input name="price" type="number" min="1" step="1" inputmode="numeric" required /><em></em></label>
+        <label class="field"><span>السعر قبل الخصم</span><input name="old" type="number" min="0" step="1" inputmode="numeric" placeholder="اختياري" /><em></em></label>
+        <label class="field"><span>الكمية في المخزون *</span><input name="stock" type="number" min="0" step="1" inputmode="numeric" required /><em></em></label>
+        <label class="field"><span>شارة على الصورة</span><input name="tag" maxlength="12" placeholder="مثال: جديد" /><small class="muted">لو فاضية بيظهر الخصم لوحده</small></label>
+        <label class="pe-switch pe-full"><input type="checkbox" name="active" checked /> <span>ظاهر في المتجر</span></label>
+      </section>
+
+      <section class="od-sec">
+        <label class="field"><span>الوصف</span><textarea name="desc" rows="4" maxlength="2000"></textarea></label>
+        <label class="field"><span>أهم المميزات <small class="muted">(ميزة في كل سطر)</small></span><textarea name="highlights" rows="4" placeholder="شاشة 6.9 بوصة&#10;بطارية 5000 مللي أمبير"></textarea></label>
+        <label class="field"><span>الاختيارات <small class="muted">(سطر لكل اختيار: الاسم: قيمة، قيمة)</small></span><textarea name="options" rows="3" placeholder="اللون: أسود، أبيض، أزرق&#10;السعة: 256 جيجا، 512 جيجا"></textarea></label>
+        <label class="field"><span>المواصفات <small class="muted">(سطر لكل مواصفة: الاسم: القيمة)</small></span><textarea name="specs" rows="5" placeholder="الشاشة: 6.9 بوصة OLED&#10;المعالج: A19 Pro"></textarea></label>
+      </section>
+
+      <div class="pe-actions">
+        <button type="button" class="btn btn--ghost btn--sm danger" id="deleteProductBtn">🗑 حذف المنتج</button>
+        <button type="submit" class="btn btn--primary" id="saveProductBtn">حفظ المنتج</button>
+      </div>
+    </form>
+  </aside>
+
   <div class="toast" id="toast"></div>
 
   <script src="data.js"></script>
   <script src="firebase-config.js"></script>
   <script src="core.js"></script>
+  <script src="catalog.js"></script>
   <script src="api.js"></script>
   <script src="admin.js"></script>
+  <script src="admin-products.js"></script>
 </body>
 </html>

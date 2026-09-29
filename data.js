@@ -11,7 +11,8 @@ const categories = {
 // images: مسارات صور المنتج بالترتيب (أول صورة هي اللي بتظهر في الكارت)
 // مثال: images: ["images/1-1.jpg", "images/1-2.jpg", "images/1-3.jpg"]
 // لو فاضية أو الصورة مش موجودة، بيظهر الإيموجي بدالها
-const products = [
+// المنتجات الافتراضية: بتظهر لحد ما المنتجات تتضاف من لوحة التحكم
+const DEFAULT_PRODUCTS = [
   {
     id: 1, name: "آيفون 17 برو ماكس 256 جيجا", brand: "APPLE", cat: "phones", icon: "📱", price: 72999, old: 78999, rating: 4.9, reviews: 312, tag: "جديد", tint: "rgba(0,212,255,.35)", stock: 8,
     images: ["images/1-1.jpg", "images/1-2.jpg", "images/1-3.jpg"],
@@ -109,3 +110,6 @@ const products = [
     specs: { "الشاشة": "6.67 بوصة AMOLED 120Hz", "المعالج": "MediaTek Dimensity 7400", "الذاكرة": "8 جيجا رام", "الكاميرا الخلفية": "200 + 8 + 2 ميجا بيكسل", "الكاميرا الأمامية": "20 ميجا بيكسل", "البطارية": "5,500 مللي أمبير – شحن 120 واط", "نظام التشغيل": "Android 16 – HyperOS", "الوزن": "190 جرام" },
   },
 ];
+
+// القايمة الحالية (catalog.js بيحدّثها من قاعدة البيانات)
+let products = DEFAULT_PRODUCTS;
