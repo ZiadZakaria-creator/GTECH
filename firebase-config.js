@@ -25,7 +25,8 @@ const FIREBASE_CONFIG = {
 // false = مقفول (تقدر تجربه بس بإضافة ?sms=1 لآخر رابط الموقع)
 // قبل ما تخليه true: ضيف دومين الموقع في Firebase ← Authentication ← Settings ← Authorized domains
 // ملحوظة: الخطة المجانية فيها 10 رسايل بس في اليوم
-const PHONE_VERIFICATION = true;
+// مقفول مؤقتاً: Firebase رافض يبعت رسايل حقيقية (auth/billing-not-enabled) لحد ما يتضاف حساب دفع (Blaze)
+const PHONE_VERIFICATION = false;
 
 // الحد اليومي لرسايل SMS (للعدّاد اللي في لوحة التحكم). لو فعّلت خطة Blaze خليه null
 const SMS_DAILY_LIMIT = 10;
