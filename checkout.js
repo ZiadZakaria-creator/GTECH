@@ -146,6 +146,12 @@ function buildOrder(d, t) {
 
 async function placeOrder() {
   if (!user) return gate();
+  if (SMS_ON && !(await phoneSessionMatches(user))) {
+    user = { ...user, verified: false };
+    store.set("gtech-user", user);
+    renderAccount();
+    return requireLogin(placeOrder, "محتاجين نأكد رقمك تاني بكود SMS عشان نبعت الطلب");
+  }
   const d = Object.fromEntries(new FormData(form));
   const order = buildOrder(d, totals());
 

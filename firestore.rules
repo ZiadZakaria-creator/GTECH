@@ -16,6 +16,8 @@ service cloud.firestore {
       // العميل لازم يكون له حساب Firebase (Google أو مجهول) والطلب مربوط بيه
       allow create: if request.auth != null
         && request.resource.data.customer.uid == request.auth.uid
+        // رقم الطلب لازم يكون نفس الرقم اللي اتأكد بكود SMS
+        && request.auth.token.get("phone_number", "") == "+2" + request.resource.data.customer.phone
         && request.resource.data.status == "new"
         && request.resource.data.id == orderId
         && request.resource.data.customer.phone is string

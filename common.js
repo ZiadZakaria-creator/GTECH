@@ -421,6 +421,17 @@ async function confirmCode() {
   }
 }
 
+// الجلسة في Firebase لسه مربوطة بنفس الرقم؟ (ممكن تتمسح لو العميل مسح بيانات المتصفح)
+async function phoneSessionMatches(u) {
+  try {
+    await loadFirebase(["auth"]);
+    const current = await new Promise((res) => { const stop = firebase.auth().onAuthStateChanged((x) => { stop(); res(x); }); });
+    return current?.phoneNumber === toIntlPhone(u.phone);
+  } catch {
+    return false;
+  }
+}
+
 $("#otpResend").addEventListener("click", () => otp && sendCode(otp.name, otp.phone));
 $("#otpChange").addEventListener("click", showStep1);
 $("#otpStep").addEventListener("input", (e) => {

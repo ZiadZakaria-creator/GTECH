@@ -25,4 +25,4 @@ const FIREBASE_CONFIG = {
 // false = مقفول (تقدر تجربه بس بإضافة ?sms=1 لآخر رابط الموقع)
 // قبل ما تخليه true: ضيف دومين الموقع في Firebase ← Authentication ← Settings ← Authorized domains
 // ملحوظة: الخطة المجانية فيها 10 رسايل بس في اليوم
-const PHONE_VERIFICATION = false;
+const PHONE_VERIFICATION = true;
