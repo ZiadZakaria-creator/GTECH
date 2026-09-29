@@ -644,9 +644,6 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 .success__addr { color: var(--muted); margin-bottom: 8px; }
 /* ============ WhatsApp ============ */
 .wa-ico { fill: currentColor; stroke: none; }
-.btn--wa { background: #25d366; color: #fff; font-size: 1.05rem; padding: 15px 32px; box-shadow: 0 18px 40px -14px rgba(37,211,102,.7); }
-.btn--wa:hover { transform: translateY(-2px); background: #1ebe5a; }
-.btn--wa svg, #placeOrder svg { width: 22px; height: 22px; }
 .muted { color: var(--muted); }
 .contact-list a:hover { color: #25d366; }
 .wa-float {

@@ -165,8 +165,8 @@
               <div class="totals__discount" id="sumDiscRow" hidden><dt>الخصم</dt><dd id="sumDisc"></dd></div>
               <div class="totals__grand"><dt>الإجمالي</dt><dd id="sumTotal"></dd></div>
             </dl>
-            <button class="btn btn--primary btn--block" type="submit" form="checkoutForm" id="placeOrder"><svg viewBox="0 0 24 24" class="wa-ico"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c1.7.7 2.3.8 3.2.7a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.2-.2-.5-.3z"/></svg> تأكيد الطلب عبر واتساب</button>
-            <p class="secure">💬 هيتفتح واتساب برسالة فيها تفاصيل طلبك، دوس إرسال عشان يوصلنا</p>
+            <button class="btn btn--primary btn--block" type="submit" form="checkoutForm" id="placeOrder">إرسال الطلب</button>
+            <p class="secure">🔒 بياناتك محمية ومش بتتشارك مع أي حد</p>
           </aside>
         </div>
       </div>
@@ -193,10 +193,8 @@
     <section class="section section--page" id="successView" hidden>
       <div class="container success">
         <div class="success__icon">✓</div>
-        <h1>خطوة أخيرة: ابعت طلبك على واتساب</h1>
-        <p>شكراً <b id="okName"></b>! اتفتحلك واتساب برسالة فيها كل تفاصيل الطلب — <b>دوس إرسال</b> عشان الطلب يوصلنا، وهنأكده معاك على <b id="okPhone" dir="ltr"></b>.</p>
-        <a class="btn btn--wa" id="waSend" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" class="wa-ico"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c1.7.7 2.3.8 3.2.7a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.2-.2-.5-.3z"/></svg> إرسال الطلب على واتساب</a>
-        <small class="muted">لو واتساب متفتحش لوحده، دوس على الزرار اللي فوق.</small>
+        <h1>تم إرسال طلبك بنجاح! 🎉</h1>
+        <p>شكراً <b id="okName"></b>، طلبك وصلنا وهنتواصل معاك على <b id="okPhone" dir="ltr"></b> لتأكيده.</p>
         <div class="success__box card-box">
           <div><span>رقم الطلب</span><b id="okId"></b></div>
           <div><span>الإجمالي</span><b id="okTotal"></b></div>
@@ -204,7 +202,7 @@
           <div><span>التوصيل المتوقع</span><b id="okDate"></b></div>
         </div>
         <p class="success__addr">📍 <span id="okAddr"></span></p>
-        <a href="index.html" class="btn btn--ghost">كمّل تسوق</a>
+        <a href="index.html" class="btn btn--primary">كمّل تسوق</a>
       </div>
     </section>
   </main>
@@ -265,6 +263,7 @@
 
   <script src="data.js"></script>
   <script src="common.js"></script>
+  <script src="api.js"></script>
   <script src="checkout.js"></script>
 </body>
 </html>

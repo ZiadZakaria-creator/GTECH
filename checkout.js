@@ -107,39 +107,7 @@ form.addEventListener("submit", (e) => {
   placeOrder();
 });
 
-// ============ رسالة الطلب على واتساب ============
 const shipLabels = { standard: "شحن عادي (2-4 أيام)", express: "شحن سريع (24 ساعة)" };
-const egp = (n) => n.toLocaleString("en-US") + " ج.م";
-
-function orderMessage(id, d, t) {
-  const items = cart.map((i, n) => {
-    const p = findProduct(i.id);
-    return `${n + 1}. ${p.name}${i.opts ? ` (${i.opts})` : ""}\n    ${i.qty} × ${egp(p.price)} = ${egp(p.price * i.qty)}`;
-  });
-  return [
-    `🛒 *طلب جديد من GTECH*`,
-    `رقم الطلب: *${id}*`,
-    ``,
-    `👤 *بيانات العميل*`,
-    `الاسم: ${d.name.trim()}`,
-    `الموبايل: ${normalizePhone(d.phone)}`,
-    d.email ? `الإيميل: ${d.email.trim()}` : null,
-    ``,
-    `📍 *العنوان*`,
-    `${d.gov} - ${d.city.trim()}`,
-    d.address.trim(),
-    d.notes.trim() ? `ملاحظات: ${d.notes.trim()}` : null,
-    ``,
-    `📦 *المنتجات*`,
-    ...items,
-    ``,
-    `المجموع الفرعي: ${egp(t.sub)}`,
-    `الشحن: ${t.ship ? egp(t.ship) : "مجاناً"} — ${shipLabels[d.ship]}`,
-    t.disc ? `الخصم (${promo}): -${egp(t.disc)}` : null,
-    `💰 *الإجمالي: ${egp(t.total)}*`,
-    `💳 الدفع: ${payLabels[d.pay]}`,
-  ].filter((l) => l !== null).join("\n");
-}
 
 // ============ الدخول ============
 const gate = () => requireLogin(renderSummary, "سجّل دخولك عشان تكمّل الطلب");
@@ -154,38 +122,59 @@ form.addEventListener("click", (e) => {
 });
 document.addEventListener("userchange", renderSummary);
 
-// ============ تأكيد الطلب ============
-function placeOrder() {
+// ============ إرسال الطلب ============
+// شكل الطلب ده هو اللي الداشبورد هيقراه بعدين
+function buildOrder(d, t) {
+  return {
+    id: "GT-" + String(Date.now()).slice(-7),
+    createdAt: new Date().toISOString(),
+    status: "new",
+    customer: { name: user.name, phone: user.phone, email: d.email.trim() },
+    address: { gov: d.gov, city: d.city.trim(), street: d.address.trim(), notes: d.notes.trim() },
+    items: cart.map((i) => {
+      const p = findProduct(i.id);
+      return { id: p.id, name: p.name, options: i.opts || "", price: p.price, qty: i.qty };
+    }),
+    shipping: { method: d.ship, label: shipLabels[d.ship], cost: t.ship },
+    payment: { method: d.pay, label: payLabels[d.pay] },
+    promo: promo,
+    totals: { subtotal: t.sub, shipping: t.ship, discount: t.disc, total: t.total },
+  };
+}
+
+async function placeOrder() {
   if (!user) return gate();
-  const t = totals();
   const d = Object.fromEntries(new FormData(form));
-  const id = "GT-" + String(Date.now()).slice(-7);
-  const days = d.ship === "express" ? 1 : 3;
-  const date = new Date(Date.now() + days * 86400000).toLocaleDateString("ar-EG", { weekday: "long", day: "numeric", month: "long" });
+  const order = buildOrder(d, totals());
 
-  const wa = waLink(orderMessage(id, d, t));
-  window.open(wa, "_blank", "noopener");
-
-  const orders = store.get("gtech-orders", []);
-  orders.unshift({ id, at: new Date().toISOString(), items: cart, ...t, customer: { name: d.name, phone: d.phone, gov: d.gov, city: d.city, address: d.address }, ship: d.ship, pay: d.pay });
-  store.set("gtech-orders", orders.slice(0, 20));
+  const btn = $("#placeOrder");
+  btn.disabled = true;
+  btn.textContent = "جاري إرسال الطلب...";
+  try {
+    await submitOrder(order);
+  } catch {
+    btn.disabled = false;
+    btn.textContent = "إرسال الطلب";
+    return toast("❌ حصلت مشكلة في الإرسال، جرّب تاني");
+  }
 
   placed = true;
   cart = [];
   renderCart();
 
-  $("#waSend").href = wa;
-  $("#okName").textContent = d.name.trim();
-  $("#okPhone").textContent = normalizePhone(d.phone);
-  $("#okId").textContent = id;
-  $("#okTotal").textContent = fmt(t.total);
-  $("#okPay").textContent = payLabels[d.pay];
+  const days = order.shipping.method === "express" ? 1 : 3;
+  const date = new Date(Date.now() + days * 86400000).toLocaleDateString("ar-EG", { weekday: "long", day: "numeric", month: "long" });
+  $("#okName").textContent = order.customer.name;
+  $("#okPhone").textContent = order.customer.phone;
+  $("#okId").textContent = order.id;
+  $("#okTotal").textContent = fmt(order.totals.total);
+  $("#okPay").textContent = order.payment.label;
   $("#okDate").textContent = date;
-  $("#okAddr").textContent = `${d.address.trim()}، ${d.city.trim()}، ${d.gov}`;
+  $("#okAddr").textContent = `${order.address.street}، ${order.address.city}، ${order.address.gov}`;
 
   $("#checkoutView").hidden = true;
   $("#successView").hidden = false;
-  document.title = "GTECH | ابعت طلبك على واتساب";
+  document.title = "GTECH | تم إرسال الطلب";
   scrollTo({ top: 0, behavior: "smooth" });
 }
 
