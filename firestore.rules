@@ -48,6 +48,18 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // عدّاد رسايل SMS اليومي: أي حد يزوّده بواحد بس، والأدمن بس يشوفه
+    match /smsStats/{day} {
+      allow read: if isAdmin();
+      allow create: if day.matches("^[0-9]{4}-[0-9]{2}-[0-9]{2}$")
+        && request.resource.data.keys().hasOnly(["sent", "quotaHits"])
+        && request.resource.data.get("sent", 0) <= 1
+        && request.resource.data.get("quotaHits", 0) <= 1;
+      allow update: if request.resource.data.keys().hasOnly(["sent", "quotaHits"])
+        && request.resource.data.get("sent", 0) - resource.data.get("sent", 0) in [0, 1]
+        && request.resource.data.get("quotaHits", 0) - resource.data.get("quotaHits", 0) in [0, 1];
+    }
+
     match /admins/{uid} {
       allow read: if request.auth != null && request.auth.uid == uid;
       allow write: if false; // بيتضاف من Firebase Console بس

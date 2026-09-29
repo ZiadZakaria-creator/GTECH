@@ -26,3 +26,6 @@ const FIREBASE_CONFIG = {
 // قبل ما تخليه true: ضيف دومين الموقع في Firebase ← Authentication ← Settings ← Authorized domains
 // ملحوظة: الخطة المجانية فيها 10 رسايل بس في اليوم
 const PHONE_VERIFICATION = true;
+
+// الحد اليومي لرسايل SMS (للعدّاد اللي في لوحة التحكم). لو فعّلت خطة Blaze خليه null
+const SMS_DAILY_LIMIT = 10;

@@ -190,3 +190,21 @@
   .ad-sections { width: 100%; }
   .ad-sec { flex: 1; justify-content: center; }
 }
+
+/* ============ عدّاد SMS ============ */
+.sms-meter { display: flex; align-items: center; gap: 16px; padding: 16px 20px; }
+.sms-meter[hidden] { display: none; }
+.sms-meter__icon { display: grid; place-items: center; flex: none; width: 48px; height: 48px; border-radius: 14px; font-size: 1.4rem; background: rgba(34,197,94,.14); }
+.sms-meter__body { flex: 1; display: grid; gap: 8px; }
+.sms-meter__head { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.sms-meter__head span { font-weight: 800; }
+.sms-meter__bar { height: 10px; border-radius: 99px; background: var(--surface-2); overflow: hidden; }
+.sms-meter__bar i { display: block; height: 100%; border-radius: 99px; background: var(--success); transition: width .5s; }
+.sms-meter small { color: var(--muted); font-size: .82rem; }
+.sms-meter--warn { border-color: rgba(251,191,36,.45); }
+.sms-meter--warn .sms-meter__icon { background: rgba(251,191,36,.15); }
+.sms-meter--warn .sms-meter__bar i { background: #fbbf24; }
+.sms-meter--full { border-color: rgba(255,77,109,.5); background: linear-gradient(135deg, rgba(255,77,109,.08), var(--surface)); }
+.sms-meter--full .sms-meter__icon { background: rgba(255,77,109,.15); }
+.sms-meter--full .sms-meter__bar i { background: var(--danger); }
+.sms-meter--full small { color: #ff8fa3; }

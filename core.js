@@ -13,6 +13,9 @@ const normalizePhone = (s) => toLatinDigits(s).replace(/[\s-]/g, "");
 const isValidPhone = (s) => /^01[0125]\d{8}$/.test(normalizePhone(s));
 const escapeHtml = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
+// تاريخ النهارده بتوقيت القاهرة (YYYY-MM-DD)
+const cairoDay = () => new Date().toLocaleDateString("en-CA", { timeZone: "Africa/Cairo" });
+
 const store = {
   get(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } },
   set(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch {} },

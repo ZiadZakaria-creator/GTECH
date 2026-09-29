@@ -30,6 +30,7 @@ else {
 function startDashboard() {
   $("#adminGate").hidden = true;
   $("#dashboard").hidden = false;
+  startSmsMeter();
   stopWatching = watchOrders(onOrders, (err) => {
     console.error(err);
     const denied = err?.code === "permission-denied";
@@ -368,3 +369,46 @@ $("#clearBtn").addEventListener("click", () => {
   document.dispatchEvent(new Event("orderschange"));
   toast("🗑 تم مسح الطلبات");
 });
+
+// ============ عدّاد رسايل SMS ============
+// رقم تقريبي: الموقع بيزوّده مع كل كود بيتبعت (الرقم الرسمي في Firebase ← Authentication ← Usage)
+let smsDay = null;
+let stopSms = () => {};
+
+function startSmsMeter() {
+  if (!USE_FIREBASE || !PHONE_VERIFICATION || smsDay === cairoDay()) return;
+  stopSms();
+  smsDay = cairoDay();
+  loadFirebase(["auth", "firestore"]).then(() => {
+    stopSms = firebase.firestore().collection("smsStats").doc(smsDay)
+      .onSnapshot((d) => renderSmsMeter(d.exists ? d.data() : {}), (err) => {
+        console.warn("sms stats", err);
+        $("#smsMeter").hidden = true;
+      });
+  });
+}
+
+function renderSmsMeter({ sent = 0, quotaHits = 0 }) {
+  const limit = SMS_DAILY_LIMIT;
+  const left = limit ? Math.max(0, limit - sent) : null;
+  const pct = limit ? Math.min(100, (sent / limit) * 100) : 0;
+  const level = !limit ? "ok" : sent >= limit || quotaHits ? "full" : sent >= limit * 0.7 ? "warn" : "ok";
+  const box = $("#smsMeter");
+  box.hidden = false;
+  box.className = `sms-meter card-box sms-meter--${level}`;
+  box.innerHTML = `
+    <span class="sms-meter__icon">📲</span>
+    <div class="sms-meter__body">
+      <div class="sms-meter__head">
+        <b>رسايل كود التأكيد النهارده</b>
+        <span>${limit ? `${num(sent)} من ${num(limit)} · ${left ? `فاضل ${num(left)}` : "خلصت"}` : `${num(sent)} رسالة`}</span>
+      </div>
+      ${limit ? `<div class="sms-meter__bar"><i style="width:${pct}%"></i></div>` : ""}
+      <small>${quotaHits
+        ? `⚠️ ${num(quotaHits)} محاولة ماوصلهاش كود عشان الحد خلص — العملاء دول ممكن يكلموك على واتساب`
+        : "رقم تقريبي من الموقع، والعدد بيرجع من الأول كل يوم. الرقم الرسمي في Firebase ← Authentication ← Usage"}</small>
+    </div>`;
+}
+
+// لو الصفحة فضلت مفتوحة لحد اليوم اللي بعده
+setInterval(() => !$("#dashboard").hidden && startSmsMeter(), 60000);

@@ -383,9 +383,11 @@ async function sendCode(name, phone) {
       ? await current.linkWithPhoneNumber(toIntlPhone(phone), recaptcha)
       : await auth.signInWithPhoneNumber(toIntlPhone(phone), recaptcha);
     otp = { confirmation, name, phone, linking };
+    bumpSmsStat("sent");
     showOtpStep();
   } catch (err) {
     console.warn("sms send", err);
+    if (err?.code === "auth/quota-exceeded") bumpSmsStat("quotaHits");
     otp = null;
     setLoginBusy(null);
     showLoginError(smsError(err));
@@ -419,6 +421,18 @@ async function confirmCode() {
     showLoginError(smsError(err));
     $("#loginForm").code.select();
   }
+}
+
+// عدّاد تقريبي لرسايل النهارده بيظهر في لوحة التحكم (smsStats/<التاريخ>)
+// بيتبعت عن طريق REST عشان منحمّلش Firestore SDK في المتجر
+function bumpSmsStat(field) {
+  const { projectId, apiKey } = FIREBASE_CONFIG;
+  const doc = `projects/${projectId}/databases/(default)/documents/smsStats/${cairoDay()}`;
+  fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents:commit?key=${apiKey}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ writes: [{ transform: { document: doc, fieldTransforms: [{ fieldPath: field, increment: { integerValue: "1" } }] } }] }),
+  }).catch(() => {});
 }
 
 // الجلسة في Firebase لسه مربوطة بنفس الرقم؟ (ممكن تتمسح لو العميل مسح بيانات المتصفح)
