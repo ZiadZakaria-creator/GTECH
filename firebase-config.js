@@ -19,3 +19,10 @@ const FIREBASE_CONFIG = {
   messagingSenderId: "259915634001",
   appId: "1:259915634001:web:e7ce53ddb4e55f4dbcaf70",
 };
+
+// ============ كود تأكيد الموبايل (SMS) ============
+// true = العميل لازم يأكد رقمه بكود SMS قبل ما يطلب
+// false = مقفول (تقدر تجربه بس بإضافة ?sms=1 لآخر رابط الموقع)
+// قبل ما تخليه true: ضيف دومين الموقع في Firebase ← Authentication ← Settings ← Authorized domains
+// ملحوظة: الخطة المجانية فيها 10 رسايل بس في اليوم
+const PHONE_VERIFICATION = false;

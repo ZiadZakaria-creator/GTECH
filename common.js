@@ -150,6 +150,7 @@ document.body.insertAdjacentHTML("beforeend", `
       <div class="modal__icon">${userIcon}</div>
       <h3 id="loginTitle">تسجيل الدخول</h3>
       <p class="muted" id="loginReason">ادخل اسمك ورقم موبايلك عشان تقدر تطلب</p>
+      <div class="login-step" id="loginStep1">
       <div class="social" id="socialBox">
         <button type="button" class="social__btn social__btn--google" data-social="google"><svg viewBox="0 0 48 48" class="brand-ico"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg><span>المتابعة بحساب Google</span></button>
         <button type="button" class="social__btn social__btn--facebook" data-social="facebook"><svg viewBox="0 0 24 24" class="brand-ico"><path fill="#fff" d="M13.5 21v-7.5h2.5l.4-3h-2.9V8.6c0-.9.3-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.2H8v3h2.4V21h3.1z"/></svg><span>المتابعة بحساب Facebook</span></button>
@@ -158,8 +159,19 @@ document.body.insertAdjacentHTML("beforeend", `
       <p class="social-linked" id="socialLinked" hidden></p>
       <label class="field"><span>الاسم بالكامل</span><input name="name" autocomplete="name" placeholder="مثال: أحمد محمد" maxlength="40" /><em></em></label>
       <label class="field"><span>رقم الموبايل</span><input name="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="01xxxxxxxxx" dir="ltr" maxlength="14" /><em></em></label>
-      <button class="btn btn--primary btn--block" type="submit">دخول</button>
-      <small class="muted">هنستخدم رقمك للتواصل معاك بخصوص طلباتك بس.</small>
+      </div>
+      <div class="otp" id="otpStep" hidden>
+        <p>بعتنالك كود من ٦ أرقام في رسالة على<br><b dir="ltr" id="otpPhone"></b></p>
+        <input class="otp__input" name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="••••••" dir="ltr" aria-label="كود التأكيد" />
+        <div class="otp__links">
+          <button type="button" class="link-btn" id="otpResend" disabled></button>
+          <button type="button" class="link-btn" id="otpChange">تغيير الرقم</button>
+        </div>
+      </div>
+      <p class="login-error" id="loginError" hidden></p>
+      <button class="btn btn--primary btn--block" type="submit" id="loginSubmit">دخول</button>
+      <div id="recaptchaBox"></div>
+      <small class="muted" id="loginNote">هنستخدم رقمك للتواصل معاك بخصوص طلباتك بس.</small>
     </form>
   </div>`);
 
@@ -169,7 +181,8 @@ function renderAccount() {
     btn.classList.add("account__btn--in");
     btn.innerHTML = `<span class="account__avatar">${escapeHtml(user.name.trim()[0])}</span><span class="account__name">${escapeHtml(user.name.split(" ")[0])}</span>`;
     $("#accountMenu").innerHTML = `
-      <div class="account__info"><b>${escapeHtml(user.name)}</b><small dir="ltr">${user.phone}</small></div>
+      <div class="account__info"><b>${escapeHtml(user.name)}</b><small dir="ltr">${user.phone}${user.verified ? ` <span class="verified" title="رقم مؤكد">✔</span>` : ""}</small></div>
+      ${needsVerify(user) ? `<button id="verifyBtn">📲 أكّد رقم موبايلك</button>` : ""}
       <a href="myorders.html">📦 طلباتي</a>
       <a href="wishlist.html">❤️ المفضلة</a>
       <button id="logoutBtn">↩ تسجيل الخروج</button>`;
@@ -179,9 +192,14 @@ function renderAccount() {
   }
 }
 
-function openLogin(reason) {
+function openLogin(reason, prefill = null) {
   $("#loginReason").textContent = reason || "ادخل اسمك ورقم موبايلك عشان تقدر تطلب";
   resetSocial();
+  showStep1();
+  if (prefill) {
+    $("#loginForm").name.value = prefill.name;
+    $("#loginForm").phone.value = prefill.phone;
+  }
   $("#loginModal").hidden = false;
   document.body.classList.add("no-scroll");
   setTimeout(() => $("#loginForm").name.focus(), 50);
@@ -190,13 +208,15 @@ function closeLogin() {
   $("#loginModal").hidden = true;
   document.body.classList.remove("no-scroll");
   afterLogin = null;
+  otp = null;
+  clearInterval(resendTimer);
 }
 
 // ينفّذ الإجراء لو المستخدم داخل، وإلا يطلب منه يسجل الأول
 function requireLogin(action, reason) {
-  if (user) return action();
+  if (user && !needsVerify(user)) return action();
   afterLogin = action;
-  openLogin(reason);
+  openLogin(needsVerify(user) ? "أكّد رقم موبايلك بكود SMS عشان تكمّل" : reason, user);
 }
 
 $("#accountBtn").addEventListener("click", (e) => {
@@ -206,6 +226,10 @@ $("#accountBtn").addEventListener("click", (e) => {
 });
 document.addEventListener("click", (e) => {
   if (!e.target.closest(".account")) $("#accountMenu").hidden = true;
+  if (e.target.id === "verifyBtn") {
+    $("#accountMenu").hidden = true;
+    openLogin("أكّد رقم موبايلك بكود SMS", user);
+  }
   if (e.target.id === "logoutBtn") {
     const fbUser = window.firebase?.apps?.length && firebase.auth().currentUser;
     if (fbUser && !fbUser.isAnonymous) firebase.auth().signOut().catch(() => {});
@@ -222,8 +246,9 @@ $("#loginModal").addEventListener("click", (e) => {
 });
 document.addEventListener("keydown", (e) => e.key === "Escape" && !$("#loginModal").hidden && closeLogin());
 
-$("#loginForm").addEventListener("submit", (e) => {
+$("#loginForm").addEventListener("submit", async (e) => {
   e.preventDefault();
+  if (otp) return confirmCode();
   const f = e.target;
   const checks = [
     [f.name, f.name.value.trim().length >= 3 || "اكتب اسمك بالكامل"],
@@ -236,16 +261,170 @@ $("#loginForm").addEventListener("submit", (e) => {
   const bad = checks.find(([, res]) => res !== true);
   if (bad) return bad[0].focus();
 
-  user = { name: f.name.value.trim().replace(/\s+/g, " "), phone: normalizePhone(f.phone.value), ...(socialInfo || {}) };
+  const name = f.name.value.trim().replace(/\s+/g, " ");
+  const phone = normalizePhone(f.phone.value);
+  if (!SMS_ON) return finishLogin({ name, phone, ...(socialInfo || {}) });
+
+  // لو الرقم ده متأكد قبل كده على الجهاز ده، مش محتاجين كود تاني
+  setLoginBusy("لحظة...");
+  try {
+    await loadFirebase(["auth"]);
+    const current = await new Promise((res) => { const stop = firebase.auth().onAuthStateChanged((u) => { stop(); res(u); }); });
+    if (current?.phoneNumber === toIntlPhone(phone)) {
+      return finishLogin({ name, phone, ...(socialInfo || {}), verified: true, uid: current.uid });
+    }
+  } catch {}
+  await sendCode(name, phone);
+});
+
+function finishLogin(info) {
+  user = info;
   socialInfo = null;
   store.set("gtech-user", user);
   renderAccount();
   document.dispatchEvent(new Event("userchange"));
   const action = afterLogin;
   closeLogin();
-  f.reset();
-  toast(`أهلاً ${user.name.split(" ")[0]} 👋`);
+  $("#loginForm").reset();
+  toast(info.verified ? `✔ تم تأكيد رقمك — أهلاً ${user.name.split(" ")[0]} 👋` : `أهلاً ${user.name.split(" ")[0]} 👋`);
   if (action) action();
+}
+
+// ============ كود تأكيد SMS ============
+// الكود بيتبعت عن طريق Firebase Phone Auth. لو العميل عنده حساب Firebase (مجهول أو Google)
+// بنربط الرقم بنفس الحساب عشان طلباته القديمة تفضل ظاهرة في "طلباتي"
+const SMS_ON = (() => {
+  if (!FIREBASE_CONFIG) return false;
+  try {
+    if (new URLSearchParams(location.search).get("sms") === "1") sessionStorage.setItem("gtech-sms-test", "1");
+    return PHONE_VERIFICATION || sessionStorage.getItem("gtech-sms-test") === "1";
+  } catch {
+    return PHONE_VERIFICATION;
+  }
+})();
+const needsVerify = (u) => SMS_ON && !!u && !u.verified;
+const toIntlPhone = (p) => "+2" + normalizePhone(p);
+const RESEND_SECONDS = 60;
+let otp = null;          // { confirmation, name, phone, linking }
+let recaptcha = null;
+let resendTimer = null;
+
+const SMS_ERRORS = {
+  "auth/invalid-phone-number": "رقم الموبايل غير صحيح",
+  "auth/missing-phone-number": "اكتب رقم الموبايل",
+  "auth/too-many-requests": "محاولات كتير على الرقم ده، استنى شوية وجرّب تاني",
+  "auth/quota-exceeded": "وصلنا للحد الأقصى لرسايل التأكيد النهارده 😔 كلمنا على واتساب ونأكد طلبك",
+  "auth/invalid-verification-code": "الكود غلط، راجعه وجرّب تاني",
+  "auth/code-expired": "الكود انتهت صلاحيته، اطلب كود جديد",
+  "auth/session-expired": "الكود انتهت صلاحيته، اطلب كود جديد",
+  "auth/network-request-failed": "في مشكلة في الإنترنت، اتأكد من الاتصال وجرّب تاني",
+};
+const smsError = (err) => SMS_ERRORS[err?.code] || "خدمة كود التأكيد مش متاحة دلوقتي، جرّب تاني بعد شوية أو كلمنا على واتساب";
+
+function setLoginBusy(text) {
+  const b = $("#loginSubmit");
+  b.disabled = !!text;
+  if (text) b.textContent = text;
+  else b.textContent = otp ? "تأكيد الكود" : SMS_ON ? "إرسال كود التأكيد" : "دخول";
+}
+function showLoginError(msg) {
+  $("#loginError").hidden = !msg;
+  $("#loginError").textContent = msg || "";
+}
+function showStep1() {
+  otp = null;
+  clearInterval(resendTimer);
+  $("#loginStep1").hidden = false;
+  $("#otpStep").hidden = true;
+  $("#loginNote").textContent = SMS_ON ? "هنبعتلك كود في رسالة SMS عشان نتأكد إن الرقم بتاعك." : "هنستخدم رقمك للتواصل معاك بخصوص طلباتك بس.";
+  showLoginError("");
+  setLoginBusy(null);
+}
+function showOtpStep() {
+  $("#loginStep1").hidden = true;
+  $("#otpStep").hidden = false;
+  $("#otpPhone").textContent = otp.phone;
+  $("#loginNote").textContent = "مجاش الكود؟ استنى دقيقة واطلب إعادة الإرسال.";
+  $("#loginForm").code.value = "";
+  showLoginError("");
+  setLoginBusy(null);
+  setTimeout(() => $("#loginForm").code.focus(), 50);
+  let left = RESEND_SECONDS;
+  const btn = $("#otpResend");
+  const tick = () => {
+    btn.disabled = left > 0;
+    btn.textContent = left > 0 ? `إعادة الإرسال بعد ${num(left)} ث` : "إعادة إرسال الكود";
+    left--;
+    if (left < -1) clearInterval(resendTimer);
+  };
+  clearInterval(resendTimer);
+  tick();
+  resendTimer = setInterval(tick, 1000);
+}
+
+function freshRecaptcha() {
+  try { recaptcha?.clear(); } catch {}
+  $("#recaptchaBox").innerHTML = "<div></div>";
+  recaptcha = new firebase.auth.RecaptchaVerifier($("#recaptchaBox").firstChild, { size: "invisible" });
+}
+
+async function sendCode(name, phone) {
+  setLoginBusy("جاري إرسال الكود...");
+  showLoginError("");
+  try {
+    await loadFirebase(["auth"]);
+    const auth = firebase.auth();
+    auth.languageCode = "ar";
+    freshRecaptcha();
+    const current = auth.currentUser;
+    const linking = !!current && !current.phoneNumber;
+    const confirmation = linking
+      ? await current.linkWithPhoneNumber(toIntlPhone(phone), recaptcha)
+      : await auth.signInWithPhoneNumber(toIntlPhone(phone), recaptcha);
+    otp = { confirmation, name, phone, linking };
+    showOtpStep();
+  } catch (err) {
+    console.warn("sms send", err);
+    otp = null;
+    setLoginBusy(null);
+    showLoginError(smsError(err));
+  }
+}
+
+async function confirmCode() {
+  const code = toLatinDigits($("#loginForm").code.value).replace(/\D/g, "");
+  if (code.length !== 6) return showLoginError("الكود ٦ أرقام");
+  setLoginBusy("جاري التأكيد...");
+  try {
+    let result;
+    try {
+      result = await otp.confirmation.confirm(code);
+    } catch (err) {
+      // الرقم مربوط بحساب تاني قبل كده: ندخل بيه بدل الربط
+      if (otp.linking && ["auth/credential-already-in-use", "auth/provider-already-linked", "auth/account-exists-with-different-credential"].includes(err?.code)) {
+        const cred = err.credential || firebase.auth.PhoneAuthProvider.credential(otp.confirmation.verificationId, code);
+        result = await firebase.auth().signInWithCredential(cred);
+      } else {
+        throw err;
+      }
+    }
+    const { name, phone } = otp;
+    otp = null;
+    clearInterval(resendTimer);
+    finishLogin({ name, phone, ...(socialInfo || {}), verified: true, uid: result.user.uid });
+  } catch (err) {
+    console.warn("sms confirm", err);
+    setLoginBusy(null);
+    showLoginError(smsError(err));
+    $("#loginForm").code.select();
+  }
+}
+
+$("#otpResend").addEventListener("click", () => otp && sendCode(otp.name, otp.phone));
+$("#otpChange").addEventListener("click", showStep1);
+$("#otpStep").addEventListener("input", (e) => {
+  // أول ما يكتب ٦ أرقام نأكد لوحده
+  if (e.target.name === "code" && toLatinDigits(e.target.value).replace(/\D/g, "").length === 6) confirmCode();
 });
 
 // ============ الدخول بـ Google و Facebook ============
