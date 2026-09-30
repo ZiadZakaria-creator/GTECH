@@ -41,7 +41,7 @@ const SMS_DAILY_LIMIT = 10;
 // الخطوات في EMAIL_SETUP.md. لحد ما البيانات دي تتحط، الإيميلات مقفولة.
 const EMAIL_CONFIG = {
   publicKey: "nJuOxvKa6B0JK-d0z",
-  serviceId: "service_2wslwl4",
+  serviceId: "service_0mvogqa",
   templateId: "template_1a7i7tf",
   storeEmail: "ziadzakaria966@gmail.com", // بيوصله إيميل بكل طلب جديد — امسح السطر ده لو مش عايز
 };
