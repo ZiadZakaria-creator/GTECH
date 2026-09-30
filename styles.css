@@ -393,6 +393,8 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 }
 .socials a:hover { background: var(--gradient); transform: translateY(-3px); }
 .footer__bottom { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; padding: 22px 0; border-top: 1px solid var(--border); color: var(--muted); font-size: .9rem; }
+.footer__bottom .owner { flex-basis: 100%; order: 3; font-size: .82rem; text-align: center; padding: 0 64px 70px; line-height: 1.8; }
+.footer__bottom .owner b { color: var(--text); letter-spacing: .5px; }
 .payments { display: flex; gap: 8px; flex-wrap: wrap; }
 .payments span { padding: 4px 12px; border-radius: 8px; background: var(--surface); border: 1px solid var(--border); font-weight: 700; font-size: .8rem; color: var(--text); }
 

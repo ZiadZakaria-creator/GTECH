@@ -304,3 +304,6 @@
 .bosta-status.is-bad { color: var(--danger-text, #ff8fa3); }
 .bosta-state:empty { display: none; }
 @media print { .ship-manual, [data-ship] { display: none !important; } }
+
+.ad-owner { text-align: center; padding: 18px 16px 28px; color: var(--muted); font-size: .82rem; }
+@media print { .ad-owner { display: none; } }
