@@ -186,6 +186,8 @@ async function placeOrder() {
   placed = true;
   cart = [];
   renderCart();
+  clearTimeout(cartSyncTimer);
+  syncCart(); // الطلب اتعمل، فالسلة مش متروكة
 
   const days = order.shipping.method === "express" ? 1 : 3;
   const date = new Date(Date.now() + days * 86400000).toLocaleDateString("ar-EG", { weekday: "long", day: "numeric", month: "long" });

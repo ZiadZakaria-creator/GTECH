@@ -55,6 +55,7 @@
     <nav class="ad-sections" id="adSections">
       <button class="ad-sec active" data-section="orders">📦 الطلبات <span class="tab__count" id="newCountBadge" hidden></span></button>
       <button class="ad-sec" data-section="products">🛍️ المنتجات</button>
+      <button class="ad-sec" data-section="carts">🛒 سلات متروكة <span class="tab__count" id="cartsBadge" hidden></span></button>
     </nav>
 
     <div id="ordersSection" class="ad-section">
@@ -132,6 +133,25 @@
             <tbody id="productsBody"></tbody>
           </table>
           <div class="ad-empty" id="productsEmpty" hidden><span>🛍️</span><p>مفيش منتجات مطابقة</p></div>
+        </div>
+      </section>
+    </div>
+    <div id="cartsSection" class="ad-section" hidden>
+      <section class="card-box ad-panel">
+        <div class="ad-toolbar">
+          <p class="muted carts-hint">العملاء اللي داخلين بحساب Google وحطّوا حاجات في السلة ومكمّلوش الطلب من أكتر من ساعتين. التذكير بيتبعت إيميل فيه رابط بيرجّع السلة زي ما هي.</p>
+          <div class="ad-toolbar__side">
+            <button class="btn btn--primary btn--sm" id="remindAllBtn" hidden></button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="orders carts-table">
+            <thead>
+              <tr><th>العميل</th><th>المنتجات</th><th>الإجمالي</th><th>آخر نشاط</th><th>التذكير</th></tr>
+            </thead>
+            <tbody id="cartsBody"></tbody>
+          </table>
+          <div class="ad-empty" id="cartsEmpty" hidden><span>🛒</span><p>مفيش سلات متروكة دلوقتي</p></div>
         </div>
       </section>
     </div>
@@ -214,5 +234,6 @@
   <script src="admin-products.js"></script>
   <script src="admin-excel.js"></script>
   <script src="admin-alerts.js"></script>
+  <script src="admin-carts.js"></script>
 </body>
 </html>

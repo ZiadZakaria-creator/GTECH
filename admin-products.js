@@ -100,10 +100,10 @@ $("#defaultCount").textContent = num(DEFAULT_PRODUCTS.length);
 let productsWatching = false;
 function showSection(name) {
   $$(".ad-sec").forEach((b) => b.classList.toggle("active", b.dataset.section === name));
-  $("#ordersSection").hidden = name !== "orders";
-  $("#productsSection").hidden = name !== "products";
-  history.replaceState(null, "", name === "products" ? "#products" : "#");
+  $$(".ad-section").forEach((sec) => { sec.hidden = sec.id !== name + "Section"; });
+  history.replaceState(null, "", name === "orders" ? "#" : "#" + name);
   if (name === "products") watchProducts();
+  document.dispatchEvent(new CustomEvent("sectionchange", { detail: name }));
 }
 function watchProducts() {
   if (productsWatching) return;
@@ -117,10 +117,11 @@ $("#adSections").addEventListener("click", (e) => {
   const b = e.target.closest("[data-section]");
   if (b) showSection(b.dataset.section);
 });
-if (location.hash === "#products") {
+if (["#products", "#carts"].includes(location.hash)) {
   // نستنى لحد ما الأدمن يدخل
+  const section = location.hash.slice(1);
   const wait = setInterval(() => {
-    if (!$("#dashboard").hidden) { clearInterval(wait); showSection("products"); }
+    if (!$("#dashboard").hidden) { clearInterval(wait); showSection(section); }
   }, 200);
 }
 

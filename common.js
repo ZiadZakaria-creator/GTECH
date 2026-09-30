@@ -3,6 +3,21 @@ const findProduct = (id) => products.find((p) => p.id === id);
 const productUrl = (id) => `product.html?id=${id}`;
 
 let cart = store.get("gtech-cart", []).filter((i) => findProduct(i.id));
+
+// رابط التذكير بالسلة المتروكة بيرجّع المنتجات: ?cart=رقم.كمية.الاختيارات,...
+(() => {
+  const param = new URLSearchParams(location.search).get("cart");
+  if (!param) return;
+  param.split(",").forEach((part) => {
+    const [id, qty] = part.split(".", 2).map(Number);
+    const opts = part.split(".").slice(2).join(".").slice(0, 120);
+    if (!findProduct(id) || !(qty > 0)) return;
+    const line = cart.find((i) => i.id === id && (i.opts || "") === opts);
+    if (line) line.qty = Math.max(line.qty, Math.min(qty, 20));
+    else cart.push({ id, qty: Math.min(qty, 20), opts });
+  });
+  history.replaceState(null, "", location.pathname + location.hash);
+})();
 const pruneCart = () => (cart = cart.filter((i) => { const p = findProduct(i.id); return p && isForSale(p); }));
 pruneCart();
 let wishlist = store.get("gtech-wish", []);
@@ -601,3 +616,54 @@ document.addEventListener("productschange", () => {
 });
 
 renderCompareTray();
+
+// ============ السلة المتروكة ============
+// لو العميل داخل بحساب فيه إيميل (Google)، سلته بتتحفظ في carts/{uid}
+// عشان صاحب المتجر يقدر يبعتله تذكير من لوحة التحكم لو ساب السلة من غير ما يطلب
+const CARTS_LOCAL = "gtech-carts-local"; // الوضع التجريبي
+const CART_SYNCED = "gtech-cart-synced";
+let cartSyncTimer = null;
+
+function cartSnapshot() {
+  return cart.map((i) => {
+    const p = findProduct(i.id);
+    return { id: p.id, name: String(p.name).slice(0, 120), price: p.price, qty: i.qty, opts: i.opts || "" };
+  });
+}
+
+async function syncCart() {
+  if (!user?.email || !user.uid) return;
+  const items = cartSnapshot();
+  const sig = JSON.stringify([user.uid, items.map((i) => [i.id, i.qty, i.opts])]);
+  if (store.get(CART_SYNCED, "") === sig) return; // مفيش تغيير (فتح صفحة بس)
+  const doc = items.length && {
+    uid: user.uid,
+    email: user.email,
+    name: String(user.name || "").slice(0, 60),
+    items: items.slice(0, 50),
+    total: items.reduce((s, i) => s + i.price * i.qty, 0),
+    updatedAt: new Date().toISOString(),
+  };
+  try {
+    if (!FIREBASE_CONFIG) {
+      const all = store.get(CARTS_LOCAL, {});
+      if (doc) all[user.uid] = doc;
+      else delete all[user.uid];
+      store.set(CARTS_LOCAL, all);
+    } else {
+      await loadFirebase(["auth", "firestore"]);
+      const fbUser = await new Promise((res) => { const stop = firebase.auth().onAuthStateChanged((u) => { stop(); res(u); }); });
+      if (fbUser?.uid !== user.uid) return;
+      const ref = firebase.firestore().collection("carts").doc(user.uid);
+      await (doc ? ref.set(doc) : ref.delete());
+    }
+    store.set(CART_SYNCED, sig);
+  } catch (err) {
+    console.warn("cart sync", err);
+  }
+}
+document.addEventListener("cartchange", () => {
+  clearTimeout(cartSyncTimer);
+  cartSyncTimer = setTimeout(syncCart, 2500);
+});
+document.addEventListener("userchange", () => setTimeout(syncCart, 500));
