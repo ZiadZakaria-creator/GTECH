@@ -126,10 +126,10 @@
               <legend><span>٤</span>طريقة الدفع</legend>
               <div class="choices">
                 <label class="choice"><input type="radio" name="pay" value="cod" checked /><div><b>💵 الدفع عند الاستلام</b><small>ادفع كاش أو فيزا للمندوب</small></div></label>
-                <label class="choice"><input type="radio" name="pay" value="card" /><div><b>💳 بطاقة بنكية</b><small>فيزا / ماستركارد / ميزة — هيتم تحويلك لبوابة دفع آمنة</small></div></label>
-                <label class="choice"><input type="radio" name="pay" value="install" /><div><b>📆 تقسيط بدون فوائد</b><small>حتى 24 شهر مع valU وأمان وبنوك مختارة</small></div></label>
-                <label class="choice"><input type="radio" name="pay" value="wallet" /><div><b>📱 محفظة إلكترونية</b><small>فودافون كاش / إنستاباي</small></div></label>
+                <label class="choice" id="payInstapay" hidden><input type="radio" name="pay" value="instapay" /><div><b>⚡ إنستاباي</b><small>حوّل من تطبيق InstaPay أو تطبيق البنك بتاعك</small></div></label>
+                <label class="choice" id="payVodafone" hidden><input type="radio" name="pay" value="vodafone" /><div><b>📱 فودافون كاش</b><small>أو أي محفظة إلكترونية (اتصالات كاش، أورنج كاش…)</small></div></label>
               </div>
+              <p class="pay-note" id="payNote" hidden>بعد ما تبعت الطلب هيظهرلك الرقم اللي هتحوّل عليه، وبعد التحويل ارفع صورة التحويل أو ابعتها واتساب، وهنأكد طلبك أول ما الفلوس توصل.</p>
             </fieldset>
 
             <label class="agree"><input type="checkbox" name="agree" required /> أوافق على <a href="#">الشروط والأحكام</a> و<a href="#">سياسة الاسترجاع</a></label>
@@ -190,6 +190,18 @@
           <div><span>الإجمالي</span><b id="okTotal"></b></div>
           <div><span>طريقة الدفع</span><b id="okPay"></b></div>
           <div><span>التوصيل المتوقع</span><b id="okDate"></b></div>
+        </div>
+        <div class="pay-box card-box" id="payBox" hidden>
+          <h3>💳 خطوة أخيرة: حوّل المبلغ</h3>
+          <p>حوّل <b id="payAmount"></b> بـ<span id="payMethod"></span> على:</p>
+          <div class="pay-box__target"><b id="payTarget" dir="ltr"></b><button type="button" class="btn btn--ghost btn--sm" id="payCopy">📋 نسخ</button></div>
+          <p class="muted" id="payHolder" hidden></p>
+          <p class="muted">واكتب رقم الطلب <b id="payOrderId" dir="ltr"></b> في ملاحظة التحويل لو ينفع.</p>
+          <div class="pay-box__actions">
+            <label class="btn btn--primary">📷 ارفع صورة التحويل<input type="file" accept="image/*" id="proofFile" hidden /></label>
+            <a class="btn btn--ghost" id="proofWa" target="_blank" rel="noopener">💬 ابعتها واتساب</a>
+          </div>
+          <p class="pay-box__status" id="proofStatus" hidden></p>
         </div>
         <p class="success__email" id="okEmail" hidden></p>
         <p class="success__addr">📍 <span id="okAddr"></span></p>
@@ -266,6 +278,7 @@
   <script src="email.js"></script>
   <script src="tracking.js"></script>
   <script src="shipping.js"></script>
+  <script src="payment.js"></script>
   <script src="checkout.js"></script>
 </body>
 </html>

@@ -30,7 +30,7 @@ service cloud.firestore {
 
       // الأدمن يغيّر الحالة ورقم التتبع بس، من غير ما يعدّل بيانات العميل أو الأسعار
       allow update: if isAdmin()
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status", "updatedAt", "shipment"]);
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status", "updatedAt", "shipment", "payment"]);
 
       allow delete: if false;
     }
@@ -139,6 +139,23 @@ service cloud.firestore {
     match /settings/shipping {
       allow read: if true;
       allow write: if isAdmin();
+    }
+
+    // بيانات الدفع بالتحويل (إنستاباي / فودافون كاش): أي حد يشوفها، والأدمن بس يعدّلها
+    match /settings/payment {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // صورة التحويل: صاحب الطلب بس يرفعها (صورة واحدة لكل طلب يقدر يغيّرها)، والأدمن بس يشوفها
+    match /paymentProofs/{orderId} {
+      allow create, update: if request.auth != null
+        && request.resource.data.uid == request.auth.uid
+        && get(/databases/$(database)/documents/orders/$(orderId)).data.customer.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly(["data", "createdAt", "uid"])
+        && request.resource.data.data is string
+        && request.resource.data.data.size() < 900000;
+      allow read, delete: if isAdmin();
     }
 
     // مفتاح بوسطة: الأدمن بس يشوفه ويعدّله

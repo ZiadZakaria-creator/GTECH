@@ -55,6 +55,11 @@ function renderOrders(list) {
 
         ${trackBar(o.status)}
         <p class="my-order__hint">${STATUS_HINTS[o.status]}</p>
+        ${o.payment?.status === "pending" && !cancelled ? `
+          <p class="my-pay">
+            <span>⏳ مستنيين تحويل <b>${fmt(o.totals.total)}</b> بـ${escapeHtml(o.payment.label)} على <b dir="ltr">${escapeHtml(o.payment.to || "")}</b></span>
+            <a class="btn btn--ghost btn--sm" href="${proofWhatsApp(o)}" target="_blank" rel="noopener">💬 ابعت صورة التحويل</a>
+          </p>` : o.payment?.status === "paid" && !cancelled ? `<p class="my-pay my-pay--ok">✅ استلمنا التحويل، شكراً!</p>` : ""}
         ${o.shipment?.trackingNumber && !cancelled ? `
           <p class="my-ship">
             <span>🚚 شحنتك مع ${escapeHtml(carrierName(o.shipment))} — رقم التتبع <b>${escapeHtml(o.shipment.trackingNumber)}</b></span>

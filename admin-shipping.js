@@ -25,8 +25,8 @@ const settingsStore = USE_FIREBASE
       async set(id, data) { await (await this.doc(id)).set(data); },
     }
   : {
-      async get(id) { return id === "bosta" ? store.get(BOSTA_KEY_LOCAL, null) : store.get(SHIPPING_LOCAL, null); },
-      async set(id, data) { store.set(id === "bosta" ? BOSTA_KEY_LOCAL : SHIPPING_LOCAL, data); },
+      async get(id) { return store.get({ bosta: BOSTA_KEY_LOCAL, payment: PAYMENT_LOCAL }[id] || SHIPPING_LOCAL, null); },
+      async set(id, data) { store.set({ bosta: BOSTA_KEY_LOCAL, payment: PAYMENT_LOCAL }[id] || SHIPPING_LOCAL, data); },
     };
 
 // ============ أسعار الشحن ============
@@ -87,6 +87,28 @@ $("#shipForm").addEventListener("submit", async (e) => {
 
 $("#shipReset").addEventListener("click", () => {
   if (confirm("ترجّع كل الأسعار للافتراضي؟ (مش هتتحفظ غير لما تدوس حفظ)")) renderShipForm(withShippingDefaults({}));
+});
+
+// ============ الدفع بالتحويل ============
+function renderPayForm() {
+  const f = $("#payForm");
+  ["instapay", "vodafone", "holder"].forEach((k) => { f[k].value = paymentSettings[k] || ""; });
+}
+$("#payForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const f = e.target;
+  const vf = f.vodafone.value.replace(/\D/g, "");
+  if (vf && !/^01[0125]\d{8}$/.test(vf)) return toast("⚠️ رقم فودافون كاش مش مظبوط (11 رقم يبدأ بـ 01)");
+  const data = { instapay: f.instapay.value.trim(), vodafone: vf, holder: f.holder.value.trim(), updatedAt: new Date().toISOString() };
+  try {
+    await settingsStore.set("payment", data);
+    paymentSettings = data;
+    store.set(PAYMENT_CACHE, data);
+    toast(data.instapay || data.vodafone ? "✅ اتحفظ — العملاء هيشوفوا الدفع بالتحويل في صفحة الدفع" : "✅ اتحفظ — الدفع بالتحويل مقفول");
+  } catch (err) {
+    console.error(err);
+    toast(err?.code === "permission-denied" ? "⛔ محتاج تحدّث قواعد الأمان في Firebase" : "❌ مقدرناش نحفظ، جرّب تاني");
+  }
 });
 
 // ============ مفتاح بوسطة ============
@@ -161,6 +183,7 @@ function shipmentSection(o) {
   return `
     <section class="od-sec">
       <h4>🚚 الشحنة</h4>
+      ${o.payment?.status === "pending" ? `<p class="od-note">⚠️ العميل اختار ${escapeHtml(o.payment.label)} ولسه ماأكدتش إن الفلوس وصلت</p>` : ""}
       ${bostaKey
         ? `<button class="btn btn--primary btn--block" data-ship="bosta" ${sending ? "disabled" : ""}>${sending ? "بنعمل الشحنة عند بوسطة..." : "📦 ابعت لبوسطة"}</button>
            <small class="muted">${o.payment.method === "cod" ? `المندوب هيحصّل ${fmt(o.totals.total)} من العميل` : "الطلب مدفوع — المندوب مش هيحصّل فلوس"}</small>`
@@ -281,7 +304,8 @@ let shippingStarted = false;
 async function startShipping() {
   if (shippingStarted) return;
   shippingStarted = true;
-  await loadShippingSettings();
+  await Promise.all([loadShippingSettings(), loadPaymentSettings()]);
+  renderPayForm();
   try {
     bostaKey = (await settingsStore.get("bosta"))?.apiKey || "";
   } catch (err) {
@@ -294,4 +318,4 @@ async function startShipping() {
 }
 document.addEventListener("dashboardready", startShipping);
 if (!$("#dashboard").hidden) startShipping();
-document.addEventListener("sectionchange", (e) => e.detail === "shipping" && renderShipForm());
+document.addEventListener("sectionchange", (e) => { if (e.detail === "shipping") { renderShipForm(); renderPayForm(); } });

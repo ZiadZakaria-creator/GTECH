@@ -205,6 +205,17 @@
         </section>
       </form>
 
+      <form class="card-box ad-panel bosta-box" id="payForm">
+        <h3 class="vchart__title">💳 الدفع بالتحويل</h3>
+        <p class="muted">اكتب البيانات اللي العميل هيحوّل عليها. أي طريقة تسيبها فاضية مش هتظهر للعميل في صفحة الدفع.</p>
+        <div class="ship-top">
+          <label class="field"><span>⚡ إنستاباي (العنوان أو رقم الموبايل)</span><input name="instapay" dir="ltr" placeholder="gtech@instapay" maxlength="60" /></label>
+          <label class="field"><span>📱 رقم فودافون كاش</span><input name="vodafone" dir="ltr" inputmode="tel" placeholder="010xxxxxxxx" maxlength="20" /></label>
+          <label class="field"><span>الاسم اللي هيظهر للعميل (اختياري)</span><input name="holder" maxlength="60" placeholder="مثال: زياد زكريا" /></label>
+        </div>
+        <button class="btn btn--primary" type="submit" id="paySave">حفظ</button>
+      </form>
+
       <section class="card-box ad-panel bosta-box">
         <h3 class="vchart__title">📦 الربط مع بوسطة</h3>
         <p class="muted">بعد ما تحط المفتاح، هيظهر في كل طلب زرار "ابعت لبوسطة" بيعمل الشحنة عندهم ويجيب رقم التتبع، والعميل يشوفه في "طلباتي" وفي الإيميل.</p>
@@ -342,6 +353,7 @@
   <script src="core.js"></script>
   <script src="catalog.js"></script>
   <script src="shipping.js"></script>
+  <script src="payment.js"></script>
   <script src="api.js"></script>
   <script src="email.js"></script>
   <script src="admin.js"></script>

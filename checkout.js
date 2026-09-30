@@ -4,7 +4,7 @@ const promos = { GTECH10: 0.1 };
 // عرض أول أوردر من التطبيق: خصم 20% + توصيل مجاني (مايتجمعش مع كود خصم)
 const APP_FIRST = { code: "APP-FIRST20", rate: 0.2 };
 let firstOrder = null; // null = لسه بنتأكد، true = دي أول مرة يطلب، false = طلب قبل كده
-const payLabels = { cod: "الدفع عند الاستلام", card: "بطاقة بنكية", install: "تقسيط بدون فوائد", wallet: "محفظة إلكترونية" };
+const payLabels = { cod: "الدفع عند الاستلام", instapay: "إنستاباي", vodafone: "فودافون كاش" };
 
 const form = $("#checkoutForm");
 let promo = null;
@@ -115,6 +115,7 @@ form.addEventListener("focusout", (e) => { if (e.target.name in rules) validateF
 form.addEventListener("input", (e) => {
   if (e.target.closest(".field.invalid")) validateField(e.target);
   if (e.target.name === "ship" || e.target.name === "gov") renderSummary();
+  if (e.target.name === "pay") renderPayOptions();
 });
 
 form.addEventListener("submit", (e) => {
@@ -161,7 +162,7 @@ function buildOrder(d, t) {
       return { id: p.id, name: p.name, options: i.opts || "", price: p.price, qty: i.qty };
     }),
     shipping: { method: d.ship, label: shipLabels[d.ship], cost: t.ship },
-    payment: { method: d.pay, label: payLabels[d.pay] },
+    payment: isTransfer(d.pay) ? { method: d.pay, label: payLabels[d.pay], status: "pending", to: transferTarget(d.pay) } : { method: d.pay, label: payLabels[d.pay] },
     promo: t.app ? APP_FIRST.code : promo,
     totals: { subtotal: t.sub, shipping: t.ship, discount: t.disc, total: t.total },
   };
@@ -218,6 +219,8 @@ async function placeOrder() {
   $("#okDate").textContent = date;
   $("#okAddr").textContent = `${order.address.street}، ${order.address.city}، ${order.address.gov}`;
 
+  if (isTransfer(order.payment.method)) showPayBox(order);
+
   $("#checkoutView").hidden = true;
   $("#successView").hidden = false;
   document.title = "GTECH | تم إرسال الطلب";
@@ -259,3 +262,48 @@ function checkFirstOrder() {
 $("#appOfferBtn")?.addEventListener("click", installApp);
 document.addEventListener("userchange", checkFirstOrder);
 checkFirstOrder();
+
+// ============ الدفع بالتحويل (إنستاباي / فودافون كاش) ============
+function renderPayOptions() {
+  $("#payInstapay").hidden = !transferTarget("instapay");
+  $("#payVodafone").hidden = !transferTarget("vodafone");
+  const chosen = form.querySelector('input[name="pay"]:checked');
+  if (chosen?.closest(".choice")?.hidden) form.pay.value = "cod";
+  $("#payNote").hidden = !isTransfer(form.pay.value);
+}
+
+function showPayBox(order) {
+  const p = order.payment;
+  $("#payBox").hidden = false;
+  $("#payAmount").textContent = fmt(order.totals.total);
+  $("#payMethod").textContent = TRANSFER_METHODS[p.method].label;
+  $("#payTarget").textContent = p.to;
+  $("#payOrderId").textContent = order.id;
+  $("#payHolder").hidden = !paymentSettings.holder;
+  $("#payHolder").textContent = `باسم: ${paymentSettings.holder || ""}`;
+  $("#proofWa").href = proofWhatsApp(order);
+  $("#payCopy").onclick = async () => {
+    try { await navigator.clipboard.writeText(p.to); toast("📋 اتنسخ"); } catch { toast(p.to); }
+  };
+  $("#proofFile").onchange = async (e) => {
+    const file = e.target.files[0];
+    e.target.value = "";
+    if (!file) return;
+    const st = $("#proofStatus");
+    st.hidden = false;
+    st.className = "pay-box__status";
+    st.textContent = "⏳ بنرفع الصورة...";
+    try {
+      await uploadProof(order.id, file);
+      st.classList.add("is-ok");
+      st.textContent = "✅ صورة التحويل وصلتنا — هنأكد طلبك أول ما نراجعها";
+    } catch (err) {
+      console.error(err);
+      st.classList.add("is-bad");
+      st.textContent = "⚠️ الصورة مارفعتش — ابعتها واتساب من الزرار اللي جنبها";
+    }
+  };
+}
+
+document.addEventListener("paymentchange", renderPayOptions);
+renderPayOptions();

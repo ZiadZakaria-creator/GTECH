@@ -155,7 +155,7 @@ function render() {
       <td data-label="المحافظة">${escapeHtml(o.address.gov)}</td>
       <td data-label="المنتجات">${num(itemsCount(o))} منتج</td>
       <td data-label="الإجمالي"><b>${fmt(o.totals.total)}</b></td>
-      <td data-label="الدفع">${escapeHtml(o.payment.label)}</td>
+      <td data-label="الدفع">${escapeHtml(o.payment.label)}${o.payment.status === "pending" ? ` <span class="pay-pill">⏳ مستني التحويل</span>` : o.payment.status === "paid" ? ` <span class="pay-pill pay-pill--ok">✅ اتدفع</span>` : ""}</td>
       <td data-label="الحالة">${statusPill(o.status)}</td>
     </tr>`).join("");
 
@@ -264,16 +264,69 @@ function openOrder(id, show = true) {
         ${t.discount ? `<div class="totals__discount"><dt>الخصم ${o.promo ? `(${escapeHtml(o.promo)})` : ""}</dt><dd>− ${fmt(t.discount)}</dd></div>` : ""}
         <div class="totals__grand"><dt>الإجمالي</dt><dd>${fmt(t.total)}</dd></div>
       </dl>
-      <p class="od-pay">💳 ${escapeHtml(o.payment.label)}</p>
+      ${paymentBlock(o)}
     </section>
 
     <button class="btn btn--ghost btn--block" id="printBtn">🖨 طباعة الفاتورة</button>`;
+
+  if (isTransfer(o.payment.method)) loadProof(o.id);
 
   if (show) {
     $("#drawer").classList.add("open");
     $("#overlay").classList.add("show");
   }
 }
+
+// ============ الدفع بالتحويل في تفاصيل الطلب ============
+function paymentBlock(o) {
+  const p = o.payment;
+  if (!isTransfer(p.method)) return `<p class="od-pay">💳 ${escapeHtml(p.label)}</p>`;
+  const paid = p.status === "paid";
+  return `
+    <div class="od-paybox ${paid ? "is-paid" : ""}">
+      <p class="od-pay">💳 ${escapeHtml(p.label)}${p.to ? ` على <b class="mono" dir="ltr">${escapeHtml(p.to)}</b>` : ""}</p>
+      <p><b>${paid ? "✅ الفلوس وصلت" : "⏳ مستني التحويل"}</b>${paid && p.paidAt ? ` <small class="muted">${shortDate(p.paidAt)}</small>` : ""}</p>
+      <div class="od-proof" id="odProof"><small class="muted">بندوّر على صورة التحويل...</small></div>
+      <button class="btn ${paid ? "btn--ghost" : "btn--primary"} btn--sm" data-pay="${paid ? "pending" : "paid"}">${paid ? "↩️ لسه موصلتش" : "✅ الفلوس وصلت"}</button>
+    </div>`;
+}
+
+async function loadProof(orderId) {
+  const box = $("#odProof");
+  if (!box) return;
+  try {
+    let proof = null;
+    if (USE_FIREBASE) {
+      const snap = await firebase.firestore().collection("paymentProofs").doc(orderId).get();
+      proof = snap.exists ? snap.data() : null;
+    } else {
+      proof = store.get("gtech-proofs-local", {})[orderId] || null;
+    }
+    if (openId !== orderId || !$("#odProof")) return;
+    $("#odProof").innerHTML = proof?.data
+      ? `<small class="muted">صورة التحويل (${shortDate(proof.createdAt)}) — دوس عليها تكبر</small><img src="${proof.data}" alt="صورة التحويل" data-zoom />`
+      : `<small class="muted">العميل لسه مارفعش صورة التحويل — ممكن يكون بعتها واتساب</small>`;
+  } catch (err) {
+    console.warn("proof", err);
+    if ($("#odProof")) $("#odProof").innerHTML = `<small class="muted">${err?.code === "permission-denied" ? "⛔ حدّث قواعد الأمان عشان صورة التحويل تظهر" : "مقدرناش نجيب صورة التحويل"}</small>`;
+  }
+}
+
+$("#drawerBody").addEventListener("click", async (e) => {
+  const z = e.target.closest("[data-zoom]");
+  if (z) return z.classList.toggle("is-zoomed");
+  const b = e.target.closest("[data-pay]");
+  if (!b || !openId) return;
+  const o = orders.find((x) => x.id === openId);
+  const paid = b.dataset.pay === "paid";
+  try {
+    await updateOrder(o.id, { payment: { ...o.payment, status: paid ? "paid" : "pending", paidAt: paid ? new Date().toISOString() : null } });
+    toast(paid ? "✅ اتسجل إن الطلب اتدفع" : "↩️ الطلب رجع مستني التحويل");
+  } catch (err) {
+    console.error(err);
+    toast(err?.code === "permission-denied" ? "⛔ محتاج تحدّث قواعد الأمان في Firebase" : "❌ مقدرناش نحدّث الطلب");
+  }
+});
 
 function closeOrder() {
   openId = null;
