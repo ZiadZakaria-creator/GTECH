@@ -92,8 +92,10 @@ const isStandalone = () => matchMedia("(display-mode: standalone)").matches || n
 const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 let installPrompt = null;
 
+// على الموبايل الزرار بيظهر دايماً (لو المتصفح ماعرضش التثبيت لوحده بنوري العميل الخطوات)
+const isMobile = () => matchMedia("(max-width: 900px)").matches || /android|iphone|ipad|ipod/i.test(navigator.userAgent);
 function canInstall() {
-  return !isStandalone() && (!!installPrompt || isIOS());
+  return !isStandalone() && (!!installPrompt || isMobile());
 }
 
 function renderInstallUI() {
@@ -112,11 +114,20 @@ async function installApp() {
     renderInstallUI();
     return;
   }
-  if (isIOS()) return openIOSInstall();
-  toast("افتح الموقع من Chrome على الموبايل عشان تسطّب التطبيق");
+  openInstallSteps();
 }
 
-function openIOSInstall() {
+// خطوات التثبيت يدوي: آيفون (Safari)، أو أندرويد لو Chrome ماعرضش التثبيت
+function openInstallSteps() {
+  const ios = isIOS();
+  const inApp = /FBAN|FBAV|Instagram|WhatsApp|Line\/|Snapchat|TikTok/i.test(navigator.userAgent);
+  const dots = '<span class="ios-share" aria-hidden="true">⋮</span>';
+  const share = '<span class="ios-share" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 8l5-5 5 5M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></span>';
+  const steps = inApp
+    ? [`إنت فاتح الموقع من جوه تطبيق تاني (واتساب أو فيسبوك)`, `دوس ${dots} فوق واختار <b>"فتح في المتصفح"</b> (${ios ? "Safari" : "Chrome"})`, `وبعدين دوس "نزّل التطبيق" تاني`]
+    : ios
+      ? [`افتح الموقع من <b>Safari</b>`, `دوس على زرار المشاركة ${share} تحت`, `اختار <b>"إضافة إلى الشاشة الرئيسية"</b> (Add to Home Screen)`, `دوس <b>"إضافة"</b> — والأيقونة هتظهر مع باقي التطبيقات`]
+      : [`افتح الموقع من <b>Google Chrome</b>`, `دوس على ${dots} (التلات نقط) فوق في الركن`, `اختار <b>"تثبيت التطبيق"</b> أو <b>"إضافة إلى الشاشة الرئيسية"</b>`, `دوس <b>"تثبيت"</b> — والأيقونة هتظهر مع باقي التطبيقات`];
   let m = document.getElementById("iosInstall");
   if (!m) {
     document.body.insertAdjacentHTML("beforeend", `
@@ -124,19 +135,16 @@ function openIOSInstall() {
         <div class="modal__box card-box ios-install">
           <button type="button" class="icon-btn modal__close" data-close-ios aria-label="إغلاق">✕</button>
           <img src="icons/icon-192.png" alt="" width="64" height="64" class="ios-install__icon" />
-          <h3 id="iosInstallTitle">نزّل تطبيق GTECH على الآيفون</h3>
-          <ol>
-            <li>افتح الموقع من <b>Safari</b></li>
-            <li>دوس على زرار المشاركة <span class="ios-share" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 8l5-5 5 5M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></span> تحت</li>
-            <li>اختار <b>"إضافة إلى الشاشة الرئيسية"</b> (Add to Home Screen)</li>
-            <li>دوس <b>"إضافة"</b> — والأيقونة هتظهر مع باقي التطبيقات</li>
-          </ol>
+          <h3 id="iosInstallTitle"></h3>
+          <ol id="installSteps"></ol>
           <button type="button" class="btn btn--primary btn--block" data-close-ios>تمام</button>
         </div>
       </div>`);
     m = document.getElementById("iosInstall");
     m.addEventListener("click", (e) => { if (e.target === m || e.target.closest("[data-close-ios]")) m.hidden = true; });
   }
+  document.getElementById("iosInstallTitle").textContent = `نزّل تطبيق GTECH على ${ios ? "الآيفون" : "موبايلك"}`;
+  document.getElementById("installSteps").innerHTML = steps.map((x) => `<li>${x}</li>`).join("");
   m.hidden = false;
 }
 
