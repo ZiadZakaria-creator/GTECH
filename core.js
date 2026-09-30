@@ -58,6 +58,8 @@ const themeIcons = {
 const currentTheme = () => (document.documentElement.dataset.theme === "light" ? "light" : "dark");
 function setTheme(theme) {
   document.documentElement.dataset.theme = theme;
+  // لون شريط الموبايل فوق (في التطبيق) يمشي مع الوضع
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "light" ? "#f3f6fb" : "#070b14");
   try { localStorage.setItem(THEME_KEY, theme); } catch {}
   const b = document.getElementById("themeToggle");
   if (b) {
@@ -78,4 +80,99 @@ function setTheme(theme) {
   const flip = () => setTheme(currentTheme() === "light" ? "dark" : "light");
   document.getElementById("themeToggle").addEventListener("click", flip);
   document.getElementById("navTheme")?.addEventListener("click", flip);
+})();
+
+// ============ التطبيق (PWA) ============
+// المتجر بيتسطب على الموبايل كتطبيق: أيقونة على الشاشة، بيفتح full screen، وبيشتغل من غير نت
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+  addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch((err) => console.warn("sw", err)));
+}
+
+const isStandalone = () => matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+let installPrompt = null;
+
+function canInstall() {
+  return !isStandalone() && (!!installPrompt || isIOS());
+}
+
+function renderInstallUI() {
+  const show = canInstall();
+  document.querySelectorAll("[data-install]").forEach((el) => { el.hidden = !show; });
+  const banner = document.getElementById("appBanner");
+  if (banner) banner.hidden = !show || store.get("gtech-app-banner-closed", false);
+}
+
+async function installApp() {
+  if (installPrompt) {
+    installPrompt.prompt();
+    const { outcome } = await installPrompt.userChoice;
+    installPrompt = null;
+    if (outcome === "accepted") toast("📲 التطبيق بيتسطب على موبايلك");
+    renderInstallUI();
+    return;
+  }
+  if (isIOS()) return openIOSInstall();
+  toast("افتح الموقع من Chrome على الموبايل عشان تسطّب التطبيق");
+}
+
+function openIOSInstall() {
+  let m = document.getElementById("iosInstall");
+  if (!m) {
+    document.body.insertAdjacentHTML("beforeend", `
+      <div class="modal" id="iosInstall" role="dialog" aria-modal="true" aria-labelledby="iosInstallTitle">
+        <div class="modal__box card-box ios-install">
+          <button type="button" class="icon-btn modal__close" data-close-ios aria-label="إغلاق">✕</button>
+          <img src="icons/icon-192.png" alt="" width="64" height="64" class="ios-install__icon" />
+          <h3 id="iosInstallTitle">نزّل تطبيق GTECH على الآيفون</h3>
+          <ol>
+            <li>افتح الموقع من <b>Safari</b></li>
+            <li>دوس على زرار المشاركة <span class="ios-share" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 8l5-5 5 5M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></span> تحت</li>
+            <li>اختار <b>"إضافة إلى الشاشة الرئيسية"</b> (Add to Home Screen)</li>
+            <li>دوس <b>"إضافة"</b> — والأيقونة هتظهر مع باقي التطبيقات</li>
+          </ol>
+          <button type="button" class="btn btn--primary btn--block" data-close-ios>تمام</button>
+        </div>
+      </div>`);
+    m = document.getElementById("iosInstall");
+    m.addEventListener("click", (e) => { if (e.target === m || e.target.closest("[data-close-ios]")) m.hidden = true; });
+  }
+  m.hidden = false;
+}
+
+addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  installPrompt = e;
+  renderInstallUI();
+});
+addEventListener("appinstalled", () => {
+  installPrompt = null;
+  store.set("gtech-app-banner-closed", true);
+  renderInstallUI();
+});
+
+(() => {
+  const nav = document.getElementById("nav");
+  const adminActions = document.querySelector(".ad-top__actions");
+  if (nav) {
+    nav.insertAdjacentHTML("beforeend", '<button class="nav-install" type="button" data-install hidden>📲 نزّل التطبيق</button>');
+    // شريط صغير فوق الصفحة على الموبايل
+    document.querySelector(".header")?.insertAdjacentHTML("afterend", `
+      <div class="app-banner" id="appBanner" hidden>
+        <img src="icons/icon-192.png" alt="" width="40" height="40" />
+        <div><b>تطبيق GTECH</b><small>أسرع، وبيفتح من غير متصفح</small></div>
+        <button type="button" class="btn btn--primary btn--sm" data-install-btn>نزّله</button>
+        <button type="button" class="icon-btn app-banner__close" aria-label="إخفاء">✕</button>
+      </div>`);
+    document.querySelector(".app-banner__close")?.addEventListener("click", () => {
+      store.set("gtech-app-banner-closed", true);
+      renderInstallUI();
+    });
+  } else if (adminActions) {
+    adminActions.insertAdjacentHTML("afterbegin", '<button class="icon-btn" type="button" data-install hidden aria-label="نزّل تطبيق لوحة التحكم" title="نزّل تطبيق لوحة التحكم">📲</button>');
+  }
+  document.addEventListener("click", (e) => {
+    if (e.target.closest("[data-install], [data-install-btn]")) installApp();
+  });
+  renderInstallUI();
 })();

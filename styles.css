@@ -994,6 +994,30 @@ img[data-fs].is-loaded { opacity: 1; }
   .filter-panel { grid-template-columns: 1fr; padding: 16px; }
 }
 
+/* ============ التطبيق (PWA) ============ */
+.nav-install { font-weight: 700; color: var(--primary-2); text-align: start; }
+.nav-install[hidden], .btn[hidden] { display: none; }
+.app-banner { display: none; }
+@media (max-width: 900px) {
+  .app-banner { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: var(--surface); border-bottom: 1px solid var(--border); }
+  .app-banner[hidden] { display: none; }
+  .app-banner img { border-radius: 10px; flex: none; }
+  .app-banner div { flex: 1; min-width: 0; display: grid; line-height: 1.4; }
+  .app-banner small { color: var(--muted); font-size: .8rem; }
+  .app-banner__close { width: 32px; height: 32px; flex: none; font-size: .8rem; }
+  .nav-install { padding: 14px 4px; border-bottom: 1px solid var(--border); }
+}
+.ios-install { text-align: start; }
+.ios-install h3 { text-align: center; }
+.ios-install__icon { justify-self: center; border-radius: 16px; box-shadow: var(--shadow); }
+.ios-install ol { display: grid; gap: 10px; padding-inline-start: 22px; color: var(--text-2); }
+.ios-share { display: inline-grid; place-items: center; vertical-align: middle; width: 26px; height: 26px; border-radius: 6px; background: var(--soft-3); color: var(--primary-2); }
+.ios-share svg { width: 16px; height: 16px; }
+/* جوه التطبيق: الصفحة ماتتشدّش لتحت زي المتصفح */
+@media (display-mode: standalone) {
+  body { overscroll-behavior-y: none; }
+}
+
 /* ============ Responsive ============ */
 @media (max-width: 1100px) {
   .categories { grid-template-columns: repeat(3, 1fr); }
