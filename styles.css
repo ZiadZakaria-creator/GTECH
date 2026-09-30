@@ -1018,6 +1018,10 @@ img[data-fs].is-loaded { opacity: 1; }
   body { overscroll-behavior-y: none; }
 }
 
+.hero__install { flex-basis: 100%; max-width: 460px; border: 1px dashed rgba(10,132,255,.55); background: rgba(10,132,255,.1); color: var(--text); }
+.hero__install:hover { background: rgba(10,132,255,.18); }
+.hero__install img { border-radius: 7px; }
+
 /* ============ Responsive ============ */
 @media (max-width: 1100px) {
   .categories { grid-template-columns: repeat(3, 1fr); }
