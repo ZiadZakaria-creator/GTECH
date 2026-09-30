@@ -307,3 +307,5 @@
 
 .ad-owner { text-align: center; padding: 18px 16px 28px; color: var(--muted); font-size: .82rem; }
 @media print { .ad-owner { display: none; } }
+.ad-stars { color: var(--star, #fbbf24); white-space: nowrap; letter-spacing: 1px; }
+.ad-review-text { max-width: 360px; white-space: normal; line-height: 1.7; }

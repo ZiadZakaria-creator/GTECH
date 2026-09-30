@@ -76,7 +76,7 @@ const CATEGORY_GUESS = [
 const productCategory = (p) => (CATEGORIES[p.cat] ? p.cat
   : CATEGORY_GUESS.find(([, re]) => re.test(`${p.name || ""} ${p.specs?.["النوع"] || ""}`))?.[0] || p.cat || "");
 
-function productPage(template, p, images) {
+function productPage(template, p, images, reviews = []) {
   const url = `${SITE}p/${p.id}.html`;
   p = { ...p, cat: productCategory(p) };
   const cat = CATEGORIES[p.cat] || "منتجات";
@@ -108,6 +108,23 @@ function productPage(template, p, images) {
       seller: { "@type": "Organization", name: "GTECH" },
     },
   };
+  // تقييمات العملاء الحقيقية بس (لو مفيش، مفيش نجوم)
+  if (reviews.length) {
+    product.aggregateRating = {
+      "@type": "AggregateRating",
+      ratingValue: Number((reviews.reduce((s, r) => s + r.stars, 0) / reviews.length).toFixed(1)),
+      reviewCount: reviews.length,
+      bestRating: 5,
+      worstRating: 1,
+    };
+    product.review = reviews.slice(0, 5).map((r) => ({
+      "@type": "Review",
+      author: { "@type": "Person", name: r.name },
+      datePublished: String(r.createdAt).slice(0, 10),
+      reviewRating: { "@type": "Rating", ratingValue: r.stars, bestRating: 5 },
+      ...(r.text && { reviewBody: r.text }),
+    }));
+  }
   const crumbs = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -173,9 +190,22 @@ const entries = [{ url: SITE }];
 try {
   const docs = (await getJson(`${FS}/products?pageSize=300&key=${apiKey}`)).documents || [];
   const list = docs.map(docToObject).filter((p) => p.active !== false && p.id).sort((a, b) => a.id - b.id);
+  let reviews = [];
+  try {
+    let token = "";
+    do {
+      const body = await getJson(`${FS}/reviews?pageSize=300&key=${apiKey}${token ? `&pageToken=${token}` : ""}`);
+      reviews.push(...(body.documents || []).map(docToObject));
+      token = body.nextPageToken || "";
+    } while (token);
+  } catch (err) {
+    console.warn("reviews:", err.message);
+  }
   for (const p of list) {
     const images = await imageUrls(p);
-    writeFileSync(join(OUT, `p/${p.id}.html`), productPage(template, p, images));
+    const mine = reviews.filter((r) => r.productId === p.id && r.stars >= 1 && r.stars <= 5)
+      .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
+    writeFileSync(join(OUT, `p/${p.id}.html`), productPage(template, p, images, mine));
     entries.push({ url: `${SITE}p/${p.id}.html`, lastmod: p.updatedAt, images });
   }
   console.log(`✅ ${list.length} صفحة منتج`);

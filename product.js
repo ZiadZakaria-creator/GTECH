@@ -83,6 +83,7 @@ function renderDetail(p) {
         <a href="index.html?q=${encodeURIComponent(p.brand)}" class="product__brand">${esc(p.brand)}</a>
         <h1>${esc(p.name)}</h1>
         <div class="pd__meta">
+          <span id="pdRating"></span>
           <span class="stock ${soldOut ? "stock--out" : lowStock ? "stock--low" : ""}">${soldOut ? "✖ نفد من المخزون" : lowStock ? `⚠️ باقي ${num(p.stock)} قطع بس` : "✔ متوفر في المخزون"}</span>
         </div>
 
@@ -149,8 +150,98 @@ function renderDetail(p) {
       </tbody>
     </table>`;
 
+  renderReviews(p);
   bindDetail(p);
 }
+
+// ============ التقييمات (من العملاء بس) ============
+let reviewFormOpen = false;
+function renderReviews(p) {
+  const list = reviewsFor(p.id);
+  const { count, avg } = reviewSummary(p.id);
+  const mine = myReviewFor(p.id);
+  $("#reviewsCount").textContent = count ? `(${num(count)})` : "";
+  $("#pdRating").innerHTML = count
+    ? `<span class="product__rating">${stars(avg)}</span> <b>${num(Number(avg.toFixed(1)))}</b> <a href="#pdTabs" data-goto="reviews">(${num(count)} تقييم)</a><span class="dot"></span>`
+    : `<a href="#pdTabs" data-goto="reviews" class="pd-rate-first">⭐ قيّم المنتج ده</a><span class="dot"></span>`;
+
+  const dist = [5, 4, 3, 2, 1].map((s) => {
+    const n = list.filter((r) => r.stars === s).length;
+    return { s, pct: count ? Math.round((n / count) * 100) : 0 };
+  });
+  const pickValue = mine?.stars || 5;
+  const form = `
+    <form class="rv__form" id="reviewForm" ${reviewFormOpen ? "" : "hidden"}>
+      <h3>${mine ? "عدّل تقييمك" : "اكتب تقييمك"}</h3>
+      <div class="rv__stars" id="starPick" data-value="${pickValue}">
+        ${[1, 2, 3, 4, 5].map((s) => `<button type="button" data-star="${s}" class="${s <= pickValue ? "on" : ""}" aria-label="${num(s)} نجوم">★</button>`).join("")}
+      </div>
+      <textarea name="text" placeholder="إيه رأيك في المنتج؟ (اختياري)" rows="3" maxlength="500">${escapeHtml(mine?.text || "")}</textarea>
+      <button class="btn btn--primary" type="submit">${mine ? "حفظ التعديل" : "نشر التقييم"}</button>
+    </form>`;
+
+  $("#panel-reviews").innerHTML = `
+    <div class="rv ${count ? "" : "rv--empty"}">
+      ${count ? `
+        <div class="rv__summary">
+          <b>${num(Number(avg.toFixed(1)))}</b>
+          <span class="product__rating">${stars(avg)}</span>
+          <small>من ${num(count)} تقييم</small>
+          <div class="rv__bars">
+            ${dist.map((d) => `<div class="rv__bar"><span>${num(d.s)} ★</span><i><em style="width:${d.pct}%"></em></i><small>${num(d.pct)}%</small></div>`).join("")}
+          </div>
+        </div>` : ""}
+      <div class="rv__list">
+        ${count ? "" : `<div class="rv__none"><span>⭐</span><b>لسه محدش قيّم المنتج ده</b><p class="muted">جرّبته؟ كن أول واحد يقول رأيه ويساعد غيره يختار.</p></div>`}
+        <button class="btn ${count ? "btn--ghost" : "btn--primary"}" id="writeReview" ${reviewFormOpen ? "hidden" : ""}>✍️ ${mine ? "عدّل تقييمك" : "قيّم المنتج"}</button>
+        ${form}
+        ${list.map((r) => `
+          <article class="review">
+            <div class="stars">${stars(r.stars)}</div>
+            ${r.text ? `<p>${escapeHtml(r.text)}</p>` : ""}
+            <div class="review__author"><span class="avatar">${escapeHtml(r.name.trim()[0] || "؟")}</span><div><b>${escapeHtml(r.name)}</b><small>${new Date(r.createdAt).toLocaleDateString("ar-EG", { day: "numeric", month: "long", year: "numeric" })}</small></div></div>
+          </article>`).join("")}
+      </div>
+    </div>`;
+
+  $("#writeReview").addEventListener("click", () => requireLogin(() => {
+    reviewFormOpen = true;
+    renderReviews(p);
+    $("#reviewForm textarea").focus();
+  }, "سجّل دخولك عشان تقيّم المنتج"));
+
+  const pick = $("#starPick");
+  pick.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-star]");
+    if (!b) return;
+    pick.dataset.value = b.dataset.star;
+    pick.querySelectorAll("button").forEach((x) => x.classList.toggle("on", +x.dataset.star <= +b.dataset.star));
+  });
+  $("#reviewForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = e.target.querySelector("[type=submit]");
+    btn.disabled = true;
+    btn.textContent = "جاري الحفظ...";
+    const starsValue = +pick.dataset.value;
+    const text = e.target.text.value.trim().slice(0, 500);
+    reviewFormOpen = false; // الصفحة بتترسم تاني أول ما التقييم يتحفظ
+    try {
+      await saveReview(p.id, starsValue, text);
+      renderReviews(p);
+      toast("⭐ شكراً! تقييمك اتنشر");
+    } catch (err) {
+      console.error(err);
+      reviewFormOpen = true;
+      btn.disabled = false;
+      btn.textContent = "جرّب تاني";
+      toast("❌ التقييم ماتحفظش، جرّب تاني");
+    }
+  });
+}
+document.addEventListener("reviewschange", () => {
+  const p = findProduct(productId);
+  if (p && $("#panel-reviews")) renderReviews(p);
+});
 
 function selectedOptions() {
   return [...$$("[data-opt]")].map((g) => g.querySelector(".chip.active").dataset.value).join(" · ");

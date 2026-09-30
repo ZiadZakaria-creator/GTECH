@@ -69,6 +69,7 @@
       <button class="ad-sec" data-section="products">🛍️ المنتجات</button>
       <button class="ad-sec" data-section="visits">📈 الزوار</button>
       <button class="ad-sec" data-section="shipping">🚚 الشحن</button>
+      <button class="ad-sec" data-section="reviews">⭐ التقييمات</button>
       <button class="ad-sec" data-section="carts">🛒 سلات متروكة <span class="tab__count" id="cartsBadge" hidden></span></button>
     </nav>
 
@@ -217,6 +218,19 @@
       </section>
     </div>
 
+    <div id="reviewsSection" class="ad-section" hidden>
+      <section class="card-box ad-panel">
+        <p class="muted carts-hint">تقييمات العملاء الحقيقية زي ما بتظهر في صفحات المنتجات. لو فيه تقييم سبام أو فيه ألفاظ، امسحه من هنا.</p>
+        <div class="table-wrap">
+          <table class="orders">
+            <thead><tr><th>المنتج</th><th>العميل</th><th>التقييم</th><th>الرأي</th><th>التاريخ</th><th></th></tr></thead>
+            <tbody id="reviewsBody"></tbody>
+          </table>
+          <div class="ad-empty" id="reviewsEmpty" hidden><span>⭐</span><p>لسه مفيش تقييمات من العملاء</p></div>
+        </div>
+      </section>
+    </div>
+
     <div id="cartsSection" class="ad-section" hidden>
       <section class="card-box ad-panel">
         <div class="ad-toolbar">
@@ -338,5 +352,6 @@
   <script src="admin-carts.js"></script>
   <script src="admin-visits.js"></script>
   <script src="admin-shipping.js"></script>
+  <script src="admin-reviews.js"></script>
 </body>
 </html>

@@ -561,6 +561,12 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 }
 .rv__form input:focus, .rv__form textarea:focus { border-color: var(--primary); }
 .rv__form .btn { justify-self: start; }
+.rv--empty { grid-template-columns: 1fr; max-width: 640px; }
+.rv__none { display: grid; justify-items: center; gap: 6px; padding: 28px; text-align: center; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--border); }
+.rv__none span { font-size: 2.4rem; }
+.rv__list > .btn { justify-self: start; }
+.rv__form[hidden], .rv__list > .btn[hidden] { display: none; }
+.pd-rate-first { color: var(--star); font-weight: 700; }
 .rv__stars { display: flex; gap: 4px; direction: ltr; justify-content: flex-end; }
 .rv__stars button { font-size: 1.7rem; color: var(--surface-2); line-height: 1; transition: color .15s, transform .15s; }
 .rv__stars button.on { color: var(--star); }
