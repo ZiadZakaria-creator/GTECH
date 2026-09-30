@@ -165,7 +165,12 @@ async function placeOrder() {
   try {
     await submitOrder(order);
     store.set(HAS_ORDERS_KEY, true);
-    sendOrderEmail(order, "new").catch((err) => console.warn("order email", err));
+    sendOrderEmail(order, "new")
+      .then((sent) => sent && showEmailStatus(`📧 بعتنالك تأكيد الطلب على ${order.customer.email}`))
+      .catch((err) => {
+        console.warn("order email", err);
+        showEmailStatus(`⚠️ الطلب وصلنا بس إيميل التأكيد ماتبعتش (${String(err.message).slice(0, 80)})`);
+      });
     notifyStoreOfOrder(order).catch((err) => console.warn("store email", err));
     if (!user.phone) {
       user = { ...user, phone: order.customer.phone };
@@ -202,3 +207,8 @@ document.addEventListener("cartchange", renderSummary);
 document.addEventListener("productschange", renderSummary);
 renderSummary();
 if (cart.length && !user) gate();
+
+function showEmailStatus(text) {
+  $("#okEmail").hidden = false;
+  $("#okEmail").textContent = text;
+}

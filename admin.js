@@ -417,3 +417,31 @@ function renderSmsMeter({ sent = 0, quotaHits = 0 }) {
 
 // لو الصفحة فضلت مفتوحة لحد اليوم اللي بعده
 setInterval(() => !$("#dashboard").hidden && startSmsMeter(), 60000);
+
+// ============ تجربة الإيميل ============
+// بتبعت إيميل تجريبي لإيميل المتجر وتعرض رد EmailJS بالظبط لو فيه مشكلة
+if (EMAIL_ON && EMAIL_CONFIG.storeEmail) {
+  $("#testEmailBtn").hidden = false;
+  $("#testEmailBtn").addEventListener("click", async () => {
+    const btn = $("#testEmailBtn");
+    btn.disabled = true;
+    btn.textContent = "📧 جاري الإرسال...";
+    const sample = orders[0] || {
+      id: "GT-TEST-0001", status: "shipped",
+      customer: { name: "تجربة", phone: "01000000000", email: EMAIL_CONFIG.storeEmail },
+      address: { gov: "القاهرة", city: "مدينة نصر", street: "عنوان تجريبي", notes: "" },
+      items: [{ id: 1, name: "منتج تجريبي", options: "", price: 1000, qty: 1 }],
+      shipping: { label: "شحن عادي (2-4 أيام)" }, payment: { label: "الدفع عند الاستلام" },
+      totals: { subtotal: 1000, shipping: 0, discount: 0, total: 1000 },
+    };
+    try {
+      await sendOrderEmail({ ...sample, customer: { ...sample.customer, email: EMAIL_CONFIG.storeEmail } }, "shipped");
+      alert(`✅ الإيميل اتبعت بنجاح على ${EMAIL_CONFIG.storeEmail}\nلو موصلش خلال دقيقة دوّر في Spam.`);
+    } catch (err) {
+      alert(`❌ الإيميل ماتبعتش\n\nرد EmailJS:\n${err.message}\n\nابعت صورة الرسالة دي.`);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "📧 تجربة الإيميل";
+    }
+  });
+}
