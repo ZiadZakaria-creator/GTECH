@@ -279,3 +279,10 @@
 .bulk-item.is-unmatched { border-color: rgba(255,77,109,.5); }
 .bulk-item.is-skipped { opacity: .5; }
 #productsSection.is-dropping { outline: 2px dashed var(--primary); outline-offset: 8px; border-radius: var(--radius); }
+
+/* زرار 📷 جنب صورة كل منتج */
+.products-table .pt-img { width: 92px; text-align: center; }
+.pt-img .pt-thumb { margin: 0 auto; }
+.pt-addimg { display: block; margin: 6px auto 0; padding: 3px 8px; border-radius: 999px; font-size: .72rem; font-weight: 700; white-space: nowrap; color: var(--muted); border: 1px solid var(--border); background: var(--soft); }
+.pt-addimg:hover { color: var(--text); border-color: var(--primary); }
+.pt-addimg.is-empty { color: #fff; background: var(--primary); border-color: var(--primary); }

@@ -152,12 +152,16 @@ function renderProductsTable() {
     (!q || p.name.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q)) &&
     (cat === "all" || p.cat === cat) &&
     (state === "all" || (state === "active" && p.active) || (state === "hidden" && !p.active) ||
-      (state === "low" && p.stock > 0 && p.stock <= 5) || (state === "out" && p.stock <= 0))
+      (state === "low" && p.stock > 0 && p.stock <= 5) || (state === "out" && p.stock <= 0) ||
+      (state === "noimg" && !p.images.length))
   );
 
   $("#productsBody").innerHTML = list.map((p) => `
     <tr data-pid="${p.id}" class="${p.active ? "" : "is-hidden"}">
-      <td class="pt-img"><span class="pt-thumb">${productVisual(p)}</span></td>
+      <td class="pt-img">
+        <span class="pt-thumb">${productVisual(p)}</span>
+        <button type="button" class="pt-addimg ${p.images.length ? "" : "is-empty"}" data-add-img="${p.id}" title="ضيف صور للمنتج ده" aria-label="ضيف صور لـ ${escapeHtml(p.name)}">📷 ${p.images.length ? `${num(p.images.length)}/${num(6)}` : "ضيف صور"}</button>
+      </td>
       <td data-label="المنتج"><b>${escapeHtml(p.name)}</b><small>${escapeHtml(p.brand)} · #${p.id}</small></td>
       <td data-label="القسم">${categories[p.cat] || "—"}</td>
       <td data-label="السعر"><b>${fmt(p.price)}</b>${p.old ? `<small><del>${fmt(p.old)}</del></small>` : ""}</td>
@@ -171,6 +175,12 @@ function renderProductsTable() {
 ["prodSearch", "prodCat", "prodState"].forEach((id) => $("#" + id).addEventListener("input", renderProductsTable));
 
 $("#productsBody").addEventListener("click", async (e) => {
+  const add = e.target.closest("[data-add-img]");
+  if (add) {
+    rowImgTarget = +add.dataset.addImg;
+    $("#rowImgFiles").click();
+    return;
+  }
   const t = e.target.closest("[data-toggle]");
   if (t) {
     const p = adminProducts.find((x) => x.id === +t.dataset.toggle);
@@ -422,3 +432,34 @@ async function syncStockForStatus(order, from, to) {
     console.warn("stock", err);
   }
 }
+
+// ============ زرار 📷 جنب كل منتج: اختار الصور وتترفع على طول ============
+let rowImgTarget = null;
+$("#rowImgFiles").addEventListener("change", async (e) => {
+  const files = [...e.target.files].filter((f) => f.type.startsWith("image/"));
+  e.target.value = "";
+  const p = adminProducts.find((x) => x.id === rowImgTarget);
+  if (!p || !files.length) return;
+  const room = 6 - p.images.length;
+  if (room <= 0) return toast("المنتج ده فيه 6 صور خلاص — افتحه وامسح صورة الأول");
+  const picked = files.slice(0, room);
+  const fresh = [];
+  for (const [i, file] of picked.entries()) {
+    toast(`⏳ بنرفع صورة ${num(i + 1)} من ${num(picked.length)}...`);
+    try {
+      fresh.push(await productsStore.saveImage(await compressImage(file)));
+    } catch (err) {
+      console.warn("row image", err);
+    }
+  }
+  if (!fresh.length) return toast("❌ الصور مااترفعتش، جرّب تاني");
+  try {
+    const current = adminProducts.find((x) => x.id === p.id) || p;
+    await productsStore.save({ ...current, images: [...current.images, ...fresh].slice(0, 6), updatedAt: new Date().toISOString() });
+    const extra = files.length - picked.length;
+    toast(`✅ اتضافت ${num(fresh.length)} صورة لـ "${p.name}"${extra > 0 ? ` (${num(extra)} مااتضافتش عشان الحد 6 صور)` : ""}`);
+  } catch (err) {
+    console.error(err);
+    toast(err?.code === "permission-denied" ? "⛔ محتاج تحدّث قواعد الأمان في Firebase" : "❌ الحفظ فشل، جرّب تاني");
+  }
+});
