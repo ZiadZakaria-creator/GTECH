@@ -680,3 +680,14 @@ document.addEventListener("cartchange", () => {
   cartSyncTimer = setTimeout(syncCart, 2500);
 });
 document.addEventListener("userchange", () => setTimeout(syncCart, 500));
+
+// صفحات المنتجات الثابتة (p/) فيها <base href="../">، فأي لينك "#قسم" كان بيروح للرئيسية.
+// لو القسم موجود في نفس الصفحة بننزل له هنا بدل ما نسيب الصفحة
+document.addEventListener("click", (e) => {
+  const a = e.target.closest('a[href^="#"]');
+  if (!a || e.defaultPrevented || !document.querySelector("base")) return;
+  const id = a.getAttribute("href").slice(1);
+  const target = id && document.getElementById(id);
+  if (!id || target) e.preventDefault();
+  target?.scrollIntoView({ behavior: "smooth", block: "start" });
+});

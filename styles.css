@@ -1204,3 +1204,4 @@ img[data-fs].is-loaded { opacity: 1; }
 .social--none { display: none !important; }
 .success__email { color: var(--muted); font-size: .9rem; }
 .success__email[hidden] { display: none; }
+.pd-tabs { scroll-margin-top: 96px; }

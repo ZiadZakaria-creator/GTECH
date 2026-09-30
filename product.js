@@ -304,11 +304,6 @@ function bindDetail(p) {
     } catch {}
   });
 
-  document.addEventListener("click", (e) => {
-    const go = e.target.closest("[data-goto]");
-    if (go) showPanel(go.dataset.goto);
-  });
-
   // شريط الشراء السفلي للموبايل
   new IntersectionObserver(([e]) => $("#buybar").classList.toggle("show", !e.isIntersecting && e.boundingClientRect.top < 0))
     .observe($("#addMain"));
@@ -318,6 +313,14 @@ function showPanel(name) {
   $$(".pd-tab").forEach((t) => t.classList.toggle("active", t.dataset.panel === name));
   $$(".pd-panel").forEach((p) => p.classList.toggle("active", p.id === "panel-" + name));
 }
+// "قيّم المنتج" / "(٣ تقييم)" تحت اسم المنتج ← تاب التقييمات في نفس الصفحة
+document.addEventListener("click", (e) => {
+  const go = e.target.closest("[data-goto]");
+  if (!go) return;
+  e.preventDefault(); // من غير ده صفحات p/ (اللي فيها <base>) كانت بتروح للرئيسية
+  showPanel(go.dataset.goto);
+  $("#pdTabs").scrollIntoView({ behavior: "smooth", block: "start" });
+});
 $("#pdTabs")?.addEventListener("click", (e) => {
   const t = e.target.closest(".pd-tab");
   if (t) showPanel(t.dataset.panel);
