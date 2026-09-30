@@ -1,0 +1,42 @@
+// تطبيق أندرويد للوحة التحكم بس: شاشة واحدة بتفتح https://ziadzakaria-creator.github.io/GTECH/admin/
+// بيتبني أوتوماتيك على GitHub (.github/workflows/android.yml)، وأي تعديل في اللوحة بيوصله من غير تحديث للتطبيق
+plugins {
+    id "com.android.application"
+}
+
+def buildNumber = (System.getenv("VERSION_CODE") ?: "1") as int
+
+android {
+    namespace "com.gtech.admin"
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.gtech.admin"
+        minSdk 24
+        targetSdk 34
+        versionCode buildNumber
+        versionName "1.0.${buildNumber}"
+    }
+
+    signingConfigs {
+        release {
+            // المفتاح بيتعمل جديد في كل build (مش محفوظ في الـ repo لأنه عام)
+            storeFile file(System.getenv("KEYSTORE") ?: "release.jks")
+            storePassword System.getenv("KEY_PASS")
+            keyAlias "gtech"
+            keyPassword System.getenv("KEY_PASS")
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}

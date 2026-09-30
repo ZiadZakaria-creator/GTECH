@@ -88,7 +88,7 @@ if ("serviceWorker" in navigator && (location.protocol === "https:" || location.
   addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch((err) => console.warn("sw", err)));
 }
 
-const isStandalone = () => matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+const isStandalone = () => matchMedia("(display-mode: standalone)").matches || navigator.standalone === true || /GTECHAdminApp/.test(navigator.userAgent);
 const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 let installPrompt = null;
 
