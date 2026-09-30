@@ -288,16 +288,28 @@ document.addEventListener("click", (e) => {
     $("#accountMenu").hidden = true;
     openLogin("أكّد رقم موبايلك بكود SMS", user);
   }
-  if (e.target.id === "logoutBtn") {
-    const fbUser = window.firebase?.apps?.length && firebase.auth().currentUser;
-    if (fbUser && !fbUser.isAnonymous) firebase.auth().signOut().catch(() => {});
-    user = null;
-    store.set("gtech-user", null);
-    renderAccount();
-    document.dispatchEvent(new Event("userchange"));
-    toast("👋 تم تسجيل الخروج");
-  }
+  if (e.target.id === "logoutBtn") logout();
 });
+
+// تسجيل الخروج: بيقفل الحساب ويرجّع العميل للصفحة الرئيسية (تحميل جديد للصفحة)
+async function logout() {
+  $("#accountMenu").hidden = true;
+  const fbUser = window.firebase?.apps?.length && firebase.auth().currentUser;
+  if (fbUser && !fbUser.isAnonymous) {
+    // نستنى الخروج من Google يخلص قبل ما نسيب الصفحة (بحد أقصى ثانيتين)
+    await Promise.race([firebase.auth().signOut().catch(() => {}), new Promise((r) => setTimeout(r, 2000))]);
+  }
+  user = null;
+  store.set("gtech-user", null);
+  try { sessionStorage.setItem("gtech-logged-out", "1"); } catch {}
+  location.replace("index.html");
+}
+try {
+  if (sessionStorage.getItem("gtech-logged-out")) {
+    sessionStorage.removeItem("gtech-logged-out");
+    setTimeout(() => toast("👋 تم تسجيل الخروج"), 300);
+  }
+} catch {}
 
 $("#loginModal").addEventListener("click", (e) => {
   if (e.target.id === "loginModal" || e.target.closest("[data-close]")) closeLogin();
