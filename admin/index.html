@@ -133,6 +133,10 @@
               ⬆ استيراد من Excel
               <input type="file" id="excelFile" accept=".xlsx,.xls,.csv" hidden />
             </label>
+            <label class="btn btn--ghost btn--sm" id="bulkImgBtn" title="اختار صور كتير مرة واحدة وهتتوزع على المنتجات لوحدها">
+              📷 رفع صور لكذا منتج
+              <input type="file" id="bulkImgFiles" accept="image/*" multiple hidden />
+            </label>
             <button class="btn btn--primary btn--sm" id="newProductBtn">＋ منتج جديد</button>
           </div>
         </div>
@@ -260,6 +264,22 @@
     </div>
   </div>
 
+  <!-- رفع صور لكذا منتج مرة واحدة -->
+  <div class="modal" id="bulkImgModal" hidden role="dialog" aria-modal="true" aria-labelledby="bulkImgTitle">
+    <div class="modal__box card-box excel-box bulk-box">
+      <button type="button" class="icon-btn modal__close" data-close-bulk aria-label="إغلاق">✕</button>
+      <h3 id="bulkImgTitle">📷 توزيع الصور على المنتجات</h3>
+      <p class="muted bulk-tip">بنعرف كل صورة لأنهي منتج من اسم الملف: رقم المنتج (<b dir="ltr">13.jpg</b>، <b dir="ltr">13-2.jpg</b>) أو اسم الموديل (<b dir="ltr">g102-white.jpg</b>). راجع واختار المنتج لأي صورة معرفناهاش.</p>
+      <div id="bulkSummary"></div>
+      <label class="pe-switch"><input type="checkbox" id="bulkReplace" /> <span>امسح الصور القديمة للمنتجات دي وحط الجديدة بدالها</span></label>
+      <div class="bulk-list" id="bulkList"></div>
+      <div class="excel-actions">
+        <button class="btn btn--ghost" data-close-bulk>إلغاء</button>
+        <button class="btn btn--primary" id="bulkApply">حفظ الصور</button>
+      </div>
+    </div>
+  </div>
+
   <div class="toast" id="toast"></div>
 
   <script src="data.js"></script>
@@ -271,6 +291,7 @@
   <script src="admin.js"></script>
   <script src="admin-products.js"></script>
   <script src="admin-excel.js"></script>
+  <script src="admin-bulk-images.js"></script>
   <script src="admin-alerts.js"></script>
   <script src="admin-carts.js"></script>
   <script src="admin-visits.js"></script>

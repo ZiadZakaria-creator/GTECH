@@ -265,3 +265,17 @@
 .vchart__tip small { color: var(--muted); font-size: .75rem; }
 .vchart__tip b { font-size: .95rem; }
 .vchart__empty { direction: rtl; text-align: center; margin-top: 12px; font-size: .9rem; }
+
+/* ============ رفع صور لكذا منتج ============ */
+.bulk-box { width: min(640px, 100%); }
+.bulk-tip { font-size: .88rem; line-height: 1.8; }
+.bulk-warn { margin-top: 8px; font-size: .86rem; color: var(--warn); }
+.bulk-list { display: grid; gap: 8px; max-height: 42vh; overflow-y: auto; padding: 2px; }
+.bulk-item { display: grid; grid-template-columns: 64px 1fr; gap: 12px; align-items: center; padding: 8px; border-radius: 12px; background: var(--bg-2); border: 1px solid var(--border); }
+.bulk-item img { width: 64px; height: 64px; object-fit: cover; border-radius: 10px; background: #fff; }
+.bulk-item > div { display: grid; gap: 6px; min-width: 0; }
+.bulk-item small { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: end; }
+.bulk-item select { width: 100%; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font: inherit; font-size: .88rem; }
+.bulk-item.is-unmatched { border-color: rgba(255,77,109,.5); }
+.bulk-item.is-skipped { opacity: .5; }
+#productsSection.is-dropping { outline: 2px dashed var(--primary); outline-offset: 8px; border-radius: var(--radius); }
