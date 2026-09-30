@@ -276,3 +276,38 @@ $("#orderStrip").addEventListener("click", (e) => {
 
 document.addEventListener("userchange", startOrderStrip);
 startOrderStrip();
+
+// ============ صفحة الفيسبوك جوه الموبايل اللي في الواجهة ============
+// بتتحمّل بس لما الزائر يوصل للجزء ده، ولو ماتحمّلتش بيفضل تصميم GTECH زي ما هو
+(function phoneSocial() {
+  const url = typeof FACEBOOK_PAGE === "string" && FACEBOOK_PAGE.trim();
+  const screen = $(".device__screen");
+  if (!url || !screen) return;
+  const load = () => {
+    const top = 34; // مكان النوتش
+    const w = Math.max(180, Math.round(screen.clientWidth));
+    const h = Math.round(screen.clientHeight) - top;
+    const box = document.createElement("div");
+    box.className = "device__social";
+    box.innerHTML = `<div class="fb-page" data-href="${escapeHtml(url)}" data-tabs="timeline" data-width="${w}" data-height="${h}"
+      data-small-header="true" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="false"></div>`;
+    screen.appendChild(box);
+    if (!document.getElementById("fb-root")) document.body.insertAdjacentHTML("afterbegin", '<div id="fb-root"></div>');
+    // مكتبة فيسبوك الرسمية: بتقولنا لما الصفحة تترسم فعلاً، ولو اتمنعت (نت ضعيف أو مانع إعلانات) بيفضل تصميم GTECH
+    window.fbAsyncInit = () => {
+      FB.init({ xfbml: false, version: "v21.0" });
+      FB.XFBML.parse(box, () => {
+        if (!box.querySelector("iframe")) return;
+        screen.classList.add("has-social");
+        $(".hero__visual").removeAttribute("aria-hidden"); // بقى فيه محتوى حقيقي يتقري ويتضغط
+        $(".hero__visual").classList.add("social-on"); // الكروت العايمة بتتشال عشان ماتغطيش الصفحة
+      });
+    };
+    loadScript("https://connect.facebook.net/ar_AR/sdk.js").catch(() => box.remove());
+  };
+  new IntersectionObserver((entries, obs) => {
+    if (!entries.some((e) => e.isIntersecting)) return;
+    obs.disconnect();
+    load();
+  }, { rootMargin: "200px" }).observe(screen);
+})();

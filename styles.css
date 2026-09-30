@@ -1022,6 +1022,16 @@ img[data-fs].is-loaded { opacity: 1; }
 .hero__install:hover { background: rgba(10,132,255,.18); }
 .hero__install img { border-radius: 7px; }
 
+/* صفحة الفيسبوك جوه الموبايل اللي في الواجهة */
+.device__social { position: absolute; inset: 34px 0 0; overflow: hidden; background: #fff; opacity: 0; pointer-events: none; transition: opacity .5s; }
+.device__social iframe { border: 0; }
+.has-social .device__social { pointer-events: auto; }
+.device__screen.has-social { background: #0e1526; }
+.has-social .device__social { opacity: 1; }
+.has-social .device__ui { display: none; }
+.hero__visual .float-card { pointer-events: none; }
+.social-on .float-card { display: none; }
+
 /* ============ Responsive ============ */
 @media (max-width: 1100px) {
   .categories { grid-template-columns: repeat(3, 1fr); }

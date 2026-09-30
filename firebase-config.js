@@ -52,3 +52,8 @@ const EMAIL_CONFIG = {
 //   templateId: "template_xxxxxxx", // Email Templates
 //   storeEmail: "you@gmail.com",    // (اختياري) يوصلك إيميل بكل طلب جديد، والعميل يرد عليه
 // };
+
+// ============ صفحة الفيسبوك جوه الموبايل اللي في أول الصفحة الرئيسية ============
+// حط لينك صفحة الفيسبوك (لازم تكون Page مش حساب شخصي)، مثال: "https://www.facebook.com/GTECH"
+// لو فاضي بيفضل تصميم GTECH العادي جوه الموبايل
+const FACEBOOK_PAGE = "";
