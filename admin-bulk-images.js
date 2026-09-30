@@ -146,7 +146,8 @@ $("#bulkApply").addEventListener("click", async () => {
     for (const it of g.add) {
       btn.textContent = `جاري الرفع ${num(done + 1)} من ${num(total)}...`;
       try {
-        fresh.push(await productsStore.saveImage(await compressImage(it.file)));
+        const prepared = await compressImage(it.file);
+        fresh.push(await productsStore.saveImage(prepared.data, prepared.bg));
       } catch (err) {
         console.warn("bulk image", it.file.name, err);
         failed++;

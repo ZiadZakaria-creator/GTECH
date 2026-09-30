@@ -141,7 +141,13 @@ function hydrateImage(img) {
   if (img.dataset.loading) return;
   img.dataset.loading = "1";
   fetchStoredImage(img.dataset.fs)
-    .then((src) => { img.src = src; img.classList.add("is-loaded"); })
+    .then((src) => {
+      // صور المنتجات على خلفية سادة (متجهزة في اللوحة) بتظهر كاملة على نفس لون خلفيتها
+      const fit = /^cfit-([0-9a-f]{6})-/.exec(img.dataset.fs);
+      if (fit) Object.assign(img.style, { objectFit: "contain", background: "#" + fit[1] });
+      img.src = src;
+      img.classList.add("is-loaded");
+    })
     .catch(() => imgFallback(img));
 }
 function hydrateAll(root = document) {

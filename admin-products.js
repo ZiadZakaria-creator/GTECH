@@ -18,8 +18,10 @@ const productsStore = USE_FIREBASE
       async save(p) { await (await this.db()).collection("products").doc(String(p.id)).set(p); },
       async remove(id) { await (await this.db()).collection("products").doc(String(id)).delete(); },
       async setActive(id, active) { await (await this.db()).collection("products").doc(String(id)).update({ active, updatedAt: new Date().toISOString() }); },
-      async saveImage(data) {
-        const ref = (await this.db()).collection("productImages").doc();
+      async saveImage(data, bg = null) {
+        const col = (await this.db()).collection("productImages");
+        const id = col.doc().id;
+        const ref = col.doc(bg ? `cfit-${bg}-${id}` : id);
         await ref.set({ data, createdAt: new Date().toISOString() });
         return "fs:" + ref.id;
       },
@@ -55,8 +57,8 @@ const productsStore = USE_FIREBASE
       async save(p) { this.write([...this.read().filter((x) => x.id !== p.id), p]); },
       async remove(id) { this.write(this.read().filter((x) => x.id !== id)); },
       async setActive(id, active) { this.write(this.read().map((x) => (x.id === id ? { ...x, active } : x))); },
-      async saveImage(data) {
-        const key = "img" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+      async saveImage(data, bg = null) {
+        const key = (bg ? `cfit-${bg}-` : "") + "img" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
         const imgs = store.get(LOCAL_IMAGES, {});
         imgs[key] = data;
         store.set(LOCAL_IMAGES, imgs);
@@ -265,7 +267,7 @@ function renderEditorImages() {
   const p = { name: $("#productForm").name.value || "صورة", icon: "🖼️" };
   $("#peImages").innerHTML = edImages.map((img, i) => `
     <div class="pe-img ${i === 0 ? "is-main" : ""}">
-      ${typeof img === "string" ? productVisual(p, img) : `<img src="${img.data}" alt="">`}
+      ${typeof img === "string" ? productVisual(p, img) : `<img src="${img.data}" alt=""${img.bg ? ` style="object-fit:contain;background:#${img.bg}"` : ""}>`}
       ${i === 0 ? `<span class="pe-img__main">رئيسية</span>` : ""}
       <div class="pe-img__tools">
         ${i > 0 ? `<button type="button" data-img-move="${i}" data-dir="-1" title="قدّم">→</button>` : ""}
@@ -289,27 +291,98 @@ $("#peImages").addEventListener("click", (e) => {
   if (mv || del) renderEditorImages();
 });
 
-// بنصغّر الصورة لحد أقصى 900 بكسل وأقل من ~700KB عشان تتخزن في قاعدة البيانات
+// ============ تجهيز الصورة قبل الرفع ============
+// لو خلفية الصورة سادة (أبيض مثلاً): بنقص الفراغ اللي حوالين المنتج، ونحطه في نص مربع بهامش صغير،
+// عشان كل الصور تملا المربع بتاعها في المتجر بنفس الشكل. لو الخلفية مش سادة (صورة عادية) بتفضل زي ما هي.
+// الجودة: لحد 1200 بكسل، وجودة JPEG عالية، ومن غير تكبير الصور الصغيرة عشان ماتبوظش.
+const IMG_OUT = 1200;
+const IMG_MARGIN = 0.07; // هامش حوالين المنتج من كل ناحية
+
 function compressImage(file) {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {
-      const scale = Math.min(1, 900 / Math.max(img.width, img.height));
-      const c = document.createElement("canvas");
-      c.width = Math.round(img.width * scale);
-      c.height = Math.round(img.height * scale);
-      const ctx = c.getContext("2d");
-      ctx.fillStyle = "#fff";
-      ctx.fillRect(0, 0, c.width, c.height);
-      ctx.drawImage(img, 0, 0, c.width, c.height);
       URL.revokeObjectURL(img.src);
-      let q = 0.8, data = c.toDataURL("image/jpeg", q);
-      while (data.length > 700000 && q > 0.35) data = c.toDataURL("image/jpeg", (q -= 0.1));
-      data.length > 900000 ? reject(new Error("too big")) : resolve(data);
+      try {
+        resolve(prepareImage(img));
+      } catch (err) {
+        reject(err);
+      }
     };
     img.onerror = () => reject(new Error("bad image"));
     img.src = URL.createObjectURL(file);
   });
+}
+
+function makeCanvas(w, h) {
+  const c = document.createElement("canvas");
+  c.width = w;
+  c.height = h;
+  const ctx = c.getContext("2d", { willReadFrequently: true });
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
+  return [c, ctx];
+}
+
+// بندوّر على حدود المنتج جوه الخلفية السادة
+function findProductBox(img) {
+  const k = Math.min(1, 800 / Math.max(img.width, img.height));
+  const w = Math.max(1, Math.round(img.width * k)), h = Math.max(1, Math.round(img.height * k));
+  const [, ctx] = makeCanvas(w, h);
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0, 0, w, h);
+  ctx.drawImage(img, 0, 0, w, h);
+  const d = ctx.getImageData(0, 0, w, h).data;
+  const at = (x, y) => { const i = (y * w + x) * 4; return [d[i], d[i + 1], d[i + 2]]; };
+  const bg = at(0, 0);
+  const diff = (c) => Math.abs(c[0] - bg[0]) + Math.abs(c[1] - bg[1]) + Math.abs(c[2] - bg[2]);
+  const corners = [at(w - 1, 0), at(0, h - 1), at(w - 1, h - 1)];
+  if (corners.some((c) => diff(c) > 45)) return null; // الخلفية مش سادة
+  let minX = w, minY = h, maxX = -1, maxY = -1;
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      if (diff(at(x, y)) > 50) {
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+      }
+    }
+  }
+  if (maxX < 0) return null; // الصورة كلها لون واحد
+  const pad = 1; // بكسل زيادة احتياطي
+  return {
+    bg: bg.map((v) => v.toString(16).padStart(2, "0")).join(""),
+    x: Math.max(0, (minX - pad) / k), y: Math.max(0, (minY - pad) / k),
+    w: Math.min(img.width, (maxX - minX + 1 + pad * 2) / k), h: Math.min(img.height, (maxY - minY + 1 + pad * 2) / k),
+  };
+}
+
+function prepareImage(img) {
+  const box = findProductBox(img);
+  let c, ctx;
+  if (box) {
+    // المنتج في نص مربع، بنفس لون الخلفية
+    const side = Math.max(box.w, box.h) / (1 - IMG_MARGIN * 2);
+    const out = Math.round(Math.min(IMG_OUT, side));
+    const k = out / side;
+    [c, ctx] = makeCanvas(out, out);
+    ctx.fillStyle = "#" + box.bg;
+    ctx.fillRect(0, 0, out, out);
+    const dw = box.w * k, dh = box.h * k;
+    ctx.drawImage(img, box.x, box.y, box.w, box.h, (out - dw) / 2, (out - dh) / 2, dw, dh);
+  } else {
+    const k = Math.min(1, IMG_OUT / Math.max(img.width, img.height));
+    [c, ctx] = makeCanvas(Math.round(img.width * k), Math.round(img.height * k));
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0, 0, c.width, c.height);
+    ctx.drawImage(img, 0, 0, c.width, c.height);
+  }
+  // لازم تفضل أقل من ~700KB عشان تتخزن في قاعدة البيانات
+  let q = 0.9, data = c.toDataURL("image/jpeg", q);
+  while (data.length > 700000 && q > 0.45) data = c.toDataURL("image/jpeg", (q -= 0.08));
+  if (data.length > 900000) throw new Error("too big");
+  return { data, bg: box ? box.bg : null }; // bg = لون الخلفية لو المنتج اتحط في مربع (بيتعرض كامل من غير قص)
 }
 
 $("#peFiles").addEventListener("change", async (e) => {
@@ -318,7 +391,7 @@ $("#peFiles").addEventListener("change", async (e) => {
   if (edImages.length + files.length > 6) return toast("أقصى عدد 6 صور للمنتج");
   for (const file of files) {
     try {
-      edImages.push({ data: await compressImage(file) });
+      edImages.push(await compressImage(file));
     } catch {
       toast(`❌ مقدرناش نقرا الصورة ${file.name}`);
     }
@@ -382,7 +455,7 @@ $("#productForm").addEventListener("submit", async (e) => {
   btn.textContent = "جاري الحفظ...";
   try {
     const images = [];
-    for (const img of edImages) images.push(typeof img === "string" ? img : await productsStore.saveImage(img.data));
+    for (const img of edImages) images.push(typeof img === "string" ? img : await productsStore.saveImage(img.data, img.bg));
     const allIds = [...adminProducts, ...DEFAULT_PRODUCTS].map((p) => p.id);
     const base = editing || { id: Math.max(0, ...allIds) + 1, rating: 5, reviews: 0 };
     // الإيموجي واللون بيتحسبوا من القسم، إلا لو المنتج قديم وقسمه متغيرش
@@ -447,7 +520,8 @@ $("#rowImgFiles").addEventListener("change", async (e) => {
   for (const [i, file] of picked.entries()) {
     toast(`⏳ بنرفع صورة ${num(i + 1)} من ${num(picked.length)}...`);
     try {
-      fresh.push(await productsStore.saveImage(await compressImage(file)));
+      const prepared = await compressImage(file);
+      fresh.push(await productsStore.saveImage(prepared.data, prepared.bg));
     } catch (err) {
       console.warn("row image", err);
     }
