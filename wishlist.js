@@ -10,7 +10,7 @@ function renderWishlist() {
   const cats = new Set(list.map((p) => p.cat));
   const suggest = shopProducts()
     .filter((p) => !wishlist.includes(p.id))
-    .sort((a, b) => cats.has(b.cat) - cats.has(a.cat) || b.rating - a.rating)
+    .sort((a, b) => cats.has(b.cat) - cats.has(a.cat) || discount(b) - discount(a))
     .slice(0, 4);
   $("#suggestGrid").innerHTML = suggest.map(productCard).join("");
 }

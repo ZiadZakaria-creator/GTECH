@@ -2,14 +2,6 @@
 // الصفحات الثابتة p/<رقم>.html (بتاعة جوجل) فيها رقم المنتج في <html data-product>
 const productId = +(document.documentElement.dataset.product || new URLSearchParams(location.search).get("id"));
 
-const reviewPool = [
-  { name: "أحمد محمود", city: "القاهرة", stars: 5, text: "المنتج أصلي ووصل في معاده، والتغليف ممتاز. أنصح بيه جداً." },
-  { name: "سارة علي", city: "الإسكندرية", stars: 5, text: "أحسن سعر لقيته في السوق، وخدمة العملاء ردّت على كل أسئلتي بسرعة." },
-  { name: "محمد حسن", city: "المنصورة", stars: 4, text: "أداء ممتاز وجودة عالية، بس كنت أتمنى التوصيل يبقى أسرع شوية." },
-  { name: "نورهان سامي", city: "الجيزة", stars: 5, text: "اشتريته بالتقسيط والإجراءات كانت سهلة جداً. الجهاز فوق الممتاز." },
-  { name: "كريم عادل", city: "طنطا", stars: 4, text: "يستاهل كل جنيه، والضمان الرسمي مطمّني." },
-  { name: "ياسمين خالد", city: "أسيوط", stars: 5, text: "تاني مرة أشتري من GTECH ومش هتكون الأخيرة. شكراً ليكم!" },
-];
 const views = [
   { label: "أمامي", style: "" },
   { label: "جانبي", style: "transform: rotate(-18deg) scale(.95)" },
@@ -18,7 +10,6 @@ const views = [
 ];
 
 let qty = 1;
-let userReviews = [];
 
 function notFound() {
   // الصفحة الثابتة فيها نسخة مكتوبة من المنتج، بتفضل ظاهرة لحد ما المنتجات تحمّل (أو لو التحميل فشل)
@@ -92,10 +83,6 @@ function renderDetail(p) {
         <a href="index.html?q=${encodeURIComponent(p.brand)}" class="product__brand">${esc(p.brand)}</a>
         <h1>${esc(p.name)}</h1>
         <div class="pd__meta">
-          <span class="product__rating">${stars(p.rating)}</span>
-          <b>${num(p.rating)}</b>
-          <a href="#pdTabs" data-goto="reviews">(${num(p.reviews)} تقييم)</a>
-          <span class="dot"></span>
           <span class="stock ${soldOut ? "stock--out" : lowStock ? "stock--low" : ""}">${soldOut ? "✖ نفد من المخزون" : lowStock ? `⚠️ باقي ${num(p.stock)} قطع بس` : "✔ متوفر في المخزون"}</span>
         </div>
 
@@ -162,62 +149,7 @@ function renderDetail(p) {
       </tbody>
     </table>`;
 
-  renderReviews(p);
   bindDetail(p);
-}
-
-function renderReviews(p) {
-  const base = [0, 1, 2].map((i) => reviewPool[(p.id + i * 2) % reviewPool.length]);
-  const list = [...userReviews, ...base];
-  const dist = [5, 4, 3, 2, 1].map((s) => {
-    const pct = s === 5 ? Math.round((p.rating - 3.8) * 70) : s === 4 ? Math.round((5 - p.rating) * 60) + 10 : s === 3 ? 5 : s === 2 ? 2 : 1;
-    return { s, pct: Math.max(1, Math.min(95, pct)) };
-  });
-
-  $("#panel-reviews").innerHTML = `
-    <div class="rv">
-      <div class="rv__summary">
-        <b>${num(p.rating)}</b>
-        <span class="product__rating">${stars(p.rating)}</span>
-        <small>بناءً على ${num(p.reviews + userReviews.length)} تقييم</small>
-        <div class="rv__bars">
-          ${dist.map((d) => `<div class="rv__bar"><span>${num(d.s)} ★</span><i><em style="width:${d.pct}%"></em></i><small>${num(d.pct)}%</small></div>`).join("")}
-        </div>
-      </div>
-      <div class="rv__list">
-        ${list.map((r) => `
-          <article class="review">
-            <div class="stars">${stars(r.stars)}</div>
-            <p>"${r.text}"</p>
-            <div class="review__author"><span class="avatar">${r.name[0]}</span><div><b>${r.name}</b><small>${r.city} · مشتري موثّق ✔</small></div></div>
-          </article>`).join("")}
-        <form class="rv__form" id="reviewForm">
-          <h3>اكتب تقييمك</h3>
-          <div class="rv__stars" id="starPick" data-value="5">
-            ${[1, 2, 3, 4, 5].map((s) => `<button type="button" data-star="${s}" class="on" aria-label="${s} نجوم">★</button>`).join("")}
-          </div>
-          <input name="name" placeholder="اسمك" required maxlength="40" />
-          <textarea name="text" placeholder="إيه رأيك في المنتج؟" required rows="3" maxlength="400"></textarea>
-          <button class="btn btn--primary" type="submit">نشر التقييم</button>
-        </form>
-      </div>
-    </div>`;
-
-  const pick = $("#starPick");
-  pick.addEventListener("click", (e) => {
-    const b = e.target.closest("[data-star]");
-    if (!b) return;
-    pick.dataset.value = b.dataset.star;
-    pick.querySelectorAll("button").forEach((x) => x.classList.toggle("on", +x.dataset.star <= +b.dataset.star));
-  });
-  $("#reviewForm").addEventListener("submit", (e) => {
-    e.preventDefault();
-    const f = new FormData(e.target);
-    const esc = (s) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
-    userReviews.unshift({ name: esc(f.get("name").trim()), city: "الآن", stars: +pick.dataset.value, text: esc(f.get("text").trim()) });
-    renderReviews(p);
-    toast("⭐ شكراً! تم نشر تقييمك");
-  });
 }
 
 function selectedOptions() {

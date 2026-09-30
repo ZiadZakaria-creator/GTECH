@@ -34,12 +34,10 @@ function renderCompare() {
   const specKeys = [...new Set(items.flatMap((p) => Object.keys(p.specs)))];
   const optKeys = [...new Set(items.flatMap((p) => Object.keys(p.options)))];
   const cheapest = Math.min(...items.map((p) => p.price));
-  const bestRated = Math.max(...items.map((p) => p.rating));
 
   const rows = [
     cmpRow("السعر", items.map((p) => `<b class="${p.price === cheapest ? "cmp-best" : ""}">${fmt(p.price)}</b>${p.price === cheapest ? ` <span class="cmp-badge">الأرخص</span>` : ""}`), { html: true }),
     cmpRow("الخصم", items.map((p) => (p.old ? `${num(discount(p))}% (وفّر ${fmt(p.old - p.price)})` : ""))),
-    cmpRow("التقييم", items.map((p) => `<span class="product__rating">${stars(p.rating)}</span> ${num(p.rating)}${p.rating === bestRated ? ` <span class="cmp-badge">الأعلى</span>` : ""}`), { html: true }),
     cmpRow("المخزون", items.map((p) => (inStock(p) ? (p.stock <= 5 ? `باقي ${num(p.stock)}` : "متوفر") : "نفد"))),
     cmpRow("الماركة", items.map((p) => p.brand)),
     cmpRow("الضمان", items.map((p) => (hasWarranty(p) ? warrantyText(p) : "من غير ضمان"))),

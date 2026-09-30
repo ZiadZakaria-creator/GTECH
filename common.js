@@ -43,7 +43,6 @@ function productCard(p, i = 0) {
       <div class="product__body">
         <span class="product__brand">${escapeHtml(p.brand)}</span>
         <h3 class="product__name"><a href="${url}">${escapeHtml(p.name)}</a></h3>
-        <div class="product__rating">${stars(p.rating)} <small>(${num(p.reviews)})</small></div>
         <div class="product__foot">
           <div class="product__price">
             ${p.old ? `<del>${fmt(p.old)}</del>` : ""}

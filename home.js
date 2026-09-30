@@ -49,7 +49,6 @@ function applyFilters(list) {
   const sorters = {
     "price-asc": (a, b) => a.price - b.price,
     "price-desc": (a, b) => b.price - a.price,
-    rating: (a, b) => b.rating - a.rating || b.reviews - a.reviews,
     discount: (a, b) => discount(b) - discount(a),
     newest: (a, b) => b.id - a.id,
   };
