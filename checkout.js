@@ -1,6 +1,5 @@
 // ============ صفحة إتمام الشراء ============
-const FREE_SHIP_MIN = 1000;
-const shipRates = { standard: 60, express: 150 };
+// أسعار الشحن لكل محافظة جاية من shipping.js (وصاحب المتجر بيغيّرها من لوحة التحكم)
 const promos = { GTECH10: 0.1 };
 const payLabels = { cod: "الدفع عند الاستلام", card: "بطاقة بنكية", install: "تقسيط بدون فوائد", wallet: "محفظة إلكترونية" };
 
@@ -10,8 +9,7 @@ let placed = false;
 
 function totals() {
   const sub = cart.reduce((s, i) => s + i.qty * findProduct(i.id).price, 0);
-  const method = form.ship.value;
-  const ship = method === "standard" && sub >= FREE_SHIP_MIN ? 0 : shipRates[method];
+  const ship = shipCost(form.gov.value, form.ship.value, sub) ?? 0;
   const disc = promo ? Math.round(sub * promos[promo]) : 0;
   return { sub, ship, disc, total: sub + ship - disc };
 }
@@ -47,11 +45,23 @@ function renderSummary() {
   }).join("");
 
   const t = totals();
-  const freeStd = t.sub >= FREE_SHIP_MIN;
-  $('[data-ship-price="standard"]').textContent = freeStd ? "مجاناً" : fmt(shipRates.standard);
-  $('[data-ship-price="express"]').textContent = fmt(shipRates.express);
+  const gov = form.gov.value;
+  const s = shippingSettings;
+  // الشحن السريع بيظهر بس للمحافظات اللي صاحب المتجر مفعّله ليها
+  const express = hasExpress(gov);
+  $("#expressChoice").hidden = !!gov && !express;
+  $("#expressNote").textContent = `خلال 24 ساعة (${s.express.govs.join(" و") || "محافظات محددة"})`;
+  if (!express && form.ship.value === "express") form.ship.value = "standard";
+  const std = shipCost(gov, "standard", t.sub);
+  const priceText = (v) => (v === null ? (gov ? "—" : "حسب المحافظة") : v ? fmt(v) : "مجاناً");
+  $('[data-ship-price="standard"]').textContent = priceText(std);
+  $('[data-ship-price="express"]').textContent = fmt(s.express.price);
   $("#sumSub").textContent = fmt(t.sub);
-  $("#sumShip").textContent = t.ship ? fmt(t.ship) : "مجاناً";
+  const shipNow = shipCost(gov, form.ship.value, t.sub);
+  $("#sumShip").textContent = shipNow === null ? (gov ? "مش متاح" : "اختار المحافظة") : shipNow ? fmt(shipNow) : "مجاناً";
+  const left = s.freeOver - t.sub;
+  $("#freeShipHint").hidden = !(s.freeOver > 0 && left > 0 && std);
+  $("#freeShipHint").textContent = `🚚 ضيف منتجات بـ ${fmt(left)} كمان والشحن يبقى مجاناً`;
   $("#sumDiscRow").hidden = !t.disc;
   $("#sumDisc").textContent = "− " + fmt(t.disc);
   $("#sumTotal").textContent = fmt(t.total);
@@ -77,7 +87,7 @@ const rules = {
   name: (v) => v.trim().length >= 3 || "اكتب اسمك بالكامل",
   phone: (v) => isValidPhone(v) || "رقم موبايل غير صحيح (11 رقم يبدأ بـ 01)",
   email: (v) => !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || "البريد الإلكتروني غير صحيح",
-  gov: (v) => !!v || "اختار المحافظة",
+  gov: (v) => (!v ? "اختار المحافظة" : deliversTo(v) || "للأسف مش بنوصّل للمحافظة دي لسه، كلمنا واتساب"),
   city: (v) => v.trim().length >= 2 || "اكتب المدينة أو المنطقة",
   address: (v) => v.trim().length >= 8 || "اكتب العنوان بالتفصيل",
 };
@@ -95,7 +105,7 @@ function validateField(el) {
 form.addEventListener("focusout", (e) => { if (e.target.name in rules) validateField(e.target); });
 form.addEventListener("input", (e) => {
   if (e.target.closest(".field.invalid")) validateField(e.target);
-  if (e.target.name === "ship") renderSummary();
+  if (e.target.name === "ship" || e.target.name === "gov") renderSummary();
 });
 
 form.addEventListener("submit", (e) => {
@@ -214,3 +224,8 @@ function showEmailStatus(text) {
   $("#okEmail").hidden = false;
   $("#okEmail").textContent = text;
 }
+
+// ============ المحافظات وأسعار الشحن ============
+form.gov.insertAdjacentHTML("beforeend", GOVERNORATES.map((g) => `<option>${g.name}</option>`).join(""));
+document.addEventListener("shippingchange", renderSummary);
+loadShippingSettings();

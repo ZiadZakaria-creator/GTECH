@@ -55,6 +55,11 @@ function renderOrders(list) {
 
         ${trackBar(o.status)}
         <p class="my-order__hint">${STATUS_HINTS[o.status]}</p>
+        ${o.shipment?.trackingNumber && !cancelled ? `
+          <p class="my-ship">
+            <span>🚚 شحنتك مع ${escapeHtml(carrierName(o.shipment))} — رقم التتبع <b>${escapeHtml(o.shipment.trackingNumber)}</b></span>
+            ${shipmentTrackUrl(o.shipment) ? `<a class="btn btn--ghost btn--sm" href="${escapeHtml(shipmentTrackUrl(o.shipment))}" target="_blank" rel="noopener">تتبع الشحنة</a>` : ""}
+          </p>` : ""}
 
         <div class="my-order__items">
           ${o.items.map((i) => {

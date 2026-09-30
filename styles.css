@@ -1066,6 +1066,12 @@ img[data-fs].is-loaded { opacity: 1; }
   .story__head small { display: none; }
 }
 
+/* ============ الشحن ============ */
+.free-ship-hint { margin: 4px 0 12px; padding: 10px 12px; border-radius: var(--radius-sm); background: rgba(34, 197, 94, .1); color: var(--success); font-size: .88rem; font-weight: 700; }
+.my-ship { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin: 10px 0 0; padding: 10px 14px; border-radius: var(--radius-sm); background: var(--soft-2); font-size: .9rem; }
+.my-ship b { direction: ltr; unicode-bidi: embed; }
+.my-ship a { margin-inline-start: auto; }
+
 /* ============ نسخة المنتج المكتوبة (الصفحات الثابتة p/) لحد ما الصفحة تحمّل ============ */
 .seo-pd { display: grid; grid-template-columns: minmax(0, 480px) 1fr; gap: 32px; align-items: start; padding-block: 24px; }
 .seo-pd img { width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; background: #fff; border-radius: var(--radius); }

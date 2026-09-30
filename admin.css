@@ -286,3 +286,21 @@
 .pt-addimg { display: block; margin: 6px auto 0; padding: 3px 8px; border-radius: 999px; font-size: .72rem; font-weight: 700; white-space: nowrap; color: var(--muted); border: 1px solid var(--border); background: var(--soft); }
 .pt-addimg:hover { color: var(--text); border-color: var(--primary); }
 .pt-addimg.is-empty { color: #fff; background: var(--primary); border-color: var(--primary); }
+
+/* ============ الشحن ============ */
+.ship-settings { display: grid; gap: 16px; margin-bottom: 16px; }
+.ship-top { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 14px 0; }
+.ship-table td, .ship-table th { vertical-align: middle; }
+.ship-table input[type="number"] { width: 110px; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-2); color: var(--text); font: inherit; }
+.ship-table input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--primary); }
+.ship-table tr.is-off td { opacity: .5; }
+.ship-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.bosta-box p { margin-bottom: 8px; line-height: 1.8; }
+.bosta-key, .ship-manual { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.bosta-key input, .ship-manual input, .ship-manual select { flex: 1 1 200px; min-width: 0; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-2); color: var(--text); font: inherit; }
+.ship-manual select { flex: 0 0 auto; }
+.bosta-status { margin-top: 10px; font-weight: 700; color: var(--muted); }
+.bosta-status.is-ok { color: var(--success); }
+.bosta-status.is-bad { color: var(--danger-text, #ff8fa3); }
+.bosta-state:empty { display: none; }
+@media print { .ship-manual, [data-ship] { display: none !important; } }

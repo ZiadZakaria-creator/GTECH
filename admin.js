@@ -245,6 +245,8 @@ function openOrder(id, show = true) {
       ${a.notes ? `<p class="od-note">📝 ${escapeHtml(a.notes)}</p>` : ""}
     </section>
 
+    ${shipmentSection(o)}
+
     <section class="od-sec">
       <h4>📦 المنتجات (${num(itemsCount(o))})</h4>
       ${o.items.map((i) => `

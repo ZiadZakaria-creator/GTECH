@@ -28,9 +28,9 @@ service cloud.firestore {
       allow read: if isAdmin()
         || (request.auth != null && resource.data.customer.uid == request.auth.uid);
 
-      // الأدمن يغيّر الحالة بس، من غير ما يعدّل بيانات العميل أو الأسعار
+      // الأدمن يغيّر الحالة ورقم التتبع بس، من غير ما يعدّل بيانات العميل أو الأسعار
       allow update: if isAdmin()
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status", "updatedAt"]);
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status", "updatedAt", "shipment"]);
 
       allow delete: if false;
     }
@@ -116,6 +116,17 @@ service cloud.firestore {
         && request.resource.data.count == 1;
       allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(["count"])
         && request.resource.data.count == resource.data.count + 1;
+    }
+
+    // أسعار الشحن: أي حد يشوفها (صفحة الدفع)، والأدمن بس يعدّلها
+    match /settings/shipping {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // مفتاح بوسطة: الأدمن بس يشوفه ويعدّله
+    match /settings/bosta {
+      allow read, write: if isAdmin();
     }
 
     match /admins/{uid} {

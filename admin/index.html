@@ -66,6 +66,7 @@
       <button class="ad-sec active" data-section="orders">📦 الطلبات <span class="tab__count" id="newCountBadge" hidden></span></button>
       <button class="ad-sec" data-section="products">🛍️ المنتجات</button>
       <button class="ad-sec" data-section="visits">📈 الزوار</button>
+      <button class="ad-sec" data-section="shipping">🚚 الشحن</button>
       <button class="ad-sec" data-section="carts">🛒 سلات متروكة <span class="tab__count" id="cartsBadge" hidden></span></button>
     </nav>
 
@@ -179,6 +180,41 @@
       </section>
     </div>
 
+    <div id="shippingSection" class="ad-section" hidden>
+      <form class="ship-settings" id="shipForm">
+        <section class="card-box ad-panel">
+          <h3 class="vchart__title">أسعار الشحن للعميل</h3>
+          <p class="muted">السعر اللي العميل بيدفعه حسب محافظته. شيل علامة "بنوصّل" من أي محافظة مش عايز توصّلها.</p>
+          <div class="ship-top">
+            <label class="field"><span>شحن مجاني للطلبات فوق (ج.م)</span><input name="freeOver" type="number" min="0" step="1" inputmode="numeric" /><small class="muted">0 = مفيش شحن مجاني</small></label>
+            <label class="field"><span>سعر الشحن السريع (ج.م)</span><input name="expressPrice" type="number" min="0" step="1" inputmode="numeric" /><small class="muted">0 = الشحن السريع مقفول</small></label>
+          </div>
+          <div class="table-wrap">
+            <table class="orders ship-table">
+              <thead><tr><th>المحافظة</th><th>بنوصّل</th><th>سعر الشحن</th><th>شحن سريع</th></tr></thead>
+              <tbody id="shipRatesBody"></tbody>
+            </table>
+          </div>
+          <div class="ship-actions">
+            <button class="btn btn--primary" type="submit" id="shipSave">حفظ الأسعار</button>
+            <button class="btn btn--ghost" type="button" id="shipReset">رجّع الأسعار الافتراضية</button>
+          </div>
+        </section>
+      </form>
+
+      <section class="card-box ad-panel bosta-box">
+        <h3 class="vchart__title">📦 الربط مع بوسطة</h3>
+        <p class="muted">بعد ما تحط المفتاح، هيظهر في كل طلب زرار "ابعت لبوسطة" بيعمل الشحنة عندهم ويجيب رقم التتبع، والعميل يشوفه في "طلباتي" وفي الإيميل.</p>
+        <p class="muted">المفتاح بتجيبه من حسابك في بوسطة: Settings ← API Integration ← Create API Key. المفتاح بيتحفظ في قاعدة البيانات ومحدش يقدر يشوفه غير الأدمن.</p>
+        <div class="bosta-key">
+          <input id="bostaKey" type="password" dir="ltr" autocomplete="off" placeholder="الصق مفتاح API هنا" />
+          <button class="btn btn--primary btn--sm" type="button" id="bostaSave">حفظ</button>
+          <button class="btn btn--ghost btn--sm" type="button" id="bostaTest">جرّب المفتاح</button>
+        </div>
+        <p class="bosta-status" id="bostaStatus"></p>
+      </section>
+    </div>
+
     <div id="cartsSection" class="ad-section" hidden>
       <section class="card-box ad-panel">
         <div class="ad-toolbar">
@@ -288,6 +324,7 @@
   <script src="firebase-config.js"></script>
   <script src="core.js"></script>
   <script src="catalog.js"></script>
+  <script src="shipping.js"></script>
   <script src="api.js"></script>
   <script src="email.js"></script>
   <script src="admin.js"></script>
@@ -297,5 +334,6 @@
   <script src="admin-alerts.js"></script>
   <script src="admin-carts.js"></script>
   <script src="admin-visits.js"></script>
+  <script src="admin-shipping.js"></script>
 </body>
 </html>

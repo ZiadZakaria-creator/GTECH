@@ -64,6 +64,12 @@ function orderEmailHtml(order, status) {
     <tr><td style="padding:14px 24px;color:#4b5568;font-size:14px">
       📍 ${e(order.address.street)}، ${e(order.address.city)}، ${e(order.address.gov)}
     </td></tr>
+    ${order.shipment?.trackingNumber && status === "shipped" ? `<tr><td style="padding:4px 24px 10px">
+      <p style="margin:0;padding:12px 14px;background:#eefaf2;border-radius:10px;font-size:14px;color:#1d2433">
+        🚚 شحنتك مع ${e(typeof carrierName === "function" ? carrierName(order.shipment) : "شركة الشحن")} — رقم التتبع: <b style="direction:ltr;unicode-bidi:embed">${e(order.shipment.trackingNumber)}</b>
+        ${typeof shipmentTrackUrl === "function" && shipmentTrackUrl(order.shipment) ? `<br><a href="${e(shipmentTrackUrl(order.shipment))}" style="color:#0a84ff;font-weight:700">تتبع الشحنة لحظة بلحظة ←</a>` : ""}
+      </p>
+    </td></tr>` : ""}
     <tr><td align="center" style="padding:8px 24px 26px">
       <a href="${siteUrl("myorders.html")}" style="display:inline-block;padding:12px 28px;border-radius:999px;background:#0a84ff;color:#fff;text-decoration:none;font-weight:700">تابع طلبك</a>
     </td></tr>
