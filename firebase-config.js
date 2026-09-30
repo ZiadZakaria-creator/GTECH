@@ -56,4 +56,4 @@ const EMAIL_CONFIG = {
 // ============ صفحة الفيسبوك جوه الموبايل اللي في أول الصفحة الرئيسية ============
 // حط لينك صفحة الفيسبوك (لازم تكون Page مش حساب شخصي)، مثال: "https://www.facebook.com/GTECH"
 // لو فاضي بيفضل تصميم GTECH العادي جوه الموبايل
-const FACEBOOK_PAGE = "";
+const FACEBOOK_PAGE = "https://www.facebook.com/profile.php?id=61582595856275";
