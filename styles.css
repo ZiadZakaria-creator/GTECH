@@ -1068,6 +1068,10 @@ img[data-fs].is-loaded { opacity: 1; }
 
 /* ============ الشحن ============ */
 .free-ship-hint { margin: 4px 0 12px; padding: 10px 12px; border-radius: var(--radius-sm); background: rgba(34, 197, 94, .1); color: var(--success); font-size: .88rem; font-weight: 700; }
+.app-offer { display: grid; gap: 6px; margin: 4px 0 12px; padding: 14px; border-radius: var(--radius-sm); background: linear-gradient(135deg, rgba(0, 212, 255, .12), rgba(124, 92, 255, .16)); border: 1px solid rgba(10, 132, 255, .35); }
+.app-offer[hidden] { display: none; }
+.app-offer span { color: var(--text-2); font-size: .88rem; line-height: 1.7; }
+.app-offer .btn { justify-self: start; }
 .my-ship { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin: 10px 0 0; padding: 10px 14px; border-radius: var(--radius-sm); background: var(--soft-2); font-size: .9rem; }
 .my-ship b { direction: ltr; unicode-bidi: embed; }
 .my-ship a { margin-inline-start: auto; }

@@ -144,10 +144,15 @@
             <dl class="totals">
               <div><dt>المجموع الفرعي</dt><dd id="sumSub"></dd></div>
               <div><dt>الشحن</dt><dd id="sumShip"></dd></div>
-              <div class="totals__discount" id="sumDiscRow" hidden><dt>الخصم</dt><dd id="sumDisc"></dd></div>
+              <div class="totals__discount" id="sumDiscRow" hidden><dt id="sumDiscLabel">الخصم</dt><dd id="sumDisc"></dd></div>
               <div class="totals__grand"><dt>الإجمالي</dt><dd id="sumTotal"></dd></div>
             </dl>
             <p class="free-ship-hint" id="freeShipHint" hidden></p>
+            <div class="app-offer" id="appOffer" hidden>
+              <b>📲 خصم 20% + توصيل مجاني</b>
+              <span>على أول أوردر لما تطلب من تطبيق GTECH. نزّله في ثواني وكمّل طلبك منه.</span>
+              <button class="btn btn--primary btn--sm" type="button" id="appOfferBtn">نزّل التطبيق</button>
+            </div>
             <button class="btn btn--primary btn--block" type="submit" form="checkoutForm" id="placeOrder">إرسال الطلب</button>
             <p class="secure">🔒 بياناتك محمية ومش بتتشارك مع أي حد</p>
           </aside>

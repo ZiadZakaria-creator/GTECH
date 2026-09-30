@@ -1,6 +1,9 @@
 // ============ صفحة إتمام الشراء ============
 // أسعار الشحن لكل محافظة جاية من shipping.js (وصاحب المتجر بيغيّرها من لوحة التحكم)
 const promos = { GTECH10: 0.1 };
+// عرض أول أوردر من التطبيق: خصم 20% + توصيل مجاني (مايتجمعش مع كود خصم)
+const APP_FIRST = { code: "APP-FIRST20", rate: 0.2 };
+let firstOrder = null; // null = لسه بنتأكد، true = دي أول مرة يطلب، false = طلب قبل كده
 const payLabels = { cod: "الدفع عند الاستلام", card: "بطاقة بنكية", install: "تقسيط بدون فوائد", wallet: "محفظة إلكترونية" };
 
 const form = $("#checkoutForm");
@@ -9,9 +12,10 @@ let placed = false;
 
 function totals() {
   const sub = cart.reduce((s, i) => s + i.qty * findProduct(i.id).price, 0);
-  const ship = shipCost(form.gov.value, form.ship.value, sub) ?? 0;
-  const disc = promo ? Math.round(sub * promos[promo]) : 0;
-  return { sub, ship, disc, total: sub + ship - disc };
+  const app = appOffer();
+  const ship = app ? 0 : shipCost(form.gov.value, form.ship.value, sub) ?? 0;
+  const disc = app ? Math.round(sub * APP_FIRST.rate) : promo ? Math.round(sub * promos[promo]) : 0;
+  return { sub, ship, disc, total: sub + ship - disc, app };
 }
 
 function renderSummary() {
@@ -58,9 +62,11 @@ function renderSummary() {
   $('[data-ship-price="express"]').textContent = fmt(s.express.price);
   $("#sumSub").textContent = fmt(t.sub);
   const shipNow = shipCost(gov, form.ship.value, t.sub);
-  $("#sumShip").textContent = shipNow === null ? (gov ? "مش متاح" : "اختار المحافظة") : shipNow ? fmt(shipNow) : "مجاناً";
+  $("#sumShip").textContent = shipNow === null ? (gov ? "مش متاح" : "اختار المحافظة") : t.app ? "مجاناً 🎁" : shipNow ? fmt(shipNow) : "مجاناً";
   const left = s.freeOver - t.sub;
-  $("#freeShipHint").hidden = !(s.freeOver > 0 && left > 0 && std);
+  $("#freeShipHint").hidden = t.app || !(s.freeOver > 0 && left > 0 && std);
+  $("#sumDiscLabel").textContent = t.app ? "🎁 خصم أول أوردر من التطبيق (20%)" : "الخصم";
+  $("#appOffer").hidden = !(firstOrder === true && !isStandalone() && FIREBASE_CONFIG);
   $("#freeShipHint").textContent = `🚚 ضيف منتجات بـ ${fmt(left)} كمان والشحن يبقى مجاناً`;
   $("#sumDiscRow").hidden = !t.disc;
   $("#sumDisc").textContent = "− " + fmt(t.disc);
@@ -72,7 +78,10 @@ $("#promoForm").addEventListener("submit", (e) => {
   e.preventDefault();
   const code = e.target.code.value.trim().toUpperCase();
   if (!code) return;
-  if (promos[code]) {
+  if (appOffer()) {
+    promo = null;
+    toast("🎁 إنت واخد خصم أول أوردر من التطبيق (20% + توصيل مجاني)، وده أحسن من أي كود");
+  } else if (promos[code]) {
     promo = code;
     toast(`🎁 تم تطبيق الكود ${code} — خصم ${num(promos[code] * 100)}%`);
   } else {
@@ -153,7 +162,7 @@ function buildOrder(d, t) {
     }),
     shipping: { method: d.ship, label: shipLabels[d.ship], cost: t.ship },
     payment: { method: d.pay, label: payLabels[d.pay] },
-    promo: promo,
+    promo: t.app ? APP_FIRST.code : promo,
     totals: { subtotal: t.sub, shipping: t.ship, discount: t.disc, total: t.total },
   };
 }
@@ -229,3 +238,24 @@ function showEmailStatus(text) {
 form.gov.insertAdjacentHTML("beforeend", GOVERNORATES.map((g) => `<option>${g.name}</option>`).join(""));
 document.addEventListener("shippingchange", renderSummary);
 loadShippingSettings();
+
+// ============ عرض أول أوردر من التطبيق ============
+// بيشتغل لما المتجر مفتوح كتطبيق متسطّب، والعميل ده ماطلبش قبل كده
+function appOffer() {
+  return firstOrder === true && isStandalone();
+}
+function checkFirstOrder() {
+  if (!user) return;
+  if (store.get(HAS_ORDERS_KEY, false) || !FIREBASE_CONFIG) {
+    firstOrder = false;
+    return renderSummary();
+  }
+  const stop = watchMyOrders(null, (list) => {
+    firstOrder = !list.length;
+    setTimeout(() => stop(), 0);
+    renderSummary();
+  }, () => { firstOrder = false; renderSummary(); });
+}
+$("#appOfferBtn")?.addEventListener("click", installApp);
+document.addEventListener("userchange", checkFirstOrder);
+checkFirstOrder();
