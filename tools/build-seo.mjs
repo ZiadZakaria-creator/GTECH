@@ -68,8 +68,17 @@ async function imageUrls(p) {
   return urls;
 }
 
+// نفس تخمين القسم اللي في catalog.js للمنتجات اللي اتسجلت قبل الأقسام الجديدة
+const CATEGORY_GUESS = [
+  ["mice", /ماوس|mouse/i], ["keyboards", /كيبورد|keyboard/i], ["gpus", /كارت شاشة|كروت شاشة|rtx|gtx|radeon|graphics card/i],
+  ["monitors", /شاشة|شاشه|monitor/i], ["storage", /هارد|ssd|hdd|nvme|فلاشة|flash/i], ["audio", /سماع|headset|headphone|earbud|airpods|buds/i],
+];
+const productCategory = (p) => (CATEGORIES[p.cat] ? p.cat
+  : CATEGORY_GUESS.find(([, re]) => re.test(`${p.name || ""} ${p.specs?.["النوع"] || ""}`))?.[0] || p.cat || "");
+
 function productPage(template, p, images) {
   const url = `${SITE}p/${p.id}.html`;
+  p = { ...p, cat: productCategory(p) };
   const cat = CATEGORIES[p.cat] || "منتجات";
   const inStock = (p.stock ?? 1) > 0;
   const specs = Object.entries(p.specs || {}).filter(([, v]) => v);

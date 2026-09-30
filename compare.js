@@ -43,7 +43,7 @@ function renderCompare() {
     cmpRow("المخزون", items.map((p) => (inStock(p) ? (p.stock <= 5 ? `باقي ${num(p.stock)}` : "متوفر") : "نفد"))),
     cmpRow("الماركة", items.map((p) => p.brand)),
     cmpRow("الضمان", items.map((p) => (hasWarranty(p) ? warrantyText(p) : "من غير ضمان"))),
-    cmpRow("القسم", items.map((p) => categories[p.cat])),
+    cmpRow("القسم", items.map((p) => categoryLabel(p.cat))),
     ...optKeys.map((k) => cmpRow(k, items.map((p) => (p.options[k] || []).join("، ")))),
     ...specKeys.map((k) => cmpRow(k, items.map((p) => p.specs[k]))),
     cmpRow("أهم المميزات", items.map((p) => (p.highlights.length ? `<ul>${p.highlights.map((h) => `<li>${escapeHtml(h)}</li>`).join("")}</ul>` : "")), { html: true }),

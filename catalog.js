@@ -11,10 +11,22 @@ const LOCAL_PRODUCTS = "gtech-products-local"; // الوضع التجريبي م
 const LOCAL_IMAGES = "gtech-product-images-local";
 
 const CATEGORY_TINTS = {
-  phones: "rgba(0,212,255,.35)", laptops: "rgba(10,132,255,.35)", audio: "rgba(124,92,255,.35)",
-  wearables: "rgba(251,191,36,.25)", gaming: "rgba(255,77,109,.3)", accessories: "rgba(34,197,94,.28)",
+  storage: "rgba(251,191,36,.25)", keyboards: "rgba(10,132,255,.35)", mice: "rgba(34,197,94,.28)",
+  audio: "rgba(124,92,255,.35)", monitors: "rgba(0,212,255,.35)", gpus: "rgba(255,77,109,.3)",
 };
-const CATEGORY_ICONS = { phones: "📱", laptops: "💻", audio: "🎧", wearables: "⌚", gaming: "🎮", accessories: "🔌" };
+const CATEGORY_ICONS = { storage: "💾", keyboards: "⌨️", mice: "🖱️", audio: "🎧", monitors: "🖥️", gpus: "🎮" };
+
+// المنتجات القديمة (قبل الأقسام الجديدة) بيتعرف قسمها من اسمها لحد ما تتعدّل من اللوحة
+const CATEGORY_GUESS = [
+  ["mice", /ماوس|mouse/i], ["keyboards", /كيبورد|keyboard/i], ["gpus", /كارت شاشة|كروت شاشة|rtx|gtx|radeon|graphics card/i],
+  ["monitors", /شاشة|شاشه|monitor/i], ["storage", /هارد|ssd|hdd|nvme|فلاشة|flash/i], ["audio", /سماع|headset|headphone|earbud|airpods|buds/i],
+];
+function productCategory(p) {
+  if (categories[p.cat]) return p.cat;
+  const text = `${p.name || ""} ${p.specs?.["النوع"] || ""}`;
+  return CATEGORY_GUESS.find(([, re]) => re.test(text))?.[0] || p.cat || "";
+}
+const categoryLabel = (cat) => categories[cat] || "منتجات";
 
 const discount = (p) => (p.old ? Math.round((1 - p.price / p.old) * 100) : 0);
 const isForSale = (p) => p.active !== false;
@@ -29,8 +41,9 @@ function normalizeProduct(p) {
     rating: 5, reviews: 0, stock: 0, active: true,
     ...p,
     id: Number(p.id),
-    icon: p.icon || CATEGORY_ICONS[p.cat] || "📦",
-    tint: p.tint || CATEGORY_TINTS[p.cat] || "rgba(10,132,255,.3)",
+    cat: productCategory(p),
+    icon: p.icon || CATEGORY_ICONS[productCategory(p)] || "📦",
+    tint: p.tint || CATEGORY_TINTS[productCategory(p)] || "rgba(10,132,255,.3)",
   };
 }
 

@@ -62,7 +62,7 @@
       </nav>
 
       <form class="search" role="search" onsubmit="return false">
-        <input type="search" id="searchInput" placeholder="ابحث عن هاتف، لابتوب، سماعة..." aria-label="بحث" />
+        <input type="search" id="searchInput" placeholder="ابحث عن ماوس، كيبورد، هارد، شاشة..." aria-label="بحث" />
         <button type="submit" aria-label="بحث">
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
         </button>
@@ -149,14 +149,7 @@
           <a href="#products" class="link-more">عرض الكل ←</a>
         </div>
 
-        <div class="categories">
-          <button class="category" data-filter="phones"><span class="category__icon">📱</span><h3>هواتف ذكية</h3><small>320 منتج</small></button>
-          <button class="category" data-filter="laptops"><span class="category__icon">💻</span><h3>لابتوبات</h3><small>180 منتج</small></button>
-          <button class="category" data-filter="audio"><span class="category__icon">🎧</span><h3>سماعات</h3><small>240 منتج</small></button>
-          <button class="category" data-filter="wearables"><span class="category__icon">⌚</span><h3>ساعات ذكية</h3><small>95 منتج</small></button>
-          <button class="category" data-filter="gaming"><span class="category__icon">🎮</span><h3>ألعاب</h3><small>150 منتج</small></button>
-          <button class="category" data-filter="accessories"><span class="category__icon">🔌</span><h3>إكسسوارات</h3><small>410 منتج</small></button>
-        </div>
+        <div class="categories" id="categoryCards"></div>
       </div>
     </section>
 
@@ -170,11 +163,6 @@
           </div>
           <div class="tabs" id="tabs">
             <button class="tab active" data-filter="all">الكل</button>
-            <button class="tab" data-filter="phones">هواتف</button>
-            <button class="tab" data-filter="laptops">لابتوبات</button>
-            <button class="tab" data-filter="audio">سماعات</button>
-            <button class="tab" data-filter="wearables">ساعات</button>
-            <button class="tab" data-filter="gaming">ألعاب</button>
           </div>
         </div>
 
@@ -196,7 +184,7 @@
         <div class="filter-panel card-box" id="filterPanel" hidden></div>
 
         <div class="products" id="productsGrid"></div>
-        <p class="empty" id="emptyState" hidden>لا توجد منتجات مطابقة لبحثك 🔍 <button type="button" class="link-btn" data-clear-filters hidden>امسح الفلاتر</button></p>
+        <p class="empty" id="emptyState" hidden><span id="emptyText">لا توجد منتجات مطابقة لبحثك 🔍</span> <button type="button" class="link-btn" data-clear-filters hidden>امسح الفلاتر</button></p>
       </div>
     </section>
 
@@ -310,7 +298,7 @@
       </div>
       <div>
         <h4>الأقسام</h4>
-        <ul><li><a href="index.html?cat=phones#products">هواتف ذكية</a></li><li><a href="index.html?cat=laptops#products">لابتوبات</a></li><li><a href="index.html?cat=audio#products">سماعات</a></li><li><a href="index.html?cat=wearables#products">ساعات ذكية</a></li><li><a href="index.html?cat=accessories#products">إكسسوارات</a></li></ul>
+        <ul><li><a href="index.html?cat=storage#products">هاردات</a></li><li><a href="index.html?cat=keyboards#products">كيبوردات</a></li><li><a href="index.html?cat=mice#products">ماوسات</a></li><li><a href="index.html?cat=audio#products">سماعات</a></li><li><a href="index.html?cat=monitors#products">شاشات</a></li><li><a href="index.html?cat=gpus#products">كروت شاشة</a></li></ul>
       </div>
       <div>
         <h4>خدمة العملاء</h4>

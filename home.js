@@ -110,6 +110,9 @@ function renderProducts() {
   const list = applyFilters(base);
   grid.innerHTML = list.map(productCard).join("");
   $("#emptyState").hidden = list.length > 0;
+  // قسم لسه مفيهوش منتجات خالص (مش فلتر أو بحث)
+  const soonCat = !list.length && filter !== "all" && !shopProducts().some((p) => p.cat === filter);
+  $("#emptyText").textContent = soonCat ? `📦 قسم ${categoryLabel(filter)} هينزل فيه منتجات قريب جداً — تابعنا!` : "لا توجد منتجات مطابقة لبحثك 🔍";
   const count = activeFilterCount();
   $("#filterCount").hidden = !count;
   $("#filterCount").textContent = num(count);
@@ -157,12 +160,28 @@ $("#tabs").addEventListener("click", (e) => {
   if (tab) setFilter(tab.dataset.filter);
 });
 
-$$("[data-filter].category, [data-jump]").forEach((el) =>
-  el.addEventListener("click", () => {
-    setFilter(el.dataset.filter || el.dataset.jump);
-    $("#products").scrollIntoView({ behavior: "smooth" });
-  })
-);
+// ============ الأقسام: عدد المنتجات الحقيقي في كل قسم ============
+function renderCategories() {
+  const counts = {};
+  shopProducts().forEach((p) => { counts[p.cat] = (counts[p.cat] || 0) + 1; });
+  $("#categoryCards").innerHTML = Object.entries(categories).map(([k, label]) => `
+    <button class="category" data-filter="${k}">
+      <span class="category__icon">${CATEGORY_ICONS[k]}</span><h3>${label}</h3>
+      <small>${counts[k] ? `${num(counts[k])} منتج` : "قريباً"}</small>
+    </button>`).join("");
+  $("#tabs").innerHTML = `<button class="tab" data-filter="all">الكل</button>` +
+    Object.entries(categories).map(([k, label]) => `<button class="tab" data-filter="${k}">${label}</button>`).join("");
+  $$(".tab").forEach((t) => t.classList.toggle("active", t.dataset.filter === filter));
+}
+renderCategories();
+document.addEventListener("productschange", renderCategories);
+
+document.addEventListener("click", (e) => {
+  const el = e.target.closest("[data-filter].category, [data-jump]");
+  if (!el) return;
+  setFilter(el.dataset.filter || el.dataset.jump);
+  $("#products").scrollIntoView({ behavior: "smooth" });
+});
 
 $("#searchInput").addEventListener("input", (e) => {
   query = e.target.value;

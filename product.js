@@ -62,7 +62,7 @@ function renderDetail(p) {
 
   $("#breadcrumb").innerHTML = `
     <a href="index.html">الرئيسية</a><span>›</span>
-    <a href="index.html?cat=${p.cat}#products">${categories[p.cat]}</a><span>›</span>
+    <a href="index.html?cat=${p.cat}#products">${categoryLabel(p.cat)}</a><span>›</span>
     <b>${esc(p.name)}</b>`;
 
   const optionsHtml = Object.entries(p.options).filter(([, values]) => values?.length).map(([label, values]) => `
@@ -156,7 +156,7 @@ function renderDetail(p) {
     <table class="specs">
       <tbody>
         <tr><th>الماركة</th><td>${esc(p.brand)}</td></tr>
-        <tr><th>القسم</th><td>${categories[p.cat]}</td></tr>
+        <tr><th>القسم</th><td>${categoryLabel(p.cat)}</td></tr>
         ${Object.entries(p.specs).map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join("")}
         <tr><th>الضمان</th><td>${hasWarranty(p) ? `${esc(warrantyText(p))} ضمان رسمي` : "من غير ضمان"}</td></tr>
       </tbody>
