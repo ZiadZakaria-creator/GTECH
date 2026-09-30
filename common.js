@@ -23,6 +23,7 @@ function productCard(p, i = 0) {
         ${productVisual(p)}
       </a>
       <button class="product__wish ${wishlist.includes(p.id) ? "active" : ""}" data-wish="${p.id}" aria-label="أضف للمفضلة">${heartIcon}</button>
+      <button class="product__compare ${compareList.includes(p.id) ? "active" : ""}" data-compare="${p.id}" aria-label="قارن" title="قارن">⚖️</button>
       <div class="product__body">
         <span class="product__brand">${escapeHtml(p.brand)}</span>
         <h3 class="product__name"><a href="${url}">${escapeHtml(p.name)}</a></h3>
@@ -36,6 +37,39 @@ function productCard(p, i = 0) {
         </div>
       </div>
     </article>`;
+}
+
+// ============ المقارنة ============
+// العميل بيختار لحد 3 منتجات ويقارن مواصفاتهم في compare.html
+const COMPARE_MAX = 3;
+let compareList = store.get("gtech-compare", []).filter((id) => findProduct(id));
+
+function toggleCompare(id) {
+  const on = compareList.includes(id);
+  if (!on && compareList.length >= COMPARE_MAX) return toast(`تقدر تقارن ${num(COMPARE_MAX)} منتجات بس — شيل واحد الأول`);
+  compareList = on ? compareList.filter((x) => x !== id) : [...compareList, id];
+  store.set("gtech-compare", compareList);
+  $$(`[data-compare="${id}"]`).forEach((b) => b.classList.toggle("active", !on));
+  renderCompareTray();
+  document.dispatchEvent(new Event("comparechange"));
+  if (!on) toast(compareList.length > 1 ? `⚖️ اتضاف للمقارنة (${num(compareList.length)})` : "⚖️ اتضاف للمقارنة — اختار منتج كمان");
+}
+
+function renderCompareTray() {
+  let tray = $("#compareTray");
+  if (!tray) {
+    document.body.insertAdjacentHTML("beforeend", `<div class="compare-tray" id="compareTray" hidden></div>`);
+    tray = $("#compareTray");
+  }
+  const items = compareList.map(findProduct).filter(Boolean);
+  tray.hidden = !items.length || document.body.classList.contains("compare-page");
+  tray.innerHTML = `
+    <div class="compare-tray__items">
+      ${items.map((p) => `<span class="compare-tray__item" title="${escapeHtml(p.name)}">${productVisual(p)}<button data-compare="${p.id}" aria-label="شيل">✕</button></span>`).join("")}
+      ${Array.from({ length: COMPARE_MAX - items.length }, () => `<span class="compare-tray__item compare-tray__item--empty">＋</span>`).join("")}
+    </div>
+    <a href="compare.html" class="btn btn--primary btn--sm ${items.length < 2 ? "is-disabled" : ""}">⚖️ قارن ${items.length > 1 ? `(${num(items.length)})` : ""}</a>
+    <button class="compare-tray__clear" id="compareClear">مسح</button>`;
 }
 
 // ============ السلة والمفضلة ============
@@ -100,6 +134,15 @@ function toggleWish(id) {
 document.addEventListener("click", (e) => {
   const add = e.target.closest("[data-add]");
   const wish = e.target.closest("[data-wish]");
+  const cmp = e.target.closest("[data-compare]");
+  if (cmp) toggleCompare(+cmp.dataset.compare);
+  if (e.target.id === "compareClear") {
+    compareList = [];
+    store.set("gtech-compare", compareList);
+    $$("[data-compare].active").forEach((b) => b.classList.remove("active"));
+    renderCompareTray();
+    document.dispatchEvent(new Event("comparechange"));
+  }
   if (add) addToCart(+add.dataset.add);
   if (wish) toggleWish(+wish.dataset.wish);
 });
@@ -554,4 +597,7 @@ renderCart();
 document.addEventListener("productschange", () => {
   pruneCart();
   renderCart();
+  renderCompareTray();
 });
+
+renderCompareTray();

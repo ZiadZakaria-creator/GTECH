@@ -114,6 +114,7 @@ function renderDetail(p) {
           <button class="btn btn--primary" id="addMain" ${soldOut ? "disabled" : ""}>${soldOut ? "نفد من المخزون" : `${cartPlusIcon} أضف للسلة`}</button>
           <button class="btn btn--ghost" id="buyNow" ${soldOut ? "disabled" : ""}>اشتري الآن</button>
           <button class="icon-btn pd__wish ${wishlist.includes(p.id) ? "active" : ""}" data-wish="${p.id}" aria-label="أضف للمفضلة">${heartIcon}</button>
+          <button class="icon-btn pd__compare ${compareList.includes(p.id) ? "active" : ""}" data-compare="${p.id}" aria-label="قارن" title="قارن بمنتج تاني">⚖️</button>
           <button class="icon-btn" id="shareBtn" aria-label="مشاركة">
             <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>
           </button>
