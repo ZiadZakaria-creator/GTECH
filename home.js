@@ -4,15 +4,147 @@ let filter = params.get("cat") || "all";
 let query = params.get("q") || "";
 const grid = $("#productsGrid");
 
-function renderProducts() {
+// ============ الفلاتر المتقدمة ============
+// السعر، الماركة، الرام، المساحة، المتوفر بس، والترتيب
+const filters = { min: "", max: "", brands: new Set(), ram: new Set(), storage: new Set(), inStockOnly: false, sort: "" };
+
+const lastNumber = (str) => { const m = String(str).match(/[\d.]+(?!.*[\d.])/); return m ? Number(m[0]) : null; };
+// "12 جيجا رام" ← 12 جيجا
+function ramValues(p) {
+  const spec = p.specs["الرام"] || p.specs["الذاكرة"] || "";
+  const n = parseFloat(toLatinDigits(String(spec)));
+  const fromOpts = (p.options["السعة"] || []).map((o) => /رام/.test(o) ? parseFloat(toLatinDigits(o)) : null);
+  return [...new Set([n, ...fromOpts].filter((x) => x > 0 && x <= 128))].map((x) => `${x} جيجا`);
+}
+// "256 جيجا" / "1 تيرا" / "16 رام / 512 SSD" ← المساحة
+function storageValues(p) {
+  const raw = [...(p.options["السعة"] || p.options["المساحة"] || []), p.specs["التخزين"] || p.specs["المساحة"] || ""].filter(Boolean);
+  return [...new Set(raw.map((v) => {
+    const s = toLatinDigits(String(v));
+    const n = lastNumber(s);
+    if (!n) return null;
+    return /تيرا|TB/i.test(s) ? `${n} تيرا` : `${n} جيجا`;
+  }).filter(Boolean))];
+}
+const sizeRank = (v) => parseFloat(v) * (v.includes("تيرا") ? 1024 : 1);
+
+function baseList() {
   const q = query.trim().toLowerCase();
-  const list = shopProducts().filter((p) =>
+  return shopProducts().filter((p) =>
     (filter === "all" || p.cat === filter) &&
     (!q || p.name.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q))
   );
+}
+
+function applyFilters(list) {
+  const min = Number(toLatinDigits(filters.min)) || 0;
+  const max = Number(toLatinDigits(filters.max)) || Infinity;
+  const out = list.filter((p) =>
+    p.price >= min && p.price <= max &&
+    (!filters.brands.size || filters.brands.has(p.brand.toUpperCase())) &&
+    (!filters.ram.size || ramValues(p).some((v) => filters.ram.has(v))) &&
+    (!filters.storage.size || storageValues(p).some((v) => filters.storage.has(v))) &&
+    (!filters.inStockOnly || inStock(p))
+  );
+  const sorters = {
+    "price-asc": (a, b) => a.price - b.price,
+    "price-desc": (a, b) => b.price - a.price,
+    rating: (a, b) => b.rating - a.rating || b.reviews - a.reviews,
+    discount: (a, b) => discount(b) - discount(a),
+    newest: (a, b) => b.id - a.id,
+  };
+  return filters.sort ? [...out].sort(sorters[filters.sort]) : out;
+}
+
+const activeFilterCount = () =>
+  (filters.min ? 1 : 0) + (filters.max ? 1 : 0) + filters.brands.size + filters.ram.size + filters.storage.size + (filters.inStockOnly ? 1 : 0);
+
+function chipGroup(title, key, values) {
+  if (values.length < 2 && !filters[key].size) return "";
+  return `
+    <fieldset class="fp-group">
+      <legend>${title}</legend>
+      <div class="fp-chips">${values.map((v) => `
+        <label class="fp-chip"><input type="checkbox" data-facet="${key}" value="${escapeHtml(v)}" ${filters[key].has(v) ? "checked" : ""}/><span>${escapeHtml(v)}</span></label>`).join("")}
+      </div>
+    </fieldset>`;
+}
+
+function renderFilterPanel(list) {
+  const brands = [...new Set(list.map((p) => p.brand.toUpperCase()).filter(Boolean))].sort();
+  const rams = [...new Set(list.flatMap(ramValues))].sort((a, b) => sizeRank(a) - sizeRank(b));
+  const storages = [...new Set(list.flatMap(storageValues))].sort((a, b) => sizeRank(a) - sizeRank(b));
+  // اللي متعلّم ومش موجود في القسم ده يفضل ظاهر عشان يتشال
+  filters.brands.forEach((v) => brands.includes(v) || brands.push(v));
+  filters.ram.forEach((v) => rams.includes(v) || rams.push(v));
+  filters.storage.forEach((v) => storages.includes(v) || storages.push(v));
+  const prices = list.map((p) => p.price);
+  const lo = prices.length ? Math.min(...prices) : 0;
+  const hi = prices.length ? Math.max(...prices) : 0;
+  const focused = document.activeElement?.id;
+  $("#filterPanel").innerHTML = `
+    <fieldset class="fp-group">
+      <legend>السعر (ج.م)</legend>
+      <div class="fp-price">
+        <input type="text" inputmode="numeric" id="fpMin" placeholder="من ${num(lo)}" value="${escapeHtml(filters.min)}" aria-label="أقل سعر" />
+        <span>—</span>
+        <input type="text" inputmode="numeric" id="fpMax" placeholder="لحد ${num(hi)}" value="${escapeHtml(filters.max)}" aria-label="أعلى سعر" />
+      </div>
+    </fieldset>
+    ${chipGroup("الماركة", "brands", brands)}
+    ${chipGroup("الرام", "ram", rams)}
+    ${chipGroup("المساحة", "storage", storages)}
+    <div class="fp-foot">
+      <label class="fp-switch"><input type="checkbox" id="fpStock" ${filters.inStockOnly ? "checked" : ""}/> <span>المتوفر بس</span></label>
+      <button type="button" class="link-btn" data-clear-filters ${activeFilterCount() ? "" : "hidden"}>امسح الفلاتر</button>
+    </div>`;
+  if (focused === "fpMin" || focused === "fpMax") {
+    const el = $("#" + focused);
+    el.focus();
+    el.setSelectionRange(el.value.length, el.value.length);
+  }
+}
+
+function renderProducts() {
+  const base = baseList();
+  const list = applyFilters(base);
   grid.innerHTML = list.map(productCard).join("");
   $("#emptyState").hidden = list.length > 0;
+  const count = activeFilterCount();
+  $("#filterCount").hidden = !count;
+  $("#filterCount").textContent = num(count);
+  $("#filterResult").textContent = `${num(list.length)} منتج`;
+  $$("[data-clear-filters]").forEach((b) => { b.hidden = !count; });
+  renderFilterPanel(base);
 }
+
+$("#filterToggle").addEventListener("click", () => {
+  const panel = $("#filterPanel");
+  panel.hidden = !panel.hidden;
+  $("#filterToggle").setAttribute("aria-expanded", String(!panel.hidden));
+  $("#filterToggle").classList.toggle("active", !panel.hidden);
+});
+$("#sortSel").addEventListener("change", (e) => { filters.sort = e.target.value; renderProducts(); });
+$("#filterPanel").addEventListener("change", (e) => {
+  const t = e.target;
+  if (t.dataset.facet) filters[t.dataset.facet][t.checked ? "add" : "delete"](t.value);
+  else if (t.id === "fpStock") filters.inStockOnly = t.checked;
+  else return;
+  renderProducts();
+});
+let priceTimer = null;
+$("#filterPanel").addEventListener("input", (e) => {
+  if (e.target.id !== "fpMin" && e.target.id !== "fpMax") return;
+  filters[e.target.id === "fpMin" ? "min" : "max"] = e.target.value.replace(/[^\d٠-٩]/g, "");
+  clearTimeout(priceTimer);
+  priceTimer = setTimeout(renderProducts, 350);
+});
+document.addEventListener("click", (e) => {
+  if (!e.target.closest("[data-clear-filters]")) return;
+  Object.assign(filters, { min: "", max: "", inStockOnly: false });
+  ["brands", "ram", "storage"].forEach((k) => filters[k].clear());
+  renderProducts();
+});
 
 function setFilter(value) {
   filter = value;

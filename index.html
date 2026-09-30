@@ -160,8 +160,25 @@
           </div>
         </div>
 
+        <div class="filter-bar">
+          <button type="button" class="btn btn--ghost btn--sm" id="filterToggle" aria-expanded="false" aria-controls="filterPanel">⚙️ فلترة <span class="filter-count" id="filterCount" hidden></span></button>
+          <span class="muted filter-result" id="filterResult"></span>
+          <label class="filter-sort">
+            <span class="muted">ترتيب:</span>
+            <select id="sortSel" aria-label="ترتيب المنتجات">
+              <option value="">الأنسب</option>
+              <option value="price-asc">السعر: من الأقل</option>
+              <option value="price-desc">السعر: من الأعلى</option>
+              <option value="rating">الأعلى تقييماً</option>
+              <option value="discount">الأكبر خصماً</option>
+              <option value="newest">الأحدث</option>
+            </select>
+          </label>
+        </div>
+        <div class="filter-panel card-box" id="filterPanel" hidden></div>
+
         <div class="products" id="productsGrid"></div>
-        <p class="empty" id="emptyState" hidden>لا توجد منتجات مطابقة لبحثك 🔍</p>
+        <p class="empty" id="emptyState" hidden>لا توجد منتجات مطابقة لبحثك 🔍 <button type="button" class="link-btn" data-clear-filters hidden>امسح الفلاتر</button></p>
       </div>
     </section>
 
