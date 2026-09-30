@@ -31,6 +31,7 @@ function startDashboard() {
   $("#adminGate").hidden = true;
   $("#dashboard").hidden = false;
   startSmsMeter();
+  document.dispatchEvent(new Event("dashboardready"));
   stopWatching = watchOrders(onOrders, (err) => {
     console.error(err);
     const denied = err?.code === "permission-denied";

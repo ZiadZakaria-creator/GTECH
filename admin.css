@@ -226,3 +226,8 @@
 .excel-list--err li { color: #ff8fa3; }
 .excel-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 6px; }
 @media (max-width: 600px) { .excel-stats { grid-template-columns: 1fr 1fr; } }
+
+/* ============ تنبيهات "نبّهني" ============ */
+.alerts-panel { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 16px 20px; border-color: rgba(250,204,21,.4); }
+.alerts-panel[hidden] { display: none; }
+.alerts-panel p { font-size: .92rem; margin-top: 4px; }

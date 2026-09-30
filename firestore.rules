@@ -16,8 +16,6 @@ service cloud.firestore {
       // العميل لازم يكون له حساب Firebase (Google أو مجهول) والطلب مربوط بيه
       allow create: if request.auth != null
         && request.resource.data.customer.uid == request.auth.uid
-        // رقم الطلب لازم يكون نفس الرقم اللي اتأكد بكود SMS
-        && request.auth.token.get("phone_number", "") == "+2" + request.resource.data.customer.phone
         && request.resource.data.status == "new"
         && request.resource.data.id == orderId
         && request.resource.data.customer.phone is string
@@ -58,6 +56,37 @@ service cloud.firestore {
       allow update: if request.resource.data.keys().hasOnly(["sent", "quotaHits"])
         && request.resource.data.get("sent", 0) - resource.data.get("sent", 0) in [0, 1]
         && request.resource.data.get("quotaHits", 0) - resource.data.get("quotaHits", 0) in [0, 1];
+    }
+
+    // "نبّهني لما يرجع / لما السعر يقل": العميل يسجّل تنبيه، والأدمن بس يشوفه ويمسحه بعد ما يبعت الإيميل
+    match /alerts/{alertId} {
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasOnly(["productId", "productName", "email", "name", "type", "price", "createdAt"])
+        && request.resource.data.type in ["stock", "price"]
+        && request.resource.data.productId is number
+        && request.resource.data.price is number
+        && request.resource.data.email is string
+        && request.resource.data.email.size() < 120
+        && request.resource.data.email.matches("^[^@ ]+@[^@ ]+[.][^@ ]+$")
+        && request.resource.data.productName is string
+        && request.resource.data.productName.size() <= 120
+        && request.resource.data.name is string
+        && request.resource.data.name.size() <= 60;
+      allow read, delete: if isAdmin();
+    }
+
+    // السلات المتروكة: كل عميل يكتب سلته هو بس، والأدمن يشوفها ويبعت تذكير
+    match /carts/{uid} {
+      allow read: if isAdmin() || (request.auth != null && request.auth.uid == uid);
+      allow create, update: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.items is list
+        && request.resource.data.items.size() <= 50
+        && request.resource.data.email is string
+        && request.resource.data.email.size() < 120;
+      allow delete: if isAdmin() || (request.auth != null && request.auth.uid == uid);
+      // الأدمن يعلّم إن التذكير اتبعت بس
+      allow update: if isAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["remindedAt"]);
     }
 
     match /admins/{uid} {

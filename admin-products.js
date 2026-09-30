@@ -103,13 +103,15 @@ function showSection(name) {
   $("#ordersSection").hidden = name !== "orders";
   $("#productsSection").hidden = name !== "products";
   history.replaceState(null, "", name === "products" ? "#products" : "#");
-  if (name === "products" && !productsWatching) {
-    productsWatching = true;
-    productsStore.watch(onProducts, (err) => {
-      console.error(err);
-      toast(err?.code === "permission-denied" ? "⛔ محتاج تحدّث قواعد الأمان في Firebase" : "❌ مشكلة في تحميل المنتجات");
-    });
-  }
+  if (name === "products") watchProducts();
+}
+function watchProducts() {
+  if (productsWatching) return;
+  productsWatching = true;
+  productsStore.watch(onProducts, (err) => {
+    console.error(err);
+    toast(err?.code === "permission-denied" ? "⛔ محتاج تحدّث قواعد الأمان في Firebase" : "❌ مشكلة في تحميل المنتجات");
+  });
 }
 $("#adSections").addEventListener("click", (e) => {
   const b = e.target.closest("[data-section]");
@@ -126,6 +128,7 @@ function onProducts(list) {
   adminProducts = list.map(normalizeProduct).sort((a, b) => a.id - b.id);
   productsLoaded = true;
   renderProductsTable();
+  document.dispatchEvent(new Event("adminproducts"));
   if (editing) {
     const fresh = adminProducts.find((p) => p.id === editing.id);
     if (!fresh) closeEditor();

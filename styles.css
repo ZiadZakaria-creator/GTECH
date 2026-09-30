@@ -909,6 +909,13 @@ img[data-fs].is-loaded { opacity: 1; }
   .product__compare { top: 52px; width: 32px; height: 32px; }
 }
 
+/* ============ نبّهني ============ */
+.pd__alerts { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: -6px 0 18px; }
+.pd__alerts:empty { display: none; }
+.pd__alerts .btn { flex: 1 1 100%; }
+.pd__alert.link-btn { font-size: .9rem; }
+.pd__alert.done { font-size: .88rem; color: var(--success, #22c55e); font-weight: 700; }
+
 /* ============ Responsive ============ */
 @media (max-width: 1100px) {
   .categories { grid-template-columns: repeat(3, 1fr); }

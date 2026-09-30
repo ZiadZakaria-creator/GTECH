@@ -120,6 +120,8 @@ function renderDetail(p) {
           </button>
         </div>
 
+        <div class="pd__alerts" id="pdAlerts">${alertButtonsHtml(p)}</div>
+
         <div class="pd__perks">
           <div><span>🚚</span><p>توصيل متوقع <b>${delivery}</b>${p.price >= 1000 ? " — مجاناً" : ""}</p></div>
           <div><span>🛡️</span><p>ضمان رسمي من الوكيل لمدة <b>${p.cat === "accessories" ? "سنة" : "سنتين"}</b></p></div>
@@ -312,6 +314,10 @@ function initPage() {
 }
 
 document.addEventListener("productschange", initPage);
+document.addEventListener("alertschange", () => {
+  const p = findProduct(productId);
+  if (p && $("#pdAlerts")) $("#pdAlerts").innerHTML = alertButtonsHtml(p);
+});
 document.addEventListener("catalogloaded", initPage);
 initPage();
 reveal(".pd-tabs, #related .section__head");
