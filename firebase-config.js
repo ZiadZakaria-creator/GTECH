@@ -39,7 +39,12 @@ const SMS_DAILY_LIMIT = 10;
 // ============ إيميلات الطلبات (EmailJS) ============
 // إيميل للعميل لما يطلب، ومع كل مرحلة (تأكيد، خرج للتوصيل، تم الاستلام، إلغاء).
 // الخطوات في EMAIL_SETUP.md. لحد ما البيانات دي تتحط، الإيميلات مقفولة.
-const EMAIL_CONFIG = null;
+const EMAIL_CONFIG = {
+  publicKey: "nJuOxvKa6B0JK-d0z",
+  serviceId: "service_2wslwl4",
+  templateId: "template_1a7i7tf",
+  storeEmail: "ziadzakaria966@gmail.com", // بيوصله إيميل بكل طلب جديد — امسح السطر ده لو مش عايز
+};
 // مثال:
 // const EMAIL_CONFIG = {
 //   publicKey: "xxxxxxxxxxxx",      // Account ← General ← Public Key
