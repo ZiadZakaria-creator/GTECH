@@ -82,6 +82,7 @@ function USE_FIREBASE_CATALOG() {
 }
 
 let catalogLoaded = false; // اتجابت أحدث نسخة (أو فشلت) ولا لسه
+let catalogFailed = false; // مفيش نت أو Firestore مردّش
 async function refreshCatalog() {
   try {
     await loadLatestCatalog();
@@ -99,6 +100,7 @@ async function loadLatestCatalog() {
       store.set(CATALOG_CACHE, { at: Date.now(), items: list });
     } catch (err) {
       console.warn("catalog", err);
+      catalogFailed = true;
       return;
     }
   } else {

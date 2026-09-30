@@ -55,7 +55,8 @@ function countVisit(fields, productId) {
       }
       fields.push(matchMedia("(max-width: 900px)").matches ? "mobile" : "desktop");
     }
-    const pid = /product\.html$/.test(location.pathname) ? Number(new URLSearchParams(location.search).get("id")) : null;
+    const pid = document.documentElement.dataset.product ? Number(document.documentElement.dataset.product)
+      : /product\.html$/.test(location.pathname) ? Number(new URLSearchParams(location.search).get("id")) : null;
     const productId = pid > 0 && !log.seen.includes(pid) ? pid : null;
     if (productId) log.seen.push(productId);
     if (!fields.length && !productId) return;

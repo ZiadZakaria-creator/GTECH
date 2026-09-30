@@ -1,5 +1,6 @@
 // ============ صفحة المنتج ============
-const productId = +new URLSearchParams(location.search).get("id");
+// الصفحات الثابتة p/<رقم>.html (بتاعة جوجل) فيها رقم المنتج في <html data-product>
+const productId = +(document.documentElement.dataset.product || new URLSearchParams(location.search).get("id"));
 
 const reviewPool = [
   { name: "أحمد محمود", city: "القاهرة", stars: 5, text: "المنتج أصلي ووصل في معاده، والتغليف ممتاز. أنصح بيه جداً." },
@@ -20,6 +21,8 @@ let qty = 1;
 let userReviews = [];
 
 function notFound() {
+  // الصفحة الثابتة فيها نسخة مكتوبة من المنتج، بتفضل ظاهرة لحد ما المنتجات تحمّل (أو لو التحميل فشل)
+  if ((!catalogLoaded || catalogFailed) && $(".seo-pd")) return;
   $("#pdTabs").parentElement.hidden = true;
   $("#breadcrumb").innerHTML = "";
   if (!catalogLoaded) {
@@ -53,6 +56,9 @@ function renderDetail(p) {
   document.title = `${p.name} | GTECH`;
   qty = 1;
   $('meta[name="description"]').setAttribute("content", p.desc);
+  if (!$('link[rel="canonical"]')) {
+    document.head.insertAdjacentHTML("beforeend", `<link rel="canonical" href="${new URL(productUrl(p.id), document.baseURI).href}" />`);
+  }
 
   $("#breadcrumb").innerHTML = `
     <a href="index.html">الرئيسية</a><span>›</span>

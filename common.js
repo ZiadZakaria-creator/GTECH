@@ -1,6 +1,7 @@
 // ============ أدوات مشتركة ============
 const findProduct = (id) => products.find((p) => p.id === id);
-const productUrl = (id) => `product.html?id=${id}`;
+// صفحة المنتج الثابتة اللي جوجل بيفهرسها (بتتعمل وقت النشر — tools/build-seo.mjs)
+const productUrl = (id) => (FIREBASE_CONFIG ? `p/${id}.html` : `product.html?id=${id}`);
 
 let cart = store.get("gtech-cart", []).filter((i) => findProduct(i.id));
 

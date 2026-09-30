@@ -1,9 +1,12 @@
 name: Deploy to GitHub Pages
 
-# كل push على الفرع الافتراضي بينشر الموقع تلقائياً
+# كل push على الفرع الافتراضي بينشر الموقع تلقائياً،
+# وكمان كل 6 ساعات عشان صفحات المنتجات اللي جوجل بيقراها تتحدث بأسعار ومنتجات اللوحة
 on:
   push:
   workflow_dispatch:
+  schedule:
+    - cron: "17 */6 * * *"
 
 permissions:
   contents: read
@@ -24,6 +27,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - id: pages
+        uses: actions/configure-pages@v5
+
       - name: Prepare site files
         run: |
           mkdir _site
@@ -31,7 +37,12 @@ jobs:
           cp -r icons admin _site/
           [ -d images ] && cp -r images _site/ || true
 
-      - uses: actions/configure-pages@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build product pages for Google (SEO)
+        run: node tools/build-seo.mjs _site "${{ steps.pages.outputs.base_url }}"
 
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -28,7 +28,7 @@ self.addEventListener("fetch", (e) => {
   // Firebase و EmailJS والخطوط وأي حاجة من برّه: زي ما هي من غير تدخل
   if (req.method !== "GET" || url.origin !== location.origin) return;
 
-  if (/\/(images|icons)\//.test(url.pathname)) {
+  if (/\/(images|icons|p\/img)\//.test(url.pathname)) {
     e.respondWith(caches.match(req).then((hit) => hit || fetch(req).then((res) => {
       if (res.ok) { const copy = res.clone(); caches.open(VERSION).then((c) => c.put(req, copy)); }
       return res;
