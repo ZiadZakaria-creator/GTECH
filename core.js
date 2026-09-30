@@ -1,5 +1,19 @@
 // ============ أساسيات مشتركة (المتجر + الداشبورد) ============
 
+// ريفريش الصفحة ← نرجع لأولها (بدل ما المتصفح يرجّعنا لنفس المكان).
+// الرجوع بزرار "رجوع" بيفضل يرجّعك لنفس المكان زي ما هو.
+(function scrollTopOnReload() {
+  try {
+    const nav = performance.getEntriesByType("navigation")[0];
+    if (nav?.type !== "reload" || !("scrollRestoration" in history)) return;
+    history.scrollRestoration = "manual";
+    if (location.hash) history.replaceState(null, "", location.pathname + location.search);
+    scrollTo(0, 0);
+    addEventListener("load", () => scrollTo(0, 0));
+    addEventListener("pagehide", () => { history.scrollRestoration = "auto"; });
+  } catch {}
+})();
+
 // رقم واتساب المتجر بالصيغة الدولية (مصر = 20)
 const WHATSAPP = "201100053123";
 const waLink = (text, phone = WHATSAPP) => `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
