@@ -31,6 +31,7 @@ function startDashboard() {
   $("#adminGate").hidden = true;
   $("#dashboard").hidden = false;
   startSmsMeter();
+  store.set("gtech-admin-browser", true); // زياراتك للمتجر من المتصفح ده ماتتحسبش في عدد الزوار
   document.dispatchEvent(new Event("dashboardready"));
   stopWatching = watchOrders(onOrders, (err) => {
     console.error(err);

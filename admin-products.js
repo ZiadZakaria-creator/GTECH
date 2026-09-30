@@ -117,7 +117,7 @@ $("#adSections").addEventListener("click", (e) => {
   const b = e.target.closest("[data-section]");
   if (b) showSection(b.dataset.section);
 });
-if (["#products", "#carts"].includes(location.hash)) {
+if (["#products", "#carts", "#visits"].includes(location.hash)) {
   // نستنى لحد ما الأدمن يدخل
   const section = location.hash.slice(1);
   const wait = setInterval(() => {

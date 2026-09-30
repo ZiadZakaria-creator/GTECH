@@ -48,12 +48,12 @@
 .status-tabs .tab { white-space: nowrap; }
 .tab__count { display: inline-grid; place-items: center; min-width: 22px; height: 20px; padding: 0 6px; margin-inline-start: 4px; border-radius: 99px; background: var(--soft-3); font-size: .75rem; }
 .ad-toolbar__side { display: flex; gap: 8px; flex-wrap: wrap; }
-.ad-toolbar__side input, .ad-toolbar__side select {
+.ad-toolbar__side input, .ad-toolbar__side select, .visits-head select {
   padding: 8px 14px; border-radius: 999px; font: inherit; font-size: .9rem; color: var(--text);
   background: var(--bg-2); border: 1px solid var(--border); outline: 0;
 }
 .ad-toolbar__side input { width: 260px; }
-.ad-toolbar__side input:focus, .ad-toolbar__side select:focus { border-color: var(--primary); }
+.ad-toolbar__side input:focus, .ad-toolbar__side select:focus, .visits-head select:focus { border-color: var(--primary); }
 
 .table-wrap { overflow-x: auto; }
 .orders { width: 100%; border-collapse: collapse; font-size: .92rem; }
@@ -187,8 +187,8 @@
   .products-table td[data-label="القسم"] { display: none; }
   .products-table td[data-label="السعر"] small { display: inline; margin-inline-start: 6px; }
   .pe-grid { grid-template-columns: 1fr; }
-  .ad-sections { width: 100%; }
-  .ad-sec { flex: 1; justify-content: center; }
+  .ad-sections { width: 100%; overflow-x: auto; scrollbar-width: none; border-radius: 18px; }
+  .ad-sec { flex: 1 0 auto; justify-content: center; padding: 9px 14px; white-space: nowrap; font-size: .9rem; }
 }
 
 /* ============ عدّاد SMS ============ */
@@ -240,3 +240,28 @@
 .pill { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: .8rem; font-weight: 700; white-space: nowrap; }
 .pill--idle { background: var(--surface-2); color: var(--muted); }
 .pill--done { background: rgba(34,197,94,.14); color: var(--success); }
+
+/* ============ الزوار ============ */
+.visits-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.visits-head p { font-size: .9rem; }
+.vchart-panel { position: relative; }
+.vchart__title { font-size: 1rem; margin-bottom: 14px; }
+.vchart { position: relative; direction: ltr; }
+.vchart__plot { position: relative; height: 220px; margin-inline-start: 34px; }
+.vchart__grid { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; }
+.vchart__grid span { position: relative; height: 0; border-top: 1px solid var(--border); }
+.vchart__grid span:last-child { border-top-color: var(--muted); opacity: .6; }
+.vchart__grid i { position: absolute; inset-inline-start: -34px; top: -9px; width: 28px; font-style: normal; font-size: .72rem; color: var(--muted); text-align: end; }
+.vchart__bars { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(var(--n), 1fr); gap: 2px; direction: ltr; }
+.vchart__bar { display: flex; align-items: flex-end; height: 100%; padding: 0 1px; border-radius: 4px; }
+.vchart__bar i { display: block; width: 100%; max-width: 28px; margin: 0 auto; min-height: 2px; border-radius: 4px 4px 0 0; background: var(--primary); transition: opacity .15s; }
+.vchart__bars:hover .vchart__bar i { opacity: .55; }
+.vchart__bars .vchart__bar:hover i, .vchart__bar:focus-visible i { opacity: 1; }
+.vchart__bar:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+.vchart__x { display: grid; grid-template-columns: repeat(var(--n), 1fr); gap: 2px; margin: 8px 0 0 34px; direction: ltr; }
+.vchart__x span { font-size: .7rem; color: var(--muted); text-align: center; white-space: nowrap; overflow: visible; }
+.vchart__tip { position: absolute; top: 0; transform: translate(-50%, -100%); z-index: 2; display: grid; gap: 2px; padding: 8px 12px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--border); box-shadow: var(--shadow-soft); pointer-events: none; text-align: center; white-space: nowrap; direction: rtl; }
+.vchart__tip[hidden] { display: none; }
+.vchart__tip small { color: var(--muted); font-size: .75rem; }
+.vchart__tip b { font-size: .95rem; }
+.vchart__empty { direction: rtl; text-align: center; margin-top: 12px; font-size: .9rem; }

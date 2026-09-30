@@ -89,6 +89,35 @@ service cloud.firestore {
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["remindedAt"]);
     }
 
+    // عدّاد الزوار: أي حد يزوّد بواحد بس، والأدمن بس يشوف الأرقام
+    match /visits/{day} {
+      allow read: if isAdmin();
+      allow create: if day.matches("^[0-9]{4}-[0-9]{2}-[0-9]{2}$")
+        && request.resource.data.keys().hasOnly(["visitors", "newVisitors", "mobile", "desktop"])
+        && request.resource.data.get("visitors", 0) <= 1
+        && request.resource.data.get("newVisitors", 0) <= 1
+        && request.resource.data.get("mobile", 0) <= 1
+        && request.resource.data.get("desktop", 0) <= 1;
+      allow update: if request.resource.data.keys().hasOnly(["visitors", "newVisitors", "mobile", "desktop"])
+        && request.resource.data.get("visitors", 0) - resource.data.get("visitors", 0) in [0, 1]
+        && request.resource.data.get("newVisitors", 0) - resource.data.get("newVisitors", 0) in [0, 1]
+        && request.resource.data.get("mobile", 0) - resource.data.get("mobile", 0) in [0, 1]
+        && request.resource.data.get("desktop", 0) - resource.data.get("desktop", 0) in [0, 1];
+    }
+
+    // مشاهدات كل منتج في اليوم (للمنتجات الأكتر مشاهدة)
+    match /productViews/{viewId} {
+      allow read: if isAdmin();
+      allow create: if request.resource.data.keys().hasOnly(["day", "productId", "count"])
+        && request.resource.data.day is string
+        && request.resource.data.day.matches("^[0-9]{4}-[0-9]{2}-[0-9]{2}$")
+        && request.resource.data.productId is int
+        && viewId == request.resource.data.day + "_" + string(request.resource.data.productId)
+        && request.resource.data.count == 1;
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(["count"])
+        && request.resource.data.count == resource.data.count + 1;
+    }
+
     match /admins/{uid} {
       allow read: if request.auth != null && request.auth.uid == uid;
       allow write: if false; // بيتضاف من Firebase Console بس

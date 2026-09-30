@@ -56,6 +56,7 @@
     <nav class="ad-sections" id="adSections">
       <button class="ad-sec active" data-section="orders">📦 الطلبات <span class="tab__count" id="newCountBadge" hidden></span></button>
       <button class="ad-sec" data-section="products">🛍️ المنتجات</button>
+      <button class="ad-sec" data-section="visits">📈 الزوار</button>
       <button class="ad-sec" data-section="carts">🛒 سلات متروكة <span class="tab__count" id="cartsBadge" hidden></span></button>
     </nav>
 
@@ -137,6 +138,32 @@
         </div>
       </section>
     </div>
+    <div id="visitsSection" class="ad-section" hidden>
+      <div class="visits-head">
+        <p class="muted">كل زائر بيتعد مرة واحدة في اليوم. زياراتك إنت من المتصفح ده مش محسوبة.</p>
+        <select id="visitsRange" aria-label="الفترة">
+          <option value="7">آخر 7 أيام</option>
+          <option value="30" selected>آخر 30 يوم</option>
+          <option value="90">آخر 90 يوم</option>
+        </select>
+      </div>
+      <section class="stats" id="visitStats"></section>
+      <section class="card-box ad-panel vchart-panel">
+        <h3 class="vchart__title">الزوار في اليوم</h3>
+        <div class="vchart" id="visitsChart"></div>
+      </section>
+      <section class="card-box ad-panel">
+        <h3 class="vchart__title">المنتجات الأكتر مشاهدة</h3>
+        <div class="table-wrap">
+          <table class="orders">
+            <thead><tr><th>المنتج</th><th>المشاهدات</th><th>اتطلب</th><th>نسبة الشراء</th></tr></thead>
+            <tbody id="topViewed"></tbody>
+          </table>
+          <div class="ad-empty" id="topViewedEmpty" hidden><span>👀</span><p>مفيش مشاهدات لسه في الفترة دي</p></div>
+        </div>
+      </section>
+    </div>
+
     <div id="cartsSection" class="ad-section" hidden>
       <section class="card-box ad-panel">
         <div class="ad-toolbar">
@@ -236,5 +263,6 @@
   <script src="admin-excel.js"></script>
   <script src="admin-alerts.js"></script>
   <script src="admin-carts.js"></script>
+  <script src="admin-visits.js"></script>
 </body>
 </html>
