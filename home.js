@@ -224,6 +224,25 @@ function renderOffer() {
 renderOffer();
 document.addEventListener("productschange", renderOffer);
 
+// ============ المربعين اللي تحت العرض ============
+// 1) عرض التطبيق (حقيقي: بيتحسب في صفحة الدفع) — 2) أرخص سعر في الماوسات والكيبوردات من المنتجات نفسها
+function renderMiniOffers() {
+  if (isStandalone()) {
+    $("#appPromoText").textContent = "إنت فاتح من التطبيق ✅ الخصم والتوصيل المجاني هيتحسبوا لوحدهم على أول أوردر";
+    $("#appPromoBtn").hidden = true;
+  }
+  const from = (cat) => {
+    const prices = shopProducts().filter((p) => p.cat === cat && inStock(p)).map((p) => p.price);
+    return prices.length ? Math.min(...prices) : 0;
+  };
+  const mice = from("mice"), kb = from("keyboards");
+  const parts = [mice && `ماوسات من <b>${fmt(mice)}</b>`, kb && `كيبوردات من <b>${fmt(kb)}</b>`].filter(Boolean);
+  if (parts.length) $("#setupPromoText").innerHTML = parts.join(" · ");
+  $("#setupPromo").dataset.jump = mice || !kb ? "mice" : "keyboards";
+}
+renderMiniOffers();
+document.addEventListener("productschange", renderMiniOffers);
+
 function tick() {
   const s = Math.max(0, Math.floor((offerEnd - Date.now()) / 1000));
   // عرض يوم واحد: بنعرض الساعات على طول (24 ساعة) من غير خانة الأيام

@@ -347,6 +347,9 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 .mini-offer > span { font-size: 4rem; }
 .mini-offer--blue { background: linear-gradient(135deg, rgba(0,212,255,.15), var(--surface)); }
 .mini-offer--purple { background: linear-gradient(135deg, rgba(124,92,255,.2), var(--surface)); }
+button.mini-offer { width: 100%; text-align: start; font: inherit; color: inherit; cursor: pointer; }
+.mini-offer__btn { margin-top: 12px; }
+.mini-offer p b { color: var(--text); }
 
 /* ============ Brands ============ */
 .brands { overflow: hidden; padding: 30px 0; border-block: 1px solid var(--border); background: var(--bg-2); }
@@ -1190,6 +1193,8 @@ img[data-fs].is-loaded { opacity: 1; }
   .float-card--2 { left: -4px; bottom: 40px; }
   .features__grid { grid-template-columns: 1fr; }
   .mini-offers { grid-template-columns: 1fr; }
+  .mini-offer > span { font-size: 2.6rem; }
+  .mini-offer h3 { font-size: 1.15rem; }
   .countdown div { min-width: 62px; }
   .laptop { width: 240px; }
   .laptop__screen { height: 150px; }
