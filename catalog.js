@@ -87,7 +87,8 @@ async function fetchRemoteProducts() {
     const local = store.get(LOCAL_PRODUCTS, null);
     if (local?.length) setProducts(local);
   }
-  if (products === DEFAULT_PRODUCTS) setProducts(DEFAULT_PRODUCTS);
+  // المتجر الحقيقي (Firebase) مايعرضش المنتجات التجريبية أبداً، حتى لو التحميل اتأخر أو فشل
+  if (products === DEFAULT_PRODUCTS) setProducts(USE_FIREBASE_CATALOG() ? [] : DEFAULT_PRODUCTS);
 })();
 
 function USE_FIREBASE_CATALOG() {
@@ -119,7 +120,7 @@ async function loadLatestCatalog() {
   } else {
     list = store.get(LOCAL_PRODUCTS, null);
   }
-  const changed = list?.length ? setProducts(list) : setProducts(DEFAULT_PRODUCTS);
+  const changed = list?.length ? setProducts(list) : setProducts(USE_FIREBASE_CATALOG() ? [] : DEFAULT_PRODUCTS);
   if (changed) document.dispatchEvent(new Event("productschange"));
 }
 
