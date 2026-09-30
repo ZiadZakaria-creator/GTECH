@@ -187,24 +187,6 @@ function tick() {
 tick();
 setInterval(tick, 1000);
 
-// ============ عداد الإحصائيات ============
-const statsObserver = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
-    if (!entry.isIntersecting) return;
-    const el = entry.target;
-    const target = +el.dataset.count;
-    const start = performance.now();
-    const step = (now) => {
-      const p = Math.min(1, (now - start) / 1600);
-      el.textContent = num(Math.floor(target * (1 - Math.pow(1 - p, 3))));
-      if (p < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-    statsObserver.unobserve(el);
-  });
-});
-$$("[data-count]").forEach((el) => statsObserver.observe(el));
-
 if (query) {
   $("#searchInput").value = query;
   requestAnimationFrame(() => $("#products").scrollIntoView());
