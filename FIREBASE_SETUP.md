@@ -42,6 +42,6 @@
 - **Authentication ← Settings ← Authorized domains ← Add domain**: `ziadzakaria-creator.github.io`
 
 ## بعد الربط
-- لوحة التحكم: https://ziadzakaria-creator.github.io/GTECH/admin.html
+- لوحة التحكم: https://ziadzakaria-creator.github.io/GTECH/admin/
 - ادخل بالإيميل وكلمة السر اللي عملتهم في خطوة 4.
 - العلامة فوق هتتغير من **🧪 تجريبي** لـ **🟢 مباشر**.

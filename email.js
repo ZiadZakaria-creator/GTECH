@@ -15,7 +15,7 @@ const EMAIL_STEPS = ["new", "confirmed", "shipped", "delivered"];
 const EMAIL_STEP_LABELS = { new: "تم الاستلام", confirmed: "تم التأكيد", shipped: "خرج للتوصيل", delivered: "تم التوصيل" };
 
 const egp = (n) => Number(n).toLocaleString("en-US") + " ج.م";
-const siteUrl = (page) => new URL(page, location.href).href;
+const siteUrl = (page) => new URL(page, document.baseURI).href; // baseURI عشان لوحة التحكم (admin/) تطلع روابط المتجر صح
 
 function orderEmailHtml(order, status) {
   const s = EMAIL_STAGES[status];

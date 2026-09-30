@@ -101,7 +101,7 @@ let productsWatching = false;
 function showSection(name) {
   $$(".ad-sec").forEach((b) => b.classList.toggle("active", b.dataset.section === name));
   $$(".ad-section").forEach((sec) => { sec.hidden = sec.id !== name + "Section"; });
-  history.replaceState(null, "", name === "orders" ? "#" : "#" + name);
+  history.replaceState(null, "", location.pathname + (name === "orders" ? "" : "#" + name));
   if (name === "products") watchProducts();
   document.dispatchEvent(new CustomEvent("sectionchange", { detail: name }));
 }
