@@ -438,7 +438,7 @@ if (EMAIL_ON && EMAIL_CONFIG.storeEmail) {
       await sendOrderEmail({ ...sample, customer: { ...sample.customer, email: EMAIL_CONFIG.storeEmail } }, "shipped");
       alert(`✅ الإيميل اتبعت بنجاح على ${EMAIL_CONFIG.storeEmail}\nلو موصلش خلال دقيقة دوّر في Spam.`);
     } catch (err) {
-      alert(`❌ الإيميل ماتبعتش\n\nرد EmailJS:\n${err.message}\n\nابعت صورة الرسالة دي.`);
+      alert(`❌ الإيميل ماتبعتش\n\nرد EmailJS:\n${err.message}\n\nالبيانات المستخدمة:\nService ID: ${EMAIL_CONFIG.serviceId}\nTemplate ID: ${EMAIL_CONFIG.templateId}\nPublic Key: ${EMAIL_CONFIG.publicKey}\n\nابعت صورة الرسالة دي.`);
     } finally {
       btn.disabled = false;
       btn.textContent = "📧 تجربة الإيميل";
