@@ -192,24 +192,21 @@
       <div class="container">
         <div class="offer">
           <div class="offer__content">
-            <span class="pill pill--light">🔥 عرض لفترة محدودة</span>
-            <h2>خصم يصل إلى <span class="gradient-text">40%</span><br />على اللابتوبات والجيمنج</h2>
-            <p>جهّز نفسك للدراسة والشغل واللعب بأقوى الأجهزة. العرض ينتهي خلال:</p>
+            <span class="pill pill--light" id="offerPill">🔥 عرض 24 ساعة بس</span>
+            <h2>سماعة لوجيتك <span class="gradient-text">G435</span><br />اللاسلكية بسعر مميز</h2>
+            <p>خفيفة جداً، وبطارية لحد 18 ساعة، وبتتوصل LIGHTSPEED أو Bluetooth. <span id="offerEndsText">العرض ينتهي خلال:</span></p>
+            <p class="offer__price" id="offerPrice" hidden></p>
             <div class="countdown" id="countdown">
-              <div><b id="cdDays">00</b><span>يوم</span></div>
               <div><b id="cdHours">00</b><span>ساعة</span></div>
               <div><b id="cdMins">00</b><span>دقيقة</span></div>
               <div><b id="cdSecs">00</b><span>ثانية</span></div>
             </div>
-            <a href="#products" class="btn btn--primary" data-jump="laptops">اغتنم العرض</a>
+            <a href="#products" class="btn btn--primary" id="offerBtn" data-jump="audio">اغتنم العرض</a>
           </div>
-          <div class="offer__visual" aria-hidden="true">
-            <div class="laptop">
-              <div class="laptop__screen"><span>GTECH</span></div>
-              <div class="laptop__base"></div>
-            </div>
-            <div class="offer__tag">-40%</div>
-          </div>
+          <a class="offer__visual" id="offerVisual" href="#products" aria-label="سماعة لوجيتك G435">
+            <img class="offer__img" src="images/offer-g435.webp" alt="سماعة لوجيتك G435 لاسلكية – أسود" width="360" height="360" />
+            <div class="offer__tag" id="offerTag">24<small>ساعة</small></div>
+          </a>
         </div>
 
         <div class="mini-offers">
