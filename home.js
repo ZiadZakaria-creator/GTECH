@@ -277,37 +277,84 @@ $("#orderStrip").addEventListener("click", (e) => {
 document.addEventListener("userchange", startOrderStrip);
 startOrderStrip();
 
-// ============ صفحة الفيسبوك جوه الموبايل اللي في الواجهة ============
-// بتتحمّل بس لما الزائر يوصل للجزء ده، ولو ماتحمّلتش بيفضل تصميم GTECH زي ما هو
-(function phoneSocial() {
-  const url = typeof FACEBOOK_PAGE === "string" && FACEBOOK_PAGE.trim();
+// ============ ستوري المنتجات جوه الموبايل اللي في الواجهة ============
+// بيعرض أحدث المنتجات اللي ليها صور واحد ورا التاني زي الستوري، ولو مفيش صور بيفضل تصميم GTECH
+const STORY_MS = 3800;
+const socialIcons = {
+  facebook: '<svg viewBox="0 0 24 24"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v2H8v4h2v6h4v-6h3l1-4h-4V8z" fill="currentColor" stroke="none"/></svg>',
+  tiktok: '<svg viewBox="0 0 24 24"><path d="M16 3c.4 2.4 1.9 4 4 4.3v3.3a7.6 7.6 0 0 1-4-1.3v6.2A5.5 5.5 0 1 1 10.5 10v3.4a2.2 2.2 0 1 0 2.2 2.1V3H16z" fill="currentColor" stroke="none"/></svg>',
+};
+let storyItems = [], storyIndex = 0, storyTimer = null, storyPaused = false, storySig = "";
+
+function renderPhoneStory() {
   const screen = $(".device__screen");
-  if (!url || !screen) return;
-  const load = () => {
-    const top = 34; // مكان النوتش
-    const w = Math.max(180, Math.round(screen.clientWidth));
-    const h = Math.round(screen.clientHeight) - top;
-    const box = document.createElement("div");
-    box.className = "device__social";
-    box.innerHTML = `<div class="fb-page" data-href="${escapeHtml(url)}" data-tabs="timeline" data-width="${w}" data-height="${h}"
-      data-small-header="true" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="false"></div>`;
-    screen.appendChild(box);
-    if (!document.getElementById("fb-root")) document.body.insertAdjacentHTML("afterbegin", '<div id="fb-root"></div>');
-    // مكتبة فيسبوك الرسمية: بتقولنا لما الصفحة تترسم فعلاً، ولو اتمنعت (نت ضعيف أو مانع إعلانات) بيفضل تصميم GTECH
-    window.fbAsyncInit = () => {
-      FB.init({ xfbml: false, version: "v21.0" });
-      FB.XFBML.parse(box, () => {
-        if (!box.querySelector("iframe")) return;
-        screen.classList.add("has-social");
-        $(".hero__visual").removeAttribute("aria-hidden"); // بقى فيه محتوى حقيقي يتقري ويتضغط
-        $(".hero__visual").classList.add("social-on"); // الكروت العايمة بتتشال عشان ماتغطيش الصفحة
-      });
-    };
-    loadScript("https://connect.facebook.net/ar_AR/sdk.js").catch(() => box.remove());
-  };
-  new IntersectionObserver((entries, obs) => {
-    if (!entries.some((e) => e.isIntersecting)) return;
-    obs.disconnect();
-    load();
-  }, { rootMargin: "200px" }).observe(screen);
-})();
+  if (!screen) return;
+  const items = shopProducts().filter((p) => p.images?.length && inStock(p))
+    .sort((a, b) => (discount(b) - discount(a)) || (b.id - a.id)).slice(0, 6);
+  const sig = items.map((p) => `${p.id}:${p.price}:${p.images[0]}`).join("|");
+  if (sig === storySig) return;
+  storySig = sig;
+  storyItems = items;
+  clearTimeout(storyTimer);
+  screen.querySelector(".story")?.remove();
+  if (!items.length) {
+    $(".hero__visual").classList.remove("story-on");
+    return screen.classList.remove("has-story");
+  }
+  const links = Object.entries(typeof SOCIAL_LINKS === "object" ? SOCIAL_LINKS : {}).filter(([k, v]) => v && socialIcons[k]);
+  screen.insertAdjacentHTML("beforeend", `
+    <div class="story">
+      <div class="story__bars">${items.map(() => "<i><b></b></i>").join("")}</div>
+      <div class="story__head"><span class="story__avatar">G</span><b>GTECH</b><small>عروض النهارده</small></div>
+      <div class="story__slides">${items.map((p, i) => {
+        const off = discount(p);
+        return `
+        <a class="story__slide ${i === 0 ? "is-active" : ""}" href="${productUrl(p.id)}" tabindex="-1">
+          <span class="story__img">${productVisual(p)}${off ? `<em class="story__off">-${num(off)}%</em>` : ""}</span>
+          <span class="story__info">
+            <small>${escapeHtml(p.brand)}</small>
+            <b>${escapeHtml(p.name)}</b>
+            <span class="story__price">${fmt(p.price)}${p.old ? ` <s>${fmt(p.old)}</s>` : ""}</span>
+            <span class="story__cta">اطلبه دلوقتي ←</span>
+          </span>
+        </a>`;
+      }).join("")}</div>
+      <button type="button" class="story__nav story__nav--prev" aria-label="المنتج اللي فات"></button>
+      <button type="button" class="story__nav story__nav--next" aria-label="المنتج اللي بعده"></button>
+      ${links.length ? `<div class="story__social">${links.map(([k, v]) => `<a href="${escapeHtml(v)}" target="_blank" rel="noopener" aria-label="GTECH على ${k === "facebook" ? "فيسبوك" : "تيك توك"}">${socialIcons[k]}</a>`).join("")}</div>` : ""}
+    </div>`);
+  screen.classList.add("has-story");
+  $(".hero__visual").removeAttribute("aria-hidden");
+  $(".hero__visual").classList.add("story-on"); // الكروت العايمة بتتشال عشان ماتغطيش الستوري
+  showStory(0);
+}
+
+function showStory(i) {
+  const screen = $(".device__screen");
+  const story = screen?.querySelector(".story");
+  if (!story || !storyItems.length) return;
+  storyIndex = (i + storyItems.length) % storyItems.length;
+  story.querySelectorAll(".story__slide").forEach((s, n) => s.classList.toggle("is-active", n === storyIndex));
+  story.querySelectorAll(".story__bars i").forEach((bar, n) => {
+    bar.classList.toggle("is-done", n < storyIndex);
+    bar.classList.remove("is-active");
+    if (n === storyIndex) { void bar.offsetWidth; bar.classList.add("is-active"); }
+  });
+  story.style.setProperty("--story-ms", STORY_MS + "ms");
+  clearTimeout(storyTimer);
+  if (!storyPaused && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    storyTimer = setTimeout(() => showStory(storyIndex + 1), STORY_MS);
+  }
+}
+
+document.addEventListener("click", (e) => {
+  const nav = e.target.closest(".story__nav");
+  if (!nav) return;
+  showStory(storyIndex + (nav.classList.contains("story__nav--next") ? 1 : -1));
+});
+const visual = $(".hero__visual");
+visual?.addEventListener("pointerenter", () => { storyPaused = true; clearTimeout(storyTimer); $(".story")?.classList.add("is-paused"); });
+visual?.addEventListener("pointerleave", () => { storyPaused = false; $(".story")?.classList.remove("is-paused"); showStory(storyIndex); });
+document.addEventListener("productschange", renderPhoneStory);
+document.addEventListener("catalogloaded", renderPhoneStory);
+renderPhoneStory();

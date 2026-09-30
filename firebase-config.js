@@ -53,7 +53,9 @@ const EMAIL_CONFIG = {
 //   storeEmail: "you@gmail.com",    // (اختياري) يوصلك إيميل بكل طلب جديد، والعميل يرد عليه
 // };
 
-// ============ صفحة الفيسبوك جوه الموبايل اللي في أول الصفحة الرئيسية ============
-// حط لينك صفحة الفيسبوك (لازم تكون Page مش حساب شخصي)، مثال: "https://www.facebook.com/GTECH"
-// لو فاضي بيفضل تصميم GTECH العادي جوه الموبايل
-const FACEBOOK_PAGE = "https://www.facebook.com/profile.php?id=61582595856275";
+// ============ حسابات التواصل (أيقونات في الموبايل اللي في الواجهة) ============
+// امسح أي لينك مش عايزه يظهر
+const SOCIAL_LINKS = {
+  facebook: "https://www.facebook.com/profile.php?id=61582595856275",
+  tiktok: "https://www.tiktok.com/@ziadzkariaebrahim",
+};
