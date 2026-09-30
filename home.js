@@ -100,7 +100,7 @@ function startOrderStrip() {
   stripNotify = statusChangeNotifier();
   $("#orderStrip").hidden = true;
   if (!user || !store.get(HAS_ORDERS_KEY, false)) return;
-  stopStrip = watchMyOrders(user.phone, renderOrderStrip, (err) => console.warn("order strip", err));
+  stopStrip = watchMyOrders(myOrdersPhone(), renderOrderStrip, (err) => console.warn("order strip", err));
 }
 
 function renderOrderStrip(list) {

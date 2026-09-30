@@ -38,7 +38,7 @@ const localOrders = {
     };
   },
   watchMine(phone, onData) {
-    return this.watch((all) => onData(all.filter((o) => o.customer.phone === phone)));
+    return this.watch((all) => onData(all.filter((o) => !phone || o.customer.phone === phone)));
   },
   async update(id, changes) {
     const orders = store.get(ORDERS_KEY, []);
@@ -69,7 +69,7 @@ const firebaseOrders = {
     let stop = () => {};
     Promise.all([this.col(), ensureCustomerAuth()]).then(([col, u]) => {
       stop = col.where("customer.uid", "==", u.uid).onSnapshot(
-        (snap) => onData(snap.docs.map((d) => { const { serverTime, ...o } = d.data(); return o; }).filter((o) => o.customer.phone === phone)),
+        (snap) => onData(snap.docs.map((d) => { const { serverTime, ...o } = d.data(); return o; }).filter((o) => !phone || o.customer.phone === phone)),
         onError
       );
     }, onError);

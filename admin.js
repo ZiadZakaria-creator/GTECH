@@ -292,6 +292,11 @@ $("#drawerBody").addEventListener("click", async (e) => {
     const from = o.status;
     await updateOrder(openId, { status });
     await syncStockForStatus(o, from, status);
+    if (o.customer.email && EMAIL_ON) {
+      sendOrderEmail({ ...o, status }, status)
+        .then((sent) => sent && toast(`📧 اتبعت إيميل "${EMAIL_STAGES[status].subject}" للعميل`))
+        .catch((err) => { console.warn("status email", err); toast("⚠️ الحالة اتغيرت بس الإيميل ماتبعتش"); });
+    }
     toast(`${STATUS_ICONS[status]} الطلب ${o.id} بقى "${ORDER_STATUSES[status]}"`);
   } catch {
     toast("❌ مقدرناش نحدّث الطلب، جرّب تاني");

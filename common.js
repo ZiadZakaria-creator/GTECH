@@ -181,7 +181,7 @@ function renderAccount() {
     btn.classList.add("account__btn--in");
     btn.innerHTML = `<span class="account__avatar">${escapeHtml(user.name.trim()[0])}</span><span class="account__name">${escapeHtml(user.name.split(" ")[0])}</span>`;
     $("#accountMenu").innerHTML = `
-      <div class="account__info"><b>${escapeHtml(user.name)}</b><small dir="ltr">${user.phone}${user.verified ? ` <span class="verified" title="رقم مؤكد">✔</span>` : ""}</small></div>
+      <div class="account__info"><b>${escapeHtml(user.name)}</b><small dir="ltr">${escapeHtml(user.phone || user.email || "")}${user.verified ? ` <span class="verified" title="رقم مؤكد">✔</span>` : ""}</small></div>
       ${needsVerify(user) ? `<button id="verifyBtn">📲 أكّد رقم موبايلك</button>` : ""}
       <a href="myorders.html">📦 طلباتي</a>
       <a href="wishlist.html">❤️ المفضلة</a>
@@ -289,6 +289,9 @@ function finishLogin(info) {
   toast(info.verified ? `✔ تم تأكيد رقمك — أهلاً ${user.name.split(" ")[0]} 👋` : `أهلاً ${user.name.split(" ")[0]} 👋`);
   if (action) action();
 }
+
+// رقم الموبايل اللي بنفلتر بيه "طلباتي": حسابات Google بتتعرف بالحساب نفسه
+const myOrdersPhone = () => (user?.provider ? "" : user?.phone || "");
 
 // ============ كود تأكيد SMS ============
 // الكود بيتبعت عن طريق Firebase Phone Auth. لو العميل عنده حساب Firebase (مجهول أو Google)
@@ -474,6 +477,12 @@ async function socialLogin(kind) {
     const provider = kind === "google" ? new firebase.auth.GoogleAuthProvider() : new firebase.auth.FacebookAuthProvider();
     const { user: fbUser } = await firebase.auth().signInWithPopup(provider);
     socialInfo = { provider: kind, uid: fbUser.uid, email: fbUser.email || "" };
+
+    // من غير كود SMS: الدخول بيخلص على طول، ورقم الموبايل بيتطلب في صفحة الدفع
+    if (!SMS_ON) {
+      const name = (fbUser.displayName || (fbUser.email || "").split("@")[0] || "عميل").trim();
+      return finishLogin({ name, phone: "", ...socialInfo });
+    }
 
     const f = $("#loginForm");
     if (fbUser.displayName) f.name.value = fbUser.displayName;

@@ -17,7 +17,7 @@ function start() {
   if (!user) return show("myLogin");
 
   show("myLoading");
-  stopMine = watchMyOrders(user.phone, renderOrders, (err) => {
+  stopMine = watchMyOrders(myOrdersPhone(), renderOrders, (err) => {
     console.error(err);
     show("myEmpty");
     $("#myEmptyText").textContent = "مقدرناش نحمّل طلباتك دلوقتي، جرّب تاني بعد شوية أو كلمنا على واتساب.";

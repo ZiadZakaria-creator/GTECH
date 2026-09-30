@@ -27,7 +27,11 @@ function renderSummary() {
 
   // بيانات التواصل جاية من الحساب
   form.elements.name.value = user.name;
-  form.elements.phone.value = user.phone;
+  // لو الحساب مفيهوش رقم (دخول بـ Google) العميل يكتبه هنا مرة واحدة
+  const phoneEl = form.elements.phone;
+  phoneEl.readOnly = !!user.phone;
+  if (user.phone) phoneEl.value = user.phone;
+  if (!form.elements.email.value && user.email) form.elements.email.value = user.email;
   $("#accountNote").innerHTML = `✔ داخل باسم <b>${escapeHtml(user.name)}</b> — <button type="button" class="link-btn" id="switchUser">مش إنت؟ غيّر الحساب</button>`;
 
   const count = cart.reduce((s, i) => s + i.qty, 0);
@@ -131,7 +135,7 @@ function buildOrder(d, t) {
     id: newOrderId(),
     createdAt: new Date().toISOString(),
     status: "new",
-    customer: { name: user.name, phone: user.phone, email: d.email.trim() },
+    customer: { name: user.name, phone: normalizePhone(d.phone), email: d.email.trim() },
     address: { gov: d.gov, city: d.city.trim(), street: d.address.trim(), notes: d.notes.trim() },
     items: cart.map((i) => {
       const p = findProduct(i.id);
@@ -161,6 +165,13 @@ async function placeOrder() {
   try {
     await submitOrder(order);
     store.set(HAS_ORDERS_KEY, true);
+    sendOrderEmail(order, "new").catch((err) => console.warn("order email", err));
+    notifyStoreOfOrder(order).catch((err) => console.warn("store email", err));
+    if (!user.phone) {
+      user = { ...user, phone: order.customer.phone };
+      store.set("gtech-user", user);
+      renderAccount();
+    }
   } catch {
     btn.disabled = false;
     btn.textContent = "إرسال الطلب";

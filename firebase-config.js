@@ -35,3 +35,15 @@ const PHONE_VERIFICATION = false;
 
 // الحد اليومي لرسايل SMS (للعدّاد اللي في لوحة التحكم). لو فعّلت خطة Blaze خليه null
 const SMS_DAILY_LIMIT = 10;
+
+// ============ إيميلات الطلبات (EmailJS) ============
+// إيميل للعميل لما يطلب، ومع كل مرحلة (تأكيد، خرج للتوصيل، تم الاستلام، إلغاء).
+// الخطوات في EMAIL_SETUP.md. لحد ما البيانات دي تتحط، الإيميلات مقفولة.
+const EMAIL_CONFIG = null;
+// مثال:
+// const EMAIL_CONFIG = {
+//   publicKey: "xxxxxxxxxxxx",      // Account ← General ← Public Key
+//   serviceId: "service_xxxxxxx",   // Email Services
+//   templateId: "template_xxxxxxx", // Email Templates
+//   storeEmail: "you@gmail.com",    // (اختياري) يوصلك إيميل بكل طلب جديد، والعميل يرد عليه
+// };
