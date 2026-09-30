@@ -42,6 +42,7 @@ function renderCompare() {
     cmpRow("التقييم", items.map((p) => `<span class="product__rating">${stars(p.rating)}</span> ${num(p.rating)}${p.rating === bestRated ? ` <span class="cmp-badge">الأعلى</span>` : ""}`), { html: true }),
     cmpRow("المخزون", items.map((p) => (inStock(p) ? (p.stock <= 5 ? `باقي ${num(p.stock)}` : "متوفر") : "نفد"))),
     cmpRow("الماركة", items.map((p) => p.brand)),
+    cmpRow("الضمان", items.map((p) => (hasWarranty(p) ? warrantyText(p) : "من غير ضمان"))),
     cmpRow("القسم", items.map((p) => categories[p.cat])),
     ...optKeys.map((k) => cmpRow(k, items.map((p) => (p.options[k] || []).join("، ")))),
     ...specKeys.map((k) => cmpRow(k, items.map((p) => p.specs[k]))),

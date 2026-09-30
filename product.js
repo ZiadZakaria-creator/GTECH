@@ -124,7 +124,7 @@ function renderDetail(p) {
 
         <div class="pd__perks">
           <div><span>🚚</span><p>توصيل متوقع <b>${delivery}</b>${p.price >= 1000 ? " — مجاناً" : ""}</p></div>
-          <div><span>🛡️</span><p>ضمان رسمي من الوكيل لمدة <b>${p.cat === "accessories" ? "سنة" : "سنتين"}</b></p></div>
+          <div><span>🛡️</span><p>${hasWarranty(p) ? `ضمان رسمي لمدة <b>${esc(warrantyText(p))}</b>` : "المنتج ده <b>من غير ضمان</b>"}</p></div>
           <div><span>🔄</span><p>استرجاع أو استبدال مجاني خلال <b>14 يوم</b></p></div>
         </div>
       </div>
@@ -152,7 +152,7 @@ function renderDetail(p) {
         <tr><th>الماركة</th><td>${esc(p.brand)}</td></tr>
         <tr><th>القسم</th><td>${categories[p.cat]}</td></tr>
         ${Object.entries(p.specs).map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join("")}
-        <tr><th>الضمان</th><td>${p.cat === "accessories" ? "سنة" : "سنتين"} ضمان الوكيل</td></tr>
+        <tr><th>الضمان</th><td>${hasWarranty(p) ? `${esc(warrantyText(p))} ضمان رسمي` : "من غير ضمان"}</td></tr>
       </tbody>
     </table>`;
 

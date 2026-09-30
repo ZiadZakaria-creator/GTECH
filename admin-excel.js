@@ -17,6 +17,7 @@ const EXCEL_COLUMNS = [
   { key: "old", head: "السعر قبل الخصم", alt: ["old", "old price", "compare price"] },
   { key: "stock", head: "المخزون", alt: ["stock", "الكمية", "qty"] },
   { key: "tag", head: "الشارة", alt: ["tag", "badge"] },
+  { key: "warranty", head: "الضمان", alt: ["warranty", "guarantee"] },
   { key: "active", head: "ظاهر", alt: ["active", "visible", "الحالة"] },
   { key: "desc", head: "الوصف", alt: ["description", "desc"] },
   { key: "highlights", head: "المميزات", alt: ["highlights"] },
@@ -49,6 +50,7 @@ function productToRow(p) {
     "السعر قبل الخصم": p.old || "",
     "المخزون": p.stock,
     "الشارة": p.tag || "",
+    "الضمان": p.warranty || "",
     "ظاهر": p.active ? "نعم" : "لا",
     "الوصف": p.desc,
     "المميزات": p.highlights.join(SEP),
@@ -73,6 +75,7 @@ $("#excelExportBtn").addEventListener("click", async () => {
       ["• الخانات الفاضية في منتج موجود بتفضل زي ما هي."],
       ["• القسم: " + Object.values(categories).join("، ")],
       ["• ظاهر: نعم أو لا"],
+      ["• الضمان: مثلاً سنة، سنتين، 6 شهور، أو بدون ضمان. لو فاضي: سنة للإكسسوارات وسنتين للباقي"],
       ["• المميزات والصور: افصل بين كل عنصر بـ |"],
       ["• الاختيارات: اللون: أسود، أبيض | السعة: 128، 256"],
       ["• المواصفات: الشاشة: 6.7 بوصة | المعالج: A19"],
@@ -127,6 +130,7 @@ function buildFromRow(row, existing, nextId) {
   if (has("old")) p.old = toNum(row.old) || null;
   if (has("stock")) p.stock = toNum(row.stock);
   if (has("tag")) p.tag = clean(row.tag);
+  if (has("warranty")) p.warranty = clean(row.warranty).slice(0, 40);
   if (has("active")) p.active = !/^(لا|no|false|0|مخفي|hidden)$/i.test(clean(row.active));
   if (has("desc")) p.desc = clean(row.desc);
   if (has("highlights")) p.highlights = splitCell(row.highlights);

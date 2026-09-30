@@ -174,3 +174,7 @@ function imgFallback(img) {
 
 document.addEventListener("DOMContentLoaded", () => hydrateAll());
 refreshCatalog();
+
+// مدة الضمان: اللي صاحب المتجر كتبه للمنتج، ولو فاضي: سنة للإكسسوارات وسنتين لباقي الأقسام
+const warrantyText = (p) => String(p.warranty || "").trim() || (p.cat === "accessories" ? "سنة" : "سنتين");
+const hasWarranty = (p) => !/^(لا|بدون|مفيش|no|none|0)/i.test(warrantyText(p));

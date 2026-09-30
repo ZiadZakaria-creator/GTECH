@@ -226,6 +226,7 @@ function openEditor(p = null) {
     f.old.value = p.old || "";
     f.stock.value = p.stock;
     f.tag.value = p.tag || "";
+    f.warranty.value = p.warranty || "";
     f.active.checked = p.active;
     f.desc.value = p.desc;
     f.highlights.value = p.highlights.join("\n");
@@ -354,6 +355,7 @@ function parseForm() {
     cat: f.cat.value,
     price, old, stock,
     tag: f.tag.value.trim(),
+    warranty: f.warranty.value.trim(),
     active: f.active.checked,
     desc: f.desc.value.trim(),
     highlights: lines(f.highlights.value),
