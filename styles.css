@@ -939,10 +939,26 @@ img[data-fs].is-loaded { opacity: 1; }
   .compare-tray { left: 12px; right: 12px; transform: none; justify-content: space-between; bottom: 12px; }
   .product-page .compare-tray { bottom: 80px; }
   .compare-tray__item { width: 40px; height: 40px; }
-  .cmp th { width: 110px; padding: 10px; font-size: .82rem; }
-  .cmp { min-width: calc(110px + var(--cols) * 170px); }
-  .cmp-img { width: 90px; height: 90px; }
+  /* على الموبايل: اسم الخاصية سطر لوحده، والمنتجات جنب بعض بعرض الشاشة من غير سكرول لجنب */
+  .cmp, .cmp thead, .cmp tbody { display: block; min-width: 0; }
+  .cmp tr { display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); }
+  .cmp th { grid-column: 1 / -1; position: static; width: auto; padding: 8px 12px; font-size: .8rem; border-bottom: 0; }
+  .cmp thead th { display: none; }
+  .cmp td { padding: 10px 8px; font-size: .85rem; overflow-wrap: anywhere; }
+  .cmp td + td { border-inline-start: 1px solid var(--border); }
+  .cmp-img { width: min(90px, 100%); height: auto; aspect-ratio: 1; }
+  .cmp-name { font-size: .85rem; }
+  .cmp-head .btn { padding-inline: 10px; font-size: .78rem; }
+  .cmp ul { font-size: .8rem; }
   .product__compare { top: 52px; width: 32px; height: 32px; }
+}
+
+/* الموبايلات الصغيرة: الهيدر يفضل جوه عرض الشاشة (من غير سكرول لجنب) */
+@media (max-width: 400px) {
+  .header__inner { gap: 10px; }
+  .header__actions { gap: 6px; }
+  .header .icon-btn { width: 40px; height: 40px; }
+  .header .logo { font-size: 1.35rem; }
 }
 
 /* ============ نبّهني ============ */
