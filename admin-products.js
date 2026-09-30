@@ -382,7 +382,16 @@ function prepareImage(img) {
   let q = 0.9, data = c.toDataURL("image/jpeg", q);
   while (data.length > 700000 && q > 0.45) data = c.toDataURL("image/jpeg", (q -= 0.08));
   if (data.length > 900000) throw new Error("too big");
-  return { data, bg: box ? box.bg : null }; // bg = لون الخلفية لو المنتج اتحط في مربع (بيتعرض كامل من غير قص)
+  // الصورة الصغيرة (زي الصور المصغّرة بتاعة بحث جوجل) بتبان مش واضحة في المتجر
+  const size = Math.round(box ? Math.max(box.w, box.h) : Math.max(img.width, img.height));
+  return { data, bg: box ? box.bg : null, size, lowRes: size < LOW_RES }; // bg = لون الخلفية لو المنتج اتحط في مربع
+}
+
+const LOW_RES = 500; // أقل من كده الصورة بتبان مش واضحة في صفحة المنتج
+function lowResWarning(count, size) {
+  return count === 1
+    ? `⚠️ الصورة صغيرة (${num(size)} بكسل) وهتبان مش واضحة في المتجر — نزّل نسخة أكبر من موقع الشركة`
+    : `⚠️ ${num(count)} صور صغيرة وهتبان مش واضحة في المتجر — نزّل نسخ أكبر من موقع الشركة`;
 }
 
 $("#peFiles").addEventListener("change", async (e) => {
@@ -391,7 +400,9 @@ $("#peFiles").addEventListener("change", async (e) => {
   if (edImages.length + files.length > 6) return toast("أقصى عدد 6 صور للمنتج");
   for (const file of files) {
     try {
-      edImages.push(await compressImage(file));
+      const prepared = await compressImage(file);
+      edImages.push(prepared);
+      if (prepared.lowRes) setTimeout(() => toast(lowResWarning(1, prepared.size)), 50);
     } catch {
       toast(`❌ مقدرناش نقرا الصورة ${file.name}`);
     }
@@ -516,11 +527,12 @@ $("#rowImgFiles").addEventListener("change", async (e) => {
   const room = 6 - p.images.length;
   if (room <= 0) return toast("المنتج ده فيه 6 صور خلاص — افتحه وامسح صورة الأول");
   const picked = files.slice(0, room);
-  const fresh = [];
+  const fresh = [], lowRes = [];
   for (const [i, file] of picked.entries()) {
     toast(`⏳ بنرفع صورة ${num(i + 1)} من ${num(picked.length)}...`);
     try {
       const prepared = await compressImage(file);
+      if (prepared.lowRes) lowRes.push(prepared.size);
       fresh.push(await productsStore.saveImage(prepared.data, prepared.bg));
     } catch (err) {
       console.warn("row image", err);
@@ -532,6 +544,7 @@ $("#rowImgFiles").addEventListener("change", async (e) => {
     await productsStore.save({ ...current, images: [...current.images, ...fresh].slice(0, 6), updatedAt: new Date().toISOString() });
     const extra = files.length - picked.length;
     toast(`✅ اتضافت ${num(fresh.length)} صورة لـ "${p.name}"${extra > 0 ? ` (${num(extra)} مااتضافتش عشان الحد 6 صور)` : ""}`);
+    if (lowRes.length) setTimeout(() => toast(lowResWarning(lowRes.length, lowRes[0])), 2600);
   } catch (err) {
     console.error(err);
     toast(err?.code === "permission-denied" ? "⛔ محتاج تحدّث قواعد الأمان في Firebase" : "❌ الحفظ فشل، جرّب تاني");

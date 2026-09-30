@@ -140,6 +140,7 @@ $("#bulkApply").addEventListener("click", async () => {
   const btn = $("#bulkApply");
   btn.disabled = true;
   let done = 0, failed = 0, savedProducts = 0;
+  const lowRes = [];
   const replace = $("#bulkReplace").checked;
   for (const g of plan) {
     const fresh = [];
@@ -147,6 +148,7 @@ $("#bulkApply").addEventListener("click", async () => {
       btn.textContent = `جاري الرفع ${num(done + 1)} من ${num(total)}...`;
       try {
         const prepared = await compressImage(it.file);
+        if (prepared.lowRes) lowRes.push(prepared.size);
         fresh.push(await productsStore.saveImage(prepared.data, prepared.bg));
       } catch (err) {
         console.warn("bulk image", it.file.name, err);
@@ -175,4 +177,5 @@ $("#bulkApply").addEventListener("click", async () => {
   toast(failed
     ? `⚠️ اترفع ${num(total - failed)} صورة، و ${num(failed)} فشلت — جرّب تاني بيهم`
     : `✅ اترفعت ${num(total)} صورة على ${num(savedProducts)} منتج`);
+  if (lowRes.length) setTimeout(() => toast(lowResWarning(lowRes.length, lowRes[0])), 2600);
 });

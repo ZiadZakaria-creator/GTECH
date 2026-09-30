@@ -45,7 +45,7 @@ function toast(msg) {
   t.textContent = msg;
   t.classList.add("show");
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
+  toastTimer = setTimeout(() => t.classList.remove("show"), Math.max(2600, String(msg).length * 55)); // الرسايل الطويلة بتقعد أكتر
 }
 
 // ============ الوضع الفاتح / الغامق ============
