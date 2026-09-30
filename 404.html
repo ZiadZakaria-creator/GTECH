@@ -10,6 +10,9 @@
     (function () {
       var m = location.pathname.match(/^(.*\/)p\/(\d+)\.html$/);
       if (m) location.replace(m[1] + "product.html?id=" + m[2]);
+      // لينك مختصر قديم اتعمل غلط (…/GTECH/&alias=…) ← الصفحة الرئيسية
+      var bad = location.pathname.match(/^(\/[^/]+\/)&/);
+      if (bad) location.replace(bad[1]);
     })();
   </script>
   <style>
