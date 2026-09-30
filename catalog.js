@@ -136,6 +136,36 @@ function fetchStoredImage(key) {
   return job;
 }
 
+// لو أركان الصورة كلها بنفس اللون (صورة منتج على خلفية سادة) بنرجّع اللون ده،
+// عشان الصورة تتعرض كاملة من غير قص حتى لو اترفعت قبل ما اللوحة تظبطها
+const plainBgCache = new Map();
+function detectPlainBackground(src) {
+  if (plainBgCache.has(src)) return plainBgCache.get(src);
+  const job = new Promise((resolve) => {
+    const im = new Image();
+    im.onload = () => {
+      try {
+        const n = 24, c = document.createElement("canvas");
+        c.width = c.height = n;
+        const ctx = c.getContext("2d", { willReadFrequently: true });
+        ctx.drawImage(im, 0, 0, n, n);
+        const d = ctx.getImageData(0, 0, n, n).data;
+        const px = (x, y) => { const i = (y * n + x) * 4; return [d[i], d[i + 1], d[i + 2]]; };
+        const pts = [px(0, 0), px(1, 1), px(n - 1, 0), px(n - 2, 1), px(0, n - 1), px(1, n - 2), px(n - 1, n - 1), px(n - 2, n - 2)]; // الأركان بس (السلك ممكن يوصل لنص الحافة)
+        const [r, g, b] = pts[0];
+        const same = pts.every(([r2, g2, b2]) => Math.abs(r2 - r) + Math.abs(g2 - g) + Math.abs(b2 - b) <= 36);
+        resolve(same ? `rgb(${r},${g},${b})` : null);
+      } catch {
+        resolve(null);
+      }
+    };
+    im.onerror = () => resolve(null);
+    im.src = src;
+  });
+  plainBgCache.set(src, job);
+  return job;
+}
+
 // أي <img data-fs="..."> بيظهر في الصفحة بيتحمّل لوحده
 function hydrateImage(img) {
   if (img.dataset.loading) return;
@@ -145,6 +175,7 @@ function hydrateImage(img) {
       // صور المنتجات على خلفية سادة (متجهزة في اللوحة) بتظهر كاملة على نفس لون خلفيتها
       const fit = /^cfit-([0-9a-f]{6})-/.exec(img.dataset.fs);
       if (fit) Object.assign(img.style, { objectFit: "contain", background: "#" + fit[1] });
+      else detectPlainBackground(src).then((bg) => { if (bg) Object.assign(img.style, { objectFit: "contain", background: bg }); });
       img.src = src;
       img.classList.add("is-loaded");
     })
