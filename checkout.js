@@ -192,6 +192,7 @@ async function placeOrder() {
         showEmailStatus(`⚠️ الطلب وصلنا بس إيميل التأكيد ماتبعتش (${String(err.message).slice(0, 80)})`);
       });
     notifyStoreOfOrder(order).catch((err) => console.warn("store email", err));
+    pushStoreOfOrder(order).catch((err) => console.warn("store push", err));
     if (!user.phone) {
       user = { ...user, phone: order.customer.phone };
       store.set("gtech-user", user);

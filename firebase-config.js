@@ -45,6 +45,13 @@ const EMAIL_CONFIG = {
   templateId: "template_1a7i7tf",
   storeEmail: "ziadzakaria966@gmail.com", // بيوصله إيميل بكل طلب جديد — امسح السطر ده لو مش عايز
 };
+
+// ============ إشعار فوري على موبايلك بكل أوردر جديد (ntfy — مجاني) ============
+// نزّل تطبيق ntfy على موبايلك ← + ← اكتب اسم القناة دي بالظبط ← Subscribe.
+// القناة دي سرية: ماتنشرهاش. الإشعار فيه المنتجات والمبلغ والمحافظة بس (من غير اسم العميل أو رقمه).
+// لو اتسرّبت أو عايز توقفها: غيّر الاسم هنا (أو امسح السطر) واشترك في الجديد.
+const ORDER_PUSH_TOPIC = "gtech-orders-5d31c3d785f3de02";
+
 // مثال:
 // const EMAIL_CONFIG = {
 //   publicKey: "xxxxxxxxxxxx",      // Account ← General ← Public Key

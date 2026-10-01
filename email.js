@@ -103,6 +103,28 @@ async function sendOrderEmail(order, status = order.status) {
   return true;
 }
 
+// إشعار فوري على موبايل صاحب المتجر بكل طلب جديد (تطبيق ntfy — ORDER_PUSH_TOPIC في firebase-config.js)
+// من غير اسم العميل ولا رقمه، لأن أي حد يعرف اسم القناة يقدر يقراها
+async function pushStoreOfOrder(order) {
+  if (typeof ORDER_PUSH_TOPIC === "undefined" || !ORDER_PUSH_TOPIC) return false;
+  const clip = (s, n) => (s.length > n ? s.slice(0, n - 1) + "…" : s);
+  const lines = order.items.map((i) => `• ${clip(i.name, 70)} × ${i.qty}`);
+  lines.push("", `📍 ${order.address.gov} · ${order.payment.label} · ${order.shipping.label}`, `رقم الطلب: ${order.id}`);
+  const res = await fetch("https://ntfy.sh/", {
+    method: "POST",
+    body: JSON.stringify({
+      topic: ORDER_PUSH_TOPIC,
+      title: `🛒 طلب جديد — ${egp(order.totals.total)}`,
+      message: lines.join("\n"),
+      priority: 5,
+      tags: ["moneybag"],
+      click: siteUrl("admin/"),
+    }),
+  });
+  if (!res.ok) throw new Error("ntfy " + res.status);
+  return true;
+}
+
 // إيميل لصاحب المتجر بكل طلب جديد (لو storeEmail متحط)
 async function notifyStoreOfOrder(order) {
   if (!EMAIL_ON || !EMAIL_CONFIG.storeEmail) return false;
