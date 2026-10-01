@@ -1296,3 +1296,8 @@ html[dir="ltr"] .pd__highlights li::before { right: auto; left: 0; }
   .header__actions a[href="wishlist.html"] { display: none; }
   .nav .nav-wish { display: block; }
 }
+/* زرار الحساب لما الاسم مستخبي: الدايرة في النص */
+@media (max-width: 600px), (min-width: 901px) and (max-width: 1180px) {
+  .account__btn, .account__btn--in { justify-content: center; padding: 0; gap: 0; }
+  .account__btn--in .account__avatar { width: 30px; height: 30px; font-size: .95rem; }
+}
