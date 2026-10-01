@@ -3,7 +3,8 @@ const categories = {
   storage: "هاردات",
   keyboards: "كيبوردات",
   mice: "ماوسات",
-  audio: "سماعات",
+  audio: "سماعات هيدسيت",
+  earphones: "سماعات سلك وإيربودز",
   monitors: "شاشات",
   gpus: "كروت شاشة",
 };
@@ -54,7 +55,7 @@ const DEFAULT_PRODUCTS = [
     specs: { "النوع": "Over-ear لاسلكية", "إلغاء الضوضاء": "نشط – معالج QN3", "البلوتوث": "5.3 – LDAC / AAC / SBC", "البطارية": "30 ساعة (مع إلغاء الضوضاء)", "الشحن": "USB-C – شحن سريع", "الوزن": "250 جرام" },
   },
   {
-    id: 6, name: "إيربودز برو 3 مع إلغاء الضوضاء", brand: "APPLE", cat: "audio", icon: "🎧", price: 12999, old: null, rating: 4.7, reviews: 530, tag: "جديد", tint: "rgba(34,197,94,.28)", stock: 30,
+    id: 6, name: "إيربودز برو 3 مع إلغاء الضوضاء", brand: "APPLE", cat: "earphones", icon: "🎧", price: 12999, old: null, rating: 4.7, reviews: 530, tag: "جديد", tint: "rgba(34,197,94,.28)", stock: 30,
     images: ["images/6-1.jpg", "images/6-2.jpg", "images/6-3.jpg"],
     desc: "الجيل الجديد من إيربودز برو بعزل ضوضاء أقوى مرتين، وصوت محيطي مخصص، ومستشعر نبض القلب للتمارين. مقاومة للعرق والماء، وعلبة شحن بتدعم MagSafe.",
     highlights: ["عزل ضوضاء نشط أقوى 2x", "صوت محيطي مخصص Spatial Audio", "مستشعر نبض القلب", "مقاومة IP57"],

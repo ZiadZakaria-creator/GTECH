@@ -12,14 +12,16 @@ const LOCAL_IMAGES = "gtech-product-images-local";
 
 const CATEGORY_TINTS = {
   storage: "rgba(251,191,36,.25)", keyboards: "rgba(10,132,255,.35)", mice: "rgba(34,197,94,.28)",
-  audio: "rgba(124,92,255,.35)", monitors: "rgba(0,212,255,.35)", gpus: "rgba(255,77,109,.3)",
+  audio: "rgba(124,92,255,.35)", earphones: "rgba(236,72,153,.3)", monitors: "rgba(0,212,255,.35)", gpus: "rgba(255,77,109,.3)",
 };
-const CATEGORY_ICONS = { storage: "💾", keyboards: "⌨️", mice: "🖱️", audio: "🎧", monitors: "🖥️", gpus: "🎮" };
+const CATEGORY_ICONS = { storage: "💾", keyboards: "⌨️", mice: "🖱️", audio: "🎧", earphones: "🎵", monitors: "🖥️", gpus: "🎮" };
 
 // المنتجات القديمة (قبل الأقسام الجديدة) بيتعرف قسمها من اسمها لحد ما تتعدّل من اللوحة
 const CATEGORY_GUESS = [
   ["mice", /ماوس|mouse/i], ["keyboards", /كيبورد|keyboard/i], ["gpus", /كارت شاشة|كروت شاشة|rtx|gtx|radeon|graphics card/i],
-  ["monitors", /شاشة|شاشه|monitor/i], ["storage", /هارد|ssd|hdd|nvme|فلاشة|flash/i], ["audio", /سماع|headset|headphone|earbud|airpods|buds/i],
+  ["monitors", /شاشة|شاشه|monitor/i], ["storage", /هارد|ssd|hdd|nvme|فلاشة|flash/i],
+  ["earphones", /إيربودز|ايربودز|إيربدز|earbud|earphone|airpods|buds|tws|in-ear|سماعة (?:سلك|أذن|اذن|بلوتوث)/i],
+  ["audio", /سماع|headset|headphone/i],
 ];
 function productCategory(p) {
   if (categories[p.cat]) return p.cat;
