@@ -91,6 +91,7 @@ function renderCompareTray() {
 // ============ السلة والمفضلة ============
 function bump(el, value) {
   el.textContent = num(value);
+  el.hidden = !value; // مفيش "٠" على السلة والمفضلة وهما فاضيين
   el.classList.remove("bump");
   void el.offsetWidth;
   el.classList.add("bump");
@@ -619,6 +620,7 @@ document.body.insertAdjacentHTML("beforeend", `
 
 $("#year").textContent = new Date().getFullYear();
 $("#wishCount").textContent = num(wishlist.length);
+$("#wishCount").hidden = !wishlist.length;
 renderCart();
 
 // لما المنتجات تتحدث من لوحة التحكم: شيل من السلة أي منتج اتشال واحسب بالأسعار الجديدة

@@ -6,10 +6,12 @@
 
 const I18N_EN = {
 "ج.م": "EGP",
+"🚚 شحن مجاني للطلبات فوق 1000 ج.م": "🚚 Free shipping on orders over 1000 EGP",
+"— ضمان رسمي على جميع المنتجات": "— official warranty on all products",
 "التقسيط هيبقى متاح قريباً": "Installments are coming soon",
 "على GTECH — تابعنا": "to GTECH — stay tuned",
 "هيبقى متاح قريباً": "Coming soon",
-"كل اللي جهازك محتاجه في مكان واحد: ماوسات وكيبوردات وسماعات جيمنج، إيربودز لموبايلك، وهاردات و SSD — أصلية بضمان من لوجيتك وريدراجون وهايبر إكس وأنكر، بأسعار تنافسية وتوصيل لكل المحافظات.": "Everything your setup needs in one place: gaming mice, keyboards and headsets, earbuds for your phone, plus hard drives and SSDs — original with warranty from Logitech, Redragon, HyperX and Anker, at competitive prices with delivery to every governorate.",
+"كل اللي جهازك محتاجه في مكان واحد: ماوسات وكيبوردات وسماعات جيمنج، إيربودز لموبايلك، وهاردات SSD وخارجية — أصلية بضمان من لوجيتك وريدراجون وهايبر إكس وأنكر، بأسعار تنافسية وتوصيل لكل المحافظات.": "Everything your setup needs in one place: gaming mice, keyboards and headsets, earbuds for your phone, plus SSDs and external hard drives — original with warranty from Logitech, Redragon, HyperX and Anker, at competitive prices with delivery to every governorate.",
 "إيربودز أنكر": "Anker earbuds",
 "خصم 20%": "20% off",
 "ماوسات جيمنج": "Gaming mice",

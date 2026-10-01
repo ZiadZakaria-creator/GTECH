@@ -92,6 +92,9 @@ function setTheme(theme) {
   actions.insertAdjacentHTML("afterbegin", '<button class="icon-btn theme-toggle" id="themeToggle" type="button"></button>');
   // على الموبايل الزرار بيبقى جوه القائمة عشان الهيدر مايزحمش
   document.getElementById("nav")?.insertAdjacentHTML("beforeend", '<button class="nav-theme" id="navTheme" type="button"></button>');
+  // الموبايل الصغير: زرار المفضلة بيتنقل للقائمة عشان الهيدر مايخرجش برّه الشاشة
+  if (document.querySelector('.header__actions a[href="wishlist.html"]'))
+    document.getElementById("nav")?.insertAdjacentHTML("beforeend", '<a href="wishlist.html" class="nav-wish">❤️ المفضلة</a>');
   setTheme(currentTheme());
   const flip = () => setTheme(currentTheme() === "light" ? "dark" : "light");
   document.getElementById("themeToggle").addEventListener("click", flip);

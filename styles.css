@@ -1277,3 +1277,22 @@ html[dir="ltr"] .pd__highlights li::before { right: auto; left: 0; }
   .account__name { display: none; }
   .account__btn--in { padding: 0; width: 44px; justify-content: center; }
 }
+
+/* ============ الموبايل: هيدر أنضف ============ */
+.badge[hidden] { display: none; }
+@media (max-width: 600px) {
+  .topbar__extra { display: none; }
+  .topbar__inner { padding: 7px 0; }
+  .hero { padding: 36px 0 64px; }
+}
+@media (max-width: 420px) {
+  .header__actions { gap: 5px; }
+  .header .icon-btn { width: 40px; height: 40px; border-radius: 11px; }
+  .header .account__btn--in { width: 40px; }
+  .logo__mark { width: 40px; height: 40px; }
+}
+.nav-wish { display: none; }
+@media (max-width: 400px) {
+  .header__actions a[href="wishlist.html"] { display: none; }
+  .nav .nav-wish { display: block; }
+}
