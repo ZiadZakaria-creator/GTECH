@@ -1,7 +1,7 @@
 // ============ Service Worker: بيخلّي المتجر يتسطب كتطبيق ويفتح من غير نت ============
 // الصفحات والملفات: من النت الأول (عشان التحديثات توصل على طول)، ولو مفيش نت من النسخة المحفوظة.
 // الصور: من المحفوظ الأول عشان السرعة.
-const VERSION = "gtech-v8";
+const VERSION = "gtech-v9";
 const CORE = [
   "./", "index.html", "product.html", "wishlist.html", "checkout.html", "compare.html", "myorders.html",
   "styles.css", "data.js", "firebase-config.js", "core.js", "catalog.js", "common.js", "visits.js",
@@ -36,8 +36,9 @@ self.addEventListener("fetch", (e) => {
     return;
   }
 
+  // no-cache: بيسأل السيرفر كل مرة (لو الملف متغيرش بيرجع 304 صغير) عشان التحديثات توصل على طول
   e.respondWith(
-    fetch(req)
+    fetch(req.mode === "navigate" ? req : new Request(req, { cache: "no-cache" }))
       .then((res) => {
         if (res.ok) { const copy = res.clone(); caches.open(VERSION).then((c) => c.put(req, copy)); }
         return res;
