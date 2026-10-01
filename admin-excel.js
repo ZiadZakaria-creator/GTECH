@@ -27,7 +27,11 @@ const EXCEL_COLUMNS = [
 ];
 const SEP = " | "; // الفاصل بين العناصر في الخانة الواحدة
 
-const catByLabel = Object.fromEntries(Object.entries(categories).map(([k, v]) => [v, k]));
+const catByLabel = {
+  // أسماء قديمة أو مختصرة لسه ممكن تكون في ملفات Excel قديمة
+  "سماعات": "audio", "هيدسيت": "audio", "إيربودز": "earphones", "ايربودز": "earphones", "سماعات سلك": "earphones",
+  ...Object.fromEntries(Object.entries(categories).map(([k, v]) => [v, k])),
+};
 const clean = (v) => (v === undefined || v === null ? "" : String(v).trim());
 const toNum = (v) => {
   const s = toLatinDigits(clean(v)).replace(/[,\s٬]/g, "");
