@@ -39,7 +39,6 @@ function renderDetail(p) {
   const esc = escapeHtml;
   const tag = inStock(p) ? productTag(p) : "نفد";
   const off = discount(p);
-  const monthly = Math.ceil(p.price / 12);
   const lowStock = p.stock <= 5;
   const soldOut = !inStock(p);
   const delivery = new Date(Date.now() + 2 * 86400000).toLocaleDateString(LOCALE, { weekday: "long", day: "numeric", month: "long" });
@@ -91,7 +90,7 @@ function renderDetail(p) {
           <b>${fmt(p.price)}</b>
           ${p.old ? `<del>${fmt(p.old)}</del><span class="save">وفّر ${fmt(p.old - p.price)} (${num(off)}%)</span>` : ""}
         </div>
-        <p class="pd__install">💳 أو قسّطها على 12 شهر بـ <b>${fmt(monthly)}</b> شهرياً بدون فوائد</p>
+        <p class="pd__install">💳 <b>التقسيط هيبقى متاح قريباً</b> على GTECH — تابعنا</p>
 
         <ul class="pd__highlights">
           ${p.highlights.map((h) => `<li>${esc(h)}</li>`).join("")}
