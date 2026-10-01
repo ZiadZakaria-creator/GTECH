@@ -6,6 +6,11 @@
 
 const I18N_EN = {
 "ج.م": "EGP",
+"كل اللي جهازك محتاجه في مكان واحد: ماوسات وكيبوردات وسماعات جيمنج، إيربودز لموبايلك، وهاردات و SSD — أصلية بضمان من لوجيتك وريدراجون وهايبر إكس وأنكر، بأسعار تنافسية وتوصيل لكل المحافظات.": "Everything your setup needs in one place: gaming mice, keyboards and headsets, earbuds for your phone, plus hard drives and SSDs — original with warranty from Logitech, Redragon, HyperX and Anker, at competitive prices with delivery to every governorate.",
+"إيربودز أنكر": "Anker earbuds",
+"خصم 20%": "20% off",
+"ماوسات جيمنج": "Gaming mice",
+"بأسعار تبدأ صغيرة": "Great prices",
 "✍️ قيّم المنتج": "✍️ Rate the product",
 "6 شهور": "6 months",
 "3 سنين": "3 years",

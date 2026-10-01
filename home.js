@@ -228,6 +228,7 @@ function renderMiniOffers() {
   const mice = from("mice"), kb = from("keyboards");
   const parts = [mice && `ماوسات من <b>${fmt(mice)}</b>`, kb && `كيبوردات من <b>${fmt(kb)}</b>`].filter(Boolean);
   if (parts.length) $("#setupPromoText").innerHTML = parts.join(" · ");
+  if (mice) $("#heroMiceFrom").textContent = `من ${fmt(mice)}`;
   $("#setupPromo").dataset.jump = mice || !kb ? "mice" : "keyboards";
 }
 renderMiniOffers();
