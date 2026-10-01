@@ -834,7 +834,10 @@ function setLang(l) {
   try { localStorage.setItem("gtech-lang", l); } catch {}
   const u = new URL(location.href);
   u.searchParams.delete("lang");
-  location.replace(u.toString());
+  // لو اللينك هو هو (أو بيفرق في #products بس) المتصفح مش بيعيد التحميل ← نعيده إحنا
+  const same = u.origin + u.pathname + u.search === location.origin + location.pathname + location.search;
+  if (same) location.reload();
+  else location.replace(u.toString());
 }
 document.addEventListener("DOMContentLoaded", () => {
   const actions = document.querySelector(".header__actions");
