@@ -17,6 +17,8 @@ const projectId = cfg.match(/projectId:\s*"([^"]+)"/)?.[1];
 const apiKey = cfg.match(/apiKey:\s*"([^"]+)"/)?.[1];
 const FS = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents`;
 
+// نفس عرض القسم اللي في data.js (CATEGORY_SALES) عشان السعر في جوجل يطابق المتجر
+const CATEGORY_SALES = JSON.parse(readFileSync("data.js", "utf8").match(/const CATEGORY_SALES = (\{[^}]*\});/)?.[1] || "{}");
 const CATEGORIES = Object.fromEntries(
   [...readFileSync("data.js", "utf8").match(/const categories = \{([\s\S]*?)\};/)[1].matchAll(/(\w+):\s*"([^"]+)"/g)].map((m) => [m[1], m[2]]));
 
@@ -81,6 +83,8 @@ const productCategory = (p) => (CATEGORIES[p.cat] ? p.cat
 function productPage(template, p, images, reviews = []) {
   const url = `${SITE}p/${p.id}.html`;
   p = { ...p, cat: productCategory(p) };
+  const sale = Number(CATEGORY_SALES[p.cat]) || 0;
+  if (sale && p.price > 0) p = { ...p, old: p.price, price: Math.round(p.price * (1 - sale / 100)) };
   const cat = CATEGORIES[p.cat] || "منتجات";
   const inStock = (p.stock ?? 1) > 0;
   const specs = Object.entries(p.specs || {}).filter(([, v]) => v);

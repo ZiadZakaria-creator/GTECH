@@ -37,8 +37,17 @@ const shopProducts = () => products.filter(isForSale);
 const productTag = (p) => p.tag || (discount(p) ? `-${discount(p)}%` : "");
 
 // بيكمّل أي بيانات ناقصة عشان باقي الموقع يشتغل من غير مشاكل
+// عرض القسم (CATEGORY_SALES في data.js) بيتطبق على المتجر بس — اللوحة لازم تشوف وتحفظ السعر الأصلي
+const IN_ADMIN = /\/admin\//.test(location.pathname);
+const categorySale = (cat) => (IN_ADMIN ? 0 : Number(CATEGORY_SALES[cat]) || 0);
+function applyCategorySale(p) {
+  const pct = categorySale(p.cat);
+  if (!pct || !(p.price > 0)) return p;
+  return { ...p, price: Math.round(p.price * (1 - pct / 100)), old: p.price, tag: `-${pct}%`, sale: pct };
+}
+
 function normalizeProduct(p) {
-  return {
+  return applyCategorySale({
     brand: "", desc: "", highlights: [], options: {}, specs: {}, images: [], old: null, tag: "",
     rating: 5, reviews: 0, stock: 0, active: true,
     ...p,
@@ -46,7 +55,7 @@ function normalizeProduct(p) {
     cat: productCategory(p),
     icon: p.icon || CATEGORY_ICONS[productCategory(p)] || "📦",
     tint: p.tint || CATEGORY_TINTS[productCategory(p)] || "rgba(10,132,255,.3)",
-  };
+  });
 }
 
 function setProducts(list) {

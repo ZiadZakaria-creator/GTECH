@@ -195,34 +195,24 @@ nav.addEventListener("click", (e) => {
   e.target.classList.add("active");
 });
 
-// ============ عرض السماعة G435 (24 ساعة) ============
-// العرض بينتهي في وقت ثابت لكل الناس (مش بيبدأ من أول ما الزائر يفتح الصفحة)
-const offerEnd = new Date("2026-10-01T18:40:00Z").getTime(); // الخميس 1 أكتوبر 9:40 بالليل بتوقيت القاهرة
-const OFFER_MATCH = /g435/i;
+// ============ عرض الإيربودز (CATEGORY_SALES في data.js) ============
+const OFFER_CAT = "earphones";
 
 function renderOffer() {
-  const p = shopProducts().find((x) => OFFER_MATCH.test(x.name));
-  const btn = $("#offerBtn");
-  if (p) {
-    const off = discount(p);
-    $("#offerPrice").hidden = false;
-    $("#offerPrice").innerHTML = `<b>${fmt(p.price)}</b>${p.old ? ` <del>${fmt(p.old)}</del>` : ""}`;
-    $("#offerTag").innerHTML = off ? `-${num(off)}%` : `24<small>ساعة</small>`;
-    btn.href = productUrl(p.id);
-    $("#offerVisual").href = productUrl(p.id);
-    delete btn.dataset.jump;
-  } else {
-    // المنتج لسه مااتضافش للمتجر ← نفتح واتساب بسؤال عن العرض
-    const wa = waLink("أهلاً GTECH، عايز أطلب سماعة لوجيتك G435 اللي في العرض");
-    btn.href = wa;
-    btn.target = "_blank";
-    $("#offerVisual").href = wa;
-    $("#offerVisual").target = "_blank";
-    delete btn.dataset.jump;
+  const pct = categorySale(OFFER_CAT);
+  const list = shopProducts().filter((p) => p.cat === OFFER_CAT && inStock(p));
+  if (pct) {
+    $("#offerTag").textContent = `-${num(pct)}%`;
+    $("#offerPill").textContent = "🎧 عرض GTECH على الإيربودز";
   }
+  if (!list.length) { $("#offerPrice").hidden = true; return; }
+  const cheapest = list.reduce((a, b) => (b.price < a.price ? b : a));
+  $("#offerPrice").hidden = false;
+  $("#offerPrice").innerHTML = `<small>تبدأ من</small> <b>${fmt(cheapest.price)}</b>${cheapest.old ? ` <del>${fmt(cheapest.old)}</del>` : ""}`;
 }
 renderOffer();
 document.addEventListener("productschange", renderOffer);
+document.addEventListener("catalogloaded", renderOffer);
 
 // ============ المربعين اللي تحت العرض ============
 // 1) عرض التطبيق (حقيقي: بيتحسب في صفحة الدفع) — 2) أرخص سعر في الماوسات والكيبوردات من المنتجات نفسها
@@ -242,22 +232,6 @@ function renderMiniOffers() {
 }
 renderMiniOffers();
 document.addEventListener("productschange", renderMiniOffers);
-
-function tick() {
-  const s = Math.max(0, Math.floor((offerEnd - Date.now()) / 1000));
-  // عرض يوم واحد: بنعرض الساعات على طول (24 ساعة) من غير خانة الأيام
-  const parts = { cdHours: Math.floor(s / 3600), cdMins: Math.floor((s % 3600) / 60), cdSecs: s % 60 };
-  for (const [id, v] of Object.entries(parts)) $("#" + id).textContent = String(v).padStart(2, "0");
-  if (!s) {
-    $("#offerPill").textContent = "⏰ العرض انتهى";
-    $("#offerEndsText").textContent = "العرض خلص، تابعنا عشان العرض الجاي.";
-    $("#countdown").hidden = true;
-  }
-  return s;
-}
-if (tick()) {
-  const timer = setInterval(() => { if (!tick()) clearInterval(timer); }, 1000);
-}
 
 if (query) {
   $("#searchInput").value = query;
