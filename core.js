@@ -18,8 +18,10 @@
 const WHATSAPP = "201100053123";
 const waLink = (text, phone = WHATSAPP) => `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
 
-const fmt = (n) => n.toLocaleString("ar-EG") + " ج.م";
-const num = (n) => n.toLocaleString("ar-EG");
+// اللغة جاية من i18n.js (لوحة التحكم مش بتحمّله فبتفضل عربي)
+const LOCALE = typeof IS_EN !== "undefined" && IS_EN ? "en-GB" : "ar-EG";
+const fmt = (n) => (LOCALE === "ar-EG" ? n.toLocaleString("ar-EG") + " ج.م" : n.toLocaleString("en-US") + " EGP");
+const num = (n) => n.toLocaleString(LOCALE === "ar-EG" ? "ar-EG" : "en-US");
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => document.querySelectorAll(s);
 const toLatinDigits = (s) => s.replace(/[٠-٩]/g, (d) => "٠١٢٣٤٥٦٧٨٩".indexOf(d));

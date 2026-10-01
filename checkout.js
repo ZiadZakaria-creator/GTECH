@@ -210,7 +210,7 @@ async function placeOrder() {
   syncCart(); // الطلب اتعمل، فالسلة مش متروكة
 
   const days = order.shipping.method === "express" ? 1 : 3;
-  const date = new Date(Date.now() + days * 86400000).toLocaleDateString("ar-EG", { weekday: "long", day: "numeric", month: "long" });
+  const date = new Date(Date.now() + days * 86400000).toLocaleDateString(LOCALE, { weekday: "long", day: "numeric", month: "long" });
   $("#okName").textContent = order.customer.name;
   $("#okPhone").textContent = order.customer.phone;
   $("#okId").textContent = order.id;

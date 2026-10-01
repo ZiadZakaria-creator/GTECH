@@ -414,7 +414,7 @@ button.mini-offer { width: 100%; text-align: start; font: inherit; color: inheri
 }
 .cart.open { transform: translateX(0); }
 .cart__head { display: flex; justify-content: space-between; align-items: center; padding: 22px; border-bottom: 1px solid var(--border); }
-.cart__items { flex: 1; overflow-y: auto; padding: 18px 22px; display: grid; align-content: start; gap: 14px; }
+.cart__items { flex: 1; overflow-y: auto; padding: 18px 22px; display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; gap: 14px; }
 .cart__empty { text-align: center; color: var(--muted); padding: 60px 0; }
 .cart__empty span { display: block; font-size: 3.5rem; margin-bottom: 10px; }
 .cart-item { display: flex; align-items: center; gap: 14px; padding: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; }
@@ -1234,3 +1234,31 @@ img[data-fs].is-loaded { opacity: 1; }
 .success__email { color: var(--muted); font-size: .9rem; }
 .success__email[hidden] { display: none; }
 .pd-tabs { scroll-margin-top: 96px; }
+
+/* ============ زرار اللغة + الإنجليزي (من الشمال لليمين) ============ */
+.lang-toggle { font-family: inherit; font-size: .95rem; font-weight: 800; letter-spacing: .5px; }
+html[dir="ltr"] .lang-toggle { font-size: 1.15rem; }
+html[dir="ltr"] .product__brand,
+html[dir="ltr"] .specs th, html[dir="ltr"] .specs td,
+html[dir="ltr"] .field input[dir="ltr"],
+html[dir="ltr"] .account__info small, html[dir="ltr"] .account__menu a, html[dir="ltr"] .account__menu button,
+html[dir="ltr"] .modal__box .field,
+html[dir="ltr"] .cmp th, html[dir="ltr"] .cmp ul { text-align: left; }
+html[dir="ltr"] .badge, html[dir="ltr"] .sum-item__icon i { left: auto; right: -6px; }
+html[dir="ltr"] .product__tag { right: auto; left: 14px; }
+html[dir="ltr"] .gallery__stage .product__tag { right: auto; left: 20px; }
+html[dir="ltr"] .cart { left: auto; right: 0; border-right: 0; border-left: 1px solid var(--border); transform: translateX(100%); }
+html[dir="ltr"] .cart.open { transform: translateX(0); }
+html[dir="ltr"] .field select { padding-left: 16px; padding-right: 40px; background-position: calc(100% - 14px) center; }
+html[dir="ltr"] .modal__close { left: auto; right: 14px; }
+html[dir="ltr"] .cmp th { right: auto; left: 0; }
+html[dir="ltr"] .cmp-remove { left: auto; right: -4px; }
+html[dir="ltr"] .story__nav--prev { right: auto; left: 0; }
+html[dir="ltr"] .story__nav--next { left: auto; right: 0; }
+html[dir="ltr"] .product__wish, html[dir="ltr"] .product__compare { left: auto; right: 12px; }
+html[dir="ltr"] .account__menu { left: auto; right: 0; }
+@media (max-width: 600px) { html[dir="ltr"] .account__menu { right: auto; left: -100px; } }
+html[dir="ltr"] .nav a, html[dir="ltr"] .account__btn { white-space: nowrap; }
+/* أسماء المنتجات لسه عربي: تتكتب من اليمين جوه الصفحة الإنجليزي */
+html[dir="ltr"] .cart-item__info b, html[dir="ltr"] .product__name, html[dir="ltr"] .sum-item b { unicode-bidi: plaintext; }
+html[dir="ltr"] .pd__highlights li::before { right: auto; left: 0; }

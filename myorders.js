@@ -2,7 +2,7 @@
 let stopMine = () => {};
 let notifyChanges = statusChangeNotifier();
 
-const orderDate = (iso) => new Date(iso).toLocaleString("ar-EG", { day: "numeric", month: "long", year: "numeric", hour: "numeric", minute: "2-digit" });
+const orderDate = (iso) => new Date(iso).toLocaleString(LOCALE, { day: "numeric", month: "long", year: "numeric", hour: "numeric", minute: "2-digit" });
 
 function show(id) {
   ["myLogin", "myLoading", "myEmpty"].forEach((x) => ($("#" + x).hidden = x !== id));

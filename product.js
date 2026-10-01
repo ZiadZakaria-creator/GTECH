@@ -42,7 +42,7 @@ function renderDetail(p) {
   const monthly = Math.ceil(p.price / 12);
   const lowStock = p.stock <= 5;
   const soldOut = !inStock(p);
-  const delivery = new Date(Date.now() + 2 * 86400000).toLocaleDateString("ar-EG", { weekday: "long", day: "numeric", month: "long" });
+  const delivery = new Date(Date.now() + 2 * 86400000).toLocaleDateString(LOCALE, { weekday: "long", day: "numeric", month: "long" });
 
   document.title = `${p.name} | GTECH`;
   qty = 1;
@@ -199,7 +199,7 @@ function renderReviews(p) {
           <article class="review">
             <div class="stars">${stars(r.stars)}</div>
             ${r.text ? `<p>${escapeHtml(r.text)}</p>` : ""}
-            <div class="review__author"><span class="avatar">${escapeHtml(r.name.trim()[0] || "؟")}</span><div><b>${escapeHtml(r.name)}</b><small>${new Date(r.createdAt).toLocaleDateString("ar-EG", { day: "numeric", month: "long", year: "numeric" })}</small></div></div>
+            <div class="review__author"><span class="avatar">${escapeHtml(r.name.trim()[0] || "؟")}</span><div><b>${escapeHtml(r.name)}</b><small>${new Date(r.createdAt).toLocaleDateString(LOCALE, { day: "numeric", month: "long", year: "numeric" })}</small></div></div>
           </article>`).join("")}
       </div>
     </div>`;
