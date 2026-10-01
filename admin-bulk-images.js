@@ -15,6 +15,17 @@ const words = (s) => toLatinDigits(String(s).toLowerCase())
   .split(/[^a-z0-9؀-ۿ]+/)
   .filter((w) => w.length >= 2);
 
+// أسماء الصور غالباً بالإنجليزي واسم المنتج بالعربي: black.jpg لازم تلاقي "أسود"
+const COLOR_WORDS = {
+  "أسود": "black", "اسود": "black", "أبيض": "white", "ابيض": "white", "أزرق": "blue", "ازرق": "blue", "أحمر": "red", "احمر": "red",
+  "أخضر": "green", "اخضر": "green", "رمادي": "gray grey", "بينك": "pink", "وردي": "pink", "بنفسجي": "purple", "موف": "purple",
+  "أصفر": "yellow", "اصفر": "yellow", "برتقالي": "orange", "فضي": "silver", "ذهبي": "gold", "بيج": "beige", "كحلي": "navy",
+};
+const productWords = (p) => {
+  const ws = words(`${p.name} ${p.brand} ${Object.values(p.specs || {}).join(" ")}`);
+  return new Set([...ws, ...ws.flatMap((w) => (COLOR_WORDS[w] || "").split(" ").filter(Boolean))]);
+};
+
 function guessProduct(fileName, list) {
   const base = toLatinDigits(fileName.trim());
   const byId = base.match(/^#?(\d+)(?=$|[\s._\-(])/);
@@ -26,9 +37,11 @@ function guessProduct(fileName, list) {
   if (!fw.length) return null;
   let best = null, bestScore = 0, tie = false;
   list.forEach((p) => {
-    const pw = new Set(words(`${p.name} ${p.brand} ${Object.values(p.specs || {}).join(" ")}`));
-    // الكلمات اللي فيها أرقام (زي g102 أو s26) أقوى من الكلام العادي
-    const score = fw.reduce((s, w) => s + (pw.has(w) ? (/\d/.test(w) ? 3 : 1) : 0), 0);
+    const pw = productWords(p);
+    // الكلمات اللي فيها أرقام (زي g102 أو s26) أقوى من الكلام العادي.
+    // ورقم موديل ناقص (a3959 من A3959H11) بيتحسب برضه بس أضعف
+    const score = fw.reduce((s, w) => s + (pw.has(w) ? (/\d/.test(w) ? 3 : 1)
+      : /\d/.test(w) && w.length >= 4 && [...pw].some((x) => x.length > w.length && x.startsWith(w)) ? 2 : 0), 0);
     if (score > bestScore) { best = p; bestScore = score; tie = false; }
     else if (score && score === bestScore) tie = true;
   });
