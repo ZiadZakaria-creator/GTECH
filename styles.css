@@ -434,11 +434,14 @@ button.mini-offer { width: 100%; text-align: start; font: inherit; color: inheri
 
 /* ============ Toast ============ */
 .toast {
-  position: fixed; bottom: 26px; left: 50%; z-index: 200; transform: translate(-50%, 120px);
+  /* وهو مستخبي بينزل تحت الشاشة بطوله كله (مش 120px ثابتة) — الرسايل الطويلة على الموبايل كانت بتفضل باينة */
+  position: fixed; bottom: 26px; left: 50%; z-index: 200; transform: translate(-50%, calc(100% + 40px));
+  width: max-content; max-width: calc(100vw - 32px); text-align: center;
   padding: 14px 26px; border-radius: 14px; background: var(--surface-2); border: 1px solid rgba(10,132,255,.4);
-  box-shadow: var(--shadow-soft); font-weight: 600; transition: transform .35s cubic-bezier(.2,.8,.2,1);
+  box-shadow: var(--shadow-soft); font-weight: 600; opacity: 0; visibility: hidden;
+  transition: transform .35s cubic-bezier(.2,.8,.2,1), opacity .25s, visibility 0s .35s;
 }
-.toast.show { transform: translate(-50%, 0); }
+.toast.show { transform: translate(-50%, 0); opacity: 1; visibility: visible; transition: transform .35s cubic-bezier(.2,.8,.2,1), opacity .25s; }
 
 /* ============ Reveal ============ */
 .reveal { opacity: 0; transform: translateY(30px); transition: opacity .7s, transform .7s; }
