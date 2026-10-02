@@ -1412,3 +1412,5 @@ html[dir="ltr"] .pd__highlights li::before { right: auto; left: 0; }
 .ref-card__link input { flex: 1; min-width: 0; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); font: inherit; font-size: .88rem; }
 .btn--wa-share { background: #25d366; color: #fff; border: 0; }
 .btn--wa-share:hover { background: #1ebe5a; }
+.gov-note { font-size: .82rem; color: #f59e0b; font-weight: 700; }
+.gov-note[hidden] { display: none; }

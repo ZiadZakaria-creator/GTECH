@@ -6,6 +6,7 @@
 
 const I18N_EN = {
 "ج.م": "EGP",
+"🚚 التوصيل حالياً للقاهرة والجيزة بس، وباقي المحافظات قريباً": "🚚 We currently deliver to Cairo and Giza only — more governorates soon",
 "صاحبك عليا": "Refer a friend",
 "🎁 صاحبك بعتلك خصم 10% على أول أوردر — هيتحسب لوحده في صفحة الدفع": "🎁 Your friend sent you 10% off your first order — it'll apply automatically at checkout",
 "ابعت اللينك ده لصحابك: هما ياخدوا ": "Send this link to your friends: they get ",

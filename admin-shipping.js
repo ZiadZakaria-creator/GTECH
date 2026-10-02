@@ -37,10 +37,11 @@ function renderShipForm(s = shippingSettings) {
   $("#shipRatesBody").innerHTML = GOVERNORATES.map((g) => {
     const rate = s.rates[g.name];
     const on = typeof rate === "number";
+    const locked = deliveryLocked(g.name);
     return `
-      <tr data-gov="${escapeHtml(g.name)}" class="${on ? "" : "is-off"}">
-        <td><b>${escapeHtml(g.name)}</b></td>
-        <td><input type="checkbox" data-f="on" ${on ? "checked" : ""} aria-label="بنوصّل ${escapeHtml(g.name)}" /></td>
+      <tr data-gov="${escapeHtml(g.name)}" class="${on ? "" : "is-off"}" ${locked ? 'title="مقفولة — التوصيل حالياً للقاهرة والجيزة بس"' : ""}>
+        <td><b>${escapeHtml(g.name)}</b>${locked ? ' <small class="muted">🔒 مقفولة</small>' : ""}</td>
+        <td><input type="checkbox" data-f="on" ${on ? "checked" : ""} ${locked ? "disabled" : ""} aria-label="بنوصّل ${escapeHtml(g.name)}" /></td>
         <td><input type="number" data-f="rate" min="0" step="1" inputmode="numeric" value="${on ? rate : g.rate}" ${on ? "" : "disabled"} aria-label="سعر ${escapeHtml(g.name)}" /></td>
         <td><input type="checkbox" data-f="express" ${s.express.govs.includes(g.name) ? "checked" : ""} aria-label="شحن سريع ${escapeHtml(g.name)}" /></td>
       </tr>`;

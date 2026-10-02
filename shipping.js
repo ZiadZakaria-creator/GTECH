@@ -19,17 +19,27 @@ const DEFAULT_SHIPPING = {
   express: { price: 150, govs: ["القاهرة", "الجيزة"] },
 };
 
+// التوصيل حالياً للمحافظات دي بس — أي محافظة تانية بتتقفل في المتجر واللوحة مهما كان محفوظ.
+// عشان ترجّع التوصيل لكل المحافظات خليها فاضية: []
+const DELIVERY_ONLY = ["القاهرة", "الجيزة"];
+
 const SHIPPING_CACHE = "gtech-shipping";
 const SHIPPING_LOCAL = "gtech-shipping-local"; // الوضع التجريبي
 
 function withShippingDefaults(s) {
-  return {
+  const out = {
     ...DEFAULT_SHIPPING,
     ...s,
     rates: { ...DEFAULT_SHIPPING.rates, ...(s?.rates || {}) },
     express: { ...DEFAULT_SHIPPING.express, ...(s?.express || {}) },
   };
+  if (DELIVERY_ONLY.length) {
+    Object.keys(out.rates).forEach((g) => { if (!DELIVERY_ONLY.includes(g)) out.rates[g] = null; });
+    out.express = { ...out.express, govs: out.express.govs.filter((g) => DELIVERY_ONLY.includes(g)) };
+  }
+  return out;
 }
+const deliveryLocked = (gov) => DELIVERY_ONLY.length > 0 && !DELIVERY_ONLY.includes(gov);
 
 let shippingSettings = withShippingDefaults(store.get(FIREBASE_CONFIG ? SHIPPING_CACHE : SHIPPING_LOCAL, null));
 

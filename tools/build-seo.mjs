@@ -150,7 +150,7 @@ function productPage(template, p, images, reviews = []) {
   <meta property="og:title" content="${esc(p.name)}" />
   <meta property="og:description" content="${esc(description)}" />
   <meta property="og:url" content="${url}" />
-  <meta property="og:image" content="${esc(images[0] || SITE + "images/og-cover.jpg?v=1")}" />
+  <meta property="og:image" content="${esc(images[0] || SITE + "images/og-cover.jpg?v=2")}" />
   <meta property="product:price:amount" content="${p.price}" />
   <meta property="product:price:currency" content="EGP" />
   <meta name="twitter:card" content="summary_large_image" />

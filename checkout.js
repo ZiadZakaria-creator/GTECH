@@ -257,7 +257,16 @@ function showEmailStatus(text) {
 }
 
 // ============ المحافظات وأسعار الشحن ============
-form.gov.insertAdjacentHTML("beforeend", GOVERNORATES.map((g) => `<option>${g.name}</option>`).join(""));
+function renderGovOptions() {
+  const cur = form.gov.value;
+  const open = GOVERNORATES.filter((g) => deliversTo(g.name)), soon = GOVERNORATES.filter((g) => !deliversTo(g.name));
+  form.gov.innerHTML = `<option value="">اختار المحافظة</option>` + open.map((g) => `<option>${g.name}</option>`).join("") +
+    (soon.length ? `<optgroup label="قريباً">${soon.map((g) => `<option value="${g.name}" disabled>${g.name} — قريباً</option>`).join("")}</optgroup>` : "");
+  form.gov.value = open.some((g) => g.name === cur) ? cur : "";
+  $("#govNote").hidden = !soon.length;
+}
+renderGovOptions();
+document.addEventListener("shippingchange", renderGovOptions);
 document.addEventListener("shippingchange", renderSummary);
 loadShippingSettings();
 
