@@ -1382,3 +1382,15 @@ html[dir="ltr"] .pd__highlights li::before { right: auto; left: 0; }
 .lead__box .field input { text-align: center; font-size: 1.1rem; letter-spacing: 1px; }
 .lead__code { justify-self: center; display: flex; align-items: center; gap: 12px; padding: 12px 22px; border-radius: 14px; border: 2px dashed var(--primary); background: rgba(10,132,255,.1); color: var(--text); font: inherit; font-size: 1.6rem; font-weight: 900; letter-spacing: 3px; cursor: pointer; direction: ltr; }
 .lead__code small { font-size: .78rem; letter-spacing: 0; font-weight: 700; color: var(--muted); }
+
+/* ============ صاحبك عليا ============ */
+.ref-card { display: grid; gap: 14px; padding: 20px; margin: 18px 0; text-align: start; border: 1px solid rgba(124,92,255,.45); background: linear-gradient(135deg, rgba(124,92,255,.14), rgba(0,212,255,.06)); }
+.ref-card__head { display: flex; gap: 14px; align-items: flex-start; }
+.ref-card__icon { flex: none; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 16px; font-size: 1.7rem; background: var(--gradient); box-shadow: var(--shadow); }
+.ref-card h3 { font-size: 1.2rem; margin-bottom: 4px; }
+.ref-card p { margin: 0; line-height: 1.7; }
+.ref-card__credits { padding: 10px 14px; border-radius: 12px; background: rgba(34,197,94,.14); color: var(--success); font-weight: 800; }
+.ref-card__link { display: flex; gap: 8px; }
+.ref-card__link input { flex: 1; min-width: 0; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); font: inherit; font-size: .88rem; }
+.btn--wa-share { background: #25d366; color: #fff; border: 0; }
+.btn--wa-share:hover { background: #1ebe5a; }

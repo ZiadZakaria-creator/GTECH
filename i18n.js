@@ -6,6 +6,17 @@
 
 const I18N_EN = {
 "ج.م": "EGP",
+"صاحبك عليا": "Refer a friend",
+"🎁 صاحبك بعتلك خصم 10% على أول أوردر — هيتحسب لوحده في صفحة الدفع": "🎁 Your friend sent you 10% off your first order — it'll apply automatically at checkout",
+"ابعت اللينك ده لصحابك: هما ياخدوا ": "Send this link to your friends: they get ",
+"خصم 10%": "10% off",
+" على أول أوردر، وإنت تاخد ": " their first order, and you get ",
+" على أوردرك الجاي مع كل صاحب أوردره يتسلّم.": " your next order for every friend whose order is delivered.",
+"💬 ابعته لصحابك على واتساب": "💬 Share it on WhatsApp",
+"📋 اللينك اتنسخ — ابعته لصحابك": "📋 Link copied — send it to your friends",
+"🎁 عندك مكافأة من صحابك: خصم 10% اتطبق على الأوردر ده": "🎁 You have a referral reward: 10% off applied to this order",
+"🎁 مكافأة صاحبك عليا": "🎁 Referral reward",
+"🤝 خصم صاحبك": "🤝 Friend discount",
 "🧩 كمّل السيت أب": "🧩 Complete your setup",
 "+ أضف": "+ Add",
 "اكتب رقم الواتساب بتاعك وخد كود الخصم فوراً، وكمان هتعرف العروض الجديدة قبل أي حد.": "Enter your WhatsApp number to get the code instantly — and hear about new deals before anyone else.",
@@ -596,6 +607,7 @@ const I18N_EN = {
 "ارجع للمتجر": "Back to the store"
 };
 const I18N_PATTERNS = [
+["^🎁 عندك (.+?) (?:مكافأة|مكافآت) — الخصم هيتحسب لوحده في أوردرك الجاي$", "🎁 You have {1} reward(s) — the discount applies automatically to your next order"],
 ["^وفّر (.+?)$", "Save {1}"],
 ["^— اشتريه مع السيت أب ووفّر (.+?)$", "— buy it with the setup and save {1}"],
 ["^🎁 اتضاف \"(.+?)\" للسلة — وفّرت (.+?)$", "🎁 \"{1}\" added to cart — you saved {2}"],

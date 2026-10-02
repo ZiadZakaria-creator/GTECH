@@ -12,6 +12,8 @@ function start() {
   stopMine();
   notifyChanges = statusChangeNotifier();
   $("#myOrders").innerHTML = "";
+  $("#myRef")?.remove();
+  refShownFor = "";
   $("#ordersCount").textContent = "";
   $("#liveNote").hidden = true;
   if (!user) return show("myLogin");
@@ -22,6 +24,17 @@ function start() {
     show("myEmpty");
     $("#myEmptyText").textContent = "مقدرناش نحمّل طلباتك دلوقتي، جرّب تاني بعد شوية أو كلمنا على واتساب.";
   });
+}
+
+// كارت "صاحبك عليا" فوق الطلبات، ومعاه عدد المكافآت
+let refShownFor = "";
+async function renderMyReferral(phone) {
+  if (!phone || refShownFor === phone) return;
+  refShownFor = phone;
+  if (!$("#myRef")) $("#myOrders").insertAdjacentHTML("beforebegin", '<div id="myRef"></div>');
+  $("#myRef").innerHTML = referralCardHtml(phone);
+  const credits = await rewardCredits(referralCode(phone));
+  if (credits) $("#myRef").innerHTML = referralCardHtml(phone, credits);
 }
 
 function renderOrders(list) {
@@ -39,6 +52,7 @@ function renderOrders(list) {
     return;
   }
   show(null);
+  renderMyReferral(user?.phone || orders[0].customer.phone);
 
   $("#myOrders").innerHTML = orders.map((o) => {
     const cancelled = o.status === "cancelled";

@@ -29,6 +29,18 @@ const normalizePhone = (s) => toLatinDigits(s).replace(/[\s-]/g, "");
 const isValidPhone = (s) => /^01[0125]\d{8}$/.test(normalizePhone(s));
 const escapeHtml = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
+// ============ صاحبك عليا ============
+// كل رقم موبايل ليه كود ثابت (مش بيكشف الرقم). صاحبك اللي يدخل من لينكك ياخد 10% على أول أوردر،
+// وإنت تاخد مكافأة خصم 10% على أوردرك الجاي لما أوردره يتسلّم (اللوحة بتحسبها في rewards/الكود).
+const REF_RATE = 0.1;
+const SITE_ROOT = new URL(".", document.currentScript?.src || location.href).href;
+function referralCode(phone) {
+  let h = 2166136261;
+  for (const ch of "gtech-ref:" + normalizePhone(String(phone || ""))) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); }
+  return (h >>> 0).toString(36).toUpperCase();
+}
+const referralLink = (code) => `${SITE_ROOT}?ref=${code}`;
+
 // تاريخ النهارده بتوقيت القاهرة (YYYY-MM-DD)
 const cairoDay = () => new Date().toLocaleDateString("en-CA", { timeZone: "Africa/Cairo" });
 

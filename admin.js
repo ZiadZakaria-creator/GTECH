@@ -262,7 +262,7 @@ function openOrder(id, show = true) {
       <dl class="totals">
         <div><dt>المجموع الفرعي</dt><dd>${fmt(t.subtotal)}</dd></div>
         <div><dt>الشحن <small>· ${escapeHtml(o.shipping.label)}</small></dt><dd>${t.shipping ? fmt(t.shipping) : "مجاناً"}</dd></div>
-        ${t.discount ? `<div class="totals__discount"><dt>الخصم ${o.promo ? `(${escapeHtml(o.promo)})` : ""}</dt><dd>− ${fmt(t.discount)}</dd></div>` : ""}
+        ${t.discount ? `<div class="totals__discount"><dt>الخصم ${o.promo ? `(${escapeHtml(promoLabel(o.promo))})` : ""}</dt><dd>− ${fmt(t.discount)}</dd></div>` : ""}
         <div class="totals__grand"><dt>الإجمالي</dt><dd>${fmt(t.total)}</dd></div>
       </dl>
       ${paymentBlock(o)}
@@ -350,6 +350,7 @@ $("#drawerBody").addEventListener("click", async (e) => {
     const from = o.status;
     await updateOrder(openId, { status });
     await syncStockForStatus(o, from, status);
+    handleReferral(o, status).catch((err) => console.warn("referral", err));
     if (o.customer.email && EMAIL_ON) {
       sendOrderEmail({ ...o, status }, status)
         .then((sent) => sent && toast(`📧 اتبعت إيميل "${EMAIL_STAGES[status].subject}" للعميل`))
@@ -360,6 +361,36 @@ $("#drawerBody").addEventListener("click", async (e) => {
     toast("❌ مقدرناش نحدّث الطلب، جرّب تاني");
   }
 });
+
+// ============ صاحبك عليا: المكافآت ============
+// أوردر جه من لينك صاحب (promo = REF-الكود) واتسلّم ← صاحب اللينك ياخد مكافأة (rewards/الكود: credits + 1)
+// أوردر استخدم مكافأة (promo = REWARD-الكود) واتأكد ← بتتخصم مكافأة. كل أوردر بيتحسب مرة واحدة بس.
+async function handleReferral(o, status) {
+  const [kind, code] = String(o.promo || "").split("-");
+  if (!USE_FIREBASE || !code || !["REF", "REWARD"].includes(kind)) return;
+  const db = firebase.firestore();
+  const ref = db.collection("rewards").doc(code);
+  if (kind === "REF" && status === "delivered") {
+    const added = await db.runTransaction(async (tx) => {
+      const d = (await tx.get(ref)).data() || {};
+      if ((d.credited || []).includes(o.id)) return false;
+      tx.set(ref, { credits: (d.credits || 0) + 1, credited: [...(d.credited || []), o.id].slice(-300), redeemed: d.redeemed || [], updatedAt: new Date().toISOString() });
+      return true;
+    });
+    if (added) toast(`🤝 صاحب اللينك خد مكافأة خصم 10% على أوردره الجاي`);
+  }
+  if (kind === "REWARD" && ["confirmed", "shipped", "delivered"].includes(status)) {
+    const res = await db.runTransaction(async (tx) => {
+      const d = (await tx.get(ref)).data() || {};
+      if ((d.redeemed || []).includes(o.id)) return "done";
+      if (!(d.credits > 0)) return "none";
+      tx.set(ref, { credits: d.credits - 1, credited: d.credited || [], redeemed: [...(d.redeemed || []), o.id].slice(-300), updatedAt: new Date().toISOString() });
+      return "used";
+    });
+    if (res === "none") toast("⚠️ الأوردر ده خد خصم مكافأة صاحبك عليا، بس العميل مكانش عنده مكافأة متاحة — راجع الخصم قبل الشحن");
+  }
+}
+const promoLabel = (p) => /^REF-/.test(p) ? "🤝 من لينك صاحب" : /^REWARD-/.test(p) ? "🎁 مكافأة صاحبك عليا" : p;
 
 // ============ تصدير ============
 $("#exportBtn").addEventListener("click", () => {

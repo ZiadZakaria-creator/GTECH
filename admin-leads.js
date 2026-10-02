@@ -88,7 +88,12 @@ function buildCustomers() {
     c.source ||= l.source && l.source !== "direct" ? l.source : "";
     seen(c, l.createdAt);
   }
-  return [...map.values()].map((c) => ({ ...c, status: c.orders ? "buyer" : c.cart ? "cart" : "lead" }))
+  // صاحبك عليا: كام أوردر جه من لينك كل عميل
+  const refs = {};
+  for (const o of typeof orders !== "undefined" ? orders : []) {
+    if (o.status !== "cancelled" && /^REF-/.test(o.promo || "")) refs[o.promo.slice(4)] = (refs[o.promo.slice(4)] || 0) + 1;
+  }
+  return [...map.values()].map((c) => ({ ...c, referred: refs[referralCode(c.phone)] || 0, status: c.orders ? "buyer" : c.cart ? "cart" : "lead" }))
     .sort((a, b) => b.lastActive.localeCompare(a.lastActive));
 }
 
@@ -110,7 +115,8 @@ function filteredCustomers(list) {
 }
 
 function statusDetail(c) {
-  if (c.status === "buyer") return `${num(c.orders)} ${c.orders === 1 ? "أوردر" : "أوردرات"} · ${fmt(c.spent)}${c.cart ? " · وعنده سلة مفتوحة" : ""}`;
+  const ref = c.referred ? ` · 🤝 جاب ${num(c.referred)} ${c.referred === 1 ? "أوردر" : "أوردرات"}` : "";
+  if (c.status === "buyer") return `${num(c.orders)} ${c.orders === 1 ? "أوردر" : "أوردرات"} · ${fmt(c.spent)}${c.cart ? " · وعنده سلة مفتوحة" : ""}${ref}`;
   if (c.status === "cart") return `سلة بـ ${fmt(c.cart.total)}`;
   return c.cancelled ? `${num(c.cancelled)} أوردر اتلغى` : "من نافذة الخصم";
 }

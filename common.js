@@ -717,6 +717,54 @@ document.body.insertAdjacentHTML("beforeend", `
     <svg viewBox="0 0 24 24" class="wa-ico"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c1.7.7 2.3.8 3.2.7a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.2-.2-.5-.3z"/></svg>
   </a>`);
 
+// ============ صاحبك عليا: لينك ?ref=الكود ============
+const REF_KEY = "gtech-ref";
+(() => {
+  const code = (new URLSearchParams(location.search).get("ref") || "").toUpperCase();
+  if (!/^[0-9A-Z]{4,8}$/.test(code)) return;
+  if (user?.phone && referralCode(user.phone) === code) return; // لينكك إنت
+  store.set(REF_KEY, { code, at: Date.now() });
+  setTimeout(() => toast("🎁 صاحبك بعتلك خصم 10% على أول أوردر — هيتحسب لوحده في صفحة الدفع"), 1200);
+})();
+// الكود اللي العميل جه بيه (صالح 30 يوم)
+function activeRef() {
+  const r = store.get(REF_KEY, null);
+  return r && Date.now() - r.at < 30 * 86400000 ? r.code : "";
+}
+// عدد مكافآت العميل (من غير SDK)
+async function rewardCredits(code) {
+  if (!FIREBASE_CONFIG || !code) return 0;
+  try {
+    const res = await fetch(`https://firestore.googleapis.com/v1/projects/${FIREBASE_CONFIG.projectId}/databases/(default)/documents/rewards/${code}?key=${FIREBASE_CONFIG.apiKey}`);
+    if (!res.ok) return 0;
+    return +((await res.json()).fields?.credits?.integerValue || 0);
+  } catch {
+    return 0;
+  }
+}
+// كارت "صاحبك عليا" (صفحة نجاح الطلب وطلباتي)
+function referralCardHtml(phone, credits = 0) {
+  const link = referralLink(referralCode(phone));
+  const share = `https://wa.me/?text=${encodeURIComponent(`جرّب GTECH لإكسسوارات الكمبيوتر والجيمنج 🎮\nادخل من اللينك ده وخد خصم 10% على أول أوردر 👇\n${link}`)}`;
+  return `
+    <div class="ref-card card-box">
+      <div class="ref-card__head">
+        <span class="ref-card__icon">🤝</span>
+        <div>
+          <h3>صاحبك عليا</h3>
+          <p class="muted">ابعت اللينك ده لصحابك: هما ياخدوا <b>خصم 10%</b> على أول أوردر، وإنت تاخد <b>خصم 10%</b> على أوردرك الجاي مع كل صاحب أوردره يتسلّم.</p>
+        </div>
+      </div>
+      ${credits > 0 ? `<p class="ref-card__credits">🎁 عندك ${num(credits)} ${credits === 1 ? "مكافأة" : "مكافآت"} — الخصم هيتحسب لوحده في أوردرك الجاي</p>` : ""}
+      <div class="ref-card__link"><input readonly dir="ltr" value="${escapeHtml(link)}" aria-label="لينك صاحبك عليا" /><button type="button" class="btn btn--ghost btn--sm" data-ref-copy="${escapeHtml(link)}">📋 نسخ</button></div>
+      <a class="btn btn--wa-share btn--block" href="${share}" target="_blank" rel="noopener">💬 ابعته لصحابك على واتساب</a>
+    </div>`;
+}
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-ref-copy]");
+  if (b) navigator.clipboard?.writeText(b.dataset.refCopy).then(() => toast("📋 اللينك اتنسخ — ابعته لصحابك"), () => {});
+});
+
 // ============ نافذة خصم أول زيارة ============
 // بتظهر مرة واحدة بس للزائر الجديد (بعد 25 ثانية أو لما ينزل نص الصفحة): يكتب رقم واتساب وياخد كود الخصم.
 // الرقم بيتحفظ في Firestore (leads) ويظهر في لوحة التحكم ← "أرقام العملاء".
@@ -781,7 +829,7 @@ function openLeadPopup() {
   });
 }
 (() => {
-  if (store.get(LEAD_KEY, null) || user || isStandalone() || $("#checkoutForm") || /myorders/.test(location.pathname)) return;
+  if (store.get(LEAD_KEY, null) || user || activeRef() || isStandalone() || $("#checkoutForm") || /myorders/.test(location.pathname)) return;
   let done = false;
   const show = () => {
     if (done) return;

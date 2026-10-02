@@ -88,6 +88,7 @@ $("#promoForm").addEventListener("submit", (e) => {
   e.preventDefault();
   const code = e.target.code.value.trim().toUpperCase();
   if (!code) return;
+  if (/^(REF|REWARD)-/.test(promo || "") && !promos[code]) return; // خصم صاحبك عليا متطبّق خلاص
   if (appOffer()) {
     promo = null;
     toast("🎁 إنت واخد خصم أول أوردر من التطبيق (20% + توصيل مجاني)، وده أحسن من أي كود");
@@ -220,6 +221,7 @@ async function placeOrder() {
 
   placed = true;
   if (promo === store.get("gtech-promo", "")) store.set("gtech-promo", ""); // كود أول أوردر بيتطبّق لوحده مرة واحدة بس
+  if (promo?.startsWith("REF-")) store.set(REF_KEY, null);
   cart = [];
   renderCart();
   clearTimeout(cartSyncTimer);
@@ -236,6 +238,7 @@ async function placeOrder() {
   $("#okAddr").textContent = `${order.address.street}، ${order.address.city}، ${order.address.gov}`;
 
   if (isTransfer(order.payment.method)) showPayBox(order);
+  $("#successView .success__box").insertAdjacentHTML("afterend", referralCardHtml(order.customer.phone));
 
   $("#checkoutView").hidden = true;
   $("#successView").hidden = false;
@@ -329,6 +332,30 @@ function showPayBox(order) {
   $("#promoForm").code.value = saved;
   renderSummary();
 })();
+
+// ============ صاحبك عليا ============
+// مكافأة العميل (لو صحابه اشتروا من لينكه) ← أو خصم الصاحب لو جه من لينك حد. نفس الـ 10%، وبيتطبّق لوحده.
+async function applyReferral() {
+  const own = user?.phone ? referralCode(user.phone) : "";
+  if (promo === "REF-" + own) promo = null; // مينفعش تستخدم لينكك إنت
+  if (appOffer() || (promo && !/^REF-/.test(promo))) return renderSummary();
+  if (own && (await rewardCredits(own)) > 0 && !appOffer()) {
+    promo = "REWARD-" + own;
+    promos[promo] = REF_RATE;
+    $("#promoForm").code.value = "🎁 مكافأة صاحبك عليا";
+    toast("🎁 عندك مكافأة من صحابك: خصم 10% اتطبق على الأوردر ده");
+    return renderSummary();
+  }
+  const ref = activeRef();
+  if (ref && ref !== own && !promo) {
+    promo = "REF-" + ref;
+    promos[promo] = REF_RATE;
+    $("#promoForm").code.value = "🤝 خصم صاحبك";
+  }
+  renderSummary();
+}
+applyReferral();
+document.addEventListener("userchange", applyReferral);
 
 document.addEventListener("paymentchange", renderPayOptions);
 renderPayOptions();
