@@ -14,10 +14,12 @@ let checkoutTracked = false; // بدء الدفع بيتحسب مرة واحدة
 
 function totals() {
   const sub = cart.reduce((s, i) => s + i.qty * findProduct(i.id).price, 0);
+  const bundle = bundleTotal(); // خصم باكدجات السيت أب
+  const base = sub - bundle;    // خصم أول أوردر أو الكود بيتحسب على السعر بعد الباكدج
   const app = appOffer();
   const ship = app ? 0 : shipCost(form.gov.value, form.ship.value, sub) ?? 0;
-  const disc = app ? Math.round(sub * APP_FIRST.rate) : promo ? Math.round(sub * promos[promo]) : 0;
-  return { sub, ship, disc, total: sub + ship - disc, app };
+  const disc = app ? Math.round(base * APP_FIRST.rate) : promo ? Math.round(base * promos[promo]) : 0;
+  return { sub, bundle, ship, disc, total: base + ship - disc, app };
 }
 
 function renderSummary() {
@@ -75,6 +77,8 @@ function renderSummary() {
   $("#appOffer").hidden = !(firstOrder === true && !isStandalone() && FIREBASE_CONFIG);
   $("#freeShipHint").textContent = `🚚 ضيف منتجات بـ ${fmt(left)} كمان والشحن يبقى مجاناً`;
   $("#sumDiscRow").hidden = !t.disc;
+  $("#sumBundleRow").hidden = !t.bundle;
+  $("#sumBundle").textContent = "− " + fmt(t.bundle);
   $("#sumDisc").textContent = "− " + fmt(t.disc);
   $("#sumTotal").textContent = fmt(t.total);
 }
@@ -171,7 +175,9 @@ function buildOrder(d, t) {
     payment: isTransfer(d.pay) ? { method: d.pay, label: payLabels[d.pay], status: "pending", to: transferTarget(d.pay) } : { method: d.pay, label: payLabels[d.pay] },
     promo: t.app ? APP_FIRST.code : promo,
     source: typeof orderSource === "function" ? orderSource() : "direct",
-    totals: { subtotal: t.sub, shipping: t.ship, discount: t.disc, total: t.total },
+    // الخصم = الباكدج + (أول أوردر أو الكود)، عشان المجموع − الخصم + الشحن = الإجمالي في اللوحة والإيميل
+    totals: { subtotal: t.sub, shipping: t.ship, discount: t.disc + t.bundle, total: t.total },
+    bundles: bundleDiscounts().map((d) => ({ id: d.id, name: d.name, sets: d.sets, amount: d.amount })),
   };
 }
 

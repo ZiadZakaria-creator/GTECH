@@ -97,11 +97,54 @@ function bump(el, value) {
   el.classList.add("bump");
 }
 
+// ============ باكدجات السيت أب (BUNDLES في data.js) ============
+// كل باكدج كامل في السلة (كل منتجاته موجودة) بياخد خصمه، ولو العميل جايب منه نسختين بياخد الخصم مرتين
+const bundleProducts = (b) => b.items.map(findProduct);
+const bundleAvailable = (b) => bundleProducts(b).every((p) => p && isForSale(p) && inStock(p));
+const bundleFull = (b) => bundleProducts(b).reduce((s, p) => s + p.price, 0);
+const bundlePrice = (b) => bundleFull(b) - Math.round(bundleFull(b) * b.off / 100);
+function bundleDiscounts(items = cart) {
+  if (typeof BUNDLES === "undefined") return [];
+  const qty = (id) => items.filter((i) => i.id === id).reduce((s, i) => s + i.qty, 0);
+  return BUNDLES.filter((b) => bundleProducts(b).every((p) => p))
+    .map((b) => {
+      const sets = Math.min(...b.items.map(qty));
+      return { id: b.id, name: b.name, sets, amount: sets * Math.round(bundleFull(b) * b.off / 100) };
+    })
+    .filter((d) => d.sets > 0);
+}
+const bundleTotal = (items = cart) => bundleDiscounts(items).reduce((s, d) => s + d.amount, 0);
+function addBundle(id) {
+  const b = BUNDLES.find((x) => x.id === id);
+  if (!b || !bundleAvailable(b)) return toast("الباكدج ده مش متاح دلوقتي");
+  b.items.forEach((pid) => {
+    const p = findProduct(pid);
+    const item = cart.find((i) => i.id === pid && !i.opts);
+    item ? item.qty++ : cart.push({ id: pid, qty: 1, opts: "" });
+    if (typeof track === "function") track("add_to_cart", { items: [{ id: p.id, name: p.name, price: p.price, qty: 1 }] });
+  });
+  renderCart();
+  toast(`🎁 اتضاف "${b.name}" للسلة — وفّرت ${fmt(bundleFull(b) - bundlePrice(b))}`);
+  if ($("#cart")) openCart(true);
+}
+
 function renderCart() {
   const count = cart.reduce((s, i) => s + i.qty, 0);
-  const total = cart.reduce((s, i) => s + i.qty * findProduct(i.id).price, 0);
+  const bundleOff = bundleTotal();
+  const total = cart.reduce((s, i) => s + i.qty * findProduct(i.id).price, 0) - bundleOff;
   bump($("#cartCount"), count);
   $("#cartTotal").textContent = fmt(total);
+  // سطر خصم الباكدج فوق الإجمالي
+  const totalRow = $(".cart__total");
+  if (totalRow) {
+    let row = document.getElementById("cartBundle");
+    if (!row) {
+      totalRow.insertAdjacentHTML("beforebegin", '<div class="cart__bundle" id="cartBundle" hidden><span>🎁 خصم الباكدج</span><b></b></div>');
+      row = document.getElementById("cartBundle");
+    }
+    row.hidden = !bundleOff;
+    row.querySelector("b").textContent = "− " + fmt(bundleOff);
+  }
 
   $("#cartItems").innerHTML = cart.length
     ? cart.map((i, idx) => {

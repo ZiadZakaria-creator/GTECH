@@ -6,6 +6,22 @@
 
 const I18N_EN = {
 "ج.م": "EGP",
+"🎁 موجود في": "🎁 Part of the",
+"🎮 سيت أب كامل": "🎮 Complete setup",
+"باكدجات بخصم 10%": "Bundles at 10% off",
+"🛒 أضف الباكدج للسلة": "🛒 Add bundle to cart",
+"🎁 خصم الباكدج": "🎁 Bundle discount",
+"خصم الباكدج": "Bundle discount",
+"الباكدج ده مش متاح دلوقتي": "This bundle isn't available right now",
+"باكدج البداية": "Starter bundle",
+"باكدج ريدراجون RGB": "Redragon RGB bundle",
+"باكدج لاسلكي بالكامل": "All-wireless bundle",
+"🟢 أوفر سيت أب": "🟢 Best value setup",
+"🔴 الأكثر طلباً": "🔴 Most popular",
+"🟣 للمحترفين": "🟣 For pros",
+"ماوس لاسلكي + كيبورد ميكانيكال + هيدسيت RGB — كل اللي تحتاجه تبدأ بيه": "Wireless mouse + mechanical keyboard + RGB headset — everything you need to start",
+"سيت أب ريدراجون كامل بإضاءة RGB متناسقة": "A complete Redragon setup with matching RGB lighting",
+"لوجيتك وأتاك شارك — من غير ولا سلك على مكتبك": "Logitech and Attack Shark — not a single cable on your desk",
 "السياسات والمساعدة": "Policies & help",
 "GTECH | السياسات والمساعدة": "GTECH | Policies & help",
 "الشحن والتوصيل": "Shipping & delivery",
@@ -567,6 +583,9 @@ const I18N_EN = {
 "ارجع للمتجر": "Back to the store"
 };
 const I18N_PATTERNS = [
+["^وفّر (.+?)$", "Save {1}"],
+["^— اشتريه مع السيت أب ووفّر (.+?)$", "— buy it with the setup and save {1}"],
+["^🎁 اتضاف \"(.+?)\" للسلة — وفّرت (.+?)$", "🎁 \"{1}\" added to cart — you saved {2}"],
 [
 "^دوس (.+?) فوق واختار$",
 "Tap {1} at the top and choose"

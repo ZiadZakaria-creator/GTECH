@@ -92,6 +92,10 @@ function renderDetail(p) {
           <b>${fmt(p.price)}</b>
           ${p.old ? `<del>${fmt(p.old)}</del><span class="save">وفّر ${fmt(p.old - p.price)} (${num(off)}%)</span>` : ""}
         </div>
+        ${(() => {
+          const b = typeof BUNDLES !== "undefined" && BUNDLES.find((x) => x.items.includes(p.id) && bundleAvailable(x));
+          return b ? `<a class="pd__bundle" href="index.html#bundles">🎁 موجود في <b>${b.name}</b> — اشتريه مع السيت أب ووفّر ${fmt(bundleFull(b) - bundlePrice(b))}</a>` : "";
+        })()}
         <p class="pd__install">💳 <b>التقسيط هيبقى متاح قريباً</b> على GTECH — تابعنا</p>
 
         <ul class="pd__highlights">

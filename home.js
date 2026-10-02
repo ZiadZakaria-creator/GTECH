@@ -214,6 +214,39 @@ renderOffer();
 document.addEventListener("productschange", renderOffer);
 document.addEventListener("catalogloaded", renderOffer);
 
+// ============ باكدجات السيت أب ============
+function renderBundles() {
+  const list = (typeof BUNDLES === "undefined" ? [] : BUNDLES).filter(bundleAvailable);
+  $("#bundles").hidden = !list.length;
+  $("#bundleCards").innerHTML = list.map((b) => {
+    const ps = bundleProducts(b);
+    return `
+      <article class="bundle card-box">
+        <span class="bundle__tag">${b.tag}</span>
+        <h3>${b.name}</h3>
+        <p class="muted">${b.desc}</p>
+        <div class="bundle__items">${ps.map((p) => `
+          <a href="${productUrl(p.id)}" class="bundle__item">
+            <span class="bundle__img">${productVisual(p)}</span>
+            <small>${escapeHtml(p.name)}</small>
+            <b>${fmt(p.price)}</b>
+          </a>`).join('<span class="bundle__plus">+</span>')}
+        </div>
+        <div class="bundle__foot">
+          <div class="bundle__price"><b>${fmt(bundlePrice(b))}</b><del>${fmt(bundleFull(b))}</del><span class="save">وفّر ${fmt(bundleFull(b) - bundlePrice(b))}</span></div>
+          <button type="button" class="btn btn--primary" data-bundle="${b.id}">🛒 أضف الباكدج للسلة</button>
+        </div>
+      </article>`;
+  }).join("");
+}
+$("#bundleCards").addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-bundle]");
+  if (btn) addBundle(btn.dataset.bundle);
+});
+renderBundles();
+document.addEventListener("productschange", renderBundles);
+document.addEventListener("catalogloaded", renderBundles);
+
 // ============ المربعين اللي تحت العرض ============
 // 1) عرض التطبيق (حقيقي: بيتحسب في صفحة الدفع) — 2) أرخص سعر في الماوسات والكيبوردات من المنتجات نفسها
 function renderMiniOffers() {
