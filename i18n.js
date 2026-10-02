@@ -370,7 +370,7 @@ const I18N_EN = {
 "GTECH | ماوسات وكيبوردات جيمنج وإكسسوارات كمبيوتر في مصر": "GTECH | Gaming mice, keyboards and computer accessories in Egypt",
 "🚚 شحن مجاني للطلبات فوق 1000 ج.م — ضمان رسمي على جميع المنتجات": "🚚 Free shipping on orders over 1000 EGP — official warranty on all products",
 "تتبع طلبك": "Track your order",
-"خدمة العملاء: 19999": "Customer service: 19999",
+"خدمة العملاء:": "Customer service:",
 "الأقسام": "Categories",
 "المنتجات": "Products",
 "العروض": "Offers",
