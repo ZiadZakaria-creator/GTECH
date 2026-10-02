@@ -160,12 +160,26 @@ $("#tabs").addEventListener("click", (e) => {
 });
 
 // ============ الأقسام: عدد المنتجات الحقيقي في كل قسم ============
+// أيقونات SVG بنفس الستايل ولون لكل قسم (بدل الإيموجي اللي شكله بيختلف من جهاز للتاني)
+const CATEGORY_SVG = {
+  storage: ["#fbbf24", '<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M7 9h10M7 15h5"/><circle cx="16.5" cy="15" r="1.2"/>'],
+  keyboards: ["#3b9bff", '<rect x="2" y="6" width="20" height="12" rx="2.5"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h.01M18 14h.01M9.5 14h5"/>'],
+  mice: ["#22c55e", '<rect x="6" y="2.5" width="12" height="19" rx="6"/><path d="M12 2.5v6.5M6 9h12"/>'],
+  audio: ["#a78bfa", '<path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="2.5" y="14" width="5" height="7" rx="2"/><rect x="16.5" y="14" width="5" height="7" rx="2"/>'],
+  earphones: ["#ec4899", '<circle cx="7" cy="8" r="3.5"/><path d="M9.2 10.8 10.5 20"/><circle cx="17" cy="8" r="3.5"/><path d="M14.8 10.8 13.5 20"/>'],
+  monitors: ["#00d4ff", '<rect x="2.5" y="4" width="19" height="13" rx="2"/><path d="M8 21h8M12 17v4"/>'],
+  gpus: ["#ff4d6d", '<rect x="2" y="6" width="20" height="11" rx="2"/><circle cx="8.5" cy="11.5" r="2.8"/><circle cx="15.5" cy="11.5" r="2.8"/><path d="M5 17v2.5M9 17v2.5M13 17v2.5"/>'],
+  controllers: ["#ff9f0a", '<path d="M6.5 7.5h11a4 4 0 0 1 3.9 3.1l1 4.6a2.6 2.6 0 0 1-4.5 2.2L16 15.5H8l-1.9 1.9a2.6 2.6 0 0 1-4.5-2.2l1-4.6a4 4 0 0 1 3.9-3.1z"/><path d="M7.5 10.5v3M6 12h3"/><path d="M15.5 11h.01M17.5 13h.01"/>'],
+};
+const categoryIconHtml = (k) => CATEGORY_SVG[k]
+  ? `<span class="category__icon"><svg viewBox="0 0 24 24" aria-hidden="true">${CATEGORY_SVG[k][1]}</svg></span>`
+  : `<span class="category__icon">${CATEGORY_ICONS[k] || "📦"}</span>`;
 function renderCategories() {
   const counts = {};
   shopProducts().forEach((p) => { counts[p.cat] = (counts[p.cat] || 0) + 1; });
   $("#categoryCards").innerHTML = Object.entries(categories).map(([k, label]) => `
-    <button class="category" data-filter="${k}">
-      <span class="category__icon">${CATEGORY_ICONS[k]}</span><h3>${label}</h3>
+    <button class="category" data-filter="${k}" style="--cc:${CATEGORY_SVG[k]?.[0] || "#0a84ff"}">
+      ${categoryIconHtml(k)}<h3>${label}</h3>
       <small>${counts[k] ? `${num(counts[k])} منتج` : "قريباً"}</small>
     </button>`).join("");
   $("#tabs").innerHTML = `<button class="tab" data-filter="all">الكل</button>` +

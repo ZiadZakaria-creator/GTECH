@@ -234,17 +234,27 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 /* ============ Categories ============ */
 .categories { display: grid; grid-template-columns: repeat(8, 1fr); gap: 14px; }
 .category {
+  --cc: #0a84ff;
   display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 30px 12px;
   background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
   transition: transform .3s, border-color .3s, box-shadow .3s; text-align: center;
 }
 .category:hover { transform: translateY(-6px); border-color: rgba(10,132,255,.5); box-shadow: var(--shadow); }
 .category__icon {
-  display: grid; place-items: center; width: 76px; height: 76px; margin-bottom: 8px; border-radius: 50%; font-size: 2.2rem;
-  background: radial-gradient(circle, rgba(10,132,255,.25), rgba(124,92,255,.08));
-  transition: transform .3s;
+  position: relative; display: grid; place-items: center; width: 70px; height: 70px; margin-bottom: 10px; border-radius: 22px; font-size: 2rem;
+  color: var(--cc);
+  background: linear-gradient(145deg, color-mix(in srgb, var(--cc) 24%, transparent), color-mix(in srgb, var(--cc) 5%, transparent));
+  border: 1px solid color-mix(in srgb, var(--cc) 45%, transparent);
+  box-shadow: 0 12px 28px -14px var(--cc), inset 0 1px 0 rgba(255,255,255,.08);
+  transition: transform .35s cubic-bezier(.2,1.4,.4,1), box-shadow .3s, background .3s;
 }
-.category:hover .category__icon { transform: scale(1.1) rotate(-6deg); }
+.category__icon svg { width: 34px; height: 34px; stroke-width: 1.7; filter: drop-shadow(0 0 6px color-mix(in srgb, var(--cc) 70%, transparent)); }
+.category:hover .category__icon {
+  transform: translateY(-3px) scale(1.08);
+  background: linear-gradient(145deg, color-mix(in srgb, var(--cc) 38%, transparent), color-mix(in srgb, var(--cc) 10%, transparent));
+  box-shadow: 0 16px 34px -12px var(--cc), 0 0 0 4px color-mix(in srgb, var(--cc) 12%, transparent), inset 0 1px 0 rgba(255,255,255,.12);
+}
+.category:hover { border-color: color-mix(in srgb, var(--cc, #0a84ff) 50%, transparent); }
 .category h3 { font-size: 1.05rem; }
 .category small { color: var(--muted); }
 
