@@ -165,11 +165,43 @@ function renderCart() {
           </div>
           <button class="cart-item__remove" data-remove="${idx}" aria-label="حذف">🗑</button>
         </div>`;
-      }).join("")
+      }).join("") + setupRecsHtml([...new Set(cart.map((i) => i.id))].map(findProduct))
     : `<div class="cart__empty"><span>🛒</span>سلتك فاضية.. يلا نملاها!</div>`;
 
   store.set("gtech-cart", cart);
   document.dispatchEvent(new Event("cartchange"));
+}
+
+// ============ كمّل السيت أب: منتجات بتكمّل مع بعض ============
+// مش من بيانات مبيعات — قاعدة بسيطة: كل قسم والأقسام اللي بتكمّله عادةً.
+// بنقترح من قسم مش موجود أصلاً في السلة، ونفضّل نفس الماركة وسعر قريب.
+const COMPLEMENTS = {
+  mice: ["keyboards", "audio"], keyboards: ["mice", "audio"], audio: ["mice", "keyboards"],
+  earphones: ["storage", "mice"], storage: ["keyboards", "mice"],
+  monitors: ["keyboards", "mice"], gpus: ["monitors", "storage"],
+};
+function complementsFor(sources, n = 2) {
+  sources = sources.filter(Boolean);
+  const have = new Set(sources.map((p) => p.cat));
+  const pool = shopProducts().filter((p) => inStock(p) && !have.has(p.cat));
+  const out = [];
+  for (const s of sources) for (const cat of COMPLEMENTS[s.cat] || []) {
+    if (out.length >= n || out.some((p) => p.cat === cat)) continue;
+    const pick = pool.filter((p) => p.cat === cat)
+      .sort((a, b) => (b.brand === s.brand) - (a.brand === s.brand) || Math.abs(a.price - s.price) - Math.abs(b.price - s.price))[0];
+    if (pick) out.push(pick);
+  }
+  return out;
+}
+const miniProduct = (p) => `
+  <div class="mini-prod">
+    <a href="${productUrl(p.id)}" class="mini-prod__img">${productVisual(p)}</a>
+    <a href="${productUrl(p.id)}" class="mini-prod__info"><small>${categoryLabel(p.cat)}</small><b>${escapeHtml(p.name)}</b><span>${fmt(p.price)}</span></a>
+    <button type="button" class="btn btn--ghost btn--sm" data-add="${p.id}">+ أضف</button>
+  </div>`;
+function setupRecsHtml(sources) {
+  const recs = complementsFor(sources);
+  return recs.length ? `<div class="setup-recs"><h4>🧩 كمّل السيت أب</h4>${recs.map(miniProduct).join("")}</div>` : "";
 }
 
 // شريط الشحن المجاني فوق منتجات السلة (نفس حسبة صفحة الدفع: على المجموع قبل الخصومات)
@@ -684,6 +716,86 @@ document.body.insertAdjacentHTML("beforeend", `
     <span class="wa-float__tip">عندك سؤال؟ كلمنا 👋</span>
     <svg viewBox="0 0 24 24" class="wa-ico"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c1.7.7 2.3.8 3.2.7a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.2-.2-.5-.3z"/></svg>
   </a>`);
+
+// ============ نافذة خصم أول زيارة ============
+// بتظهر مرة واحدة بس للزائر الجديد (بعد 25 ثانية أو لما ينزل نص الصفحة): يكتب رقم واتساب وياخد كود الخصم.
+// الرقم بيتحفظ في Firestore (leads) ويظهر في لوحة التحكم ← "أرقام العملاء".
+const LEAD_KEY = "gtech-lead";
+const LEAD_CODE = "GTECH10";
+function saveLead(phone) {
+  const lead = {
+    phone,
+    createdAt: new Date().toISOString(),
+    page: (location.pathname.split("/").pop() || "index.html").slice(0, 80),
+    source: typeof orderSource === "function" ? orderSource() : "direct",
+  };
+  if (!FIREBASE_CONFIG) {
+    store.set("gtech-leads-local", [...store.get("gtech-leads-local", []), lead]);
+    return Promise.resolve();
+  }
+  const root = `projects/${FIREBASE_CONFIG.projectId}/databases/(default)/documents`;
+  return fetch(`https://firestore.googleapis.com/v1/${root}/leads?key=${FIREBASE_CONFIG.apiKey}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ fields: Object.fromEntries(Object.entries(lead).map(([k, v]) => [k, { stringValue: v }])) }),
+  }).then((r) => { if (!r.ok) throw new Error("lead " + r.status); });
+}
+function openLeadPopup() {
+  document.body.insertAdjacentHTML("beforeend", `
+    <div class="modal lead" id="leadModal" role="dialog" aria-modal="true" aria-labelledby="leadTitle">
+      <form class="modal__box card-box lead__box" id="leadForm" novalidate>
+        <button type="button" class="icon-btn modal__close" id="leadClose" aria-label="إغلاق">✕</button>
+        <div class="lead__badge">🎁</div>
+        <h3 id="leadTitle" data-no-i18n>${typeof IS_EN !== "undefined" && IS_EN ? '<span class="lead__pct">10%</span> off your first order' : 'خصم <span class="lead__pct">10%</span> على أول أوردر'}</h3>
+        <p class="muted">اكتب رقم الواتساب بتاعك وخد كود الخصم فوراً، وكمان هتعرف العروض الجديدة قبل أي حد.</p>
+        <label class="field"><input name="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="01xxxxxxxxx" dir="ltr" maxlength="14" aria-label="رقم الواتساب" /><em></em></label>
+        <button class="btn btn--primary btn--block" type="submit">ابعتلي الكود 🎉</button>
+        <small class="muted">مش هنزعجك — عروض بس، وتقدر تقولنا نوقف في أي وقت.</small>
+      </form>
+    </div>`);
+  const modal = $("#leadModal"), form = $("#leadForm");
+  const close = () => modal.remove();
+  $("#leadClose").addEventListener("click", close);
+  modal.addEventListener("click", (e) => e.target === modal && close());
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const err = form.querySelector("em");
+    if (!isValidPhone(form.phone.value)) { err.textContent = "رقم موبايل غير صحيح (11 رقم يبدأ بـ 01)"; return; }
+    const phone = normalizePhone(form.phone.value);
+    store.set(LEAD_KEY, { phone, at: Date.now() });
+    store.set("gtech-promo", LEAD_CODE); // صفحة الدفع بتطبّقه لوحده
+    saveLead(phone).catch((x) => console.warn("lead", x));
+    if (typeof track === "function") track("generate_lead");
+    form.innerHTML = `
+      <button type="button" class="icon-btn modal__close" aria-label="إغلاق">✕</button>
+      <div class="lead__badge">🎉</div>
+      <h3>الكود بتاعك جاهز!</h3>
+      <button type="button" class="lead__code" id="leadCode" title="انسخ الكود">${LEAD_CODE} <small>📋 انسخ</small></button>
+      <p class="muted">خصم 10% على أول أوردر — <b>والكود هيتحط لوحده في صفحة الدفع</b>.</p>
+      <button type="button" class="btn btn--primary btn--block" id="leadShop">يلا نتسوق 🛒</button>`;
+    form.querySelector(".modal__close").addEventListener("click", close);
+    $("#leadShop").addEventListener("click", close);
+    $("#leadCode").addEventListener("click", () => {
+      navigator.clipboard?.writeText(LEAD_CODE).then(() => toast("📋 الكود اتنسخ"), () => {});
+    });
+  });
+}
+(() => {
+  if (store.get(LEAD_KEY, null) || user || isStandalone() || $("#checkoutForm") || /myorders/.test(location.pathname)) return;
+  let done = false;
+  const show = () => {
+    if (done) return;
+    // لو العميل فاتح السلة أو نافذة تانية نستنى شوية
+    if ($(".cart.open") || $$(".modal:not([hidden])").length) return void setTimeout(show, 8000);
+    done = true;
+    removeEventListener("scroll", onScroll);
+    store.set(LEAD_KEY, { shown: Date.now() });
+    openLeadPopup();
+  };
+  const onScroll = () => { if (scrollY + innerHeight > document.body.scrollHeight * 0.55) show(); };
+  setTimeout(show, 25000);
+  setTimeout(() => addEventListener("scroll", onScroll, { passive: true }), 6000);
+})();
 
 // أسعار الشحن (عشان شريط الشحن المجاني) — صفحة الدفع بتحمّلها بنفسها
 if (typeof loadShippingSettings === "function") {

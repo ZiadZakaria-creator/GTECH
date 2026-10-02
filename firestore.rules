@@ -89,6 +89,17 @@ service cloud.firestore {
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["remindedAt"]);
     }
 
+    // أرقام العملاء من نافذة "خصم أول أوردر": أي زائر يسيب رقمه بس (من غير ما يقرا حاجة)، والأدمن بس يشوفها
+    match /leads/{id} {
+      allow create: if request.resource.data.keys().hasOnly(["phone", "createdAt", "page", "source"])
+        && request.resource.data.phone is string
+        && request.resource.data.phone.matches('^01[0125][0-9]{8}$')
+        && request.resource.data.createdAt is string && request.resource.data.createdAt.size() < 40
+        && request.resource.data.page is string && request.resource.data.page.size() <= 80
+        && request.resource.data.source is string && request.resource.data.source.size() < 30;
+      allow read, delete: if isAdmin();
+    }
+
     // عدّاد الزوار: أي حد يزوّد بواحد بس، والأدمن بس يشوف الأرقام
     // (مصدر الزيارة src_*، ومسار الشراء: viewers شافوا منتج، carts ضافوا للسلة، checkouts دخلوا الدفع)
     function visitNew(f) { return request.resource.data.get(f, 0) <= 1; }

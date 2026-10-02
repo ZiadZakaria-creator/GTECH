@@ -340,3 +340,5 @@
 @media (max-width: 900px) { .an-grid { grid-template-columns: 1fr; } }
 .btn--wa { background: #25d366; color: #fff; border: 0; }
 .btn--wa:hover { background: #1ebe5a; }
+.carts-table tr.is-new td { background: rgba(10,132,255,.08); }
+.leads-actions { white-space: nowrap; }

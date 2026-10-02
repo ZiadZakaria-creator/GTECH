@@ -6,6 +6,18 @@
 
 const I18N_EN = {
 "ج.م": "EGP",
+"🧩 كمّل السيت أب": "🧩 Complete your setup",
+"+ أضف": "+ Add",
+"اكتب رقم الواتساب بتاعك وخد كود الخصم فوراً، وكمان هتعرف العروض الجديدة قبل أي حد.": "Enter your WhatsApp number to get the code instantly — and hear about new deals before anyone else.",
+"ابعتلي الكود 🎉": "Send me the code 🎉",
+"مش هنزعجك — عروض بس، وتقدر تقولنا نوقف في أي وقت.": "No spam — deals only, and you can ask us to stop anytime.",
+"الكود بتاعك جاهز!": "Your code is ready!",
+"📋 انسخ": "📋 Copy",
+"خصم 10% على أول أوردر — ": "10% off your first order — ",
+"والكود هيتحط لوحده في صفحة الدفع": "it'll be applied automatically at checkout",
+"يلا نتسوق 🛒": "Start shopping 🛒",
+"📋 الكود اتنسخ": "📋 Code copied",
+"رقم الواتساب": "WhatsApp number",
 "عندك سؤال؟ كلمنا 👋": "Got a question? Chat with us 👋",
 "🎁 موجود في": "🎁 Part of the",
 "🎮 سيت أب كامل": "🎮 Complete setup",

@@ -219,6 +219,7 @@ async function placeOrder() {
   }
 
   placed = true;
+  if (promo === store.get("gtech-promo", "")) store.set("gtech-promo", ""); // كود أول أوردر بيتطبّق لوحده مرة واحدة بس
   cart = [];
   renderCart();
   clearTimeout(cartSyncTimer);
@@ -319,6 +320,15 @@ function showPayBox(order) {
     }
   };
 }
+
+// كود الخصم اللي العميل خده من نافذة أول زيارة بيتطبّق لوحده
+(() => {
+  const saved = store.get("gtech-promo", "");
+  if (!promos[saved] || appOffer()) return;
+  promo = saved;
+  $("#promoForm").code.value = saved;
+  renderSummary();
+})();
 
 document.addEventListener("paymentchange", renderPayOptions);
 renderPayOptions();

@@ -71,6 +71,7 @@
       <button class="ad-sec" data-section="shipping">🚚 الشحن</button>
       <button class="ad-sec" data-section="reviews">⭐ التقييمات</button>
       <button class="ad-sec" data-section="carts">🛒 سلات متروكة <span class="tab__count" id="cartsBadge" hidden></span></button>
+      <button class="ad-sec" data-section="leads">📱 أرقام العملاء <span class="tab__count" id="leadsBadge" hidden></span></button>
     </nav>
 
     <div id="ordersSection" class="ad-section">
@@ -281,6 +282,26 @@
         </div>
       </section>
     </div>
+
+    <div id="leadsSection" class="ad-section" hidden>
+      <section class="card-box ad-panel">
+        <div class="ad-toolbar">
+          <p class="muted carts-hint">الزوار اللي كتبوا رقم الواتساب في نافذة "خصم 10% على أول أوردر" وخدوا الكود GTECH10. ابعتلهم العروض الجديدة من زرار الواتساب. <b id="leadsCount"></b></p>
+          <div class="ad-toolbar__side">
+            <button class="btn btn--ghost btn--sm" id="leadsExport" hidden>⬇️ تنزيل CSV</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="orders carts-table">
+            <thead>
+              <tr><th>الرقم</th><th>التاريخ</th><th>المصدر</th><th>الصفحة</th><th></th></tr>
+            </thead>
+            <tbody id="leadsBody"></tbody>
+          </table>
+          <div class="ad-empty" id="leadsEmpty" hidden><span>📱</span><p>لسه محدش ساب رقمه</p></div>
+        </div>
+      </section>
+    </div>
   </main>
   <p class="ad-owner" dir="ltr">© ZiraTech — under the supervision of Eng. Ziad Zakaria Ebrahim &amp; Eng. Ramy Tarek Hafez</p>
 
@@ -383,6 +404,7 @@
   <script src="admin-alerts.js"></script>
   <script src="admin-carts.js"></script>
   <script src="admin-visits.js"></script>
+  <script src="admin-leads.js"></script>
   <script src="admin-shipping.js"></script>
   <script src="admin-reviews.js"></script>
 </body>

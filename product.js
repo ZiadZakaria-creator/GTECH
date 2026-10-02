@@ -122,6 +122,8 @@ function renderDetail(p) {
 
         <div class="pd__alerts" id="pdAlerts">${alertButtonsHtml(p)}</div>
 
+        ${soldOut ? "" : setupRecsHtml([p])}
+
         <div class="pd__perks">
           <div><span>🚚</span><p>توصيل متوقع <b>${delivery}</b>${p.price >= 1000 ? " — مجاناً" : ""}</p></div>
           <div><span>🛡️</span><p>${hasWarranty(p) ? `ضمان رسمي لمدة <b>${esc(warrantyText(p))}</b>` : "المنتج ده <b>من غير ضمان</b>"}</p></div>
