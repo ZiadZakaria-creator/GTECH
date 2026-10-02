@@ -6,6 +6,13 @@
 
 const I18N_EN = {
 "ج.م": "EGP",
+"السياسات والمساعدة": "Policies & help",
+"GTECH | السياسات والمساعدة": "GTECH | Policies & help",
+"الشحن والتوصيل": "Shipping & delivery",
+"سياسة الخصوصية": "Privacy policy",
+"كاش عند الاستلام": "Cash on delivery",
+"واتساب": "WhatsApp",
+"استرجاع أو استبدال خلال": "Return or exchange within",
 "🚚 شحن مجاني للطلبات فوق 1000 ج.م": "🚚 Free shipping on orders over 1000 EGP",
 "— ضمان رسمي على جميع المنتجات": "— official warranty on all products",
 "التقسيط هيبقى متاح قريباً": "Installments are coming soon",

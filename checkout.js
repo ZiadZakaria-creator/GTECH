@@ -9,6 +9,7 @@ const payLabels = { cod: "الدفع عند الاستلام", instapay: "إنس
 const form = $("#checkoutForm");
 let promo = null;
 let placed = false;
+let checkoutTracked = false; // بدء الدفع بيتحسب مرة واحدة
 
 function totals() {
   const sub = cart.reduce((s, i) => s + i.qty * findProduct(i.id).price, 0);
@@ -26,6 +27,10 @@ function renderSummary() {
   $("#emptyView").hidden = !empty;
   $("#loginView").hidden = !locked;
   if (empty || locked) return;
+  if (!checkoutTracked && typeof track === "function") {
+    checkoutTracked = true;
+    track("begin_checkout", { items: cart.map((i) => { const p = findProduct(i.id); return { id: p.id, name: p.name, price: p.price, qty: i.qty }; }) });
+  }
 
   // بيانات التواصل جاية من الحساب
   form.elements.name.value = user.name;
@@ -184,6 +189,7 @@ async function placeOrder() {
   btn.textContent = "جاري إرسال الطلب...";
   try {
     await submitOrder(order);
+    if (typeof track === "function") track("purchase", { items: order.items, value: order.totals.total, orderId: order.id });
     store.set(HAS_ORDERS_KEY, true);
     sendOrderEmail(order, "new")
       .then((sent) => sent && showEmailStatus(`📧 بعتنالك تأكيد الطلب على ${order.customer.email}`))

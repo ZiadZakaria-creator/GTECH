@@ -192,7 +192,7 @@ ${entries.map((e) => `  <url>
 
 const template = readFileSync("product.html", "utf8");
 mkdirSync(join(OUT, "p/img"), { recursive: true });
-const entries = [{ url: SITE }];
+const entries = [{ url: SITE }, { url: `${SITE}policies.html` }];
 try {
   const docs = (await getJson(`${FS}/products?pageSize=300&key=${apiKey}`)).documents || [];
   const list = docs.map(docToObject).filter((p) => p.active !== false && p.id).sort((a, b) => a.id - b.id);

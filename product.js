@@ -11,6 +11,7 @@ const views = [
 
 let qty = 1;
 
+let trackedView = null;
 function notFound() {
   // الصفحة الثابتة فيها نسخة مكتوبة من المنتج، بتفضل ظاهرة لحد ما المنتجات تحمّل (أو لو التحميل فشل)
   if ((!catalogLoaded || catalogFailed) && $(".seo-pd")) return;
@@ -44,6 +45,7 @@ function renderDetail(p) {
   const delivery = new Date(Date.now() + 2 * 86400000).toLocaleDateString(LOCALE, { weekday: "long", day: "numeric", month: "long" });
 
   document.title = `${p.name} | GTECH`;
+  if (typeof track === "function" && trackedView !== p.id) { trackedView = p.id; track("view_item", { items: [{ id: p.id, name: p.name, price: p.price }] }); }
   qty = 1;
   $('meta[name="description"]').setAttribute("content", p.desc);
   if (!$('link[rel="canonical"]')) {
@@ -118,7 +120,7 @@ function renderDetail(p) {
         <div class="pd__perks">
           <div><span>🚚</span><p>توصيل متوقع <b>${delivery}</b>${p.price >= 1000 ? " — مجاناً" : ""}</p></div>
           <div><span>🛡️</span><p>${hasWarranty(p) ? `ضمان رسمي لمدة <b>${esc(warrantyText(p))}</b>` : "المنتج ده <b>من غير ضمان</b>"}</p></div>
-          <div><span>🔄</span><p>استرجاع أو استبدال مجاني خلال <b>14 يوم</b></p></div>
+          <div><span>🔄</span><p><a href="policies.html#returns">استرجاع أو استبدال خلال <b>14 يوم</b></a></p></div>
         </div>
       </div>
     </div>

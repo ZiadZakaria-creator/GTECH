@@ -135,6 +135,7 @@ function addToCart(id, qty = 1, opts = "") {
   const item = cart.find((i) => i.id === id && (i.opts || "") === opts);
   item ? (item.qty += qty) : cart.push({ id, qty, opts });
   renderCart();
+  if (typeof track === "function") track("add_to_cart", { items: [{ id: p.id, name: p.name, price: p.price, qty }] });
   toast(`✅ تمت إضافة "${findProduct(id).name}" للسلة`);
 }
 
