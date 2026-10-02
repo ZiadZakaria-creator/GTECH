@@ -50,7 +50,7 @@ const EMAIL_CONFIG = {
 // ga4: من Google Analytics ← Admin ← Data streams (شكله G-XXXXXXXXXX)
 // metaPixel: من Meta Events Manager ← Data sources (رقم 15-16 خانة)
 // سيبهم فاضيين لحد ما تعمل الحسابات — مفيش حاجة بتتحمّل وهما فاضيين
-const ANALYTICS_IDS = { ga4: "G-H47X3Z8EW9", metaPixel: "" };
+const ANALYTICS_IDS = { ga4: "G-H47X3Z8EW9", metaPixel: "1089060123727450" };
 
 // ============ إشعار فوري على موبايلك بكل أوردر جديد (ntfy — مجاني) ============
 // نزّل تطبيق ntfy على موبايلك ← + ← اكتب اسم القناة دي بالظبط ← Subscribe.
