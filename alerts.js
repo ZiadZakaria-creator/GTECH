@@ -28,7 +28,9 @@ function alertButtonsHtml(p) {
   const types = inStock(p) ? ["price"] : ["stock"];
   return types.map((t) => hasMyAlert(p.id, t)
     ? `<span class="pd__alert done">✔ هنبلّغك على إيميلك ${t === "stock" ? "لما يرجع" : "لو السعر قلّ"}</span>`
-    : `<button type="button" class="${t === "stock" ? "btn btn--primary" : "link-btn"} pd__alert" data-alert="${t}" data-id="${p.id}">${ALERT_TYPES[t].btn}</button>`
+    : t === "stock"
+      ? `<button type="button" class="btn btn--primary pd__alert" data-alert="${t}" data-id="${p.id}">${ALERT_TYPES[t].btn}</button>`
+      : `<button type="button" class="pd__alert alert-chip" data-alert="${t}" data-id="${p.id}"><i>📉</i><span><b>${ALERT_TYPES[t].title}</b><small>هيوصلك إيميل أول ما سعره ينزل</small></span><em>🔔</em></button>`
   ).join("");
 }
 

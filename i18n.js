@@ -386,6 +386,7 @@ const I18N_EN = {
 "أول ما المنتج يرجع المخزون هيوصلك إيميل.": "You'll get an email as soon as the product is back in stock.",
 "📉 نبّهني لو السعر قلّ": "📉 Notify me if the price drops",
 "نبّهني لو السعر قلّ": "Notify me if the price drops",
+"هيوصلك إيميل أول ما سعره ينزل": "We'll email you as soon as it drops",
 "لو سعره نزل عن السعر الحالي هيوصلك إيميل فوراً.": "If the price drops below the current price, you'll get an email right away.",
 "لما يرجع": "When it's back",
 "لو السعر قلّ": "If the price drops",

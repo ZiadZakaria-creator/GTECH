@@ -984,11 +984,19 @@ img[data-fs].is-loaded { opacity: 1; }
 }
 
 /* ============ نبّهني ============ */
-.pd__alerts { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: -6px 0 18px; }
+.pd__alerts { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: -8px 0 20px; }
 .pd__alerts:empty { display: none; }
 .pd__alerts .btn { flex: 1 1 100%; }
-.pd__alert.link-btn { font-size: .9rem; }
-.pd__alert.done { font-size: .88rem; color: var(--success, #22c55e); font-weight: 700; }
+.alert-chip { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 16px; border-radius: 16px; text-align: start; cursor: pointer;
+  border: 1px solid rgba(10,132,255,.35); background: linear-gradient(135deg, rgba(10,132,255,.12), rgba(124,92,255,.08)); color: var(--text); font: inherit; transition: border-color .2s, transform .2s, box-shadow .2s; }
+.alert-chip:hover { border-color: var(--primary); box-shadow: 0 8px 24px -10px rgba(10,132,255,.6); transform: translateY(-1px); }
+.alert-chip i { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; font-style: normal; font-size: 1.2rem; background: rgba(10,132,255,.18); }
+.alert-chip span { flex: 1; display: grid; gap: 2px; min-width: 0; }
+.alert-chip b { font-size: .95rem; }
+.alert-chip small { font-size: .78rem; color: var(--muted); }
+.alert-chip em { flex: none; font-style: normal; font-size: .95rem; opacity: .7; transition: transform .3s; }
+.alert-chip:hover em { transform: rotate(-15deg) scale(1.1); opacity: 1; }
+.pd__alert.done { display: flex; align-items: center; gap: 10px; width: 100%; padding: 12px 16px; border-radius: 16px; font-size: .9rem; color: var(--success, #22c55e); font-weight: 700; border: 1px solid rgba(34,197,94,.35); background: rgba(34,197,94,.1); }
 
 .nav-theme { display: none; }
 @media (max-width: 600px) {
@@ -1364,7 +1372,7 @@ html[dir="ltr"] .pd__highlights li::before { right: auto; left: 0; }
 /* ============ كمّل السيت أب ============ */
 .setup-recs { display: grid; gap: 10px; padding: 14px; border-radius: 16px; background: rgba(124,92,255,.08); border: 1px dashed rgba(124,92,255,.45); }
 .setup-recs h4 { font-size: .98rem; margin: 0; }
-.pd__info .setup-recs { margin-top: 18px; }
+.pd__info .setup-recs { margin: 0 0 22px; }
 .mini-prod { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .mini-prod__img { flex: none; width: 54px; height: 54px; border-radius: 12px; overflow: hidden; background: #fff; display: grid; place-items: center; font-size: 1.6rem; }
 .mini-prod__img img { width: 100%; height: 100%; object-fit: contain; }
