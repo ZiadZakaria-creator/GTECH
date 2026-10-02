@@ -215,7 +215,23 @@ function openOrder(id, show = true) {
   openId = id;
   const c = o.customer, a = o.address, t = o.totals;
   const intlPhone = "2" + c.phone;
-  const greet = `أهلاً ${c.name}، معاك GTECH بخصوص طلبك رقم ${o.id} بإجمالي ${t.total.toLocaleString("en-US")} ج.م`;
+  // رسالة واتساب جاهزة لتأكيد الطلب: المنتجات والسعر والعنوان وميعاد الإرسال
+  const egpTxt = (n) => `${Number(n).toLocaleString("en-US")} ج.م`;
+  const greet = [
+    `أهلاً ${c.name} 👋`,
+    `معاك GTECH، بنأكد طلبك رقم ${o.id} ✅`,
+    ``,
+    `🛒 الطلب:`,
+    ...o.items.map((i) => `• ${i.name}${i.options ? ` (${i.options})` : ""}${i.qty > 1 ? ` × ${i.qty}` : ""} — ${egpTxt(i.price * i.qty)}`),
+    t.discount ? `🎁 الخصم: − ${egpTxt(t.discount)}` : null,
+    `🚚 الشحن: ${t.shipping ? egpTxt(t.shipping) : "مجاناً"}`,
+    `💰 الإجمالي: ${egpTxt(t.total)}${o.payment?.label ? ` — ${o.payment.label}` : ""}`,
+    ``,
+    `📍 العنوان: ${[a.street, a.city, a.gov].filter(Boolean).join("، ")}`,
+    ``,
+    `📦 طلبك هيتم إرساله خلال 4 أيام عمل.`,
+    `لو في أي تعديل في الطلب أو العنوان رد علينا هنا 🙏`,
+  ].filter((l) => l !== null).join("\n");
 
   $("#drawerTitle").innerHTML = `طلب <span class="mono">${escapeHtml(o.id)}</span>`;
   $("#drawerBody").innerHTML = `
