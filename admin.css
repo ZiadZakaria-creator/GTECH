@@ -342,3 +342,4 @@
 .btn--wa:hover { background: #1ebe5a; }
 .carts-table tr.is-new td { background: rgba(10,132,255,.08); }
 .leads-actions { white-space: nowrap; }
+.pill--warn { background: rgba(245,158,11,.15); color: #f59e0b; }

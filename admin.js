@@ -86,6 +86,7 @@ function onOrders(list) {
   knownIds = ids;
   render();
   if (openId) openOrder(openId, false);
+  document.dispatchEvent(new Event("adminorders")); // قايمة العملاء بتتحدث منها
 }
 
 function notifyNew(fresh) {

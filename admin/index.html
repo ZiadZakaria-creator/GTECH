@@ -71,7 +71,7 @@
       <button class="ad-sec" data-section="shipping">🚚 الشحن</button>
       <button class="ad-sec" data-section="reviews">⭐ التقييمات</button>
       <button class="ad-sec" data-section="carts">🛒 سلات متروكة <span class="tab__count" id="cartsBadge" hidden></span></button>
-      <button class="ad-sec" data-section="leads">📱 أرقام العملاء <span class="tab__count" id="leadsBadge" hidden></span></button>
+      <button class="ad-sec" data-section="leads">👥 العملاء <span class="tab__count" id="leadsBadge" hidden></span></button>
     </nav>
 
     <div id="ordersSection" class="ad-section">
@@ -286,19 +286,26 @@
     <div id="leadsSection" class="ad-section" hidden>
       <section class="card-box ad-panel">
         <div class="ad-toolbar">
-          <p class="muted carts-hint">الزوار اللي كتبوا رقم الواتساب في نافذة "خصم 10% على أول أوردر" وخدوا الكود GTECH10. ابعتلهم العروض الجديدة من زرار الواتساب. <b id="leadsCount"></b></p>
+          <div class="status-tabs" id="custFilters">
+            <button class="tab active" data-cf="all">الكل <span class="tab__count"></span></button>
+            <button class="tab" data-cf="buyer">🟢 اشتروا <span class="tab__count"></span></button>
+            <button class="tab" data-cf="cart">🟡 سابوا سلة <span class="tab__count"></span></button>
+            <button class="tab" data-cf="lead">⚪ لسه ماشتروش <span class="tab__count"></span></button>
+          </div>
           <div class="ad-toolbar__side">
-            <button class="btn btn--ghost btn--sm" id="leadsExport" hidden>⬇️ تنزيل CSV</button>
+            <input type="search" id="custSearch" placeholder="بحث بالاسم، الموبايل، المحافظة..." />
+            <button class="btn btn--ghost btn--sm" id="leadsExport" hidden>⬇ تنزيل CSV</button>
           </div>
         </div>
+        <p class="muted carts-hint">كل أرقام العملاء في مكان واحد: اللي اشتروا (من الطلبات)، اللي سابوا سلة، واللي سابوا رقمهم في نافذة "خصم 10% على أول أوردر". كل رقم بيظهر مرة واحدة، وزرار الواتساب بيكتب رسالة مناسبة لحالته. والـ CSV بينزّل اللي ظاهرين بالفلتر.</p>
         <div class="table-wrap">
           <table class="orders carts-table">
             <thead>
-              <tr><th>الرقم</th><th>التاريخ</th><th>المصدر</th><th>الصفحة</th><th></th></tr>
+              <tr><th>العميل</th><th>الحالة</th><th>المحافظة</th><th>آخر نشاط</th><th>جه منين</th><th></th></tr>
             </thead>
             <tbody id="leadsBody"></tbody>
           </table>
-          <div class="ad-empty" id="leadsEmpty" hidden><span>📱</span><p>لسه محدش ساب رقمه</p></div>
+          <div class="ad-empty" id="leadsEmpty" hidden><span>📱</span><p>لسه مفيش أرقام عملاء</p></div>
         </div>
       </section>
     </div>

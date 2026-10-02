@@ -173,7 +173,7 @@ let cartsStarted = false;
 function startCarts() {
   if (cartsStarted) return;
   cartsStarted = true;
-  cartsStore.watch((list) => { allCarts = list; renderCarts(); }, (err) => {
+  cartsStore.watch((list) => { allCarts = list; renderCarts(); document.dispatchEvent(new Event("admincarts")); }, (err) => {
     console.warn("carts", err);
     if (err?.code === "permission-denied") $("#cartsEmpty").querySelector("p").textContent = "⛔ محتاج تحدّث قواعد الأمان في Firebase عشان السلات تظهر";
     $("#cartsEmpty").hidden = false;

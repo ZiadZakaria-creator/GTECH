@@ -1,8 +1,11 @@
-// ============ لوحة التحكم: أرقام العملاء ============
-// الأرقام اللي الزوار سابوها في نافذة "خصم أول أوردر" (common.js ← saveLead).
-// من هنا تبعتلهم عروض واتساب أو تنزّلهم ملف CSV.
+// ============ لوحة التحكم: العملاء ============
+// قايمة واحدة بكل أرقام العملاء من 3 مصادر — كل رقم بيظهر مرة واحدة:
+//   الطلبات (admin.js ← orders)، السلات المتروكة (admin-carts.js ← allCarts)،
+//   ونافذة "خصم أول أوردر" (common.js ← saveLead ← Firestore: leads)
+// ومنها تبعت واتساب برسالة مناسبة لحالة كل عميل، أو تنزّل CSV.
 
 const LEADS_LOCAL_KEY = "gtech-leads-local";
+const LEAD_CODE_ADMIN = "GTECH10";
 
 const leadsStore = USE_FIREBASE
   ? {
@@ -30,49 +33,132 @@ const leadsStore = USE_FIREBASE
     };
 
 let allLeads = [];
+let custFilter = "all";
+let custQuery = "";
 const LEADS_SEEN = "gtech-leads-seen"; // آخر مرة الأدمن فتح التاب (عشان عدّاد الجديد)
 
-// نفس الرقم ممكن يتسجل أكتر من مرة (من أجهزة مختلفة) — بنعرضه مرة واحدة بأقدم تاريخ
-function uniqueLeads() {
-  const byPhone = new Map();
-  for (const l of allLeads) {
-    const prev = byPhone.get(l.phone);
-    if (!prev || l.createdAt < prev.createdAt) byPhone.set(l.phone, { ...l, ids: [...(prev?.ids || []), l.id] });
-    else prev.ids.push(l.id);
+const STATUS_INFO = {
+  buyer: ["🟢 اشترى", "pill--done"],
+  cart: ["🟡 ساب سلة", "pill--warn"],
+  lead: ["⚪ لسه ماشتراش", "pill--idle"],
+};
+
+const cleanPhone = (p) => normalizePhone(String(p || "")).replace(/^\+?20(?=1)/, "0");
+const later = (a, b) => (!a ? b : !b ? a : a > b ? a : b);
+
+// بيجمّع كل مصادر الأرقام في عميل واحد لكل رقم
+function buildCustomers() {
+  const map = new Map();
+  const get = (phone) => {
+    phone = cleanPhone(phone);
+    if (!/^01\d{9}$/.test(phone)) return null;
+    if (!map.has(phone)) map.set(phone, { phone, name: "", gov: "", orders: 0, spent: 0, cancelled: 0, cart: null, leadIds: [], source: "", firstSeen: "", lastActive: "" });
+    return map.get(phone);
+  };
+  const seen = (c, at) => {
+    c.lastActive = later(c.lastActive, at);
+    c.firstSeen = !c.firstSeen || at < c.firstSeen ? at : c.firstSeen;
+  };
+  // الطلبات (أحدث الأول، فأول اسم ومحافظة هما الأحدث)
+  for (const o of typeof orders !== "undefined" ? orders : []) {
+    const c = get(o.customer?.phone);
+    if (!c) continue;
+    c.name ||= o.customer.name || "";
+    c.gov ||= o.address?.gov || "";
+    c.source ||= o.source && o.source !== "direct" ? o.source : "";
+    if (o.status === "cancelled") c.cancelled++;
+    else { c.orders++; c.spent += o.totals?.total || 0; }
+    seen(c, o.createdAt);
   }
-  return [...byPhone.values()].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  // السلات المتروكة (اللي فيها رقم)
+  for (const cart of typeof allCarts !== "undefined" ? allCarts : []) {
+    if (!cart.items?.length) continue;
+    const c = get(cart.phone);
+    if (!c) continue;
+    c.name ||= cart.name || "";
+    // السلة تتحسب بس لو اتعدلت بعد آخر أوردر
+    if (!c.orders || cart.updatedAt > c.lastActive) c.cart = cart;
+    seen(c, cart.updatedAt);
+  }
+  // نافذة الخصم
+  for (const l of allLeads) {
+    const c = get(l.phone);
+    if (!c) continue;
+    c.leadIds.push(l.id);
+    c.source ||= l.source && l.source !== "direct" ? l.source : "";
+    seen(c, l.createdAt);
+  }
+  return [...map.values()].map((c) => ({ ...c, status: c.orders ? "buyer" : c.cart ? "cart" : "lead" }))
+    .sort((a, b) => b.lastActive.localeCompare(a.lastActive));
 }
 
-const leadWhatsApp = (l) => waLink(
-  `أهلاً 👋 معاك GTECH\nشكراً إنك اشتركت في عروضنا 🎁\nكود خصمك 10% على أول أوردر: ${LEAD_CODE_ADMIN}\n\nتقدر تتسوق من هنا 👇\n${siteUrl("index.html")}`,
-  "20" + l.phone.replace(/^0/, ""));
-const LEAD_CODE_ADMIN = "GTECH10";
+// رسالة واتساب مناسبة لحالة العميل
+function customerWhatsApp(c) {
+  const hi = `أهلاً${c.name ? " " + c.name.split(" ")[0] : ""} 👋 معاك GTECH`;
+  const text = c.status === "buyer"
+    ? `${hi}\nشكراً إنك اشتريت مننا قبل كده 🙏\nنزلنا منتجات وعروض جديدة، شوفها من هنا 👇\n${siteUrl("index.html")}`
+    : c.status === "cart"
+      ? `${hi}\nلاحظنا إنك سبت منتجات في السلة:\n${c.cart.items.map((i) => `• ${i.name}${i.qty > 1 ? ` × ${i.qty}` : ""}`).join("\n")}\nالإجمالي: ${egp(c.cart.total)}\n\nتقدر تكمّل طلبك في دقيقة من هنا 👇\n${cartLink(c.cart)}`
+      : `${hi}\nشكراً إنك اشتركت في عروضنا 🎁\nكود خصمك 10% على أول أوردر: ${LEAD_CODE_ADMIN}\n\nتقدر تتسوق من هنا 👇\n${siteUrl("index.html")}`;
+  return waLink(text, "20" + c.phone.slice(1));
+}
+
+function filteredCustomers(list) {
+  const q = custQuery.trim().toLowerCase();
+  return list.filter((c) => (custFilter === "all" || c.status === custFilter)
+    && (!q || c.phone.includes(toLatinDigits(q)) || c.name.toLowerCase().includes(q) || c.gov.includes(q)));
+}
+
+function statusDetail(c) {
+  if (c.status === "buyer") return `${num(c.orders)} ${c.orders === 1 ? "أوردر" : "أوردرات"} · ${fmt(c.spent)}${c.cart ? " · وعنده سلة مفتوحة" : ""}`;
+  if (c.status === "cart") return `سلة بـ ${fmt(c.cart.total)}`;
+  return c.cancelled ? `${num(c.cancelled)} أوردر اتلغى` : "من نافذة الخصم";
+}
 
 function renderLeads() {
-  const list = uniqueLeads();
-  const seen = store.get(LEADS_SEEN, "");
-  const fresh = list.filter((l) => l.createdAt > seen).length;
+  const all = buildCustomers();
+  const seenAt = store.get(LEADS_SEEN, "");
+  const fresh = all.filter((c) => c.firstSeen > seenAt).length;
   const badge = $("#leadsBadge");
   badge.hidden = !fresh;
   badge.textContent = num(fresh);
-  $("#leadsCount").textContent = list.length ? `${num(list.length)} رقم` : "";
+
+  const counts = { all: all.length, buyer: 0, cart: 0, lead: 0 };
+  all.forEach((c) => counts[c.status]++);
+  $$("#custFilters [data-cf]").forEach((b) => {
+    b.classList.toggle("active", b.dataset.cf === custFilter);
+    b.querySelector("span").textContent = num(counts[b.dataset.cf]);
+  });
+
+  const list = filteredCustomers(all);
   $("#leadsExport").hidden = !list.length;
   $("#leadsEmpty").hidden = !!list.length;
-  $("#leadsBody").innerHTML = list.map((l) => {
-    const src = (typeof SOURCE_INFO !== "undefined" && SOURCE_INFO[l.source]?.[0]) || l.source || "—";
+  $("#leadsEmpty p").textContent = all.length ? "مفيش عملاء بالفلتر ده" : "لسه مفيش أرقام عملاء";
+  $("#leadsBody").innerHTML = list.map((c) => {
+    const [label, cls] = STATUS_INFO[c.status];
+    const src = c.source ? (typeof SOURCE_INFO !== "undefined" && SOURCE_INFO[c.source]?.[0]) || c.source : "—";
     return `
-      <tr class="${l.createdAt > seen ? "is-new" : ""}">
-        <td><b dir="ltr">${escapeHtml(l.phone)}</b></td>
-        <td>${new Date(l.createdAt).toLocaleDateString(LOCALE, { day: "numeric", month: "short" })} <small class="muted">${timeAgo(l.createdAt)}</small></td>
+      <tr class="${c.firstSeen > seenAt ? "is-new" : ""}">
+        <td><b>${escapeHtml(c.name || "—")}</b><br><small class="muted mono" dir="ltr">${escapeHtml(c.phone)}</small></td>
+        <td><span class="pill ${cls}">${label}</span><br><small class="muted">${statusDetail(c)}</small></td>
+        <td>${escapeHtml(c.gov || "—")}</td>
+        <td>${timeAgo(c.lastActive)}</td>
         <td>${escapeHtml(src)}</td>
-        <td><small class="muted" dir="ltr">${escapeHtml(l.page || "")}</small></td>
         <td class="leads-actions">
-          <a class="btn btn--sm btn--wa" href="${escapeHtml(leadWhatsApp(l))}" target="_blank" rel="noopener">💬 واتساب</a>
-          <button class="btn btn--ghost btn--sm" data-lead-del="${escapeHtml(l.ids.join(","))}" aria-label="حذف">🗑</button>
+          <a class="btn btn--sm btn--wa" href="${escapeHtml(customerWhatsApp(c))}" target="_blank" rel="noopener">💬 واتساب</a>
+          ${c.status === "lead" && c.leadIds.length ? `<button class="btn btn--ghost btn--sm" data-lead-del="${escapeHtml(c.leadIds.join(","))}" aria-label="حذف" title="امسح الرقم">🗑</button>` : ""}
         </td>
       </tr>`;
   }).join("");
 }
+
+$("#custFilters").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-cf]");
+  if (!b) return;
+  custFilter = b.dataset.cf;
+  renderLeads();
+});
+$("#custSearch").addEventListener("input", (e) => { custQuery = e.target.value; renderLeads(); });
 
 $("#leadsBody").addEventListener("click", async (e) => {
   const b = e.target.closest("[data-lead-del]");
@@ -87,18 +173,23 @@ $("#leadsBody").addEventListener("click", async (e) => {
 });
 
 $("#leadsExport").addEventListener("click", () => {
-  const rows = [["phone", "date", "source", "page"], ...uniqueLeads().map((l) => [l.phone, l.createdAt.slice(0, 10), l.source || "", l.page || ""])];
+  const status = { buyer: "اشترى", cart: "ساب سلة", lead: "لسه ماشتراش" };
+  const rows = [["phone", "name", "status", "orders", "spent", "governorate", "last_active", "source"],
+    ...filteredCustomers(buildCustomers()).map((c) => [c.phone, c.name, status[c.status], c.orders, c.spent, c.gov, c.lastActive.slice(0, 10), c.source])];
   const csv = "﻿" + rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
-  const a = Object.assign(document.createElement("a"), { href: URL.createObjectURL(new Blob([csv], { type: "text/csv" })), download: "gtech-leads.csv" });
+  const a = Object.assign(document.createElement("a"), { href: URL.createObjectURL(new Blob([csv], { type: "text/csv" })), download: `gtech-customers-${custFilter}.csv` });
   a.click();
   URL.revokeObjectURL(a.href);
 });
 
 document.addEventListener("sectionchange", (e) => {
   if (e.detail !== "leads") return;
-  // أول ما الأدمن يفتح التاب، الأرقام تبقى "اتشافت" (بعد ما تتعرض مميزة مرة)
+  startCarts?.(); // السلات بتتحمّل هنا كمان عشان العملاء اللي سابوا سلة
+  // أول ما الأدمن يفتح التاب، العملاء الجداد يبقوا "اتشافوا" (بعد ما يتعرضوا مميزين مرة)
   setTimeout(() => { store.set(LEADS_SEEN, new Date().toISOString()); }, 1500);
 });
+document.addEventListener("adminorders", renderLeads);
+document.addEventListener("admincarts", renderLeads);
 
 let leadsStarted = false;
 function startLeads() {
@@ -106,8 +197,8 @@ function startLeads() {
   leadsStarted = true;
   leadsStore.watch((list) => { allLeads = list.filter((l) => l.phone && l.createdAt); renderLeads(); }, (err) => {
     console.warn("leads", err);
-    if (err?.code === "permission-denied") $("#leadsEmpty").querySelector("p").textContent = "⛔ محتاج تحدّث قواعد الأمان في Firebase عشان الأرقام تظهر";
-    $("#leadsEmpty").hidden = false;
+    if (err?.code === "permission-denied") toast("⛔ محتاج تحدّث قواعد الأمان في Firebase عشان أرقام نافذة الخصم تظهر");
+    renderLeads();
   });
 }
 document.addEventListener("dashboardready", startLeads);
