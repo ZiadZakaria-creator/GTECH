@@ -6,6 +6,7 @@
 
 const I18N_EN = {
 "ج.م": "EGP",
+"عندك سؤال؟ كلمنا 👋": "Got a question? Chat with us 👋",
 "🎁 موجود في": "🎁 Part of the",
 "🎮 سيت أب كامل": "🎮 Complete setup",
 "باكدجات بخصم 10%": "Bundles at 10% off",

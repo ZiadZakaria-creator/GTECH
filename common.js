@@ -145,6 +145,7 @@ function renderCart() {
     row.hidden = !bundleOff;
     row.querySelector("b").textContent = "− " + fmt(bundleOff);
   }
+  renderFreeShip(total + bundleOff);
 
   $("#cartItems").innerHTML = cart.length
     ? cart.map((i, idx) => {
@@ -169,6 +170,27 @@ function renderCart() {
 
   store.set("gtech-cart", cart);
   document.dispatchEvent(new Event("cartchange"));
+}
+
+// شريط الشحن المجاني فوق منتجات السلة (نفس حسبة صفحة الدفع: على المجموع قبل الخصومات)
+function renderFreeShip(sub) {
+  const items = $("#cartItems");
+  if (!items || typeof shippingSettings === "undefined") return;
+  let bar = document.getElementById("cartShip");
+  if (!bar) {
+    items.insertAdjacentHTML("beforebegin", '<div class="cart__ship" id="cartShip" hidden><p></p><i><em></em></i></div>');
+    bar = document.getElementById("cartShip");
+  }
+  const goal = shippingSettings.freeOver;
+  bar.hidden = !(goal > 0 && cart.length);
+  if (bar.hidden) return;
+  const left = goal - sub;
+  bar.classList.toggle("is-done", left <= 0);
+  const en = typeof IS_EN !== "undefined" && IS_EN;
+  bar.querySelector("p").innerHTML = left > 0
+    ? (en ? `🚚 Add <b>${fmt(left)}</b> more for <b>free shipping</b>` : `🚚 فاضلك <b>${fmt(left)}</b> وتاخد <b>شحن مجاني</b>`)
+    : (en ? "🎉 Nice! Your shipping is <b>free</b>" : "🎉 مبروك! الشحن عندك <b>مجاني</b>");
+  bar.querySelector("em").style.width = Math.min(100, (sub / goal) * 100) + "%";
 }
 
 function addToCart(id, qty = 1, opts = "") {
@@ -659,8 +681,27 @@ $("#newsletterForm")?.addEventListener("submit", (e) => {
 // ============ زرار واتساب العائم ============
 document.body.insertAdjacentHTML("beforeend", `
   <a class="wa-float" href="${waLink("السلام عليكم، عندي استفسار عن منتجات GTECH")}" target="_blank" rel="noopener" aria-label="كلمنا على واتساب">
+    <span class="wa-float__tip">عندك سؤال؟ كلمنا 👋</span>
     <svg viewBox="0 0 24 24" class="wa-ico"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c1.7.7 2.3.8 3.2.7a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.2-.2-.5-.3z"/></svg>
   </a>`);
+
+// أسعار الشحن (عشان شريط الشحن المجاني) — صفحة الدفع بتحمّلها بنفسها
+if (typeof loadShippingSettings === "function") {
+  document.addEventListener("shippingchange", renderCart);
+  if (!$("#checkoutForm")) loadShippingSettings();
+}
+
+// فقاعة "عندك سؤال؟" بتظهر مرة واحدة في الزيارة بعد شوية
+(() => {
+  const wa = $(".wa-float");
+  try { if (sessionStorage.getItem("gtech-wa-tip")) return; sessionStorage.setItem("gtech-wa-tip", "1"); } catch { return; }
+  setTimeout(() => wa.classList.add("tip"), 9000);
+  setTimeout(() => wa.classList.remove("tip"), 16000);
+})();
+// في صفحة المنتج الرسالة بتتكتب فيها اسم المنتج ولينكه
+function setWhatsAppProduct(p) {
+  $(".wa-float")?.setAttribute("href", waLink(`السلام عليكم، عندي استفسار عن:\n${p.name}\n${new URL(productUrl(p.id), document.baseURI).href}`));
+}
 
 $("#year").textContent = new Date().getFullYear();
 $("#wishCount").textContent = num(wishlist.length);
@@ -691,13 +732,14 @@ function cartSnapshot() {
 }
 
 async function syncCart() {
-  if (!user?.email || !user.uid) return;
+  if (!user?.uid || !(user.email || user.phone)) return;
   const items = cartSnapshot();
   const sig = JSON.stringify([user.uid, items.map((i) => [i.id, i.qty, i.opts])]);
   if (store.get(CART_SYNCED, "") === sig) return; // مفيش تغيير (فتح صفحة بس)
   const doc = items.length && {
     uid: user.uid,
-    email: user.email,
+    email: String(user.email || ""),
+    phone: String(user.phone || "").slice(0, 14),
     name: String(user.name || "").slice(0, 60),
     items: items.slice(0, 50),
     total: items.reduce((s, i) => s + i.price * i.qty, 0),

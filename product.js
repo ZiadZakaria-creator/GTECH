@@ -45,6 +45,7 @@ function renderDetail(p) {
   const delivery = new Date(Date.now() + 2 * 86400000).toLocaleDateString(LOCALE, { weekday: "long", day: "numeric", month: "long" });
 
   document.title = `${p.name} | GTECH`;
+  setWhatsAppProduct(p);
   if (typeof track === "function" && trackedView !== p.id) { trackedView = p.id; track("view_item", { items: [{ id: p.id, name: p.name, price: p.price }] }); }
   qty = 1;
   $('meta[name="description"]').setAttribute("content", p.desc);

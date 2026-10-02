@@ -338,3 +338,5 @@
 .an-links__btns { display: flex; gap: 8px; flex-wrap: wrap; }
 .an-links__btns .btn { direction: ltr; }
 @media (max-width: 900px) { .an-grid { grid-template-columns: 1fr; } }
+.btn--wa { background: #25d366; color: #fff; border: 0; }
+.btn--wa:hover { background: #1ebe5a; }

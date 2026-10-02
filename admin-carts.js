@@ -88,6 +88,13 @@ function cartEmailHtml(c) {
 </div>`;
 }
 
+// تذكير واتساب: بيفتح محادثة العميل برسالة جاهزة فيها السلة ولينك يكمّل منه
+function cartWhatsApp(c) {
+  const items = c.items.map((i) => `• ${i.name}${i.qty > 1 ? ` × ${i.qty}` : ""}`).join("\n");
+  const text = `أهلاً${c.name ? " " + c.name : ""} 👋 معاك GTECH\nلاحظنا إنك سبت منتجات في السلة:\n${items}\nالإجمالي: ${egp(c.total)}\n\nتقدر تكمّل طلبك في دقيقة من هنا 👇\n${cartLink(c)}\n\nلو عندك أي سؤال عن المنتجات أو الشحن، رد علينا هنا 🙏`;
+  return waLink(text, "20" + c.phone.replace(/^0/, ""));
+}
+
 async function remindCart(c) {
   if (cartsSending.has(c.uid)) return false;
   cartsSending.add(c.uid);
@@ -108,13 +115,14 @@ async function remindCart(c) {
 function renderCarts() {
   const list = [...allCarts].filter((c) => c.items?.length).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   const pending = list.filter(needsReminder);
+  const pendingEmail = pending.filter((c) => c.email);
   const badge = $("#cartsBadge");
   badge.hidden = !pending.length;
   badge.textContent = num(pending.length);
 
   const all = $("#remindAllBtn");
-  all.hidden = !EMAIL_ON || pending.length < 2;
-  all.textContent = `📧 ابعت تذكير للكل (${num(pending.length)})`;
+  all.hidden = !EMAIL_ON || pendingEmail.length < 2;
+  all.textContent = `📧 ابعت تذكير للكل (${num(pendingEmail.length)})`;
 
   $("#cartsEmpty").hidden = !!list.length;
   $("#cartsBody").innerHTML = list.map((c) => {
@@ -122,14 +130,16 @@ function renderCarts() {
     const sending = cartsSending.has(c.uid);
     const action = !abandoned
       ? `<span class="pill pill--idle">لسه بيتسوق</span>`
-      : isReminded(c)
-        ? `<span class="pill pill--done">✔ اتبعت ${timeAgo(c.remindedAt)}</span>`
-        : EMAIL_ON
-          ? `<button class="btn btn--ghost btn--sm" data-remind="${escapeHtml(c.uid)}" ${sending ? "disabled" : ""}>${sending ? "بيتبعت..." : "📧 ابعت تذكير"}</button>`
-          : `<span class="pill pill--idle">الإيميلات مقفولة</span>`;
+      : [
+          isReminded(c) && `<span class="pill pill--done">✔ اتبعت ${timeAgo(c.remindedAt)}</span>`,
+          c.phone && `<a class="btn btn--sm btn--wa" href="${escapeHtml(cartWhatsApp(c))}" target="_blank" rel="noopener" data-wa="${escapeHtml(c.uid)}">💬 ${isReminded(c) ? "واتساب تاني" : "ابعت واتساب"}</a>`,
+          !isReminded(c) && c.email && (EMAIL_ON
+            ? `<button class="btn btn--ghost btn--sm" data-remind="${escapeHtml(c.uid)}" ${sending ? "disabled" : ""}>${sending ? "بيتبعت..." : "📧 ابعت إيميل"}</button>`
+            : !c.phone && `<span class="pill pill--idle">الإيميلات مقفولة</span>`),
+        ].filter(Boolean).join(" ");
     return `
       <tr class="${abandoned ? "" : "is-fresh"}">
-        <td><b>${escapeHtml(c.name || "—")}</b><br><small class="muted" dir="ltr">${escapeHtml(c.email)}</small></td>
+        <td><b>${escapeHtml(c.name || "—")}</b><br><small class="muted" dir="ltr">${escapeHtml(c.phone || c.email)}</small></td>
         <td class="carts-items">${c.items.map((i) => `${escapeHtml(i.name)} <small class="muted">× ${num(i.qty)}</small>`).join("<br>")}</td>
         <td><b>${fmt(c.total)}</b></td>
         <td>${timeAgo(c.updatedAt)}</td>
@@ -139,6 +149,12 @@ function renderCarts() {
 }
 
 $("#cartsBody").addEventListener("click", async (e) => {
+  const wa = e.target.closest("[data-wa]");
+  if (wa) {
+    // الواتساب بيفتح في تاب جديد، وبنعلّم إن التذكير اتبعت
+    cartsStore.markReminded(wa.dataset.wa, new Date().toISOString()).catch((err) => console.warn("mark reminded", err));
+    return;
+  }
   const b = e.target.closest("[data-remind]");
   if (!b) return;
   const c = allCarts.find((x) => x.uid === b.dataset.remind);
@@ -146,7 +162,7 @@ $("#cartsBody").addEventListener("click", async (e) => {
 });
 
 $("#remindAllBtn").addEventListener("click", async () => {
-  const pending = allCarts.filter((c) => c.items?.length && needsReminder(c));
+  const pending = allCarts.filter((c) => c.items?.length && c.email && needsReminder(c));
   if (!pending.length || !confirm(`هيتبعت ${pending.length} إيميل تذكير. متأكد؟`)) return;
   let sent = 0;
   for (const c of pending) if (await remindCart(c)) sent++;
