@@ -169,6 +169,7 @@ function buildOrder(d, t) {
     shipping: { method: d.ship, label: shipLabels[d.ship], cost: t.ship },
     payment: isTransfer(d.pay) ? { method: d.pay, label: payLabels[d.pay], status: "pending", to: transferTarget(d.pay) } : { method: d.pay, label: payLabels[d.pay] },
     promo: t.app ? APP_FIRST.code : promo,
+    source: typeof orderSource === "function" ? orderSource() : "direct",
     totals: { subtotal: t.sub, shipping: t.ship, discount: t.disc, total: t.total },
   };
 }

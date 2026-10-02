@@ -62,6 +62,8 @@ function renderVisits() {
       <div><small>${s.label}</small><b>${s.value}</b><em>${s.hint}</em></div>
     </div>`).join("");
 
+  renderAnalytics(days, rangeOrders);
+
   // ============ رسم الزوار في اليوم ============
   const values = days.map((d) => get(d, "visitors"));
   const max = Math.max(...values, 1);
@@ -103,6 +105,47 @@ function renderVisits() {
         <td>${pct(b, n)} اشتروا</td>
       </tr>`;
   }).join("");
+}
+
+// ============ مسار الشراء ومصادر الزوار ============
+const SOURCE_INFO = {
+  facebook: ["فيسبوك", "#1877F2"], instagram: ["إنستجرام", "#E1306C"], tiktok: ["تيك توك", "#25F4EE"],
+  google: ["جوجل", "#34A853"], whatsapp: ["واتساب", "#25D366"], direct: ["مباشر / لينك", "#8a98b8"], other: ["مواقع تانية", "#a78bfa"],
+};
+function renderAnalytics(days, rangeOrders) {
+  const sum = (f) => days.reduce((s, d) => s + (visitDays[d]?.[f] || 0), 0);
+  const visitors = sum("visitors");
+  const tracked = days.some((d) => visitDays[d] && "viewers" in visitDays[d]);
+  const steps = [
+    ["👀", "دخلوا المتجر", visitors],
+    ["🔎", "شافوا منتج", sum("viewers")],
+    ["🛒", "ضافوا للسلة", sum("carts")],
+    ["💳", "دخلوا صفحة الدفع", sum("checkouts")],
+    ["✅", "طلبوا فعلاً", rangeOrders.length],
+  ];
+  $("#funnel").innerHTML = steps.map(([icon, label, n], i) => {
+    const w = visitors ? Math.max(4, Math.min(100, (n / visitors) * 100)) : 0;
+    const prev = i ? steps[i - 1][2] : 0;
+    return `
+      <div class="funnel__row">
+        <div class="funnel__label"><span>${icon} ${label}</span><b>${num(n)}</b></div>
+        <div class="funnel__bar"><i style="width:${w}%"></i></div>
+        ${i ? `<small class="muted">${pct(n, prev)} من الخطوة اللي قبلها</small>` : `<small class="muted">${num(100)}٪</small>`}
+      </div>`;
+  }).join("") + (tracked ? "" : `<p class="muted an-note">⏳ خطوات "شافوا منتج / السلة / الدفع" بتتعد من النهارده — بعد ما تحدّث قواعد الأمان في Firebase.</p>`);
+
+  const rows = Object.keys(SOURCE_INFO).map((k) => {
+    const ords = rangeOrders.filter((o) => (o.source || "direct") === k);
+    return { k, v: sum("src_" + k), n: ords.length, money: ords.reduce((s, o) => s + (o.totals?.total || 0), 0) };
+  }).filter((r) => r.v || r.n).sort((a, b) => b.v - a.v || b.money - a.money);
+  const totalSrc = rows.reduce((s, r) => s + r.v, 0);
+  $("#sources").innerHTML = rows.length ? rows.map((r) => `
+      <div class="src">
+        <div class="src__top"><span><i style="background:${SOURCE_INFO[r.k][1]}"></i>${SOURCE_INFO[r.k][0]}</span><b>${num(r.v)} زائر</b></div>
+        <div class="funnel__bar"><i style="width:${totalSrc ? Math.max(3, (r.v / totalSrc) * 100) : 0}%;background:${SOURCE_INFO[r.k][1]}"></i></div>
+        <small class="muted">${num(r.n)} طلب · ${fmt(r.money)}${r.v ? ` · ${pct(r.n, r.v)} اشتروا` : ""}</small>
+      </div>`).join("")
+    : `<div class="ad-empty"><span>📣</span><p>المصادر بتتسجل من النهارده — حط في إعلاناتك لينك فيه <code dir="ltr">?utm_source=facebook</code> أو <code dir="ltr">tiktok</code> عشان يتعرف بالظبط</p></div>`;
 }
 
 // تلميح لما تقف على أي عمود

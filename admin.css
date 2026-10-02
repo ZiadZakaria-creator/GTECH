@@ -320,3 +320,21 @@
 .od-proof img { max-width: 100%; max-height: 220px; object-fit: contain; border-radius: 10px; background: #fff; cursor: zoom-in; justify-self: start; }
 .od-proof img.is-zoomed { max-height: none; cursor: zoom-out; }
 @media print { .od-paybox .btn, .od-proof { display: none; } }
+
+/* ============ تحليلات: مسار الشراء ومصادر الزوار ============ */
+.an-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+.an-grid .ad-panel { margin: 0; }
+.an-sub { margin: -8px 0 14px; font-size: .88rem; }
+.funnel, .sources { display: grid; gap: 14px; }
+.funnel__label, .src__top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-weight: 700; }
+.funnel__label b, .src__top b { font-size: 1.05rem; }
+.funnel__bar { height: 10px; border-radius: 99px; background: var(--surface-2); overflow: hidden; margin: 6px 0 4px; }
+.funnel__bar i { display: block; height: 100%; border-radius: 99px; background: var(--gradient); transition: width .4s; }
+.src__top span { display: flex; align-items: center; gap: 8px; }
+.src__top span i { width: 10px; height: 10px; border-radius: 50%; }
+.an-note { margin-top: 6px; font-size: .85rem; }
+.an-links { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.an-links p { font-size: .88rem; margin-top: 2px; }
+.an-links__btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.an-links__btns .btn { direction: ltr; }
+@media (max-width: 900px) { .an-grid { grid-template-columns: 1fr; } }

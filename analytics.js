@@ -33,6 +33,7 @@ if (PIXEL_ID) {
 // track("view_item" | "add_to_cart" | "begin_checkout" | "purchase", { items: [{id, name, price, qty}], value, orderId })
 const FB_EVENTS = { view_item: "ViewContent", add_to_cart: "AddToCart", begin_checkout: "InitiateCheckout", purchase: "Purchase" };
 function track(event, { items = [], value, orderId } = {}) {
+  if (typeof countFunnel === "function") countFunnel(event); // للوحة التحكم (تاب الزوار)
   if (!GA_ID && !PIXEL_ID) return;
   const total = value ?? items.reduce((s, i) => s + i.price * (i.qty || 1), 0);
   try {
