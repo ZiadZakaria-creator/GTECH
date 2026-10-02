@@ -1,7 +1,7 @@
 // ============ Service Worker: بيخلّي المتجر يتسطب كتطبيق ويفتح من غير نت ============
 // الصفحات والملفات: من النت الأول (عشان التحديثات توصل على طول)، ولو مفيش نت من النسخة المحفوظة.
 // الصور: من المحفوظ الأول عشان السرعة.
-const VERSION = "gtech-v29";
+const VERSION = "gtech-v30";
 const CORE = [
   "./", "index.html", "policies.html", "product.html", "wishlist.html", "checkout.html", "compare.html", "myorders.html",
   "styles.css", "i18n.js", "data.js", "firebase-config.js", "analytics.js", "core.js", "catalog.js", "common.js", "visits.js",
