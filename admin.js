@@ -232,6 +232,21 @@ function openOrder(id, show = true) {
     `📦 طلبك هيتم إرساله خلال 4 أيام عمل.`,
     `لو في أي تعديل في الطلب أو العنوان رد علينا هنا 🙏`,
   ].filter((l) => l !== null).join("\n");
+  // تنبيه مشكلة توصيل: منطقة العميل خارج نطاق شركة الشحن + اختيارات يرد بيها
+  const paid = o.payment?.status === "paid";
+  const zoneMsg = [
+    `أهلاً ${c.name} 👋`,
+    `معاك GTECH بخصوص طلبك رقم ${o.id} ⚠️`,
+    ``,
+    `للأسف شركة الشحن بلّغتنا إن منطقتك (${[a.city, a.gov].filter(Boolean).join("، ")}) خارج نطاق التوصيل بتاعها حالياً، فمش هنقدر نوصّل الطلب على العنوان ده.`,
+    ``,
+    `عشان نكمّل طلبك، اختار اللي يناسبك:`,
+    `1️⃣ تبعتلنا عنوان تاني قريب منك (شغل، قرايب، أو أقرب مدينة)`,
+    `2️⃣ تستلم الطلب من أقرب فرع لشركة الشحن`,
+    `3️⃣ نلغي الطلب${paid ? " ونرجعلك المبلغ كامل" : " من غير أي مصاريف"}`,
+    ``,
+    `رد علينا برقم الاختيار، ونعتذر جداً عن الإزعاج 🙏`,
+  ].join("\n");
 
   $("#drawerTitle").innerHTML = `طلب <span class="mono">${escapeHtml(o.id)}</span>`;
   $("#drawerBody").innerHTML = `
@@ -252,6 +267,7 @@ function openOrder(id, show = true) {
       <div class="od-contact">
         <a class="btn btn--ghost btn--sm" href="tel:${escapeHtml(c.phone)}">📞 اتصال</a>
         <a class="btn btn--ghost btn--sm" href="${waLink(greet, intlPhone)}" target="_blank" rel="noopener">💬 واتساب</a>
+        <a class="btn btn--sm btn--warn" href="${waLink(zoneMsg, intlPhone)}" target="_blank" rel="noopener" title="ابعت للعميل إن منطقته خارج نطاق التوصيل">⚠️ مشكلة توصيل</a>
       </div>
     </section>
 

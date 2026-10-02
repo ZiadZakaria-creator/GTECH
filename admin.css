@@ -82,7 +82,7 @@
 .od-sec h4 { font-size: .95rem; margin-bottom: 6px; }
 .od-sec p { color: var(--text-2); }
 .od-note { margin-top: 6px; padding: 8px 12px; border-radius: 10px; background: rgba(251,191,36,.08); }
-.od-contact { display: flex; gap: 8px; margin-top: 10px; }
+.od-contact { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 .od-item { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 10px 0; border-bottom: 1px dashed var(--border); }
 .od-item:last-child { border-bottom: 0; }
 .od-item small { display: block; color: var(--muted); font-size: .8rem; }
@@ -343,3 +343,5 @@
 .carts-table tr.is-new td { background: rgba(10,132,255,.08); }
 .leads-actions { white-space: nowrap; }
 .pill--warn { background: rgba(245,158,11,.15); color: #f59e0b; }
+.btn--warn { background: rgba(245,158,11,.14); color: #f59e0b; border: 1px solid rgba(245,158,11,.45); }
+.btn--warn:hover { background: rgba(245,158,11,.24); }
