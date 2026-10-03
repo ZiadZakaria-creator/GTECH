@@ -1431,10 +1431,11 @@ html[dir="ltr"] .pd__highlights li::before { right: auto; left: 0; }
 }
 .product__media > img { background: transparent !important; mix-blend-mode: multiply; padding: 6px; }
 .product__media > span:not(.product__tag) { filter: drop-shadow(0 14px 18px rgba(0,0,0,.25)); }
-.product__alt { opacity: 0; transition: opacity .45s, transform .5s; }
+/* أعلى من img[data-fs].is-loaded اللي بيخلي أي صورة اتحمّلت ظاهرة */
+.product .product__media > img.product__alt { opacity: 0; transition: opacity .45s, transform .5s; }
 @media (hover: hover) {
-  .product__media.has-alt:hover > img:first-of-type { opacity: 0; }
-  .product__media.has-alt:hover > .product__alt { opacity: 1; }
+  .product .product__media.has-alt:hover > img:first-of-type { opacity: 0; }
+  .product .product__media.has-alt:hover > img.product__alt { opacity: 1; }
 }
 .product__media > img:first-of-type { transition: transform .5s, opacity .45s; }
 .product__brand { color: color-mix(in srgb, var(--cc) 75%, var(--text)); }
