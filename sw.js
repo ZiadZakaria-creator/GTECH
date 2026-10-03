@@ -1,7 +1,7 @@
 // ============ Service Worker: بيخلّي المتجر يتسطب كتطبيق ويفتح من غير نت ============
 // الصفحات والملفات: من النت الأول (عشان التحديثات توصل على طول)، ولو مفيش نت من النسخة المحفوظة.
 // الصور: من المحفوظ الأول عشان السرعة.
-const VERSION = "gtech-v36";
+const VERSION = "gtech-v37";
 const CORE = [
   "./", "index.html", "policies.html", "product.html", "wishlist.html", "checkout.html", "compare.html", "myorders.html",
   "styles.css", "i18n.js", "data.js", "firebase-config.js", "analytics.js", "core.js", "catalog.js", "common.js", "visits.js",
@@ -27,6 +27,8 @@ self.addEventListener("fetch", (e) => {
   const url = new URL(req.url);
   // Firebase و EmailJS والخطوط وأي حاجة من برّه: زي ما هي من غير تدخل
   if (req.method !== "GET" || url.origin !== location.origin) return;
+  // الفيديوهات بتتحمّل حتة حتة (Range) — المتصفح يتعامل معاها مباشرة
+  if (url.pathname.includes("/videos/")) return;
 
   if (/\/(images|icons|p\/img)\//.test(url.pathname)) {
     e.respondWith(caches.match(req).then((hit) => hit || fetch(req).then((res) => {

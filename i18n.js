@@ -5,6 +5,27 @@
 // لو ضفت كلام جديد في الموقع: ضيف ترجمته في I18N_EN بنفس النص العربي بالظبط.
 
 const I18N_EN = {
+"أضف": "Add",
+"تصفّح كل المنتجات": "Browse all products",
+"🔥 أقوى الخصومات": "🔥 Top deals",
+"أكبر نسبة خصم حقيقية دلوقتي": "The biggest real discounts right now",
+"🎮 للجيمرز": "🎮 For gamers",
+"ماوسات وكيبوردات ودراعات": "Mice, keyboards and controllers",
+"🎧 صوت": "🎧 Audio",
+"سماعات هيدسيت وإيربودز": "Headsets and earbuds",
+"💾 تخزين": "💾 Storage",
+"هاردات SSD وخارجية": "SSDs and external drives",
+"السابق": "Previous",
+"التالي": "Next",
+"الماركات": "Brands",
+"🎬 من غير فلاتر": "🎬 No filters",
+"شوف المنتجات في الحقيقة": "See the products for real",
+"ماوس + كيبورد + سماعة": "Mouse + keyboard + headset",
+"سيت أب كامل بأقل سعر": "A full setup at the lowest price",
+"هاردات و SSD": "Hard drives & SSDs",
+"شوف الباكدج ←": "See the bundle →",
+"شوف السماعات ←": "See headsets →",
+"شوف الهاردات ←": "See drives →",
 "ج.م": "EGP",
 "🚚 التوصيل حالياً للقاهرة والجيزة بس، وباقي المحافظات قريباً": "🚚 We currently deliver to Cairo and Giza only — more governorates soon",
 "صاحبك عليا": "Refer a friend",
@@ -610,6 +631,7 @@ const I18N_EN = {
 "ارجع للمتجر": "Back to the store"
 };
 const I18N_PATTERNS = [
+["^عرض الكل \\((.+?)\\)$", "View all ({1})"],
 ["^🎁 عندك (.+?) (?:مكافأة|مكافآت) — الخصم هيتحسب لوحده في أوردرك الجاي$", "🎁 You have {1} reward(s) — the discount applies automatically to your next order"],
 ["^وفّر (.+?)$", "Save {1}"],
 ["^— اشتريه مع السيت أب ووفّر (.+?)$", "— buy it with the setup and save {1}"],

@@ -33,10 +33,11 @@ function productCard(p, i = 0) {
   const url = productUrl(p.id);
   const tag = inStock(p) ? productTag(p) : "نفد";
   return `
-    <article class="product ${inStock(p) ? "" : "product--soldout"}" style="animation-delay:${i * 50}ms">
-      <a href="${url}" class="product__media" style="--tint:${p.tint}" aria-label="${escapeHtml(p.name)}">
+    <article class="product ${inStock(p) ? "" : "product--soldout"}" style="animation-delay:${i * 50}ms;--cc:${CATEGORY_COLORS[p.cat] || "#0a84ff"}">
+      <a href="${url}" class="product__media ${p.images?.[1] ? "has-alt" : ""}" style="--tint:${p.tint}" aria-label="${escapeHtml(p.name)}">
         ${tag ? `<span class="product__tag ${tag === "جديد" ? "product__tag--new" : tag === "نفد" ? "product__tag--out" : ""}">${escapeHtml(tag)}</span>` : ""}
         ${productVisual(p)}
+        ${p.images?.[1] ? productVisual(p, p.images[1], 'class="product__alt" aria-hidden="true"') : ""}
       </a>
       <button class="product__wish ${wishlist.includes(p.id) ? "active" : ""}" data-wish="${p.id}" aria-label="أضف للمفضلة">${heartIcon}</button>
       <button class="product__compare ${compareList.includes(p.id) ? "active" : ""}" data-compare="${p.id}" aria-label="قارن" title="قارن">⚖️</button>
@@ -49,7 +50,7 @@ function productCard(p, i = 0) {
             ${p.old ? `<del>${fmt(p.old)}</del>` : ""}
             <b>${fmt(p.price)}</b>
           </div>
-          <button class="add-btn" data-add="${p.id}" aria-label="أضف للسلة" ${inStock(p) ? "" : "disabled"}>${cartPlusIcon}</button>
+          <button class="add-btn" data-add="${p.id}" aria-label="أضف للسلة" ${inStock(p) ? "" : "disabled"}>${cartPlusIcon}<span class="add-btn__txt">أضف</span></button>
         </div>
       </div>
     </article>`;
@@ -259,7 +260,14 @@ document.addEventListener("click", (e) => {
     renderCompareTray();
     document.dispatchEvent(new Event("comparechange"));
   }
-  if (add) addToCart(+add.dataset.add);
+  if (add) {
+    addToCart(+add.dataset.add);
+    // علامة ✓ صغيرة على الزرار نفسه إن المنتج اتضاف
+    if (add.classList.contains("add-btn") && cart.some((i) => i.id === +add.dataset.add)) {
+      add.classList.remove("is-added"); void add.offsetWidth; add.classList.add("is-added");
+      clearTimeout(add._addedT); add._addedT = setTimeout(() => add.classList.remove("is-added"), 1200);
+    }
+  }
   if (wish) toggleWish(+wish.dataset.wish);
 });
 

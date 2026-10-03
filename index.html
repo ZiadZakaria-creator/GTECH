@@ -188,7 +188,11 @@
         </div>
         <div class="filter-panel card-box" id="filterPanel" hidden></div>
 
+        <div class="shelves" id="shelves" hidden></div>
         <div class="products" id="productsGrid"></div>
+        <div class="show-all" id="showAllWrap" hidden>
+          <button type="button" class="btn btn--ghost" id="showAllBtn">تصفّح كل المنتجات <span id="showAllCount"></span></button>
+        </div>
         <p class="empty" id="emptyState" hidden><span id="emptyText">لا توجد منتجات مطابقة لبحثك 🔍</span> <button type="button" class="link-btn" data-clear-filters hidden>امسح الفلاتر</button></p>
       </div>
     </section>
@@ -245,42 +249,44 @@
       </div>
     </section>
 
-    <!-- الماركات -->
-    <section class="brands">
-      <div class="brands__track">
-        <span>APPLE</span><span>SAMSUNG</span><span>SONY</span><span>LENOVO</span><span>XIAOMI</span><span>HP</span><span>DELL</span><span>ANKER</span><span>JBL</span><span>ASUS</span>
-        <span>APPLE</span><span>SAMSUNG</span><span>SONY</span><span>LENOVO</span><span>XIAOMI</span><span>HP</span><span>DELL</span><span>ANKER</span><span>JBL</span><span>ASUS</span>
+    <!-- الماركات: الماركات اللي في المتجر فعلاً (home.js بيحدّثها من المنتجات) -->
+    <section class="brands" aria-label="الماركات">
+      <div class="brands__track" id="brandsTrack">
+        <span>LOGITECH</span><span>REDRAGON</span><span>HYPERX</span><span>RAZER</span><span>ANKER</span><span>GAMESIR</span><span>SAMSUNG</span><span>WESTERN DIGITAL</span>
+        <span aria-hidden="true">LOGITECH</span><span aria-hidden="true">REDRAGON</span><span aria-hidden="true">HYPERX</span><span aria-hidden="true">RAZER</span><span aria-hidden="true">ANKER</span><span aria-hidden="true">GAMESIR</span><span aria-hidden="true">SAMSUNG</span><span aria-hidden="true">WESTERN DIGITAL</span>
       </div>
     </section>
 
-    <!-- آراء العملاء -->
-    <section class="section">
+    <!-- فيديوهات المنتجات -->
+    <section class="section" id="videos">
       <div class="container">
         <div class="section__head section__head--center">
           <div>
-            <span class="eyebrow">من عالم التكنولوجيا</span>
-            <h2>كلمة من صنّاع التقنية</h2>
+            <span class="eyebrow">🎬 من غير فلاتر</span>
+            <h2>شوف المنتجات في الحقيقة</h2>
           </div>
         </div>
-        <div class="reviews quotes">
-          <article class="review quote">
-            <span class="quote__mark" aria-hidden="true">“</span>
-            <p class="quote__en" dir="ltr">The best way to predict the future is to invent it.</p>
-            <p>أحسن طريقة تتوقع بيها المستقبل، إنك تخترعه.</p>
-            <div class="review__author"><span class="avatar">💡</span><div><b dir="ltr">Alan Kay</b><small>عالم كمبيوتر ورائد البرمجة الكائنية</small></div></div>
-          </article>
-          <article class="review quote">
-            <span class="quote__mark" aria-hidden="true">“</span>
-            <p class="quote__en" dir="ltr">Talk is cheap. Show me the code.</p>
-            <p>الكلام سهل… ورّيني الكود.</p>
-            <div class="review__author"><span class="avatar">⌨️</span><div><b dir="ltr">Linus Torvalds</b><small>مبتكر نظام Linux</small></div></div>
-          </article>
-          <article class="review quote">
-            <span class="quote__mark" aria-hidden="true">“</span>
-            <p class="quote__en" dir="ltr">Any sufficiently advanced technology is indistinguishable from magic.</p>
-            <p>أي تكنولوجيا متقدمة كفاية، مش هتقدر تفرّقها عن السحر.</p>
-            <div class="review__author"><span class="avatar">✨</span><div><b dir="ltr">Arthur C. Clarke</b><small>كاتب ومفكر علمي</small></div></div>
-          </article>
+        <div class="reels" id="reels">
+          <a class="reel" href="#bundles" data-reel-jump="bundles">
+            <video muted loop playsinline preload="none" poster="videos/unbox.jpg" data-src="videos/unbox.mp4"></video>
+            <span class="reel__cap"><small>باكدج ريدراجون RGB</small><b>ماوس + كيبورد + سماعة</b></span>
+            <span class="reel__cta">شوف الباكدج ←</span>
+          </a>
+          <a class="reel" href="#bundles" data-reel-jump="bundles">
+            <video muted loop playsinline preload="none" poster="videos/setup.jpg" data-src="videos/setup.mp4"></video>
+            <span class="reel__cap"><small>باكدج البداية</small><b>سيت أب كامل بأقل سعر</b></span>
+            <span class="reel__cta">شوف الباكدج ←</span>
+          </a>
+          <a class="reel" href="#products" data-jump="audio">
+            <video muted loop playsinline preload="none" poster="videos/headsets.jpg" data-src="videos/headsets.mp4"></video>
+            <span class="reel__cap"><small>سماعات هيدسيت</small><b>HyperX · Logitech · Razer</b></span>
+            <span class="reel__cta">شوف السماعات ←</span>
+          </a>
+          <a class="reel" href="#products" data-jump="storage">
+            <video muted loop playsinline preload="none" poster="videos/storage.jpg" data-src="videos/storage.mp4"></video>
+            <span class="reel__cap"><small>هاردات و SSD</small><b>Samsung · WD · Seagate</b></span>
+            <span class="reel__cta">شوف الهاردات ←</span>
+          </a>
         </div>
       </div>
     </section>

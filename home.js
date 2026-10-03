@@ -28,10 +28,14 @@ function storageValues(p) {
 }
 const sizeRank = (v) => parseFloat(v) * (v.includes("تيرا") ? 1024 : 1);
 
+// مجموعات أقسام (شرايط الصفحة الرئيسية بتفتحها بـ "عرض الكل")
+const CAT_GROUPS = { gaming: ["mice", "keyboards", "controllers"], sound: ["audio", "earphones"] };
+const inFilter = (p) => filter === "all" || p.cat === filter || (CAT_GROUPS[filter] || []).includes(p.cat);
+
 function baseList() {
   const q = query.trim().toLowerCase();
   return shopProducts().filter((p) =>
-    (filter === "all" || p.cat === filter) &&
+    inFilter(p) &&
     (!q || p.name.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q))
   );
 }
@@ -104,18 +108,84 @@ function renderFilterPanel(list) {
   }
 }
 
+// ============ شرايط المنتجات ============
+// أول ما الصفحة تفتح (من غير قسم ولا بحث ولا فلتر) بتظهر شرايط بتتسحب بدل شبكة كل المنتجات
+let showAll = params.has("cat") || params.has("q");
+const SHELF_MAX = 10;
+const SHELVES = [
+  { key: "deals", icon: "🔥", title: "أقوى الخصومات", sub: "أكبر نسبة خصم حقيقية دلوقتي",
+    pick: (all) => all.filter((p) => discount(p) > 0).sort((a, b) => discount(b) - discount(a)) },
+  { key: "gaming", icon: "🎮", title: "للجيمرز", sub: "ماوسات وكيبوردات ودراعات", pick: (all) => all.filter((p) => CAT_GROUPS.gaming.includes(p.cat)) },
+  { key: "sound", icon: "🎧", title: "صوت", sub: "سماعات هيدسيت وإيربودز", pick: (all) => all.filter((p) => CAT_GROUPS.sound.includes(p.cat)) },
+  { key: "storage", icon: "💾", title: "تخزين", sub: "هاردات SSD وخارجية", pick: (all) => all.filter((p) => p.cat === "storage") },
+];
+const shelfMode = () => !showAll && filter === "all" && !query.trim() && !activeFilterCount() && !filters.sort;
+// المتوفر الأول، وبعدين الأحدث
+const shelfOrder = (a, b) => (inStock(b) - inStock(a)) || b.id - a.id;
+
+function renderShelves() {
+  const all = shopProducts();
+  $("#shelves").innerHTML = SHELVES.map((sh) => {
+    let list = sh.pick(all);
+    if (sh.key !== "deals") list = [...list].sort(shelfOrder);
+    else list = [...list].sort((a, b) => (inStock(b) - inStock(a)) || discount(b) - discount(a));
+    if (list.length < 2) return "";
+    return `
+      <div class="shelf" data-shelf="${sh.key}">
+        <div class="shelf__head">
+          <div><h3>${sh.icon} ${sh.title}</h3><small class="muted">${sh.sub}</small></div>
+          <div class="shelf__nav">
+            <button type="button" class="shelf__arrow" data-shelf-dir="-1" aria-label="السابق">‹</button>
+            <button type="button" class="shelf__arrow" data-shelf-dir="1" aria-label="التالي">›</button>
+            <button type="button" class="link-btn shelf__all" data-shelf-all="${sh.key}">عرض الكل (${num(list.length)})</button>
+          </div>
+        </div>
+        <div class="shelf__track">${list.slice(0, SHELF_MAX).map(productCard).join("")}</div>
+      </div>`;
+  }).join("");
+  $("#showAllCount").textContent = `(${num(all.length)})`;
+}
+
+$("#shelves").addEventListener("click", (e) => {
+  const arrow = e.target.closest("[data-shelf-dir]");
+  if (arrow) {
+    const track = arrow.closest(".shelf").querySelector(".shelf__track");
+    // "التالي" في العربي ناحية الشمال
+    const dir = Number(arrow.dataset.shelfDir) * (getComputedStyle(track).direction === "rtl" ? -1 : 1);
+    track.scrollBy({ left: dir * track.clientWidth * 0.85, behavior: "smooth" });
+    return;
+  }
+  const allBtn = e.target.closest("[data-shelf-all]");
+  if (!allBtn) return;
+  const key = allBtn.dataset.shelfAll;
+  showAll = true;
+  if (key === "deals") { filters.sort = "discount"; $("#sortSel").value = "discount"; setFilter("all"); }
+  else setFilter(key);
+  $("#products").scrollIntoView({ behavior: "smooth" });
+});
+$("#showAllBtn").addEventListener("click", () => {
+  showAll = true;
+  renderProducts();
+  grid.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
 function renderProducts() {
   const base = baseList();
   const list = applyFilters(base);
-  grid.innerHTML = list.map(productCard).join("");
-  $("#emptyState").hidden = list.length > 0;
+  const shelves = shelfMode() && products.length > 0;
+  $("#shelves").hidden = !shelves;
+  $("#showAllWrap").hidden = !shelves;
+  grid.hidden = shelves;
+  if (shelves) renderShelves();
+  grid.innerHTML = shelves ? "" : list.map(productCard).join("");
+  $("#emptyState").hidden = shelves || list.length > 0;
   // قسم لسه مفيهوش منتجات خالص (مش فلتر أو بحث)
   const soonCat = !list.length && filter !== "all" && !shopProducts().some((p) => p.cat === filter);
   $("#emptyText").textContent = !catalogLoaded && !products.length ? "⏳ جاري تحميل المنتجات..." : catalogFailed && !products.length ? "📡 مقدرناش نحمّل المنتجات — اتأكد من النت وجرّب تاني" : soonCat ? `📦 قسم ${categoryLabel(filter)} هينزل فيه منتجات قريب جداً — تابعنا!` : "لا توجد منتجات مطابقة لبحثك 🔍";
   const count = activeFilterCount();
   $("#filterCount").hidden = !count;
   $("#filterCount").textContent = num(count);
-  $("#filterResult").textContent = `${num(list.length)} منتج`;
+  $("#filterResult").textContent = shelves ? "" : `${num(list.length)} منتج`;
   $$("[data-clear-filters]").forEach((b) => { b.hidden = !count; });
   renderFilterPanel(base);
 }
@@ -156,7 +226,9 @@ function setFilter(value) {
 
 $("#tabs").addEventListener("click", (e) => {
   const tab = e.target.closest(".tab");
-  if (tab) setFilter(tab.dataset.filter);
+  if (!tab) return;
+  showAll = true;
+  setFilter(tab.dataset.filter);
 });
 
 // ============ الأقسام: عدد المنتجات الحقيقي في كل قسم ============
@@ -192,6 +264,8 @@ document.addEventListener("productschange", renderCategories);
 document.addEventListener("click", (e) => {
   const el = e.target.closest("[data-filter].category, [data-jump]");
   if (!el) return;
+  e.preventDefault();
+  showAll = true;
   setFilter(el.dataset.filter || el.dataset.jump);
   $("#products").scrollIntoView({ behavior: "smooth" });
 });
@@ -288,7 +362,7 @@ if (query) {
 
 document.addEventListener("productschange", renderProducts);
 
-reveal(".section__head, .category, .offer, .mini-offer, .review, .newsletter, .feature");
+reveal(".section__head, .category, .offer, .mini-offer, .reel, .newsletter, .feature");
 setFilter(filter);
 
 // ============ شريط تتبع الطلب ============
@@ -437,3 +511,42 @@ renderPhoneStory();
 
 // لو تحميل المنتجات فشل (من غير ما تتغير) نحدّث الرسالة بدل "جاري التحميل"
 document.addEventListener("catalogloaded", () => { renderProducts(); renderCategories(); renderMiniOffers(); });
+
+// ============ شريط الماركات: الماركات اللي في المتجر فعلاً ============
+// بالترتيب حسب عدد المنتجات، والضغط على أي ماركة بيفلتر المنتجات بيها
+function renderBrands() {
+  const counts = {};
+  shopProducts().forEach((p) => { const b = String(p.brand || "").trim().toUpperCase(); if (b) counts[b] = (counts[b] || 0) + 1; });
+  const list = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+  if (list.length < 3) return;
+  const item = (b, dup) => `<button type="button" class="brands__item" data-brand="${escapeHtml(b)}" ${dup ? 'aria-hidden="true" tabindex="-1"' : ""}>${escapeHtml(b)}</button>`;
+  // نسختين ورا بعض عشان الحركة تلف من غير ما تقطع
+  $("#brandsTrack").innerHTML = list.map((b) => item(b)).join("") + list.map((b) => item(b, true)).join("");
+}
+renderBrands();
+document.addEventListener("productschange", renderBrands);
+document.addEventListener("catalogloaded", renderBrands);
+
+$("#brandsTrack").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-brand]");
+  if (!b) return;
+  filters.brands.clear();
+  filters.brands.add(b.dataset.brand);
+  showAll = true;
+  setFilter("all");
+  $("#products").scrollIntoView({ behavior: "smooth" });
+});
+
+// ============ فيديوهات المنتجات ============
+// الفيديو مش بيتحمّل غير لما يقرب من الشاشة، وبيشتغل وهو ظاهر بس (توفير نت وبطارية)
+const reelVideos = $$("#reels video");
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+if ("IntersectionObserver" in window && !reduceMotion) {
+  const reelObserver = new IntersectionObserver((entries) => entries.forEach(({ target: v, isIntersecting }) => {
+    if (isIntersecting) {
+      if (!v.src) v.src = v.dataset.src;
+      v.play().catch(() => {});
+    } else v.pause();
+  }), { threshold: 0.35 });
+  reelVideos.forEach((v) => reelObserver.observe(v));
+}
