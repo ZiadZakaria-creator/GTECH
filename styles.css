@@ -1448,6 +1448,7 @@ html[dir="ltr"] .pd__highlights li::before { right: auto; left: 0; }
 
 /* ============ شرايط المنتجات ============ */
 .shelves { display: grid; gap: 44px; }
+.shelves[hidden], .show-all[hidden], .products[hidden] { display: none; }
 .shelf__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
 .shelf__head h3 { font-size: 1.35rem; font-weight: 800; }
 .shelf__head small { display: block; margin-top: 2px; }
@@ -1537,4 +1538,46 @@ html[dir="ltr"] .pd__highlights li::before { right: auto; left: 0; }
 @media (prefers-reduced-motion: reduce) {
   .brands__track { animation: none; flex-wrap: wrap; justify-content: center; width: auto; }
   .brands__track [aria-hidden="true"] { display: none; }
+}
+
+/* ============ تابات الأقسام ============ */
+.section__head:has(.tabs) { flex-wrap: wrap; }
+.section__head .tabs { width: 100%; justify-content: flex-start; }
+.tabs { gap: 8px; padding: 0; background: none; border: 0; border-radius: 0; flex-wrap: wrap; justify-content: flex-end; }
+.tab {
+  --tc: var(--primary);
+  position: relative; display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px 8px 14px; padding-inline: 12px 10px;
+  border-radius: 14px; font-weight: 700; font-size: .9rem; color: var(--text-2); white-space: nowrap;
+  background: var(--surface); border: 1px solid var(--border);
+  transition: color .2s, border-color .2s, background .25s, box-shadow .25s, transform .2s;
+}
+.tab__icon { width: 18px; height: 18px; flex-shrink: 0; fill: none; stroke: var(--tc); stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; transition: stroke .2s; }
+.tab__count {
+  min-width: 24px; padding: 1px 7px; border-radius: 999px; font-size: .72rem; font-weight: 800; text-align: center;
+  color: var(--tc); background: color-mix(in srgb, var(--tc) 14%, transparent);
+}
+.tab:hover { color: var(--text); border-color: color-mix(in srgb, var(--tc) 55%, transparent); transform: translateY(-2px); box-shadow: 0 10px 24px -14px var(--tc); }
+.tab:active { transform: scale(.96); }
+.tab.active {
+  color: #fff; border-color: transparent;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--tc) 92%, #fff), color-mix(in srgb, var(--tc) 70%, #000));
+  box-shadow: 0 10px 26px -10px var(--tc), inset 0 1px 0 rgba(255,255,255,.25);
+}
+.tab.active .tab__icon { stroke: #fff; }
+.tab.active .tab__count { color: #fff; background: rgba(255,255,255,.22); }
+.tab--soon { opacity: .6; }
+.tab--soon .tab__count { font-weight: 700; }
+.tab--soon:hover, .tab--soon.active { opacity: 1; }
+:root[data-theme="light"] .tab { color: #334155; }
+:root[data-theme="light"] .tab.active { color: #fff; }
+
+@media (max-width: 900px) {
+  .tabs {
+    width: calc(100% + 32px); margin-inline: -16px; padding: 4px 16px 10px; flex-wrap: nowrap; justify-content: flex-start;
+    overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 16px, #000 calc(100% - 16px), transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 16px, #000 calc(100% - 16px), transparent);
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { scroll-snap-align: center; font-size: .86rem; padding-block: 7px; }
 }

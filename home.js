@@ -229,6 +229,14 @@ $("#tabs").addEventListener("click", (e) => {
   if (!tab) return;
   showAll = true;
   setFilter(tab.dataset.filter);
+  scrollActiveTab();
+  // النتايج بتظهر تحت الفلتر — بننزل لها عشان العميل يشوف إن القسم اتغيّر
+  const target = grid.hidden || !grid.children.length ? $("#emptyState") : grid;
+  const top = target.getBoundingClientRect().top;
+  if (top > innerHeight * 0.6 || top < 0) {
+    const header = $(".header")?.offsetHeight || 70;
+    scrollTo({ top: scrollY + $("#tabs").getBoundingClientRect().top - header - 10, behavior: "smooth" });
+  }
 });
 
 // ============ الأقسام: عدد المنتجات الحقيقي في كل قسم ============
@@ -254,9 +262,21 @@ function renderCategories() {
       ${categoryIconHtml(k)}<h3>${label}</h3>
       <small>${counts[k] ? `${num(counts[k])} منتج` : "قريباً"}</small>
     </button>`).join("");
-  $("#tabs").innerHTML = `<button class="tab" data-filter="all">الكل</button>` +
-    Object.entries(categories).map(([k, label]) => `<button class="tab" data-filter="${k}">${label}</button>`).join("");
+  const total = shopProducts().length;
+  const tabIcon = (k) => `<svg class="tab__icon" viewBox="0 0 24 24" aria-hidden="true">${k === "all" ? '<rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/>' : CATEGORY_SVG[k]?.[1] || ""}</svg>`;
+  const tab = (k, label, n) => `
+    <button type="button" class="tab ${n ? "" : "tab--soon"}" data-filter="${k}" style="--tc:${k === "all" ? "#0a84ff" : CATEGORY_SVG[k]?.[0] || "#0a84ff"}">
+      ${tabIcon(k)}<span>${label}</span><small class="tab__count">${n ? num(n) : "قريباً"}</small>
+    </button>`;
+  $("#tabs").innerHTML = tab("all", "الكل", total) + Object.entries(categories).map(([k, label]) => tab(k, label, counts[k] || 0)).join("");
   $$(".tab").forEach((t) => t.classList.toggle("active", t.dataset.filter === filter));
+  scrollActiveTab();
+}
+// التاب المختار يفضل باين جوه الشريط (على الموبايل الشريط بيتسحب)
+function scrollActiveTab() {
+  const t = $(".tab.active"), bar = $("#tabs");
+  if (!t || bar.scrollWidth <= bar.clientWidth) return;
+  bar.scrollTo({ left: t.offsetLeft - (bar.clientWidth - t.offsetWidth) / 2, behavior: "smooth" });
 }
 renderCategories();
 document.addEventListener("productschange", renderCategories);
