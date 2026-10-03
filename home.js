@@ -137,7 +137,7 @@ function renderShelves() {
           <div class="shelf__nav">
             <button type="button" class="shelf__arrow" data-shelf-dir="-1" aria-label="السابق">‹</button>
             <button type="button" class="shelf__arrow" data-shelf-dir="1" aria-label="التالي">›</button>
-            <button type="button" class="link-btn shelf__all" data-shelf-all="${sh.key}">عرض الكل (${num(list.length)})</button>
+            <button type="button" class="shelf__all" data-shelf-all="${sh.key}"><span>عرض الكل</span><span class="shelf__count">${num(list.length)}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
           </div>
         </div>
         <div class="shelf__track">${list.slice(0, SHELF_MAX).map(productCard).join("")}</div>

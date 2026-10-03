@@ -6,6 +6,7 @@
 
 const I18N_EN = {
 "أضف": "Add",
+"عرض الكل": "View all",
 "تصفّح كل المنتجات": "Browse all products",
 "🔥 أقوى الخصومات": "🔥 Top deals",
 "أكبر نسبة خصم حقيقية دلوقتي": "The biggest real discounts right now",
