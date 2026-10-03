@@ -1540,44 +1540,79 @@ html[dir="ltr"] .pd__highlights li::before { right: auto; left: 0; }
   .brands__track [aria-hidden="true"] { display: none; }
 }
 
-/* ============ تابات الأقسام ============ */
-.section__head:has(.tabs) { flex-wrap: wrap; }
-.section__head .tabs { width: 100%; justify-content: flex-start; }
-.tabs { gap: 8px; padding: 0; background: none; border: 0; border-radius: 0; flex-wrap: wrap; justify-content: flex-end; }
+/* ============ شريط الأقسام ============ */
+.cat-bar {
+  --tc: var(--primary);
+  position: sticky; top: calc(var(--hdr, 76px) + 10px); z-index: 30;
+  display: flex; align-items: center; gap: 4px; margin: 4px 0 26px; padding: 6px;
+  background: color-mix(in srgb, var(--surface) 82%, transparent); backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  border: 1px solid var(--border); border-radius: 20px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+  transition: box-shadow .3s, border-color .3s, background .3s;
+}
+/* خط نيون رفيع تحت الشريط بلون القسم المختار */
+.cat-bar::after {
+  content: ""; position: absolute; inset-inline: 24px; bottom: -1px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--tc), transparent); opacity: .55; transition: background .4s;
+}
+.cat-bar.is-stuck { background: color-mix(in srgb, var(--bg-2) 95%, transparent); border-color: color-mix(in srgb, var(--tc) 28%, var(--border)); box-shadow: 0 18px 40px -22px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.02); }
+.cat-bar__track {
+  position: relative; display: flex; flex: 1; min-width: 0; gap: 2px;
+  overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; overscroll-behavior-x: contain;
+}
+.cat-bar__track::-webkit-scrollbar { display: none; }
+.cat-bar.has-overflow .cat-bar__track {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 28px, #000 calc(100% - 28px), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 28px, #000 calc(100% - 28px), transparent);
+}
+/* المؤشر اللي بيتزحلق تحت التاب المختار */
+.cat-bar__ink {
+  position: absolute; top: 0; bottom: 0; left: 0; width: 0; z-index: 0; border-radius: 14px; pointer-events: none;
+  background:
+    radial-gradient(120% 140% at 50% 120%, color-mix(in srgb, var(--tc) 55%, transparent), transparent 60%),
+    linear-gradient(180deg, color-mix(in srgb, var(--tc) 26%, var(--surface-2)), color-mix(in srgb, var(--tc) 12%, var(--surface)));
+  border: 1px solid color-mix(in srgb, var(--tc) 55%, transparent);
+  box-shadow: 0 8px 26px -10px var(--tc), inset 0 1px 0 rgba(255,255,255,.12);
+  transition: transform .5s cubic-bezier(.3,1.35,.5,1), width .5s cubic-bezier(.3,1.35,.5,1), background .4s, border-color .4s, box-shadow .4s;
+}
+.cat-bar__ink::after { content: ""; position: absolute; left: 22%; right: 22%; bottom: -1px; height: 2px; border-radius: 2px; background: var(--tc); box-shadow: 0 0 12px var(--tc); }
+.cat-bar__ink.no-anim { transition: none; }
+
 .tab {
   --tc: var(--primary);
-  position: relative; display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px 8px 14px; padding-inline: 12px 10px;
-  border-radius: 14px; font-weight: 700; font-size: .9rem; color: var(--text-2); white-space: nowrap;
-  background: var(--surface); border: 1px solid var(--border);
-  transition: color .2s, border-color .2s, background .25s, box-shadow .25s, transform .2s;
+  position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 9px; flex-shrink: 0;
+  padding: 11px 18px; border-radius: 14px; white-space: nowrap;
+  font-weight: 700; font-size: .93rem; color: var(--muted); background: none; border: 0;
+  transition: color .25s;
 }
-.tab__icon { width: 18px; height: 18px; flex-shrink: 0; fill: none; stroke: var(--tc); stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; transition: stroke .2s; }
-.tab__count {
-  min-width: 24px; padding: 1px 7px; border-radius: 999px; font-size: .72rem; font-weight: 800; text-align: center;
-  color: var(--tc); background: color-mix(in srgb, var(--tc) 14%, transparent);
+.tab__icon { width: 19px; height: 19px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; transition: stroke .25s, transform .35s cubic-bezier(.3,1.5,.5,1), filter .25s; }
+.tab__count { font-size: .74rem; font-weight: 700; color: var(--muted); opacity: .75; font-variant-numeric: tabular-nums; transition: color .25s, opacity .25s; }
+.tab:hover { color: var(--text); }
+.tab:hover .tab__icon { stroke: var(--tc); transform: translateY(-1px) scale(1.08); }
+.tab.active { color: #fff; background: none; }
+.tab.active .tab__icon { stroke: var(--tc); filter: drop-shadow(0 0 6px var(--tc)); transform: scale(1.1); }
+.tab.active .tab__count { color: var(--tc); opacity: 1; }
+.tab:focus-visible { outline: 2px solid var(--tc); outline-offset: -2px; }
+:root[data-theme="light"] .tab.active { color: var(--text); }
+
+.cat-bar__arrow {
+  display: grid; place-items: center; flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%;
+  font-size: 1.4rem; line-height: 1; color: var(--text); background: var(--surface-2); border: 1px solid var(--border);
+  transition: border-color .2s, opacity .2s;
 }
-.tab:hover { color: var(--text); border-color: color-mix(in srgb, var(--tc) 55%, transparent); transform: translateY(-2px); box-shadow: 0 10px 24px -14px var(--tc); }
-.tab:active { transform: scale(.96); }
-.tab.active {
-  color: #fff; border-color: transparent;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--tc) 92%, #fff), color-mix(in srgb, var(--tc) 70%, #000));
-  box-shadow: 0 10px 26px -10px var(--tc), inset 0 1px 0 rgba(255,255,255,.25);
+.cat-bar__arrow:hover { border-color: var(--tc); }
+.cat-bar__arrow[hidden] { display: none; }
+/* التابات في نص الشريط على الشاشات الكبيرة (من غير ما تبوّظ السحب لو زادت) */
+@media (min-width: 901px) {
+  .cat-bar__track > .tab:first-of-type { margin-inline-start: auto; }
+  .cat-bar__track > .tab:last-child { margin-inline-end: auto; }
 }
-.tab.active .tab__icon { stroke: #fff; }
-.tab.active .tab__count { color: #fff; background: rgba(255,255,255,.22); }
-.tab--soon { opacity: .6; }
-.tab--soon .tab__count { font-weight: 700; }
-.tab--soon:hover, .tab--soon.active { opacity: 1; }
-:root[data-theme="light"] .tab { color: #334155; }
-:root[data-theme="light"] .tab.active { color: #fff; }
 
 @media (max-width: 900px) {
-  .tabs {
-    width: calc(100% + 32px); margin-inline: -16px; padding: 4px 16px 10px; flex-wrap: nowrap; justify-content: flex-start;
-    overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none;
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 16px, #000 calc(100% - 16px), transparent);
-    mask-image: linear-gradient(90deg, transparent, #000 16px, #000 calc(100% - 16px), transparent);
-  }
-  .tabs::-webkit-scrollbar { display: none; }
-  .tab { scroll-snap-align: center; font-size: .86rem; padding-block: 7px; }
+  .cat-bar { margin-inline: -16px; border-radius: 0; border-inline: 0; padding: 6px 10px; top: var(--hdr, 64px); margin-bottom: 20px; }
+  .cat-bar::after { inset-inline: 0; }
+  .cat-bar__arrow { display: none; }
+  .tab { padding: 10px 14px; font-size: .88rem; gap: 7px; }
+  .tab__icon { width: 17px; height: 17px; }
 }
+@media (prefers-reduced-motion: reduce) { .cat-bar__ink { transition: none; } }

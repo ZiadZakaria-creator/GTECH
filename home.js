@@ -220,7 +220,7 @@ document.addEventListener("click", (e) => {
 
 function setFilter(value) {
   filter = value;
-  $$(".tab").forEach((t) => t.classList.toggle("active", t.dataset.filter === value));
+  syncTabs();
   renderProducts();
 }
 
@@ -229,13 +229,12 @@ $("#tabs").addEventListener("click", (e) => {
   if (!tab) return;
   showAll = true;
   setFilter(tab.dataset.filter);
-  scrollActiveTab();
   // النتايج بتظهر تحت الفلتر — بننزل لها عشان العميل يشوف إن القسم اتغيّر
   const target = grid.hidden || !grid.children.length ? $("#emptyState") : grid;
   const top = target.getBoundingClientRect().top;
   if (top > innerHeight * 0.6 || top < 0) {
     const header = $(".header")?.offsetHeight || 70;
-    scrollTo({ top: scrollY + $("#tabs").getBoundingClientRect().top - header - 10, behavior: "smooth" });
+    scrollTo({ top: scrollY + $("#products .section__head").getBoundingClientRect().bottom - header - 10, behavior: "smooth" });
   }
 });
 
@@ -265,19 +264,68 @@ function renderCategories() {
   const total = shopProducts().length;
   const tabIcon = (k) => `<svg class="tab__icon" viewBox="0 0 24 24" aria-hidden="true">${k === "all" ? '<rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/>' : CATEGORY_SVG[k]?.[1] || ""}</svg>`;
   const tab = (k, label, n) => `
-    <button type="button" class="tab ${n ? "" : "tab--soon"}" data-filter="${k}" style="--tc:${k === "all" ? "#0a84ff" : CATEGORY_SVG[k]?.[0] || "#0a84ff"}">
-      ${tabIcon(k)}<span>${label}</span><small class="tab__count">${n ? num(n) : "قريباً"}</small>
+    <button type="button" class="tab" role="tab" data-filter="${k}" style="--tc:${k === "all" ? "#3b9bff" : CATEGORY_SVG[k]?.[0] || "#3b9bff"}">
+      ${tabIcon(k)}<span>${label}</span><span class="tab__count">${num(n)}</span>
     </button>`;
-  $("#tabs").innerHTML = tab("all", "الكل", total) + Object.entries(categories).map(([k, label]) => tab(k, label, counts[k] || 0)).join("");
-  $$(".tab").forEach((t) => t.classList.toggle("active", t.dataset.filter === filter));
-  scrollActiveTab();
+  // الأقسام الفاضية مش بتظهر في الشريط (بتفضل ظاهرة "قريباً" في كروت الأقسام فوق)
+  const shown = Object.entries(categories).filter(([k]) => counts[k] || k === filter);
+  $("#tabs").innerHTML = `<span class="cat-bar__ink no-anim" aria-hidden="true"></span>` + tab("all", "الكل", total) + shown.map(([k, label]) => tab(k, label, counts[k] || 0)).join("");
+  syncTabs(false);
 }
-// التاب المختار يفضل باين جوه الشريط (على الموبايل الشريط بيتسحب)
+
+// ============ شريط الأقسام: المؤشر اللي بيتزحلق + الأسهم + الثبات تحت الهيدر ============
+const catBar = $("#catBar");
+const tabsTrack = $("#tabs");
+function moveInk(animate = true) {
+  const ink = tabsTrack.querySelector(".cat-bar__ink");
+  const t = tabsTrack.querySelector(".tab.active");
+  if (!ink) return;
+  ink.style.opacity = t ? "1" : "0";
+  if (!t) return;
+  ink.classList.toggle("no-anim", !animate);
+  ink.style.width = `${t.offsetWidth}px`;
+  ink.style.transform = `translateX(${t.offsetLeft}px)`;
+  const color = t.style.getPropertyValue("--tc");
+  ink.style.setProperty("--tc", color);
+  catBar.style.setProperty("--tc", color);
+  if (!animate) requestAnimationFrame(() => ink.classList.remove("no-anim"));
+}
 function scrollActiveTab() {
-  const t = $(".tab.active"), bar = $("#tabs");
-  if (!t || bar.scrollWidth <= bar.clientWidth) return;
-  bar.scrollTo({ left: t.offsetLeft - (bar.clientWidth - t.offsetWidth) / 2, behavior: "smooth" });
+  const t = tabsTrack.querySelector(".tab.active");
+  if (!t || tabsTrack.scrollWidth <= tabsTrack.clientWidth) return;
+  tabsTrack.scrollTo({ left: t.offsetLeft - (tabsTrack.clientWidth - t.offsetWidth) / 2, behavior: "smooth" });
 }
+function updateCatArrows() {
+  const over = tabsTrack.scrollWidth > tabsTrack.clientWidth + 2;
+  catBar.classList.toggle("has-overflow", over);
+  const max = tabsTrack.scrollWidth - tabsTrack.clientWidth;
+  const pos = Math.abs(tabsTrack.scrollLeft); // في العربي scrollLeft بيبقى سالب
+  catBar.querySelector(".cat-bar__arrow--start").hidden = !over || pos < 4;
+  catBar.querySelector(".cat-bar__arrow--end").hidden = !over || pos > max - 4;
+}
+function syncTabs(animate = true) {
+  $$(".tab").forEach((t) => { t.classList.toggle("active", t.dataset.filter === filter); t.setAttribute("aria-selected", String(t.dataset.filter === filter)); });
+  moveInk(animate);
+  scrollActiveTab();
+  updateCatArrows();
+}
+tabsTrack.addEventListener("scroll", updateCatArrows, { passive: true });
+catBar.addEventListener("click", (e) => {
+  const a = e.target.closest("[data-catbar-dir]");
+  if (!a) return;
+  const dir = Number(a.dataset.catbarDir) * (getComputedStyle(tabsTrack).direction === "rtl" ? -1 : 1);
+  tabsTrack.scrollBy({ left: dir * tabsTrack.clientWidth * 0.7, behavior: "smooth" });
+});
+// ارتفاع الهيدر الحقيقي (بيختلف بين الموبايل والكمبيوتر) عشان الشريط يثبت تحته بالظبط
+function syncHeaderHeight() { document.documentElement.style.setProperty("--hdr", `${$(".header")?.offsetHeight || 76}px`); }
+syncHeaderHeight();
+addEventListener("resize", () => { syncHeaderHeight(); moveInk(false); updateCatArrows(); }, { passive: true });
+document.fonts?.ready.then(() => moveInk(false));
+// لما الشريط يثبت فوق بياخد شكل أوضح
+addEventListener("scroll", () => {
+  const stuck = catBar.getBoundingClientRect().top <= parseFloat(getComputedStyle(catBar).top) + 1 && scrollY > 200;
+  catBar.classList.toggle("is-stuck", stuck);
+}, { passive: true });
 renderCategories();
 document.addEventListener("productschange", renderCategories);
 

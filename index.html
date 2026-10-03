@@ -167,10 +167,16 @@
             <span class="eyebrow">الأكثر مبيعاً</span>
             <h2>منتجات مميزة</h2>
           </div>
-          <div class="tabs" id="tabs">
+        </div>
+
+        <!-- شريط الأقسام: بيفضل ثابت تحت الهيدر وإنت بتتصفح المنتجات -->
+        <nav class="cat-bar" id="catBar" aria-label="أقسام المنتجات">
+          <button type="button" class="cat-bar__arrow cat-bar__arrow--start" data-catbar-dir="-1" aria-label="السابق" hidden>‹</button>
+          <div class="cat-bar__track" id="tabs" role="tablist">
             <button class="tab active" data-filter="all">الكل</button>
           </div>
-        </div>
+          <button type="button" class="cat-bar__arrow cat-bar__arrow--end" data-catbar-dir="1" aria-label="التالي" hidden>›</button>
+        </nav>
 
         <div class="filter-bar">
           <button type="button" class="btn btn--ghost btn--sm" id="filterToggle" aria-expanded="false" aria-controls="filterPanel">⚙️ فلترة <span class="filter-count" id="filterCount" hidden></span></button>
