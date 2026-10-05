@@ -18,7 +18,7 @@ const itemsCount = (o) => o.items.reduce((s, i) => s + i.qty, 0);
 const statusPill = (s) => `<span class="pill-status pill-status--${s}">${STATUS_ICONS[s]} ${ORDER_STATUSES[s]}</span>`;
 
 // ============ البداية ============
-$("#modeBadge").textContent = USE_FIREBASE ? "🟢 مباشر" : "🧪 تجريبي";
+$("#modeBadge").textContent = USE_FIREBASE ? "النظام متصل" : "وضع تجريبي";
 $("#modeBadge").classList.add(USE_FIREBASE ? "mode-badge--live" : "mode-badge--demo");
 
 if (USE_FIREBASE) initFirebaseAdmin();
@@ -50,6 +50,14 @@ async function initFirebaseAdmin() {
   firebase.auth().onAuthStateChanged((u) => {
     const isAdmin = u && !u.isAnonymous && u.email;
     $("#adminLogout").hidden = !isAdmin;
+    // اسم الأدمن فوق (من الإيميل)
+    $("#adUser").hidden = !isAdmin;
+    if (isAdmin) {
+      const nm = u.displayName || u.email.split("@")[0];
+      $("#adUserName").textContent = nm;
+      $("#adUserAv").textContent = nm.slice(0, 2).toUpperCase();
+      $("#adUser").title = u.email;
+    }
     if (isAdmin) startDashboard();
     else {
       stopWatching();

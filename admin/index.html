@@ -26,15 +26,48 @@
 </head>
 <body class="admin">
 
+  <div class="ad-shell">
+  <!-- القائمة الجانبية -->
+  <aside class="ad-side" id="adSide" aria-label="أقسام لوحة التحكم">
+    <div class="ad-side__brand">
+      <a href="admin/" class="logo"><span class="logo__mark">G</span><span class="logo__text">TECH</span></a>
+      <small>إدارة المتجر</small>
+    </div>
+    <p class="ad-side__label">الرئيسية</p>
+    <nav class="ad-sections" id="adSections">
+      <button class="ad-sec active" data-section="overview"><svg class="ad-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg><span>لوحة التحكم</span></button>
+      <button class="ad-sec" data-section="orders"><svg class="ad-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span>الطلبات</span><span class="tab__count" id="newCountBadge" hidden></span></button>
+      <button class="ad-sec" data-section="products"><svg class="ad-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 7.5l9 4.5 9-4.5L12 3z"/><path d="M3 7.5V16.5L12 21l9-4.5V7.5"/><path d="M12 12v9"/></svg><span>المنتجات</span><span class="tab__count tab__count--warn" id="lowStockBadge" hidden></span></button>
+      <button class="ad-sec" data-section="leads"><svg class="ad-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/></svg><span>العملاء</span><span class="tab__count" id="leadsBadge" hidden></span></button>
+      <button class="ad-sec" data-section="carts"><svg class="ad-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 2-1.5L21 8H6.2"/><circle cx="10" cy="20" r="1"/><circle cx="17" cy="20" r="1"/></svg><span>سلات متروكة</span><span class="tab__count" id="cartsBadge" hidden></span></button>
+      <button class="ad-sec" data-section="visits"><svg class="ad-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>الزوار والتقارير</span></button>
+      <button class="ad-sec" data-section="shipping"><svg class="ad-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg><span>الشحن والدفع</span></button>
+      <button class="ad-sec" data-section="reviews"><svg class="ad-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.8-4.4 4.3 1 6.1L12 17l-5.4 2.8 1-6.1-4.4-4.3 6.1-.8L12 3z"/></svg><span>التقييمات</span></button>
+    </nav>
+    <div class="ad-side__foot">
+      <a class="ad-help" href="index.html" target="_blank" rel="noopener">
+        <span class="ad-help__icon">🛍️</span>
+        <b>متجرك شغال</b>
+        <small>افتح المتجر وشوفه زي العميل ←</small>
+      </a>
+      <p class="ad-owner" dir="ltr">© ZiraTech — under the supervision of Eng. Ziad Zakaria Ebrahim &amp; Eng. Ramy Tarek Hafez</p>
+    </div>
+  </aside>
+  <div class="ad-scrim" id="adScrim"></div>
+
+  <div class="ad-body">
   <header class="ad-top">
     <div class="ad-wrap ad-top__inner">
-      <a href="admin/" class="logo"><span class="logo__mark">G</span><span class="logo__text">TECH</span></a>
-      <span class="ad-top__title">لوحة التحكم</span>
-      <span class="mode-badge" id="modeBadge"></span>
+      <button class="icon-btn ad-burger" id="adBurger" type="button" aria-label="القائمة">☰</button>
+      <div class="ad-top__head">
+        <span class="ad-top__title" id="adTitle">لوحة التحكم</span>
+        <span class="mode-badge" id="modeBadge"></span>
+      </div>
       <div class="ad-top__actions">
         <button class="btn btn--ghost btn--sm" id="testEmailBtn" hidden title="ابعت إيميل تجريبي لإيميل المتجر">📧 تجربة الإيميل</button>
         <button class="icon-btn" id="soundBtn" aria-label="صوت الإشعارات" title="صوت الإشعارات"></button>
-        <a href="index.html" class="btn btn--ghost btn--sm" target="_blank">عرض المتجر ↗</a>
+        <a href="index.html" class="btn btn--ghost btn--sm ad-preview" target="_blank">↗ معاينة المتجر</a>
+        <div class="ad-user" id="adUser" hidden><span class="ad-user__av" id="adUserAv"></span><span class="ad-user__txt"><b id="adUserName"></b><small>مدير المتجر</small></span></div>
         <button class="btn btn--ghost btn--sm" id="adminLogout" hidden>خروج</button>
       </div>
     </div>
@@ -64,17 +97,50 @@
       </div>
     </div>
 
-    <nav class="ad-sections" id="adSections">
-      <button class="ad-sec active" data-section="orders">📦 الطلبات <span class="tab__count" id="newCountBadge" hidden></span></button>
-      <button class="ad-sec" data-section="products">🛍️ المنتجات</button>
-      <button class="ad-sec" data-section="visits">📈 الزوار</button>
-      <button class="ad-sec" data-section="shipping">🚚 الشحن</button>
-      <button class="ad-sec" data-section="reviews">⭐ التقييمات</button>
-      <button class="ad-sec" data-section="carts">🛒 سلات متروكة <span class="tab__count" id="cartsBadge" hidden></span></button>
-      <button class="ad-sec" data-section="leads">👥 العملاء <span class="tab__count" id="leadsBadge" hidden></span></button>
-    </nav>
+    <!-- نظرة عامة -->
+    <div id="overviewSection" class="ad-section">
+      <div class="ov-head">
+        <div>
+          <h1>نظرة عامة على المتجر</h1>
+          <p class="muted" id="ovHello">ده ملخص أداء متجرك وأهم الحاجات اللي محتاجة انتباهك.</p>
+        </div>
+        <div class="ov-head__tools">
+          <div class="ov-range" id="ovRange" role="tablist">
+            <button data-r="1">النهارده</button>
+            <button data-r="7">آخر 7 أيام</button>
+            <button data-r="30" class="active">آخر 30 يوم</button>
+            <button data-r="90">آخر 3 شهور</button>
+          </div>
+          <span class="ov-dates" id="ovDates"></span>
+          <button class="btn btn--ghost btn--sm" id="ovExport">⬇ تصدير التقرير</button>
+        </div>
+      </div>
+      <section class="ov-kpis" id="ovKpis"></section>
+      <div class="ov-row ov-row--chart">
+        <section class="card-box ov-card ov-chart">
+          <div class="ov-card__head"><div><h3>المبيعات والطلبات</h3><p class="muted" id="ovChartSub"></p></div>
+            <div class="ov-legend"><span class="ov-lg ov-lg--a">المبيعات</span><span class="ov-lg ov-lg--b">عدد الطلبات</span></div></div>
+          <div class="ov-plot" id="ovPlot"></div>
+        </section>
+        <section class="card-box ov-card ov-status" id="ovStatus"></section>
+      </div>
+      <section class="card-box ov-card ov-recent">
+        <div class="ov-card__head"><div><h3>أحدث الطلبات <span class="ov-chip" id="ovPendingChip" hidden></span></h3></div>
+          <button class="btn btn--ghost btn--sm" data-go="orders">كل الطلبات ←</button></div>
+        <div class="table-wrap">
+          <table class="orders ov-table"><thead><tr><th>رقم الطلب</th><th>العميل</th><th>المنتجات</th><th>الإجمالي</th><th>الدفع</th><th>الحالة</th></tr></thead><tbody id="ovRecent"></tbody></table>
+          <div class="ad-empty" id="ovRecentEmpty" hidden><span>📭</span><p>مفيش طلبات لسه — أول ما عميل يطلب هيظهر هنا</p></div>
+        </div>
+      </section>
+      <div class="ov-row ov-row--3">
+        <section class="card-box ov-card" id="ovStock"></section>
+        <section class="card-box ov-card" id="ovBest"></section>
+        <section class="card-box ov-card" id="ovShip"></section>
+      </div>
+    </div>
 
-    <div id="ordersSection" class="ad-section">
+
+    <div id="ordersSection" class="ad-section" hidden>
     <section class="sms-meter card-box" id="smsMeter" hidden></section>
       <section class="stats" id="stats"></section>
 
@@ -310,7 +376,8 @@
       </section>
     </div>
   </main>
-  <p class="ad-owner" dir="ltr">© ZiraTech — under the supervision of Eng. Ziad Zakaria Ebrahim &amp; Eng. Ramy Tarek Hafez</p>
+  </div>
+  </div>
 
   <!-- تفاصيل الطلب -->
   <div class="overlay" id="overlay"></div>
@@ -414,5 +481,6 @@
   <script src="admin-leads.js"></script>
   <script src="admin-shipping.js"></script>
   <script src="admin-reviews.js"></script>
+  <script src="admin-overview.js"></script>
 </body>
 </html>

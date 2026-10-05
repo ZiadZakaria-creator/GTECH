@@ -103,7 +103,12 @@ let productsWatching = false;
 function showSection(name) {
   $$(".ad-sec").forEach((b) => b.classList.toggle("active", b.dataset.section === name));
   $$(".ad-section").forEach((sec) => { sec.hidden = sec.id !== name + "Section"; });
-  history.replaceState(null, "", location.pathname + (name === "orders" ? "" : "#" + name));
+  history.replaceState(null, "", location.pathname + (name === "overview" ? "" : "#" + name));
+  // عنوان الصفحة فوق = اسم القسم، والقائمة تتقفل على الموبايل
+  const label = $(`.ad-sec[data-section="${name}"] span`);
+  if (label) $("#adTitle").textContent = label.textContent;
+  document.body.classList.remove("ad-menu-open");
+  scrollTo({ top: 0 });
   if (name === "products") watchProducts();
   document.dispatchEvent(new CustomEvent("sectionchange", { detail: name }));
 }
@@ -119,7 +124,10 @@ $("#adSections").addEventListener("click", (e) => {
   const b = e.target.closest("[data-section]");
   if (b) showSection(b.dataset.section);
 });
-if (["#products", "#carts", "#leads", "#visits", "#shipping", "#reviews"].includes(location.hash)) {
+// القائمة الجانبية على الموبايل
+$("#adBurger").addEventListener("click", () => document.body.classList.toggle("ad-menu-open"));
+$("#adScrim").addEventListener("click", () => document.body.classList.remove("ad-menu-open"));
+if (["#orders", "#products", "#carts", "#leads", "#visits", "#shipping", "#reviews"].includes(location.hash)) {
   // نستنى لحد ما الأدمن يدخل
   const section = location.hash.slice(1);
   const wait = setInterval(() => {
