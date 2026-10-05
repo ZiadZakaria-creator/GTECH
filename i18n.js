@@ -5,6 +5,11 @@
 // لو ضفت كلام جديد في الموقع: ضيف ترجمته في I18N_EN بنفس النص العربي بالظبط.
 
 const I18N_EN = {
+"🎧 إيربودز أصلية": "🎧 Original earbuds",
+"لكل ميزانية": "for every budget",
+"إيربودز أنكر ساوندكور وأورايمو الأصلية، من عزل الضوضاء لحد البيس القوي. ولو أول أوردر من التطبيق: ": "Original Anker Soundcore and Oraimo earbuds, from noise cancelling to deep bass. And on your first app order: ",
+"20% خصم + توصيل مجاني": "20% off + free delivery",
+"إيربودز أنكر ساوندكور الأصلية": "Original Anker Soundcore earbuds",
 "أضف": "Add",
 "عرض الكل": "View all",
 "تصفّح كل المنتجات": "Browse all products",

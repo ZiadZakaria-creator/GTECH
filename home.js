@@ -358,9 +358,12 @@ const OFFER_CAT = "earphones";
 function renderOffer() {
   const pct = categorySale(OFFER_CAT);
   const list = shopProducts().filter((p) => p.cat === OFFER_CAT && inStock(p));
+  // لو فيه خصم على القسم (CATEGORY_SALES) البانر بيعلن عنه، ولو مفيش بيفضل بانر عادي للإيربودز
+  $("#offerTag").hidden = !pct;
   if (pct) {
     $("#offerTag").textContent = `-${num(pct)}%`;
     $("#offerPill").textContent = "🎧 عرض GTECH على الإيربودز";
+    $("#offerTitle").innerHTML = `خصم <span class="gradient-text">${num(pct)}%</span> على أي إيربودز<br />في المتجر`;
   }
   if (!list.length) { $("#offerPrice").hidden = true; return; }
   const cheapest = list.reduce((a, b) => (b.price < a.price ? b : a));

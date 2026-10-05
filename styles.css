@@ -1616,3 +1616,4 @@ html[dir="ltr"] .pd__highlights li::before { right: auto; left: 0; }
   .tab__icon { width: 17px; height: 17px; }
 }
 @media (prefers-reduced-motion: reduce) { .cat-bar__ink { transition: none; } }
+.offer__tag[hidden] { display: none; }
