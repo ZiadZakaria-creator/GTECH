@@ -162,6 +162,12 @@
       "sourceType": "github",
       "skillPath": "SKILL.md",
       "computedHash": "e6bfd3b4bcd409e2a7c94e4e4bf66e79355b6a84427faa2e8b076b59af1e19ad"
+    },
+    "vibehost-deploy": {
+      "source": "gntc-labs/skills",
+      "sourceType": "github",
+      "skillPath": "plugins/vibehost/skills/vibehost-deploy/SKILL.md",
+      "computedHash": "9e908c0cbe815d38564600f015a5f9270fa6c5ceada12a74ae27a8c25dff609f"
     }
   }
 }
