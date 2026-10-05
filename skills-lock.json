@@ -36,6 +36,12 @@
       "sourceType": "github",
       "skillPath": "skills/general-video/SKILL.md",
       "computedHash": "33bec49812c73a860c70bcae4baf869b1669c00a5946fe1078d0a0f3a693bc97"
+    },
+    "hyperframes": {
+      "source": "heygen-com/hyperframes",
+      "sourceType": "github",
+      "skillPath": "skills/hyperframes/SKILL.md",
+      "computedHash": "cbe09e37acad5644d2ca7e5135e685af5ebdaa17ead340d47005db0b51b02f75"
     }
   }
 }
