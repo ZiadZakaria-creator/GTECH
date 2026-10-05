@@ -437,6 +437,7 @@ const I18N_EN = {
 "سماعات هيدسيت": "Headsets",
 "سماعات سلك وإيربودز": "Wired earphones & earbuds",
 "دراعات جيمنج": "Gaming controllers",
+"سبيكرات بلوتوث": "Bluetooth speakers",
 "شاشات": "Monitors",
 "كروت شاشة": "Graphics cards",
 "GTECH | ماوسات وكيبوردات جيمنج وإكسسوارات كمبيوتر في مصر": "GTECH | Gaming mice, keyboards and computer accessories in Egypt",

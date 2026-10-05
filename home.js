@@ -29,7 +29,7 @@ function storageValues(p) {
 const sizeRank = (v) => parseFloat(v) * (v.includes("تيرا") ? 1024 : 1);
 
 // مجموعات أقسام (شرايط الصفحة الرئيسية بتفتحها بـ "عرض الكل")
-const CAT_GROUPS = { gaming: ["mice", "keyboards", "controllers"], sound: ["audio", "earphones"] };
+const CAT_GROUPS = { gaming: ["mice", "keyboards", "controllers"], sound: ["audio", "earphones", "speakers"] };
 const inFilter = (p) => filter === "all" || p.cat === filter || (CAT_GROUPS[filter] || []).includes(p.cat);
 
 function baseList() {
@@ -248,6 +248,7 @@ const CATEGORY_SVG = {
   earphones: ["#ec4899", '<circle cx="7" cy="8" r="3.5"/><path d="M9.2 10.8 10.5 20"/><circle cx="17" cy="8" r="3.5"/><path d="M14.8 10.8 13.5 20"/>'],
   monitors: ["#00d4ff", '<rect x="2.5" y="4" width="19" height="13" rx="2"/><path d="M8 21h8M12 17v4"/>'],
   gpus: ["#ff4d6d", '<rect x="2" y="6" width="20" height="11" rx="2"/><circle cx="8.5" cy="11.5" r="2.8"/><circle cx="15.5" cy="11.5" r="2.8"/><path d="M5 17v2.5M9 17v2.5M13 17v2.5"/>'],
+  speakers: ["#2dd4bf", '<rect x="6" y="2.5" width="12" height="19" rx="3"/><circle cx="12" cy="14.5" r="3.5"/><circle cx="12" cy="7" r="1.3"/>'],
   controllers: ["#ff9f0a", '<path d="M6.5 7.5h11a4 4 0 0 1 3.9 3.1l1 4.6a2.6 2.6 0 0 1-4.5 2.2L16 15.5H8l-1.9 1.9a2.6 2.6 0 0 1-4.5-2.2l1-4.6a4 4 0 0 1 3.9-3.1z"/><path d="M7.5 10.5v3M6 12h3"/><path d="M15.5 11h.01M17.5 13h.01"/>'],
 };
 const categoryIconHtml = (k) => CATEGORY_SVG[k]

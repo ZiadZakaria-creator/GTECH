@@ -73,6 +73,7 @@ async function imageUrls(p) {
 // نفس تخمين القسم اللي في catalog.js للمنتجات اللي اتسجلت قبل الأقسام الجديدة
 const CATEGORY_GUESS = [
   ["controllers", /دراع|ذراع|يد تحكم|controller|gamepad|جيم ?باد/i],
+  ["speakers", /سبيكر|سماعة (?:محمولة|بلوتوث محمولة)|speaker|soundbar|ساوند ?بار/i],
   ["mice", /ماوس|mouse/i], ["keyboards", /كيبورد|keyboard/i], ["gpus", /كارت شاشة|كروت شاشة|rtx|gtx|radeon|graphics card/i],
   ["monitors", /شاشة|شاشه|monitor/i], ["storage", /هارد|ssd|hdd|nvme|فلاشة|flash/i],
   ["earphones", /إيربودز|ايربودز|إيربدز|earbud|earphone|airpods|buds|tws|in-ear|سماعة (?:سلك|أذن|اذن|بلوتوث)/i],

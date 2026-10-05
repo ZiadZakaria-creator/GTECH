@@ -5,6 +5,7 @@ const categories = {
   mice: "ماوسات",
   audio: "سماعات هيدسيت",
   earphones: "سماعات سلك وإيربودز",
+  speakers: "سبيكرات بلوتوث",
   monitors: "شاشات",
   gpus: "كروت شاشة",
   controllers: "دراعات جيمنج",
