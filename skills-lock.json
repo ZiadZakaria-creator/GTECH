@@ -156,6 +156,12 @@
       "sourceType": "github",
       "skillPath": "skills/talking-head-recut/SKILL.md",
       "computedHash": "991315e8803089b6b0d008026c9b42c2c83f6ea95c44b26956cd6ff6197f5305"
+    },
+    "vibe-usage": {
+      "source": "vibe-cafe/vibe-usage",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "e6bfd3b4bcd409e2a7c94e4e4bf66e79355b6a84427faa2e8b076b59af1e19ad"
     }
   }
 }
