@@ -1617,3 +1617,11 @@ html[dir="ltr"] .pd__highlights li::before { right: auto; left: 0; }
 }
 @media (prefers-reduced-motion: reduce) { .cat-bar__ink { transition: none; } }
 .offer__tag[hidden] { display: none; }
+
+/* روابط كل المنتجات (لجوجل) — مقفولة تحت آخر الصفحة */
+.all-links { padding-block: 8px 24px; }
+.all-links summary { cursor: pointer; color: var(--muted, #8a94a8); font-size: 0.9rem; }
+.all-links__cat h3 { font-size: 0.95rem; margin: 16px 0 6px; }
+.all-links__cat ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 4px 16px; }
+.all-links__cat li a { font-size: 0.82rem; color: var(--muted, #8a94a8); }
+.all-links__cat li a:hover { color: inherit; }

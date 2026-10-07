@@ -192,6 +192,25 @@ ${entries.map((e) => `  <url>
 `;
 }
 
+// روابط عادية لكل المنتجات في الصفحة الرئيسية، متقسمة بالأقسام،
+// عشان جوجل يلاقي صفحات المنتجات من غير ما يستنى الـ JavaScript
+function productLinks(list) {
+  const index = join(OUT, "index.html");
+  const groups = {};
+  for (const p of list) (groups[productCategory(p)] ||= []).push(p);
+  const cats = [...Object.keys(CATEGORIES).filter((c) => groups[c]), ...Object.keys(groups).filter((c) => !CATEGORIES[c])];
+  const html = `<section class="container all-links" aria-label="كل المنتجات">
+    <details>
+      <summary>كل منتجات GTECH (${list.length})</summary>
+      ${cats.map((c) => `<div class="all-links__cat">
+        <h3><a href="index.html?cat=${esc(c)}#products">${esc(CATEGORIES[c] || "منتجات تانية")}</a></h3>
+        <ul>${groups[c].map((p) => `<li><a href="p/${p.id}.html">${esc(p.name)}</a></li>`).join("")}</ul>
+      </div>`).join("\n      ")}
+    </details>
+  </section>`;
+  writeFileSync(index, readFileSync(index, "utf8").replace("<!--SEO-PRODUCT-LINKS-->", html));
+}
+
 const template = readFileSync("product.html", "utf8");
 mkdirSync(join(OUT, "p/img"), { recursive: true });
 const entries = [{ url: SITE }, { url: `${SITE}policies.html` }];
@@ -217,6 +236,7 @@ try {
     entries.push({ url: `${SITE}p/${p.id}.html`, lastmod: p.updatedAt, images });
   }
   console.log(`✅ ${list.length} صفحة منتج`);
+  productLinks(list);
 } catch (err) {
   // لو Firestore مردّش مانوقفش النشر: روابط p/ هتتحول لـ product.html من 404.html
   console.warn("⚠️ مقدرناش نجيب المنتجات:", err.message);
