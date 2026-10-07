@@ -362,7 +362,7 @@ function renderOffer() {
   $("#offerTag").hidden = !pct;
   if (pct) {
     $("#offerTag").textContent = `-${num(pct)}%`;
-    $("#offerPill").textContent = "🎧 عرض GTECH على الإيربودز";
+    $("#offerPill").textContent = "🎧 عرض GTECH MASR على الإيربودز";
     $("#offerTitle").innerHTML = `خصم <span class="gradient-text">${num(pct)}%</span> على أي إيربودز<br />في المتجر`;
   }
   if (!list.length) { $("#offerPrice").hidden = true; return; }
@@ -500,7 +500,7 @@ document.addEventListener("userchange", startOrderStrip);
 startOrderStrip();
 
 // ============ ستوري المنتجات جوه الموبايل اللي في الواجهة ============
-// بيعرض أحدث المنتجات اللي ليها صور واحد ورا التاني زي الستوري، ولو مفيش صور بيفضل تصميم GTECH
+// بيعرض أحدث المنتجات اللي ليها صور واحد ورا التاني زي الستوري، ولو مفيش صور بيفضل تصميم GTECH MASR
 const STORY_MS = 3800;
 const socialIcons = {
   facebook: '<svg viewBox="0 0 24 24"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v2H8v4h2v6h4v-6h3l1-4h-4V8z" fill="currentColor" stroke="none"/></svg>',
@@ -527,7 +527,7 @@ function renderPhoneStory() {
   screen.insertAdjacentHTML("beforeend", `
     <div class="story">
       <div class="story__bars">${items.map(() => "<i><b></b></i>").join("")}</div>
-      <div class="story__head"><span class="story__avatar">G</span><b>GTECH</b><small>عروض النهارده</small></div>
+      <div class="story__head"><span class="story__avatar">G</span><b>GTECH MASR</b><small>عروض النهارده</small></div>
       <div class="story__slides">${items.map((p, i) => {
         const off = discount(p);
         return `
@@ -543,7 +543,7 @@ function renderPhoneStory() {
       }).join("")}</div>
       <button type="button" class="story__nav story__nav--prev" aria-label="المنتج اللي فات"></button>
       <button type="button" class="story__nav story__nav--next" aria-label="المنتج اللي بعده"></button>
-      ${links.length ? `<div class="story__social">${links.map(([k, v]) => `<a href="${escapeHtml(v)}" target="_blank" rel="noopener" aria-label="GTECH على ${k === "facebook" ? "فيسبوك" : "تيك توك"}">${socialIcons[k]}</a>`).join("")}</div>` : ""}
+      ${links.length ? `<div class="story__social">${links.map(([k, v]) => `<a href="${escapeHtml(v)}" target="_blank" rel="noopener" aria-label="GTECH MASR على ${k === "facebook" ? "فيسبوك" : "تيك توك"}">${socialIcons[k]}</a>`).join("")}</div>` : ""}
     </div>`);
   screen.classList.add("has-story");
   $(".hero__visual").removeAttribute("aria-hidden");

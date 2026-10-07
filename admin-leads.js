@@ -99,7 +99,7 @@ function buildCustomers() {
 
 // رسالة واتساب مناسبة لحالة العميل
 function customerWhatsApp(c) {
-  const hi = `أهلاً${c.name ? " " + c.name.split(" ")[0] : ""} 👋 معاك GTECH`;
+  const hi = `أهلاً${c.name ? " " + c.name.split(" ")[0] : ""} 👋 معاك GTECH MASR`;
   const text = c.status === "buyer"
     ? `${hi}\nشكراً إنك اشتريت مننا قبل كده 🙏\nنزلنا منتجات وعروض جديدة، شوفها من هنا 👇\n${siteUrl("index.html")}`
     : c.status === "cart"

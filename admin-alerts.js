@@ -79,7 +79,7 @@ function alertEmailHtml(g) {
 <div dir="rtl" style="margin:0;padding:24px 12px;background:#f2f5fa;font-family:Tahoma,Arial,sans-serif;color:#1d2433">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden">
     <tr><td style="background:linear-gradient(135deg,#00d4ff,#0a84ff 50%,#7c5cff);background-color:#0a84ff;padding:22px 24px;color:#fff">
-      <div style="font-size:22px;font-weight:900;letter-spacing:1px;direction:ltr;text-align:right">GTECH</div>
+      <div style="font-size:22px;font-weight:900;letter-spacing:1px;direction:ltr;text-align:right">GTECH MASR</div>
     </td></tr>
     <tr><td style="padding:26px 24px 8px">
       <h1 style="margin:0 0 8px;font-size:22px">${headline}</h1>
@@ -94,7 +94,7 @@ function alertEmailHtml(g) {
       <a href="${siteUrl(`product.html?id=${p.id}`)}" style="display:inline-block;padding:12px 28px;border-radius:999px;background:#0a84ff;color:#fff;text-decoration:none;font-weight:700">اطلبه دلوقتي</a>
     </td></tr>
     <tr><td align="center" style="padding:14px;background:#f5f8fd;color:#8a94a6;font-size:12px">
-      وصلك الإيميل ده عشان طلبت تنبيه من GTECH على المنتج ده · التنبيه بيتبعت مرة واحدة بس
+      وصلك الإيميل ده عشان طلبت تنبيه من GTECH MASR على المنتج ده · التنبيه بيتبعت مرة واحدة بس
     </td></tr>
   </table>
 </div>`;
@@ -110,7 +110,7 @@ async function sendReadyAlerts(manual = false) {
   const done = [];
   for (const g of groups) {
     try {
-      const subject = g.type === "stock" ? `🎉 ${g.p.name} رجع تاني — GTECH` : `📉 سعر ${g.p.name} نزل لـ ${egp(g.p.price)} — GTECH`;
+      const subject = g.type === "stock" ? `🎉 ${g.p.name} رجع تاني — GTECH MASR` : `📉 سعر ${g.p.name} نزل لـ ${egp(g.p.price)} — GTECH MASR`;
       await sendEmail(g.email, g.name, subject, alertEmailHtml(g));
       done.push(...g.ids);
       sent++;

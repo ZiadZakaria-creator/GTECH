@@ -5,7 +5,7 @@
 const EMAIL_ON = typeof EMAIL_CONFIG !== "undefined" && !!EMAIL_CONFIG?.publicKey && !!EMAIL_CONFIG?.serviceId && !!EMAIL_CONFIG?.templateId;
 
 const EMAIL_STAGES = {
-  new: { icon: "🎉", title: "طلبك وصلنا!", subject: "تم استلام طلبك", msg: "شكراً إنك اخترت GTECH. هنتواصل معاك قريب عشان نأكد الطلب." },
+  new: { icon: "🎉", title: "طلبك وصلنا!", subject: "تم استلام طلبك", msg: "شكراً إنك اخترت GTECH MASR. هنتواصل معاك قريب عشان نأكد الطلب." },
   confirmed: { icon: "✅", title: "تم تأكيد طلبك", subject: "تم تأكيد طلبك", msg: "طلبك اتأكد وبنجهزه دلوقتي للشحن." },
   shipped: { icon: "🚚", title: "طلبك خرج للتوصيل", subject: "طلبك خرج للتوصيل", msg: "المندوب في الطريق ليك. خلي موبايلك جنبك عشان هيكلمك قبل ما يوصل." },
   delivered: { icon: "📦", title: "تم استلام طلبك", subject: "تم توصيل طلبك", msg: "طلبك اتسلّم. نتمنى المنتج يعجبك! لو فيه أي مشكلة كلمنا." },
@@ -41,7 +41,7 @@ function orderEmailHtml(order, status) {
 <div dir="rtl" style="margin:0;padding:24px 12px;background:#f2f5fa;font-family:Tahoma,Arial,sans-serif;color:#1d2433">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden">
     <tr><td style="background:linear-gradient(135deg,#00d4ff,#0a84ff 50%,#7c5cff);background-color:#0a84ff;padding:22px 24px;color:#fff">
-      <div style="font-size:22px;font-weight:900;letter-spacing:1px;direction:ltr;text-align:right">GTECH</div>
+      <div style="font-size:22px;font-weight:900;letter-spacing:1px;direction:ltr;text-align:right">GTECH MASR</div>
     </td></tr>
     <tr><td style="padding:26px 24px 8px">
       <div style="font-size:36px;line-height:1">${s.icon}</div>
@@ -74,7 +74,7 @@ function orderEmailHtml(order, status) {
       <a href="${siteUrl("myorders.html")}" style="display:inline-block;padding:12px 28px;border-radius:999px;background:#0a84ff;color:#fff;text-decoration:none;font-weight:700">تابع طلبك</a>
     </td></tr>
     <tr><td align="center" style="padding:14px;background:#f5f8fd;color:#8a94a6;font-size:12px">
-      GTECH · للاستفسار واتساب ${WHATSAPP.replace(/^20/, "0")}
+      GTECH MASR · للاستفسار واتساب ${WHATSAPP.replace(/^20/, "0")}
     </td></tr>
   </table>
 </div>`;
@@ -99,7 +99,7 @@ async function sendOrderEmail(order, status = order.status) {
   const to = order.customer?.email;
   if (!EMAIL_ON || !to || !EMAIL_STAGES[status]) return false;
   const s = EMAIL_STAGES[status];
-  await sendEmail(to, order.customer.name, `${s.subject} ${order.id} — GTECH`, orderEmailHtml(order, status));
+  await sendEmail(to, order.customer.name, `${s.subject} ${order.id} — GTECH MASR`, orderEmailHtml(order, status));
   return true;
 }
 
@@ -131,6 +131,6 @@ async function notifyStoreOfOrder(order) {
   const html = orderEmailHtml(order, "new")
     .replace(EMAIL_STAGES.new.title, `طلب جديد من ${escapeHtml(order.customer.name)}`)
     .replace(`${EMAIL_STAGES.new.msg}`, `رقم العميل: ${escapeHtml(order.customer.phone)}`);
-  await sendEmail(EMAIL_CONFIG.storeEmail, "GTECH", `🛒 طلب جديد ${order.id} — ${egp(order.totals.total)}`, html);
+  await sendEmail(EMAIL_CONFIG.storeEmail, "GTECH MASR", `🛒 طلب جديد ${order.id} — ${egp(order.totals.total)}`, html);
   return true;
 }

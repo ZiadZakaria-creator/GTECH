@@ -284,7 +284,7 @@ $("#ovExport").addEventListener("click", () => {
   const csv = "﻿" + rows.map((r) => r.map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
   const a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
-  a.download = `GTECH-report-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.download = `GTECH-MASR-report-${new Date().toISOString().slice(0, 10)}.csv`;
   a.click(); URL.revokeObjectURL(a.href);
   toast(`⬇ اتنزّل تقرير ${num(list.length)} طلب`);
 });

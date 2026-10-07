@@ -42,7 +42,7 @@ async function loadPaymentSettings() {
 }
 
 // رسالة واتساب جاهزة فيها رقم الطلب والمبلغ
-const proofWhatsApp = (order) => waLink(`أهلاً GTECH، حوّلت ${order.totals.total.toLocaleString("en-US")} ج.م بـ${TRANSFER_METHODS[order.payment.method]?.label || "تحويل"} لطلب رقم ${order.id}، ودي صورة التحويل:`);
+const proofWhatsApp = (order) => waLink(`أهلاً GTECH MASR، حوّلت ${order.totals.total.toLocaleString("en-US")} ج.م بـ${TRANSFER_METHODS[order.payment.method]?.label || "تحويل"} لطلب رقم ${order.id}، ودي صورة التحويل:`);
 
 // ============ صورة التحويل ============
 // بنصغّرها (أقصى عرض 1000 بكسل) عشان تتخزن في قاعدة البيانات

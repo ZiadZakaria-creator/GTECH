@@ -242,7 +242,7 @@ async function placeOrder() {
 
   $("#checkoutView").hidden = true;
   $("#successView").hidden = false;
-  document.title = "GTECH | تم إرسال الطلب";
+  document.title = "GTECH MASR | تم إرسال الطلب";
   scrollTo({ top: 0, behavior: "smooth" });
 }
 

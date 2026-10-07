@@ -116,6 +116,7 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
   background: var(--gradient); color: #fff; box-shadow: var(--shadow);
 }
 .logo__text { color: var(--text); }
+.logo__sub { align-self: center; margin-inline-start: 6px; font-size: 0.5em; font-weight: 800; letter-spacing: 2px; color: var(--primary, #0a84ff); }
 
 .nav { display: flex; gap: 26px; }
 .nav a { position: relative; font-weight: 600; color: var(--muted); transition: color .2s; }

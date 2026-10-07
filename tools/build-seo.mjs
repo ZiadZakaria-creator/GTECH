@@ -92,7 +92,7 @@ function productPage(template, p, images, reviews = []) {
   const specs = Object.entries(p.specs || {}).filter(([, v]) => v);
   const highlights = (p.highlights || []).filter(Boolean);
   const descText = (p.desc || highlights.join("، ") || p.name).replace(/\s+/g, " ").trim();
-  const title = `${p.name} بسعر ${price(p.price)} جنيه | GTECH`;
+  const title = `${p.name} بسعر ${price(p.price)} جنيه | GTECH MASR`;
   const description = clip(`${p.name} — ${descText}`, 160);
   const model = specs.find(([k]) => /موديل/.test(k))?.[1];
 
@@ -113,7 +113,7 @@ function productPage(template, p, images, reviews = []) {
       price: p.price,
       availability: inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
       itemCondition: "https://schema.org/NewCondition",
-      seller: { "@type": "Organization", name: "GTECH" },
+      seller: { "@type": "Organization", name: "GTECH MASR" },
     },
   };
   // تقييمات العملاء الحقيقية بس (لو مفيش، مفيش نجوم)
@@ -146,7 +146,7 @@ function productPage(template, p, images, reviews = []) {
   const head = `
   <link rel="canonical" href="${url}" />
   <meta property="og:type" content="product" />
-  <meta property="og:site_name" content="GTECH" />
+  <meta property="og:site_name" content="GTECH MASR" />
   <meta property="og:locale" content="ar_EG" />
   <meta property="og:title" content="${esc(p.name)}" />
   <meta property="og:description" content="${esc(description)}" />
@@ -201,7 +201,7 @@ function productLinks(list) {
   const cats = [...Object.keys(CATEGORIES).filter((c) => groups[c]), ...Object.keys(groups).filter((c) => !CATEGORIES[c])];
   const html = `<section class="container all-links" aria-label="كل المنتجات">
     <details>
-      <summary>كل منتجات GTECH (${list.length})</summary>
+      <summary>كل منتجات GTECH MASR (${list.length})</summary>
       ${cats.map((c) => `<div class="all-links__cat">
         <h3><a href="index.html?cat=${esc(c)}#products">${esc(CATEGORIES[c] || "منتجات تانية")}</a></h3>
         <ul>${groups[c].map((p) => `<li><a href="p/${p.id}.html">${esc(p.name)}</a></li>`).join("")}</ul>

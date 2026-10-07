@@ -148,7 +148,7 @@ function visibleOrders() {
 // ============ العرض ============
 function render() {
   const pending = orders.filter((o) => o.status === "new").length;
-  document.title = (pending ? `(${pending}) ` : "") + "GTECH | لوحة التحكم";
+  document.title = (pending ? `(${pending}) ` : "") + "GTECH MASR | لوحة التحكم";
   $("#newCountBadge").hidden = !pending;
   $("#newCountBadge").textContent = num(pending);
 
@@ -227,7 +227,7 @@ function openOrder(id, show = true) {
   const egpTxt = (n) => `${Number(n).toLocaleString("en-US")} ج.م`;
   const greet = [
     `أهلاً ${c.name} 👋`,
-    `معاك GTECH، بنأكد طلبك رقم ${o.id} ✅`,
+    `معاك GTECH MASR، بنأكد طلبك رقم ${o.id} ✅`,
     ``,
     `🛒 الطلب:`,
     ...o.items.map((i) => `• ${i.name}${i.options ? ` (${i.options})` : ""}${i.qty > 1 ? ` × ${i.qty}` : ""} — ${egpTxt(i.price * i.qty)}`),
@@ -244,7 +244,7 @@ function openOrder(id, show = true) {
   const paid = o.payment?.status === "paid";
   const zoneMsg = [
     `أهلاً ${c.name} 👋`,
-    `معاك GTECH بخصوص طلبك رقم ${o.id} ⚠️`,
+    `معاك GTECH MASR بخصوص طلبك رقم ${o.id} ⚠️`,
     ``,
     `للأسف شركة الشحن بلّغتنا إن منطقتك (${[a.city, a.gov].filter(Boolean).join("، ")}) خارج نطاق التوصيل بتاعها حالياً، فمش هنقدر نوصّل الطلب على العنوان ده.`,
     ``,

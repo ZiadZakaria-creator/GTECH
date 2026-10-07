@@ -174,7 +174,7 @@ function openInstallSteps() {
     m = document.getElementById("iosInstall");
     m.addEventListener("click", (e) => { if (e.target === m || e.target.closest("[data-close-ios]")) m.hidden = true; });
   }
-  document.getElementById("iosInstallTitle").textContent = `نزّل تطبيق GTECH على ${ios ? "الآيفون" : "موبايلك"}`;
+  document.getElementById("iosInstallTitle").textContent = `نزّل تطبيق GTECH MASR على ${ios ? "الآيفون" : "موبايلك"}`;
   document.getElementById("installSteps").innerHTML = steps.map((x) => `<li>${x}</li>`).join("");
   m.hidden = false;
 }
@@ -199,7 +199,7 @@ addEventListener("appinstalled", () => {
     document.querySelector(".header")?.insertAdjacentHTML("afterend", `
       <div class="app-banner" id="appBanner" hidden>
         <img src="icons/icon-192.png" alt="" width="40" height="40" />
-        <div><b>تطبيق GTECH</b><small>أسرع، وبيفتح من غير متصفح</small></div>
+        <div><b>تطبيق GTECH MASR</b><small>أسرع، وبيفتح من غير متصفح</small></div>
         <button type="button" class="btn btn--primary btn--sm" data-install-btn>نزّله</button>
         <button type="button" class="icon-btn app-banner__close" aria-label="إخفاء">✕</button>
       </div>`);

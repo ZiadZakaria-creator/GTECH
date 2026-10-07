@@ -21,7 +21,7 @@ function notFound() {
     $("#productDetail").innerHTML = `<div class="container pd-missing"><span class="spinner"></span><p>جاري تحميل المنتج...</p></div>`;
     return;
   }
-  document.title = "GTECH | المنتج غير موجود";
+  document.title = "GTECH MASR | المنتج غير موجود";
   $("#productDetail").innerHTML = `
     <div class="container pd-missing">
       <span>🔍</span>
@@ -44,7 +44,7 @@ function renderDetail(p) {
   const soldOut = !inStock(p);
   const delivery = new Date(Date.now() + 2 * 86400000).toLocaleDateString(LOCALE, { weekday: "long", day: "numeric", month: "long" });
 
-  document.title = `${p.name} | GTECH`;
+  document.title = `${p.name} | GTECH MASR`;
   setWhatsAppProduct(p);
   if (typeof track === "function" && trackedView !== p.id) { trackedView = p.id; track("view_item", { items: [{ id: p.id, name: p.name, price: p.price }] }); }
   qty = 1;
@@ -97,7 +97,7 @@ function renderDetail(p) {
           const b = typeof BUNDLES !== "undefined" && BUNDLES.find((x) => x.items.includes(p.id) && bundleAvailable(x));
           return b ? `<a class="pd__bundle" href="index.html#bundles">🎁 موجود في <b>${b.name}</b> — اشتريه مع السيت أب ووفّر ${fmt(bundleFull(b) - bundlePrice(b))}</a>` : "";
         })()}
-        <p class="pd__install">💳 <b>التقسيط هيبقى متاح قريباً</b> على GTECH — تابعنا</p>
+        <p class="pd__install">💳 <b>التقسيط هيبقى متاح قريباً</b> على GTECH MASR — تابعنا</p>
 
         <ul class="pd__highlights">
           ${p.highlights.map((h) => `<li>${esc(h)}</li>`).join("")}

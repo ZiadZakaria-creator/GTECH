@@ -67,7 +67,7 @@ function cartEmailHtml(c) {
 <div dir="rtl" style="margin:0;padding:24px 12px;background:#f2f5fa;font-family:Tahoma,Arial,sans-serif;color:#1d2433">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden">
     <tr><td style="background:linear-gradient(135deg,#00d4ff,#0a84ff 50%,#7c5cff);background-color:#0a84ff;padding:22px 24px;color:#fff">
-      <div style="font-size:22px;font-weight:900;letter-spacing:1px;direction:ltr;text-align:right">GTECH</div>
+      <div style="font-size:22px;font-weight:900;letter-spacing:1px;direction:ltr;text-align:right">GTECH MASR</div>
     </td></tr>
     <tr><td style="padding:26px 24px 8px">
       <div style="font-size:36px;line-height:1">🛒</div>
@@ -83,7 +83,7 @@ function cartEmailHtml(c) {
       <a href="${cartLink(c)}" style="display:inline-block;padding:12px 28px;border-radius:999px;background:#0a84ff;color:#fff;text-decoration:none;font-weight:700">كمّل طلبك</a>
       <p style="margin:12px 0 0;color:#8a94a6;font-size:12px">عندك سؤال عن أي منتج؟ رد على الإيميل ده أو كلمنا واتساب ${WHATSAPP.replace(/^20/, "0")}</p>
     </td></tr>
-    <tr><td align="center" style="padding:14px;background:#f5f8fd;color:#8a94a6;font-size:12px">GTECH</td></tr>
+    <tr><td align="center" style="padding:14px;background:#f5f8fd;color:#8a94a6;font-size:12px">GTECH MASR</td></tr>
   </table>
 </div>`;
 }
@@ -91,7 +91,7 @@ function cartEmailHtml(c) {
 // تذكير واتساب: بيفتح محادثة العميل برسالة جاهزة فيها السلة ولينك يكمّل منه
 function cartWhatsApp(c) {
   const items = c.items.map((i) => `• ${i.name}${i.qty > 1 ? ` × ${i.qty}` : ""}`).join("\n");
-  const text = `أهلاً${c.name ? " " + c.name : ""} 👋 معاك GTECH\nلاحظنا إنك سبت منتجات في السلة:\n${items}\nالإجمالي: ${egp(c.total)}\n\nتقدر تكمّل طلبك في دقيقة من هنا 👇\n${cartLink(c)}\n\nلو عندك أي سؤال عن المنتجات أو الشحن، رد علينا هنا 🙏`;
+  const text = `أهلاً${c.name ? " " + c.name : ""} 👋 معاك GTECH MASR\nلاحظنا إنك سبت منتجات في السلة:\n${items}\nالإجمالي: ${egp(c.total)}\n\nتقدر تكمّل طلبك في دقيقة من هنا 👇\n${cartLink(c)}\n\nلو عندك أي سؤال عن المنتجات أو الشحن، رد علينا هنا 🙏`;
   return waLink(text, "20" + c.phone.replace(/^0/, ""));
 }
 
@@ -100,7 +100,7 @@ async function remindCart(c) {
   cartsSending.add(c.uid);
   renderCarts();
   try {
-    await sendEmail(c.email, c.name, "🛒 سلتك لسه مستنياك — GTECH", cartEmailHtml(c));
+    await sendEmail(c.email, c.name, "🛒 سلتك لسه مستنياك — GTECH MASR", cartEmailHtml(c));
     await cartsStore.markReminded(c.uid, new Date().toISOString()).catch((err) => console.warn("mark reminded", err));
     return true;
   } catch (err) {

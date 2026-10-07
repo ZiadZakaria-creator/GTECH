@@ -1,8 +1,8 @@
 {
   "id": "./index.html",
-  "name": "GTECH | متجر الإلكترونيات",
-  "short_name": "GTECH",
-  "description": "أحدث الموبايلات واللابتوبات والسماعات والأجهزة الذكية بضمان رسمي",
+  "name": "GTECH MASR | متجر الإلكترونيات",
+  "short_name": "GTECH MASR",
+  "description": "ماوسات وكيبوردات وسماعات جيمنج وإكسسوارات كمبيوتر أصلية — توصيل القاهرة والجيزة",
   "lang": "ar",
   "dir": "rtl",
   "start_url": "./index.html?source=app",
