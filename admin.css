@@ -575,3 +575,7 @@
 .camp-who { display: flex; flex-direction: column; align-items: center; gap: 2px; margin-bottom: 8px; }
 .camp-preview { white-space: pre-wrap; font-family: inherit; font-size: .9rem; background: rgba(255,255,255,.04); border-radius: 12px; padding: 12px; max-height: 220px; overflow-y: auto; }
 .camp-send { display: flex; justify-content: center; width: 100%; padding: 14px; font-size: 1.1rem; font-weight: 800; margin: 10px 0; }
+.camp-card { display: flex; gap: 14px; align-items: center; margin-top: 10px; }
+.camp-card img { width: 150px; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 14px; border: 1px solid var(--border); background: #03050b; }
+.camp-card__side { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; font-weight: 700; }
+.camp-card__side label { display: flex; gap: 6px; align-items: center; cursor: pointer; }

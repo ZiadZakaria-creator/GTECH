@@ -222,6 +222,25 @@ const pPrice = (n) => `${Number(n).toLocaleString("en-US")} ج.م`;
 const STOP_LINE = "\n\nلو مش عايز رسايل تانية ابعت: إيقاف";
 let campKind = "deals";
 let camp = null;
+let campCardBlob = null;
+let campCardJob = 0;
+
+// صورة العرض بتترسم للمنتج المختار (في وضع "منتج معين" بس)
+async function campCardUpdate() {
+  const p = campKind === "product" && shopProducts().find((x) => String(x.id) === $("#campProduct").value);
+  $("#campCard").hidden = !p;
+  campCardBlob = null;
+  if (!p) return;
+  const job = ++campCardJob;
+  $("#campCardImg").removeAttribute("src");
+  const blob = await renderPromoCard(p).catch((e) => { console.warn("promo card", e); return null; });
+  if (job !== campCardJob || !blob) return;
+  campCardBlob = blob;
+  const url = URL.createObjectURL(blob);
+  $("#campCardImg").src = url;
+  $("#campCardDl").href = url;
+  $("#campCardDl").download = `GTECH-MASR-${p.id}.jpg`;
+}
 
 function campDeals() {
   const list = shopProducts().filter((p) => inStock(p) && p.old > p.price).sort((a, b) => discount(b) - discount(a)).slice(0, 4);
@@ -240,6 +259,7 @@ function campFill() {
   $("#campText").value = campKind === "deals" ? campDeals() || "مفيش منتجات عليها خصم دلوقتي — اختار منتج معين أو اكتب رسالة حرة"
     : campKind === "product" ? campProductText(p) : "أهلاً {name} 👋 معاك GTECH MASR\n";
   campCount();
+  campCardUpdate();
 }
 function campCount() {
   const len = ($("#campText").value + STOP_LINE).length;
@@ -269,7 +289,10 @@ function campShow() {
   $("#campPhone").textContent = c.phone;
   $("#campPreview").textContent = campMsg(c, camp.text);
   $("#campSend").href = campLink(c, camp.text);
-  $("#campSend").textContent = camp.ch === "sms" ? "📱 ابعت SMS" : "💬 ابعت واتساب";
+  const img = !!camp.img;
+  $("#campSend").textContent = camp.ch === "sms" ? "📱 ابعت SMS" : img ? "١) 💬 افتح المحادثة وابعت الرسالة" : "💬 ابعت واتساب";
+  $("#campSendImg").hidden = !img;
+  $("#campImgHint").hidden = !img;
 }
 function closeCamp() {
   $("#campModal").hidden = true;
@@ -303,12 +326,18 @@ $("#campStart").addEventListener("click", () => {
   const done = new Set((store.get(CAMP_SENT_KEY, {})[key]) || []);
   const pending = list.filter((c) => !done.has(c.phone));
   if (!pending.length) return toast("✅ الرسالة دي اتبعتت قبل كده لكل العملاء دول");
-  camp = { text, key, ch: $("input[name=campCh]:checked").value, list: pending, i: 0, sent: 0 };
+  const ch = $("input[name=campCh]:checked").value;
+  const img = ch === "wa" && campKind === "product" && $("#campWithImg").checked && campCardBlob
+    ? new File([campCardBlob], `GTECH-MASR-${$("#campProduct").value}.jpg`, { type: "image/jpeg" }) : null;
+  if (img && !(navigator.canShare && navigator.canShare({ files: [img] }))) {
+    toast("📸 إرسال الصورة بيشتغل من الموبايل. نزّل الصورة وابعتها يدوي، أو افتح اللوحة من موبايلك");
+  }
+  camp = { text, key, ch, img: img && navigator.canShare?.({ files: [img] }) ? img : null, list: pending, i: 0, sent: 0 };
   $("#campSetup").hidden = true;
   $("#campRun").hidden = false;
   campShow();
 });
-$("#campSend").addEventListener("click", () => {
+function campDone() {
   const c = camp.list[camp.i];
   const all = store.get(CAMP_SENT_KEY, {});
   all[camp.key] = [...(all[camp.key] || []), c.phone];
@@ -316,6 +345,15 @@ $("#campSend").addEventListener("click", () => {
   camp.sent++;
   camp.i++;
   setTimeout(campShow, 300); // بعد ما التطبيق يفتح
+}
+$("#campSend").addEventListener("click", () => { if (!camp.img) campDone(); });
+$("#campSendImg").addEventListener("click", async () => {
+  try {
+    await navigator.share({ files: [camp.img] });
+    campDone();
+  } catch (e) {
+    if (e?.name !== "AbortError") toast("❌ الصورة مااتبعتتش، نزّلها وابعتها يدوي");
+  }
 });
 $("#campSkip").addEventListener("click", () => { camp.i++; campShow(); });
 $("#campOptout").addEventListener("click", () => {

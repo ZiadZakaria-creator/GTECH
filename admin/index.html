@@ -459,6 +459,14 @@
           <button class="tab" data-ck="free">✍️ رسالة حرة</button>
         </div>
         <select id="campProduct" hidden></select>
+        <div class="camp-card" id="campCard" hidden>
+          <img id="campCardImg" alt="صورة العرض" />
+          <div class="camp-card__side">
+            <label><input type="checkbox" id="campWithImg" checked /> 📸 ابعت صورة المنتج مع الرسالة</label>
+            <a class="btn btn--ghost btn--sm" id="campCardDl" download="gtech-offer.jpg">⬇ نزّل الصورة</a>
+            <small class="muted">تنفع كمان للستوري وقايمة البث في واتساب</small>
+          </div>
+        </div>
         <textarea id="campText" rows="9"></textarea>
         <small class="muted" id="campCount"></small>
         <div class="camp-channel">
@@ -477,6 +485,8 @@
         <div class="camp-who"><b id="campName"></b><small class="mono" dir="ltr" id="campPhone"></small></div>
         <pre class="camp-preview" id="campPreview"></pre>
         <a class="btn btn--wa camp-send" id="campSend" target="_blank" rel="noopener">ابعت</a>
+        <button class="btn btn--primary camp-send" id="campSendImg" hidden>📤 ابعت الصورة</button>
+        <p class="muted camp-note" id="campImgHint" hidden>١) افتح المحادثة وابعت الرسالة ٢) ارجع ودوس "ابعت الصورة" واختار واتساب، هتلاقي محادثة العميل أول واحدة فوق.</p>
         <div class="excel-actions">
           <button class="btn btn--ghost btn--sm" id="campOptout">⛔ مش عايز رسايل</button>
           <button class="btn btn--ghost btn--sm" id="campSkip">تخطّي ⟵</button>
@@ -518,6 +528,7 @@
   <script src="admin-alerts.js"></script>
   <script src="admin-carts.js"></script>
   <script src="admin-visits.js"></script>
+  <script src="admin-promo-card.js"></script>
   <script src="admin-leads.js"></script>
   <script src="admin-shipping.js"></script>
   <script src="admin-reviews.js"></script>
