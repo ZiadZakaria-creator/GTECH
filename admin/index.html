@@ -360,6 +360,7 @@
           </div>
           <div class="ad-toolbar__side">
             <input type="search" id="custSearch" placeholder="بحث بالاسم، الموبايل، المحافظة..." />
+            <button class="btn btn--primary btn--sm" id="campBtn" hidden>📣 ابعت عرض</button>
             <button class="btn btn--ghost btn--sm" id="leadsExport" hidden>⬇ تنزيل CSV</button>
           </div>
         </div>
@@ -441,6 +442,45 @@
       <div class="excel-actions">
         <button class="btn btn--ghost" data-close-excel>إلغاء</button>
         <button class="btn btn--primary" id="excelApply">حفظ في قاعدة البيانات</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- حملة عروض: رسالة واحدة لكل العملاء اللي ظاهرين بالفلتر، واحد ورا التاني -->
+  <div class="modal" id="campModal" hidden role="dialog" aria-modal="true" aria-labelledby="campTitle">
+    <div class="modal__box card-box excel-box camp-box">
+      <button type="button" class="icon-btn modal__close" data-close-camp aria-label="إغلاق">✕</button>
+      <h3 id="campTitle">📣 ابعت عرض للعملاء</h3>
+      <div id="campSetup">
+        <p class="muted" id="campWho"></p>
+        <div class="status-tabs camp-kinds" id="campKinds">
+          <button class="tab active" data-ck="deals">🔥 أحدث العروض</button>
+          <button class="tab" data-ck="product">🎯 منتج معين</button>
+          <button class="tab" data-ck="free">✍️ رسالة حرة</button>
+        </div>
+        <select id="campProduct" hidden></select>
+        <textarea id="campText" rows="9"></textarea>
+        <small class="muted" id="campCount"></small>
+        <div class="camp-channel">
+          <label><input type="radio" name="campCh" value="wa" checked /> 💬 واتساب (ببلاش)</label>
+          <label><input type="radio" name="campCh" value="sms" /> 📱 SMS من خطّك</label>
+        </div>
+        <p class="muted camp-note">{name} بيتبدل باسم العميل. آخر الرسالة فيها سطر إن اللي مش عايز رسايل يرد بـ "إيقاف"، ولو حد رد كده دوس ⛔ قدّام اسمه ومش هيوصله حاجة تاني.</p>
+        <div class="excel-actions">
+          <button class="btn btn--ghost" data-close-camp>إلغاء</button>
+          <button class="btn btn--primary" id="campStart">ابدأ الإرسال</button>
+        </div>
+      </div>
+      <div id="campRun" hidden>
+        <div class="camp-progress"><i id="campBar"></i></div>
+        <p class="camp-step" id="campStep"></p>
+        <div class="camp-who"><b id="campName"></b><small class="mono" dir="ltr" id="campPhone"></small></div>
+        <pre class="camp-preview" id="campPreview"></pre>
+        <a class="btn btn--wa camp-send" id="campSend" target="_blank" rel="noopener">ابعت</a>
+        <div class="excel-actions">
+          <button class="btn btn--ghost btn--sm" id="campOptout">⛔ مش عايز رسايل</button>
+          <button class="btn btn--ghost btn--sm" id="campSkip">تخطّي ⟵</button>
+        </div>
       </div>
     </div>
   </div>

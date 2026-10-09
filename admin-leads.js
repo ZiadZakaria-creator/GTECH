@@ -138,6 +138,7 @@ function renderLeads() {
 
   const list = filteredCustomers(all);
   $("#leadsExport").hidden = !list.length;
+  $("#campBtn").hidden = !list.length;
   $("#leadsEmpty").hidden = !!list.length;
   $("#leadsEmpty p").textContent = all.length ? "مفيش عملاء بالفلتر ده" : "لسه مفيش أرقام عملاء";
   $("#leadsBody").innerHTML = list.map((c) => {
@@ -209,3 +210,121 @@ function startLeads() {
 }
 document.addEventListener("dashboardready", startLeads);
 if (!$("#dashboard").hidden) startLeads();
+
+// ============ حملة عروض: رسالة لكل العملاء اللي ظاهرين بالفلتر ============
+// واتساب (ببلاش) أو SMS من خط صاحب المتجر — الأدمن بيدوس "ابعت" لكل عميل والتطبيق بيفتح برسالة جاهزة.
+// اللي ردّ بـ "إيقاف" بيتعلّم عليه ⛔ ومش بيدخل أي حملة بعد كده (محفوظ في المتصفح ده).
+const OPTOUT_KEY = "gtech-optout";
+const CAMP_SENT_KEY = "gtech-camp-sent";
+const optedOut = () => new Set(store.get(OPTOUT_KEY, []));
+const firstName = (c) => (c.name || "").trim().split(/\s+/)[0] || "";
+const pPrice = (n) => `${Number(n).toLocaleString("en-US")} ج.م`;
+const STOP_LINE = "\n\nلو مش عايز رسايل تانية ابعت: إيقاف";
+let campKind = "deals";
+let camp = null;
+
+function campDeals() {
+  const list = shopProducts().filter((p) => inStock(p) && p.old > p.price).sort((a, b) => discount(b) - discount(a)).slice(0, 4);
+  if (!list.length) return "";
+  return `أهلاً {name} 👋 معاك GTECH MASR\nأقوى عروضنا دلوقتي 🔥\n${list.map((p) => `• ${p.name} — ${pPrice(p.price)} بدل ${pPrice(p.old)}`).join("\n")}\n\n💵 الدفع عند الاستلام | 🚚 القاهرة والجيزة\nاطلب من هنا 👇\n${siteUrl("index.html")}`;
+}
+function campProductText(p) {
+  if (!p) return "";
+  const was = p.old > p.price ? ` بدل ${pPrice(p.old)}` : "";
+  return `أهلاً {name} 👋 معاك GTECH MASR\n${p.name}\nبـ ${pPrice(p.price)}${was} 🔥\n\n💵 الدفع عند الاستلام | 🚚 القاهرة والجيزة\nاطلبه من هنا 👇\n${siteUrl(`p/${p.id}.html`)}`;
+}
+function campFill() {
+  $("#campProduct").hidden = campKind !== "product";
+  $$("#campKinds [data-ck]").forEach((b) => b.classList.toggle("active", b.dataset.ck === campKind));
+  const p = shopProducts().find((x) => String(x.id) === $("#campProduct").value);
+  $("#campText").value = campKind === "deals" ? campDeals() || "مفيش منتجات عليها خصم دلوقتي — اختار منتج معين أو اكتب رسالة حرة"
+    : campKind === "product" ? campProductText(p) : "أهلاً {name} 👋 معاك GTECH MASR\n";
+  campCount();
+}
+function campCount() {
+  const len = ($("#campText").value + STOP_LINE).length;
+  const sms = $("input[name=campCh]:checked").value === "sms";
+  $("#campCount").textContent = sms ? `${num(len)} حرف · حوالي ${num(Math.ceil(len / 67))} رسالة SMS لكل عميل (الرسالة العربي 70 حرف)` : `${num(len)} حرف`;
+}
+function campRecipients() {
+  const out = optedOut();
+  return filteredCustomers(buildCustomers()).filter((c) => !out.has(c.phone));
+}
+const campMsg = (c, text) => text.replaceAll("{name}", firstName(c)).replace(/ {2,}/g, " ") + STOP_LINE;
+function campLink(c, text) {
+  const msg = campMsg(c, text);
+  return camp.ch === "sms" ? `sms:+20${c.phone.slice(1)}?&body=${encodeURIComponent(msg)}` : waLink(msg, "20" + c.phone.slice(1));
+}
+function campShow() {
+  const { list, i } = camp;
+  if (i >= list.length) {
+    toast(`✅ الحملة خلصت: اتبعت لـ ${num(camp.sent)} عميل`);
+    closeCamp();
+    return;
+  }
+  const c = list[i];
+  $("#campBar").style.width = `${(i / list.length) * 100}%`;
+  $("#campStep").textContent = `عميل ${num(i + 1)} من ${num(list.length)}`;
+  $("#campName").textContent = c.name || "عميل";
+  $("#campPhone").textContent = c.phone;
+  $("#campPreview").textContent = campMsg(c, camp.text);
+  $("#campSend").href = campLink(c, camp.text);
+  $("#campSend").textContent = camp.ch === "sms" ? "📱 ابعت SMS" : "💬 ابعت واتساب";
+}
+function closeCamp() {
+  $("#campModal").hidden = true;
+  camp = null;
+}
+$("#campBtn").addEventListener("click", () => {
+  const n = campRecipients().length;
+  const skipped = filteredCustomers(buildCustomers()).length - n;
+  $("#campWho").textContent = `هتتبعت لـ ${num(n)} عميل (حسب الفلتر اللي فاتح دلوقتي)${skipped ? ` · ${num(skipped)} طلبوا إيقاف الرسايل ومش هيوصلهم` : ""}`;
+  $("#campProduct").innerHTML = shopProducts().filter(inStock).map((p) => `<option value="${p.id}">${escapeHtml(p.name)} — ${pPrice(p.price)}</option>`).join("");
+  $("#campSetup").hidden = false;
+  $("#campRun").hidden = true;
+  campFill();
+  $("#campModal").hidden = false;
+});
+$("#campKinds").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-ck]");
+  if (!b) return;
+  campKind = b.dataset.ck;
+  campFill();
+});
+$("#campProduct").addEventListener("change", campFill);
+$("#campText").addEventListener("input", campCount);
+$$("input[name=campCh]").forEach((r) => r.addEventListener("change", campCount));
+$("#campStart").addEventListener("click", () => {
+  const text = $("#campText").value.trim();
+  const list = campRecipients();
+  if (!text || !list.length) return toast(list.length ? "✍️ اكتب الرسالة الأول" : "مفيش عملاء بالفلتر ده");
+  // نفس الرسالة لنفس العميل ماتتبعتش مرتين لو الحملة اتقفلت واتفتحت تاني
+  const key = `${$("input[name=campCh]:checked").value}:${text}`;
+  const done = new Set((store.get(CAMP_SENT_KEY, {})[key]) || []);
+  const pending = list.filter((c) => !done.has(c.phone));
+  if (!pending.length) return toast("✅ الرسالة دي اتبعتت قبل كده لكل العملاء دول");
+  camp = { text, key, ch: $("input[name=campCh]:checked").value, list: pending, i: 0, sent: 0 };
+  $("#campSetup").hidden = true;
+  $("#campRun").hidden = false;
+  campShow();
+});
+$("#campSend").addEventListener("click", () => {
+  const c = camp.list[camp.i];
+  const all = store.get(CAMP_SENT_KEY, {});
+  all[camp.key] = [...(all[camp.key] || []), c.phone];
+  store.set(CAMP_SENT_KEY, all);
+  camp.sent++;
+  camp.i++;
+  setTimeout(campShow, 300); // بعد ما التطبيق يفتح
+});
+$("#campSkip").addEventListener("click", () => { camp.i++; campShow(); });
+$("#campOptout").addEventListener("click", () => {
+  const c = camp.list[camp.i];
+  store.set(OPTOUT_KEY, [...optedOut(), c.phone]);
+  toast(`⛔ ${c.phone} مش هيوصله رسايل تاني`);
+  camp.i++;
+  campShow();
+});
+$("#campModal").addEventListener("click", (e) => {
+  if (e.target.id === "campModal" || e.target.closest("[data-close-camp]")) closeCamp();
+});
