@@ -29,8 +29,17 @@ service cloud.firestore {
         || (request.auth != null && resource.data.customer.uid == request.auth.uid);
 
       // الأدمن يغيّر الحالة ورقم التتبع بس، من غير ما يعدّل بيانات العميل أو الأسعار
-      allow update: if isAdmin()
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status", "updatedAt", "shipment", "payment"]);
+      // والعميل يقدر يلغي طلبه هو بس، طول ما لسه جديد أو متأكد ومفيش رقم تتبع (يعني ماتشحنش)
+      allow update: if (isAdmin()
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status", "updatedAt", "shipment", "payment", "stockReleased"]))
+        || (request.auth != null
+          && resource.data.customer.uid == request.auth.uid
+          && resource.data.status in ["new", "confirmed"]
+          && (!("shipment" in resource.data) || resource.data.shipment == null || !("trackingNumber" in resource.data.shipment))
+          && request.resource.data.status == "cancelled"
+          && request.resource.data.cancelledBy == "customer"
+          && request.resource.data.cancelledFrom == resource.data.status
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status", "updatedAt", "cancelledBy", "cancelledFrom"]));
 
       allow delete: if false;
     }

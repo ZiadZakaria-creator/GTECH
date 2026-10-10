@@ -92,9 +92,30 @@ function onOrders(list) {
     if (fresh.length) notifyNew(fresh);
   }
   knownIds = ids;
+  try { handleCustomerCancels(); } catch (err) { console.warn("cancels", err); } // admin-products.js لسه بيتحمّل
   render();
   if (openId) openOrder(openId, false);
   document.dispatchEvent(new Event("adminorders")); // قايمة العملاء بتتحدث منها
+}
+
+// العميل لغى طلب كان متأكد (والمخزون اتخصم) ← المخزون يرجع مرة واحدة بس
+const cancelSeen = new Set();
+let cancelsReady = false;
+function handleCustomerCancels() {
+  orders.filter((o) => o.status === "cancelled" && o.cancelledBy === "customer").forEach((o) => {
+    if (cancelSeen.has(o.id)) return;
+    cancelSeen.add(o.id);
+    if (cancelsReady) {
+      toast(`✖ ${o.customer.name} لغى الطلب ${o.id}`);
+      if (soundOn) beep();
+    }
+    if (HOLDS_STOCK(o.cancelledFrom) && !o.stockReleased) {
+      syncStockForStatus(o, o.cancelledFrom, "cancelled")
+        .then(() => updateOrder(o.id, { stockReleased: true }))
+        .catch((err) => console.warn("cancel stock", err));
+    }
+  });
+  cancelsReady = true;
 }
 
 function notifyNew(fresh) {

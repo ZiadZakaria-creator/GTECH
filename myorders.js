@@ -39,6 +39,7 @@ async function renderMyReferral(phone) {
 
 function renderOrders(list) {
   const orders = [...list].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  shownOrders = orders;
 
   notifyChanges(orders);
   if (orders.length) store.set(HAS_ORDERS_KEY, true);
@@ -68,7 +69,7 @@ function renderOrders(list) {
         </header>
 
         ${trackBar(o.status)}
-        <p class="my-order__hint">${STATUS_HINTS[o.status]}</p>
+        <p class="my-order__hint">${cancelled && o.cancelledBy === "customer" ? "إنت لغيت الطلب ده. لو غيّرت رأيك تقدر تطلب تاني في أي وقت 💙" : STATUS_HINTS[o.status]}</p>
         ${o.payment?.status === "pending" && !cancelled ? `
           <p class="my-pay">
             <span>⏳ مستنيين تحويل <b>${fmt(o.totals.total)}</b> بـ${escapeHtml(o.payment.label)} على <b dir="ltr">${escapeHtml(o.payment.to || "")}</b></span>
@@ -99,9 +100,39 @@ function renderOrders(list) {
           <b>الإجمالي: ${fmt(o.totals.total)}</b>
           <a class="btn btn--ghost btn--sm" target="_blank" rel="noopener"
              href="${waLink(`السلام عليكم، عندي استفسار عن طلبي رقم ${o.id}`)}">💬 استفسار</a>
+          ${canCustomerCancel(o) ? `<button class="btn btn--ghost btn--sm my-cancel" data-cancel="${escapeHtml(o.id)}">✖ إلغاء الطلب</button>` : ""}
         </footer>
       </article>`;
   }).join("");
+}
+
+// إلغاء الطلب من العميل (قبل الشحن)
+let shownOrders = [];
+$("#myOrders").addEventListener("click", async (e) => {
+  const b = e.target.closest("[data-cancel]");
+  if (!b) return;
+  const o = shownOrders.find((x) => x.id === b.dataset.cancel);
+  if (!o || !canCustomerCancel(o)) return;
+  if (!confirm(`متأكد إنك عايز تلغي الطلب ${o.id}؟\nالإلغاء ببلاش طول ما الطلب لسه ماتشحنش.`)) return;
+  b.disabled = true;
+  try {
+    await cancelMyOrder(o);
+    toast("✖ الطلب اتلغى");
+    pushStoreOfCancel(o).catch(() => {});
+  } catch (err) {
+    console.warn("cancel", err);
+    b.disabled = false;
+    toast("❌ مقدرناش نلغي الطلب دلوقتي، كلمنا على واتساب وهنلغيه لك");
+  }
+});
+
+// إشعار لصاحب المتجر على ntfy إن العميل لغى (من غير اسم أو رقم)
+async function pushStoreOfCancel(o) {
+  if (typeof ORDER_PUSH_TOPIC === "undefined" || !ORDER_PUSH_TOPIC) return;
+  await fetch("https://ntfy.sh/", {
+    method: "POST",
+    body: JSON.stringify({ topic: ORDER_PUSH_TOPIC, title: `✖ عميل لغى الطلب ${o.id}`, message: `الإجمالي كان ${fmt(o.totals.total)} · ${o.address.gov}`, tags: ["x"], priority: 4 }),
+  });
 }
 
 $("#myLoginBtn").addEventListener("click", () => requireLogin(start, "ادخل بنفس الاسم والرقم اللي طلبت بيهم"));

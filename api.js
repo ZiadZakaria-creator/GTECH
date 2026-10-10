@@ -4,6 +4,7 @@
 //   watchOrders(onData, onErr)  الداشبورد بيتابع الطلبات لحظة بلحظة
 //   updateOrder(id, changes)    الداشبورد بيغيّر حالة الطلب
 //   watchMyOrders(phone, ...)   العميل بيتابع طلباته في صفحة "طلباتي"
+//   cancelMyOrder(order)        العميل بيلغي طلبه بنفسه (قبل الشحن بس)
 //
 // لو FIREBASE_CONFIG فاضي: الطلبات بتتحفظ في المتصفح بس (وضع تجريبي).
 // لو متحط: الطلبات بتتحفظ في Firestore وتوصل للداشبورد من أي جهاز.
@@ -110,6 +111,10 @@ const submitOrder = (order) => ordersBackend.submit(order);
 const watchOrders = (onData, onError) => ordersBackend.watch(onData, onError);
 const updateOrder = (id, changes) => ordersBackend.update(id, changes);
 const watchMyOrders = (phone, onData, onError) => ordersBackend.watchMine(phone, onData, onError);
+
+// العميل يقدر يلغي طلبه طول ما لسه ماتشحنش (جديد أو متأكد ومفيش رقم تتبع)
+const canCustomerCancel = (o) => ["new", "confirmed"].includes(o.status) && !o.shipment?.trackingNumber;
+const cancelMyOrder = (o) => ordersBackend.update(o.id, { status: "cancelled", cancelledBy: "customer", cancelledFrom: o.status });
 
 // رقم طلب مقروء وصعب يتكرر: GT-يوم الشهر-4 أرقام عشوائية
 function newOrderId() {

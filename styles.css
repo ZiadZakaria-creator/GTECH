@@ -1626,3 +1626,6 @@ html[dir="ltr"] .pd__highlights li::before { right: auto; left: 0; }
 .all-links__cat ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 4px 16px; }
 .all-links__cat li a { font-size: 0.82rem; color: var(--muted, #8a94a8); }
 .all-links__cat li a:hover { color: inherit; }
+
+.my-cancel { color: #ff6b81; border-color: rgba(255,107,129,.45); }
+.my-cancel:hover { background: rgba(255,107,129,.1); }
