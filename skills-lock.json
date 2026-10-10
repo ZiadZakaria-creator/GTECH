@@ -19,6 +19,12 @@
       "skillPath": "tools/video/ai-video-generation/SKILL.md",
       "computedHash": "8524cc49ad3dca2a4502903234061b307636e44b08496e982747cdb9590f5556"
     },
+    "elevenlabs-music-generation": {
+      "source": "prime-skills/runcomfy-agent-skills",
+      "sourceType": "github",
+      "skillPath": "elevenlabs-music-generation/SKILL.md",
+      "computedHash": "7983dac96c64cedcf6ab4b7dae16a198393991e2f5ce9c0f01b5c3deb785931b"
+    },
     "embedded-captions": {
       "source": "heygen-com/hyperframes",
       "sourceType": "github",
