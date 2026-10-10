@@ -203,11 +203,15 @@ let leadsStarted = false;
 function startLeads() {
   if (leadsStarted) return;
   leadsStarted = true;
-  leadsStore.watch((list) => { allLeads = list.filter((l) => l.phone && l.createdAt); renderLeads(); }, (err) => {
+  let retried = false;
+  const watch = () => leadsStore.watch((list) => { allLeads = list.filter((l) => l.phone && l.createdAt); renderLeads(); }, (err) => {
     console.warn("leads", err);
-    if (err?.code === "permission-denied") toast("⛔ محتاج تحدّث قواعد الأمان في Firebase عشان أرقام نافذة الخصم تظهر");
+    // أول مرة ممكن يكون تسجيل الدخول لسه بيخلص — نجرّب تاني بعد ثواني قبل ما نبيّن رسالة
+    if (err?.code === "permission-denied" && !retried) { retried = true; return setTimeout(watch, 4000); }
+    if (err?.code === "permission-denied") toast("⛔ أرقام نافذة العروض مش ظاهرة: اتأكد إنك داخل بحساب الأدمن وإن قواعد Firebase متنشرة");
     renderLeads();
   });
+  watch();
 }
 document.addEventListener("dashboardready", startLeads);
 if (!$("#dashboard").hidden) startLeads();
