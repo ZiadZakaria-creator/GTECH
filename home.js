@@ -110,11 +110,16 @@ function renderFilterPanel(list) {
 
 // ============ شرايط المنتجات ============
 // أول ما الصفحة تفتح (من غير قسم ولا بحث ولا فلتر) بتظهر شرايط بتتسحب بدل شبكة كل المنتجات
-let showAll = params.has("cat") || params.has("q");
+let showAll = params.has("cat") || params.has("q") || params.has("max");
+// لينك مباشر لصفحة "تحت سعر معين": index.html?max=500#products
+const BUDGET = 500;
+if (params.has("max")) { filters.max = String(Number(toLatinDigits(params.get("max"))) || BUDGET); filters.sort = "price-asc"; }
 const SHELF_MAX = 10;
 const SHELVES = [
   { key: "deals", icon: "🔥", title: "أقوى الخصومات", sub: "أكبر نسبة خصم حقيقية دلوقتي",
     pick: (all) => all.filter((p) => discount(p) > 0).sort((a, b) => discount(b) - discount(a)) },
+  { key: "budget", icon: "💸", title: `تحت ${num(BUDGET)} جنيه`, sub: "أرخص اختيارات في المحل",
+    pick: (all) => all.filter((p) => p.price <= BUDGET).sort((a, b) => (inStock(b) - inStock(a)) || a.price - b.price) },
   { key: "gaming", icon: "🎮", title: "للجيمرز", sub: "ماوسات وكيبوردات ودراعات", pick: (all) => all.filter((p) => CAT_GROUPS.gaming.includes(p.cat)) },
   { key: "sound", icon: "🎧", title: "صوت", sub: "سماعات هيدسيت وإيربودز", pick: (all) => all.filter((p) => CAT_GROUPS.sound.includes(p.cat)) },
   { key: "storage", icon: "💾", title: "تخزين", sub: "هاردات SSD وخارجية", pick: (all) => all.filter((p) => p.cat === "storage") },
@@ -127,7 +132,8 @@ function renderShelves() {
   const all = shopProducts();
   $("#shelves").innerHTML = SHELVES.map((sh) => {
     let list = sh.pick(all);
-    if (sh.key !== "deals") list = [...list].sort(shelfOrder);
+    if (sh.key === "budget") { /* مترتبة بالسعر في pick */ }
+    else if (sh.key !== "deals") list = [...list].sort(shelfOrder);
     else list = [...list].sort((a, b) => (inStock(b) - inStock(a)) || discount(b) - discount(a));
     if (list.length < 2) return "";
     return `
@@ -160,6 +166,7 @@ $("#shelves").addEventListener("click", (e) => {
   const key = allBtn.dataset.shelfAll;
   showAll = true;
   if (key === "deals") { filters.sort = "discount"; $("#sortSel").value = "discount"; setFilter("all"); }
+  else if (key === "budget") { filters.max = String(BUDGET); filters.sort = "price-asc"; $("#sortSel").value = "price-asc"; setFilter("all"); }
   else setFilter(key);
   $("#products").scrollIntoView({ behavior: "smooth" });
 });
@@ -197,6 +204,7 @@ $("#filterToggle").addEventListener("click", () => {
   $("#filterToggle").classList.toggle("active", !panel.hidden);
 });
 $("#sortSel").addEventListener("change", (e) => { filters.sort = e.target.value; renderProducts(); });
+if (filters.sort) $("#sortSel").value = filters.sort;
 $("#filterPanel").addEventListener("change", (e) => {
   const t = e.target;
   if (t.dataset.facet) filters[t.dataset.facet][t.checked ? "add" : "delete"](t.value);

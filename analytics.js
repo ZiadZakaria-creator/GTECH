@@ -40,8 +40,8 @@ if (TT_ID) {
 }
 
 // track("view_item" | "add_to_cart" | "begin_checkout" | "purchase", { items: [{id, name, price, qty}], value, orderId })
-const FB_EVENTS = { view_item: "ViewContent", add_to_cart: "AddToCart", begin_checkout: "InitiateCheckout", purchase: "Purchase" };
-const TT_EVENTS = { view_item: "ViewContent", add_to_cart: "AddToCart", begin_checkout: "InitiateCheckout", purchase: "CompletePayment" };
+const FB_EVENTS = { view_item: "ViewContent", add_to_cart: "AddToCart", begin_checkout: "InitiateCheckout", purchase: "Purchase", whatsapp_order: "Contact" };
+const TT_EVENTS = { view_item: "ViewContent", add_to_cart: "AddToCart", begin_checkout: "InitiateCheckout", purchase: "CompletePayment", whatsapp_order: "Contact" };
 function track(event, { items = [], value, orderId } = {}) {
   if (typeof countFunnel === "function") countFunnel(event); // للوحة التحكم (تاب الزوار)
   if (!GA_ID && !PIXEL_ID && !TT_ID) return;

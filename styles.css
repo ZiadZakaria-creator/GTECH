@@ -996,6 +996,10 @@ img[data-fs].is-loaded { opacity: 1; }
 }
 
 /* ============ نبّهني ============ */
+.pd__wa { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; margin: -10px 0 22px; padding: 13px 20px; border-radius: 999px; background: #25d366; color: #fff; font-weight: 800; }
+.pd__wa:hover { background: #1ebe5b; }
+.pd__wa svg { width: 22px; height: 22px; fill: currentColor; stroke: none; }
+.pd__buy .btn { white-space: nowrap; }
 .pd__alerts { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: -8px 0 20px; }
 .pd__alerts:empty { display: none; }
 .pd__alerts .btn { flex: 1 1 100%; }

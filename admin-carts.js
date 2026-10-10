@@ -35,6 +35,7 @@ const cartsStore = USE_FIREBASE
     };
 
 let allCarts = [];
+let cartsNotified = false;
 const cartsSending = new Set();
 
 const isAbandoned = (c) => Date.now() - new Date(c.updatedAt).getTime() >= ABANDON_AFTER;
@@ -124,6 +125,20 @@ function renderCarts() {
   all.hidden = !EMAIL_ON || pendingEmail.length < 2;
   all.textContent = `📧 ابعت تذكير للكل (${num(pendingEmail.length)})`;
 
+  // واتساب للكل بالترتيب: كل دوسة بتفتح محادثة العميل اللي عليه الدور
+  const pendingWa = pending.filter((c) => c.phone);
+  const waAll = $("#remindWaBtn");
+  waAll.hidden = !pendingWa.length;
+  if (pendingWa.length) {
+    waAll.textContent = `💬 فكّرهم على واتساب (${num(pendingWa.length)})`;
+    waAll.href = cartWhatsApp(pendingWa[0]);
+    waAll.dataset.next = pendingWa[0].uid;
+  }
+  if (!cartsNotified && pending.length) {
+    cartsNotified = true;
+    setTimeout(() => toast(`🛒 عندك ${num(pending.length)} سلة متروكة مستنية تذكير — من "سلات متروكة"`), 2500);
+  }
+
   $("#cartsEmpty").hidden = !!list.length;
   $("#cartsBody").innerHTML = list.map((c) => {
     const abandoned = isAbandoned(c);
@@ -159,6 +174,12 @@ $("#cartsBody").addEventListener("click", async (e) => {
   if (!b) return;
   const c = allCarts.find((x) => x.uid === b.dataset.remind);
   if (c) toast((await remindCart(c)) ? `📧 اتبعت تذكير لـ ${c.name || c.email}` : "❌ التذكير ماتبعتش، جرّب تاني");
+});
+
+$("#remindWaBtn").addEventListener("click", (e) => {
+  const uid = e.currentTarget.dataset.next;
+  if (!uid) return e.preventDefault();
+  cartsStore.markReminded(uid, new Date().toISOString()).catch((err) => console.warn("mark reminded", err));
 });
 
 $("#remindAllBtn").addEventListener("click", async () => {

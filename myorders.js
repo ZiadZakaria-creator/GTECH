@@ -100,6 +100,7 @@ function renderOrders(list) {
           <b>الإجمالي: ${fmt(o.totals.total)}</b>
           <a class="btn btn--ghost btn--sm" target="_blank" rel="noopener"
              href="${waLink(`السلام عليكم، عندي استفسار عن طلبي رقم ${o.id}`)}">💬 استفسار</a>
+          ${["delivered", "cancelled"].includes(o.status) ? `<button class="btn btn--primary btn--sm my-reorder" data-reorder="${escapeHtml(o.id)}">🔁 اطلب تاني</button>` : ""}
           ${canCustomerCancel(o) ? `<button class="btn btn--ghost btn--sm my-cancel" data-cancel="${escapeHtml(o.id)}">✖ إلغاء الطلب</button>` : ""}
         </footer>
       </article>`;
@@ -109,6 +110,8 @@ function renderOrders(list) {
 // إلغاء الطلب من العميل (قبل الشحن)
 let shownOrders = [];
 $("#myOrders").addEventListener("click", async (e) => {
+  const re = e.target.closest("[data-reorder]");
+  if (re) return reorder(shownOrders.find((x) => x.id === re.dataset.reorder));
   const b = e.target.closest("[data-cancel]");
   if (!b) return;
   const o = shownOrders.find((x) => x.id === b.dataset.cancel);
@@ -125,6 +128,24 @@ $("#myOrders").addEventListener("click", async (e) => {
     toast("❌ مقدرناش نلغي الطلب دلوقتي، كلمنا على واتساب وهنلغيه لك");
   }
 });
+
+// "اطلب تاني": يرجّع منتجات الطلب القديم للسلة (المتاح بس، بالسعر الحالي)
+function reorder(o) {
+  if (!o) return;
+  let added = 0, missing = 0;
+  for (const i of o.items) {
+    const p = findProduct(i.id);
+    if (!p || !isForSale(p) || !inStock(p)) { missing++; continue; }
+    const opts = i.options || "";
+    const line = cart.find((c) => c.id === p.id && (c.opts || "") === opts);
+    line ? (line.qty += i.qty) : cart.push({ id: p.id, qty: i.qty, opts });
+    added++;
+  }
+  if (!added) return toast("😔 منتجات الطلب ده مش متاحة دلوقتي");
+  renderCart();
+  openCart(true);
+  toast(missing ? `✅ رجّعنا ${added} منتج للسلة — و${missing} مش متاح دلوقتي` : "✅ رجّعنا منتجات الطلب للسلة بالأسعار الحالية");
+}
 
 // إشعار لصاحب المتجر على ntfy إن العميل لغى (من غير اسم أو رقم)
 async function pushStoreOfCancel(o) {

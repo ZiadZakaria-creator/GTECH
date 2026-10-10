@@ -259,8 +259,22 @@ function openOrder(id, show = true) {
     `📍 العنوان: ${[a.street, a.city, a.gov].filter(Boolean).join("، ")}`,
     ``,
     `📦 طلبك هيتم إرساله خلال 4 أيام عمل.`,
+    `🔎 تابع حالة طلبك من هنا: ${siteUrl("myorders.html")}`,
     `لو في أي تعديل في الطلب أو العنوان رد علينا هنا 🙏`,
   ].filter((l) => l !== null).join("\n");
+  // رسالة "طلبك اتشحن" برقم التتبع (بتظهر بعد ما تحط رقم التتبع)
+  const sh = o.shipment;
+  const shipMsg = sh?.trackingNumber ? [
+    `أهلاً ${c.name} 👋`,
+    `طلبك رقم ${o.id} اتشحن 🚚`,
+    ``,
+    `شركة الشحن: ${carrierName(sh)}`,
+    `رقم التتبع: ${sh.trackingNumber}`,
+    shipmentTrackUrl(sh) ? `تتبع الشحنة: ${shipmentTrackUrl(sh)}` : null,
+    ``,
+    o.payment?.status === "paid" ? `✅ الطلب مدفوع، مش هتدفع حاجة للمندوب.` : `💵 جهّز ${egpTxt(t.total)} للمندوب عند الاستلام.`,
+    `المندوب هيكلمك قبل ما يوصل، ولو في أي حاجة كلمنا هنا 🙏`,
+  ].filter((l) => l !== null).join("\n") : "";
   // تنبيه مشكلة توصيل: منطقة العميل خارج نطاق شركة الشحن + اختيارات يرد بيها
   const paid = o.payment?.status === "paid";
   const zoneMsg = [
@@ -295,7 +309,8 @@ function openOrder(id, show = true) {
       ${c.email ? `<p class="mono" dir="ltr">${escapeHtml(c.email)}</p>` : ""}
       <div class="od-contact">
         <a class="btn btn--ghost btn--sm" href="tel:${escapeHtml(c.phone)}">📞 اتصال</a>
-        <a class="btn btn--ghost btn--sm" href="${waLink(greet, intlPhone)}" target="_blank" rel="noopener">💬 واتساب</a>
+        <a class="btn btn--primary btn--sm" href="${waLink(greet, intlPhone)}" target="_blank" rel="noopener" title="رسالة جاهزة فيها المنتجات والإجمالي والعنوان ولينك التتبع">✅ ابعت تأكيد الطلب</a>
+        ${shipMsg ? `<a class="btn btn--ghost btn--sm" href="${waLink(shipMsg, intlPhone)}" target="_blank" rel="noopener">🚚 ابعت إنه اتشحن</a>` : ""}
         <a class="btn btn--sm btn--warn" href="${waLink(zoneMsg, intlPhone)}" target="_blank" rel="noopener" title="ابعت للعميل إن منطقته خارج نطاق التوصيل">⚠️ مشكلة توصيل</a>
       </div>
     </section>
@@ -418,6 +433,7 @@ $("#drawerBody").addEventListener("click", async (e) => {
         .catch((err) => { console.warn("status email", err); toast("⚠️ الحالة اتغيرت بس الإيميل ماتبعتش"); });
     }
     toast(`${STATUS_ICONS[status]} الطلب ${o.id} بقى "${ORDER_STATUSES[status]}"`);
+    if (status === "confirmed") setTimeout(() => toast("💬 متنساش: دوس \"✅ ابعت تأكيد الطلب\" عشان العميل يطمّن"), 1800);
   } catch {
     toast("❌ مقدرناش نحدّث الطلب، جرّب تاني");
   }

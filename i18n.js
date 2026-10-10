@@ -16,6 +16,7 @@ const I18N_EN = {
 "🔥 أقوى الخصومات": "🔥 Top deals",
 "أكبر نسبة خصم حقيقية دلوقتي": "The biggest real discounts right now",
 "🎮 للجيمرز": "🎮 For gamers",
+"أرخص اختيارات في المحل": "The most affordable picks in store",
 "ماوسات وكيبوردات ودراعات": "Mice, keyboards and controllers",
 "🎧 صوت": "🎧 Audio",
 "سماعات هيدسيت وإيربودز": "Headsets and earbuds",
@@ -646,6 +647,7 @@ const I18N_PATTERNS = [
 ["^وفّر (.+?)$", "Save {1}"],
 ["^— اشتريه مع السيت أب ووفّر (.+?)$", "— buy it with the setup and save {1}"],
 ["^🎁 اتضاف \"(.+?)\" للسلة — وفّرت (.+?)$", "🎁 \"{1}\" added to cart — you saved {2}"],
+["^💸 تحت (.+?) جنيه$", "💸 Under {1} EGP"],
 [
 "^دوس (.+?) فوق واختار$",
 "Tap {1} at the top and choose"
