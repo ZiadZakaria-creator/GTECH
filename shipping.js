@@ -15,13 +15,17 @@ const GOVERNORATES = [
 
 const DEFAULT_SHIPPING = {
   rates: Object.fromEntries(GOVERNORATES.map((g) => [g.name, g.rate])), // null = مش بنوصّل للمحافظة دي
-  freeOver: 1000, // 0 = مفيش شحن مجاني
+  freeOver: 0, // 0 = مفيش شحن مجاني
   express: { price: 150, govs: ["القاهرة", "الجيزة"] },
 };
 
 // التوصيل حالياً للمحافظات دي بس — أي محافظة تانية بتتقفل في المتجر واللوحة مهما كان محفوظ.
 // عشان ترجّع التوصيل لكل المحافظات خليها فاضية: []
 const DELIVERY_ONLY = ["القاهرة", "الجيزة"];
+
+// الشحن المجاني متوقف — الشحن بيتحسب على كل الطلبات مهما كان المحفوظ في اللوحة.
+// عشان ترجّعه خليها true
+const FREE_SHIPPING_ON = false;
 
 const SHIPPING_CACHE = "gtech-shipping";
 const SHIPPING_LOCAL = "gtech-shipping-local"; // الوضع التجريبي
@@ -33,6 +37,7 @@ function withShippingDefaults(s) {
     rates: { ...DEFAULT_SHIPPING.rates, ...(s?.rates || {}) },
     express: { ...DEFAULT_SHIPPING.express, ...(s?.express || {}) },
   };
+  if (!FREE_SHIPPING_ON) out.freeOver = 0;
   if (DELIVERY_ONLY.length) {
     Object.keys(out.rates).forEach((g) => { if (!DELIVERY_ONLY.includes(g)) out.rates[g] = null; });
     out.express = { ...out.express, govs: out.express.govs.filter((g) => DELIVERY_ONLY.includes(g)) };

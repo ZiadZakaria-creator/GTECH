@@ -411,7 +411,7 @@ document.addEventListener("catalogloaded", renderBundles);
 // 1) عرض التطبيق (حقيقي: بيتحسب في صفحة الدفع) — 2) أرخص سعر في الماوسات والكيبوردات من المنتجات نفسها
 function renderMiniOffers() {
   if (isStandalone()) {
-    $("#appPromoText").textContent = "إنت فاتح من التطبيق ✅ الخصم والتوصيل المجاني هيتحسبوا لوحدهم على أول أوردر";
+    $("#appPromoText").textContent = "إنت فاتح من التطبيق ✅ الخصم هيتحسب لوحده على أول أوردر";
     $("#appPromoBtn").hidden = true;
   }
   const from = (cat) => {

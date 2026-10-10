@@ -2,7 +2,7 @@
 // أسعار الشحن لكل محافظة جاية من shipping.js (وصاحب المتجر بيغيّرها من لوحة التحكم)
 // SHUKRAN10: للي اشتروا قبل كده (مكتوب في كارت الشكر اللي بيتحط جوه الأوردر)
 const promos = { GTECH10: 0.1, SHUKRAN10: 0.1 };
-// عرض أول أوردر من التطبيق: خصم 20% + توصيل مجاني (مايتجمعش مع كود خصم)
+// عرض أول أوردر من التطبيق: خصم 20% (مايتجمعش مع كود خصم)
 const APP_FIRST = { code: "APP-FIRST20", rate: 0.2 };
 let firstOrder = null; // null = لسه بنتأكد، true = دي أول مرة يطلب، false = طلب قبل كده
 const payLabels = { cod: "الدفع عند الاستلام", instapay: "إنستاباي", vodafone: "فودافون كاش" };
@@ -17,7 +17,7 @@ function totals() {
   const bundle = bundleTotal(); // خصم باكدجات السيت أب
   const base = sub - bundle;    // خصم أول أوردر أو الكود بيتحسب على السعر بعد الباكدج
   const app = appOffer();
-  const ship = app ? 0 : shipCost(form.gov.value, form.ship.value, sub) ?? 0;
+  const ship = shipCost(form.gov.value, form.ship.value, sub) ?? 0;
   const disc = app ? Math.round(base * APP_FIRST.rate) : promo ? Math.round(base * promos[promo]) : 0;
   return { sub, bundle, ship, disc, total: base + ship - disc, app };
 }
@@ -70,9 +70,9 @@ function renderSummary() {
   $('[data-ship-price="express"]').textContent = fmt(s.express.price);
   $("#sumSub").textContent = fmt(t.sub);
   const shipNow = shipCost(gov, form.ship.value, t.sub);
-  $("#sumShip").textContent = shipNow === null ? (gov ? "مش متاح" : "اختار المحافظة") : t.app ? "مجاناً 🎁" : shipNow ? fmt(shipNow) : "مجاناً";
+  $("#sumShip").textContent = shipNow === null ? (gov ? "مش متاح" : "اختار المحافظة") : shipNow ? fmt(shipNow) : "مجاناً";
   const left = s.freeOver - t.sub;
-  $("#freeShipHint").hidden = t.app || !(s.freeOver > 0 && left > 0 && std);
+  $("#freeShipHint").hidden = !(s.freeOver > 0 && left > 0 && std);
   $("#sumDiscLabel").textContent = t.app ? "🎁 خصم أول أوردر من التطبيق (20%)" : "الخصم";
   $("#appOffer").hidden = !(firstOrder === true && !isStandalone() && FIREBASE_CONFIG);
   $("#freeShipHint").textContent = `🚚 ضيف منتجات بـ ${fmt(left)} كمان والشحن يبقى مجاناً`;
@@ -91,7 +91,7 @@ $("#promoForm").addEventListener("submit", (e) => {
   if (/^(REF|REWARD)-/.test(promo || "") && !promos[code]) return; // خصم صاحبك عليا متطبّق خلاص
   if (appOffer()) {
     promo = null;
-    toast("🎁 إنت واخد خصم أول أوردر من التطبيق (20% + توصيل مجاني)، وده أحسن من أي كود");
+    toast("🎁 إنت واخد خصم أول أوردر من التطبيق (20%)، وده أحسن من أي كود");
   } else if (promos[code]) {
     promo = code;
     toast(`🎁 تم تطبيق الكود ${code} — خصم ${num(promos[code] * 100)}%`);
