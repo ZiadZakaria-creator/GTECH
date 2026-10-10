@@ -471,7 +471,7 @@ $("#productForm").addEventListener("submit", async (e) => {
   if (!data) return toast("⚠️ راجع البيانات المطلوبة");
   const btn = $("#saveProductBtn");
   btn.disabled = true;
-  btn.textContent = "جاري الحفظ...";
+  btn.textContent = "جاري الحفظ…";
   try {
     const images = [];
     for (const img of edImages) images.push(typeof img === "string" ? img : await productsStore.saveImage(img.data, img.bg));

@@ -445,7 +445,7 @@ $("#loginForm").addEventListener("submit", async (e) => {
   if (!SMS_ON) return finishLogin({ name, phone, ...(socialInfo || {}) });
 
   // لو الرقم ده متأكد قبل كده على الجهاز ده، مش محتاجين كود تاني
-  setLoginBusy("لحظة...");
+  setLoginBusy("لحظة…");
   try {
     await loadFirebase(["auth"]);
     const current = await new Promise((res) => { const stop = firebase.auth().onAuthStateChanged((u) => { stop(); res(u); }); });
@@ -553,7 +553,7 @@ function freshRecaptcha() {
 }
 
 async function sendCode(name, phone) {
-  setLoginBusy("جاري إرسال الكود...");
+  setLoginBusy("جاري إرسال الكود…");
   showLoginError("");
   try {
     await loadFirebase(["auth"]);
@@ -580,7 +580,7 @@ async function sendCode(name, phone) {
 async function confirmCode() {
   const code = toLatinDigits($("#loginForm").code.value).replace(/\D/g, "");
   if (code.length !== 6) return showLoginError("الكود ٦ أرقام");
-  setLoginBusy("جاري التأكيد...");
+  setLoginBusy("جاري التأكيد…");
   try {
     let result;
     try {

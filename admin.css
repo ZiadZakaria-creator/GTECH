@@ -74,7 +74,7 @@
 .od-status { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
 .od-status small { color: var(--muted); }
 .od-steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
-.od-step { padding: 8px 4px; border-radius: 10px; font-size: .75rem; font-weight: 700; background: var(--surface); border: 1.5px solid var(--border); color: var(--muted); transition: all .15s; }
+.od-step { padding: 8px 4px; border-radius: 10px; font-size: .75rem; font-weight: 700; background: var(--surface); border: 1.5px solid var(--border); color: var(--muted); transition: color .15s, background-color .15s, border-color .15s, box-shadow .15s, transform .15s; }
 .od-step:hover { color: var(--text); border-color: rgba(10,132,255,.5); }
 .od-step.active { color: var(--text); border-color: var(--primary); background: rgba(10,132,255,.15); }
 .od-step--cancelled.active { border-color: var(--danger); background: rgba(255,77,109,.14); }
@@ -129,7 +129,7 @@
 
 /* ============ الأقسام ============ */
 .ad-sections { display: flex; gap: 6px; padding: 5px; width: fit-content; background: var(--surface); border: 1px solid var(--border); border-radius: 999px; }
-.ad-sec { padding: 9px 22px; border-radius: 999px; font-weight: 700; color: var(--muted); display: flex; align-items: center; gap: 6px; transition: all .2s; }
+.ad-sec { padding: 9px 22px; border-radius: 999px; font-weight: 700; color: var(--muted); display: flex; align-items: center; gap: 6px; transition: color .2s, background-color .2s, border-color .2s, box-shadow .2s, transform .2s; }
 .ad-sec:hover { color: var(--text); }
 .ad-sec.active { background: var(--gradient); color: #fff; }
 .ad-sec .tab__count { background: #fbbf24; color: #1a1300; }

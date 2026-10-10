@@ -236,7 +236,7 @@ $("#excelApply").addEventListener("click", async () => {
   if (!pendingImport) return;
   const btn = $("#excelApply");
   btn.disabled = true;
-  btn.textContent = "جاري الحفظ...";
+  btn.textContent = "جاري الحفظ…";
   const now = new Date().toISOString();
   const list = [...pendingImport.created, ...pendingImport.updated].map((p) => ({ ...normalizeProduct(p), updatedAt: now }));
   try {

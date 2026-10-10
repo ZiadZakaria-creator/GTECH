@@ -196,7 +196,7 @@ async function placeOrder() {
 
   const btn = $("#placeOrder");
   btn.disabled = true;
-  btn.textContent = "جاري إرسال الطلب...";
+  btn.textContent = "جاري إرسال الطلب…";
   try {
     await submitOrder(order);
     if (typeof track === "function") track("purchase", { items: order.items, value: order.totals.total, orderId: order.id });
@@ -321,7 +321,7 @@ function showPayBox(order) {
     const st = $("#proofStatus");
     st.hidden = false;
     st.className = "pay-box__status";
-    st.textContent = "⏳ بنرفع الصورة...";
+    st.textContent = "⏳ بنرفع الصورة…";
     try {
       await uploadProof(order.id, file);
       st.classList.add("is-ok");

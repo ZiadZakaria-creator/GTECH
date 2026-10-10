@@ -18,7 +18,7 @@ function notFound() {
   $("#pdTabs").parentElement.hidden = true;
   $("#breadcrumb").innerHTML = "";
   if (!catalogLoaded) {
-    $("#productDetail").innerHTML = `<div class="container pd-missing"><span class="spinner"></span><p>جاري تحميل المنتج...</p></div>`;
+    $("#productDetail").innerHTML = `<div class="container pd-missing"><span class="spinner"></span><p>جاري تحميل المنتج…</p></div>`;
     return;
   }
   document.title = "GTECH MASR | المنتج غير موجود";
@@ -233,7 +233,7 @@ function renderReviews(p) {
     e.preventDefault();
     const btn = e.target.querySelector("[type=submit]");
     btn.disabled = true;
-    btn.textContent = "جاري الحفظ...";
+    btn.textContent = "جاري الحفظ…";
     const starsValue = +pick.dataset.value;
     const text = e.target.text.value.trim().slice(0, 500);
     reviewFormOpen = false; // الصفحة بتترسم تاني أول ما التقييم يتحفظ

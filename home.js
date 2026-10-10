@@ -188,7 +188,7 @@ function renderProducts() {
   $("#emptyState").hidden = shelves || list.length > 0;
   // قسم لسه مفيهوش منتجات خالص (مش فلتر أو بحث)
   const soonCat = !list.length && filter !== "all" && !shopProducts().some((p) => p.cat === filter);
-  $("#emptyText").textContent = !catalogLoaded && !products.length ? "⏳ جاري تحميل المنتجات..." : catalogFailed && !products.length ? "📡 مقدرناش نحمّل المنتجات — اتأكد من النت وجرّب تاني" : soonCat ? `📦 قسم ${categoryLabel(filter)} هينزل فيه منتجات قريب جداً — تابعنا!` : "لا توجد منتجات مطابقة لبحثك 🔍";
+  $("#emptyText").textContent = !catalogLoaded && !products.length ? "⏳ جاري تحميل المنتجات…" : catalogFailed && !products.length ? "📡 مقدرناش نحمّل المنتجات — اتأكد من النت وجرّب تاني" : soonCat ? `📦 قسم ${categoryLabel(filter)} هينزل فيه منتجات قريب جداً — تابعنا!` : "لا توجد منتجات مطابقة لبحثك 🔍";
   const count = activeFilterCount();
   $("#filterCount").hidden = !count;
   $("#filterCount").textContent = num(count);
