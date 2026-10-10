@@ -41,6 +41,32 @@ async function getJson(url) {
   return res.json();
 }
 
+// الشحن والاسترجاع في بيانات المنتج (جوجل بيعرضهم تحت المنتج في البحث)
+// التوصيل للقاهرة والجيزة بس، وسعر كل محافظة من اللوحة (settings/shipping) ولو مش متظبط بالافتراضي
+const SHIP_GOVS = [["القاهرة", "C"], ["الجيزة", "GZ"]]; // كود المحافظة ISO 3166-2 من غير EG-
+let shipRates = { "القاهرة": 60, "الجيزة": 60 };
+const shippingDetails = () => SHIP_GOVS.filter(([g]) => shipRates[g] != null).map(([g, code]) => ({
+  "@type": "OfferShippingDetails",
+  shippingRate: { "@type": "MonetaryAmount", value: shipRates[g], currency: "EGP" },
+  shippingDestination: { "@type": "DefinedRegion", addressCountry: "EG", addressRegion: code },
+  deliveryTime: {
+    "@type": "ShippingDeliveryTime",
+    handlingTime: { "@type": "QuantitativeValue", minValue: 0, maxValue: 1, unitCode: "DAY" },
+    transitTime: { "@type": "QuantitativeValue", minValue: 2, maxValue: 3, unitCode: "DAY" },
+  },
+}));
+// زي policies.html: 14 يوم، مصاريف شحن الإرجاع على العميل لو غيّر رأيه (وعلينا لو عيب صناعة)
+const RETURN_POLICY = {
+  "@type": "MerchantReturnPolicy",
+  applicableCountry: "EG",
+  returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+  merchantReturnDays: 14,
+  returnMethod: "https://schema.org/ReturnByMail",
+  returnFees: "https://schema.org/ReturnFeesCustomerResponsibility",
+  refundType: "https://schema.org/FullRefund",
+  merchantReturnLink: `${SITE}policies.html#returns`,
+};
+
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 const clip = (s, n) => (s.length > n ? s.slice(0, n - 1).replace(/\s+\S*$/, "") + "…" : s);
 const price = (n) => Number(n).toLocaleString("en-US");
@@ -114,6 +140,8 @@ function productPage(template, p, images, reviews = []) {
       availability: inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
       itemCondition: "https://schema.org/NewCondition",
       seller: { "@type": "Organization", name: "GTECH MASR" },
+      shippingDetails: shippingDetails(),
+      hasMerchantReturnPolicy: RETURN_POLICY,
     },
   };
   // تقييمات العملاء الحقيقية بس (لو مفيش، مفيش نجوم)
@@ -214,6 +242,12 @@ function productLinks(list) {
 const template = readFileSync("product.html", "utf8");
 mkdirSync(join(OUT, "p/img"), { recursive: true });
 const entries = [{ url: SITE }, { url: `${SITE}policies.html` }];
+try {
+  const s = docToObject(await getJson(`${FS}/settings/shipping?key=${apiKey}`));
+  for (const [g] of SHIP_GOVS) if (s.rates && g in s.rates) shipRates[g] = s.rates[g] == null ? null : Number(s.rates[g]);
+} catch (err) {
+  console.warn("shipping settings (بنستخدم الافتراضي):", err.message);
+}
 try {
   const docs = (await getJson(`${FS}/products?pageSize=300&key=${apiKey}`)).documents || [];
   const list = docs.map(docToObject).filter((p) => p.active !== false && p.id).sort((a, b) => a.id - b.id);
