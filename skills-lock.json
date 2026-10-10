@@ -25,6 +25,12 @@
       "skillPath": "skills/algorithmic-art/SKILL.md",
       "computedHash": "b2ca295de7f9c86c444f1fa21239e22e0eb7013ced1c652169b9402cc96ff744"
     },
+    "cross-border-ecommerce": {
+      "source": "nexscope-ai/ecommerce-skills",
+      "sourceType": "github",
+      "skillPath": "cross-border-ecommerce/SKILL.md",
+      "computedHash": "3209aa7ce680588fd3cb1d9b26872d9b9bc85e77ea7775d168e7908bf1f5ff7f"
+    },
     "elevenlabs-music-generation": {
       "source": "prime-skills/runcomfy-agent-skills",
       "sourceType": "github",
@@ -127,6 +133,12 @@
       "skillPath": "skills/hyperframes-studio/SKILL.md",
       "computedHash": "3ac6b0019626b0cfa0d067c52ae3e46b5d98722784b1ef103ac301a1815dfd7a"
     },
+    "image-to-ui": {
+      "source": "uizze/uizze",
+      "sourceType": "github",
+      "skillPath": "skills/image-to-ui/SKILL.md",
+      "computedHash": "e70577db48a840192978307d0258790289bc6bd8c604f9ce4be3d9bbd158cb0d"
+    },
     "imagegen-frontend-mobile": {
       "source": "leonxlnx/taste-skill",
       "sourceType": "github",
@@ -161,7 +173,13 @@
       "source": "heygen-com/hyperframes",
       "sourceType": "github",
       "skillPath": "skills/product-launch-video/SKILL.md",
-      "computedHash": "3f4312f9803b69e23f80cbfeccbdef27136c6f2d2186124704f5d993af87b47d"
+      "computedHash": "cb7b4e255378afcbbe086e09c5f66cccaa8f0c78eb2fafc9324721829122dd06"
+    },
+    "product-photography": {
+      "source": "inference-sh/skills",
+      "sourceType": "github",
+      "skillPath": "guides/photo/product-photography/SKILL.md",
+      "computedHash": "7553fa76097f15bebbeaa01e9db720c0437e0732412a6e739f6d16df21370700"
     },
     "remotion-markup": {
       "source": "remotion-dev/skills",
@@ -198,6 +216,12 @@
       "sourceType": "github",
       "skillPath": "skills/talking-head-recut/SKILL.md",
       "computedHash": "991315e8803089b6b0d008026c9b42c2c83f6ea95c44b26956cd6ff6197f5305"
+    },
+    "tiktok-scraper": {
+      "source": "apidojo-io/social-media-skills",
+      "sourceType": "github",
+      "skillPath": "skills/tiktok-scraper/SKILL.md",
+      "computedHash": "77308b6352d5b3341202ccf13d8997d675346a67496151f32e91d0fa164e8f34"
     },
     "vibe-usage": {
       "source": "vibe-cafe/vibe-usage",
