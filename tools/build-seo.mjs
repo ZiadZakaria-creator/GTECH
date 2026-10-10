@@ -67,6 +67,28 @@ const RETURN_POLICY = {
   merchantReturnLink: `${SITE}policies.html#returns`,
 };
 
+// Google Merchant Center: ملف منتجات (merchant-feed.xml) بيتعمل مع كل نشر
+// الشحن مش في الملف — بيتظبط من Merchant Center (القاهرة والجيزة بس)
+const FEED = [];
+const feedItem = (p, url, images, inStock, descText) => {
+  const money = (n) => `${Number(n).toFixed(2)} EGP`;
+  const sale = p.old && p.old > p.price;
+  FEED.push(`    <item>
+      <g:id>${p.id}</g:id>
+      <g:title>${esc(clip(p.name, 150))}</g:title>
+      <g:description>${esc(clip(descText, 4900))}</g:description>
+      <g:link>${esc(url)}</g:link>
+${images.length ? `      <g:image_link>${esc(images[0])}</g:image_link>\n${images.slice(1, 10).map((u) => `      <g:additional_image_link>${esc(u)}</g:additional_image_link>`).join("\n")}` : ""}
+      <g:availability>${inStock ? "in_stock" : "out_of_stock"}</g:availability>
+      <g:price>${money(sale ? p.old : p.price)}</g:price>
+${sale ? `      <g:sale_price>${money(p.price)}</g:sale_price>` : ""}
+      <g:condition>new</g:condition>
+${p.brand ? `      <g:brand>${esc(p.brand)}</g:brand>` : ""}
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:product_type>${esc(CATEGORIES[p.cat] || "منتجات")}</g:product_type>
+    </item>`.replace(/\n\s*\n/g, "\n"));
+};
+
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 const clip = (s, n) => (s.length > n ? s.slice(0, n - 1).replace(/\s+\S*$/, "") + "…" : s);
 const price = (n) => Number(n).toLocaleString("en-US");
@@ -121,6 +143,7 @@ function productPage(template, p, images, reviews = []) {
   const title = `${p.name} بسعر ${price(p.price)} جنيه | GTECH MASR`;
   const description = clip(`${p.name} — ${descText}`, 160);
   const model = specs.find(([k]) => /موديل/.test(k))?.[1];
+  if (images.length && p.price > 0) feedItem(p, url, images, inStock, descText);
 
   const product = {
     "@context": "https://schema.org",
@@ -276,6 +299,17 @@ try {
   console.warn("⚠️ مقدرناش نجيب المنتجات:", err.message);
 }
 writeFileSync(join(OUT, "sitemap.xml"), sitemap(entries));
+writeFileSync(join(OUT, "merchant-feed.xml"), `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
+  <channel>
+    <title>GTECH MASR</title>
+    <link>${SITE}</link>
+    <description>إكسسوارات جيمنج وكمبيوتر أصلية — توصيل القاهرة والجيزة</description>
+${FEED.join("\n")}
+  </channel>
+</rss>
+`);
+console.log(`🛒 merchant-feed.xml: ${FEED.length} منتج`);
 
 // لو الموقع اتنقل على دومين تاني، روابط الصفحة الرئيسية بتتظبط لوحدها
 if (SITE !== DEFAULT_SITE) {
