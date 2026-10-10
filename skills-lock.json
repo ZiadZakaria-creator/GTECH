@@ -25,11 +25,23 @@
       "skillPath": "skills/algorithmic-art/SKILL.md",
       "computedHash": "b2ca295de7f9c86c444f1fa21239e22e0eb7013ced1c652169b9402cc96ff744"
     },
+    "canvas-design": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "skillPath": "skills/canvas-design/SKILL.md",
+      "computedHash": "3fa7ea60170023ad8268bf9fd734ea75dd404279a2ef8ddf5abaa1102ad8e5f4"
+    },
     "cross-border-ecommerce": {
       "source": "nexscope-ai/ecommerce-skills",
       "sourceType": "github",
       "skillPath": "cross-border-ecommerce/SKILL.md",
       "computedHash": "3209aa7ce680588fd3cb1d9b26872d9b9bc85e77ea7775d168e7908bf1f5ff7f"
+    },
+    "design-mobile-apps": {
+      "source": "designed-by-ai/skills",
+      "sourceType": "github",
+      "skillPath": "skills/design-mobile-apps/SKILL.md",
+      "computedHash": "6d6ed68c53ac9f5564aea489ededb387b8cdf29ffa6f78f2a1fa449f86f19e16"
     },
     "elevenlabs-music-generation": {
       "source": "prime-skills/runcomfy-agent-skills",
@@ -42,6 +54,12 @@
       "sourceType": "github",
       "skillPath": "skills/embedded-captions/SKILL.md",
       "computedHash": "c99d75dbc328e3c4a6b0947997fe421b81cd254ade6993d3f791715262f265aa"
+    },
+    "emil-design-eng": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "skillPath": "skills/emil-design-eng/SKILL.md",
+      "computedHash": "51f2537e04d15911b41d78e2de24c36a0e26d41beae15e82a954fe5496a5eda9"
     },
     "faceless-explainer": {
       "source": "heygen-com/hyperframes",
@@ -234,6 +252,12 @@
       "sourceType": "github",
       "skillPath": "plugins/vibehost/skills/vibehost-deploy/SKILL.md",
       "computedHash": "9e908c0cbe815d38564600f015a5f9270fa6c5ceada12a74ae27a8c25dff609f"
+    },
+    "web-design-guidelines": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/web-design-guidelines/SKILL.md",
+      "computedHash": "a6a44d5498f7e8f68289902f3dedfc6f38ae0cee1e96527c80724cf27f727c2a"
     }
   }
 }
