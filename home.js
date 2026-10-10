@@ -360,8 +360,8 @@ nav.addEventListener("click", (e) => {
   e.target.classList.add("active");
 });
 
-// ============ عرض الإيربودز (CATEGORY_SALES في data.js) ============
-const OFFER_CAT = "earphones";
+// ============ بانر العرض: الماوسات (CATEGORY_SALES في data.js) ============
+const OFFER_CAT = "mice";
 
 function renderOffer() {
   const pct = categorySale(OFFER_CAT);
@@ -370,8 +370,8 @@ function renderOffer() {
   $("#offerTag").hidden = !pct;
   if (pct) {
     $("#offerTag").textContent = `-${num(pct)}%`;
-    $("#offerPill").textContent = "🎧 عرض GTECH MASR على الإيربودز";
-    $("#offerTitle").innerHTML = `خصم <span class="gradient-text">${num(pct)}%</span> على أي إيربودز<br />في المتجر`;
+    $("#offerPill").textContent = "🖱️ عرض GTECH MASR على الماوسات";
+    $("#offerTitle").innerHTML = `خصم <span class="gradient-text">${num(pct)}%</span> على أي ماوس<br />في المتجر`;
   }
   if (!list.length) { $("#offerPrice").hidden = true; return; }
   const cheapest = list.reduce((a, b) => (b.price < a.price ? b : a));
@@ -419,7 +419,7 @@ document.addEventListener("catalogloaded", renderBundles);
 // 1) عرض التطبيق (حقيقي: بيتحسب في صفحة الدفع) — 2) أرخص سعر في الماوسات والكيبوردات من المنتجات نفسها
 function renderMiniOffers() {
   if (isStandalone()) {
-    $("#appPromoText").textContent = "إنت فاتح من التطبيق ✅ الخصم هيتحسب لوحده على أول أوردر";
+    $("#appPromoText").textContent = "إنت فاتح من التطبيق ✅";
     $("#appPromoBtn").hidden = true;
   }
   const from = (cat) => {

@@ -5,6 +5,8 @@ const promos = PROMO_CODES_ON ? { GTECH10: 0.1, SHUKRAN10: 0.1 } : {};
 if (!PROMO_CODES_ON) { $("#promoForm").hidden = true; $(".promo__hint").hidden = true; }
 // عرض أول أوردر من التطبيق: خصم 20% (مايتجمعش مع كود خصم)
 const APP_FIRST = { code: "APP-FIRST20", rate: 0.2 };
+// عرض التطبيق متوقف — عشان ترجّعه خليها true
+const APP_FIRST_ON = false;
 let firstOrder = null; // null = لسه بنتأكد، true = دي أول مرة يطلب، false = طلب قبل كده
 const payLabels = { cod: "الدفع عند الاستلام", instapay: "إنستاباي", vodafone: "فودافون كاش" };
 
@@ -75,7 +77,7 @@ function renderSummary() {
   const left = s.freeOver - t.sub;
   $("#freeShipHint").hidden = !(s.freeOver > 0 && left > 0 && std);
   $("#sumDiscLabel").textContent = t.app ? "🎁 خصم أول أوردر من التطبيق (20%)" : "الخصم";
-  $("#appOffer").hidden = !(firstOrder === true && !isStandalone() && FIREBASE_CONFIG);
+  $("#appOffer").hidden = !(APP_FIRST_ON && firstOrder === true && !isStandalone() && FIREBASE_CONFIG);
   $("#freeShipHint").textContent = `🚚 ضيف منتجات بـ ${fmt(left)} كمان والشحن يبقى مجاناً`;
   $("#sumDiscRow").hidden = !t.disc;
   $("#sumBundleRow").hidden = !t.bundle;
@@ -274,7 +276,7 @@ loadShippingSettings();
 // ============ عرض أول أوردر من التطبيق ============
 // بيشتغل لما المتجر مفتوح كتطبيق متسطّب، والعميل ده ماطلبش قبل كده
 function appOffer() {
-  return firstOrder === true && isStandalone();
+  return APP_FIRST_ON && firstOrder === true && isStandalone();
 }
 function checkFirstOrder() {
   if (!user) return;
