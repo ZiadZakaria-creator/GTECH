@@ -47,8 +47,22 @@ async function initFirebaseAdmin() {
   } catch {
     return toast("❌ مقدرناش نحمّل Firebase، اتأكد من الإنترنت");
   }
-  firebase.auth().onAuthStateChanged((u) => {
-    const isAdmin = u && !u.isAnonymous && u.email;
+  firebase.auth().onAuthStateChanged(async (u) => {
+    let isAdmin = u && !u.isAnonymous && u.email;
+    // نفس تسجيل الدخول متشارك مع المتجر: لو دخلت كعميل (Google) من المتجر، الحساب ده مش أدمن
+    // فبنتأكد إن له مستند في admins قبل ما نفتح اللوحة، بدل ما تفتح فاضية وكل حاجة مرفوضة
+    $("#gateWarn").hidden = true;
+    if (isAdmin) {
+      try {
+        isAdmin = (await firebase.firestore().collection("admins").doc(u.uid).get()).exists;
+      } catch (err) {
+        isAdmin = err?.code !== "permission-denied"; // مشكلة نت مؤقتة: نكمّل زي الأول
+      }
+      if (!isAdmin) {
+        $("#gateWarn").textContent = `⚠️ إنت داخل دلوقتي بحساب ${u.email} (حساب عميل من المتجر) — ده مش حساب الأدمن. ادخل بإيميل وباسورد الأدمن تحت.`;
+        $("#gateWarn").hidden = false;
+      }
+    }
     $("#adminLogout").hidden = !isAdmin;
     // اسم الأدمن فوق (من الإيميل)
     $("#adUser").hidden = !isAdmin;

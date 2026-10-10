@@ -579,3 +579,5 @@
 .camp-card img { width: 150px; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 14px; border: 1px solid var(--border); background: #03050b; }
 .camp-card__side { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; font-weight: 700; }
 .camp-card__side label { display: flex; gap: 6px; align-items: center; cursor: pointer; }
+
+.ad-gate__warn { margin: 4px 0 6px; padding: 10px 14px; border-radius: 12px; background: rgba(245,158,11,.12); border: 1px solid rgba(245,158,11,.45); color: #fbbf24; font-size: .9rem; line-height: 1.7; }
