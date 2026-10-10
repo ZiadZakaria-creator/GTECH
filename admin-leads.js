@@ -104,7 +104,8 @@ function customerWhatsApp(c) {
     ? `${hi}\nشكراً إنك اشتريت مننا قبل كده 🙏\nنزلنا منتجات وعروض جديدة، شوفها من هنا 👇\n${siteUrl("index.html")}`
     : c.status === "cart"
       ? `${hi}\nلاحظنا إنك سبت منتجات في السلة:\n${c.cart.items.map((i) => `• ${i.name}${i.qty > 1 ? ` × ${i.qty}` : ""}`).join("\n")}\nالإجمالي: ${egp(c.cart.total)}\n\nتقدر تكمّل طلبك في دقيقة من هنا 👇\n${cartLink(c.cart)}`
-      : `${hi}\nشكراً إنك اشتركت في عروضنا 🎁\nكود خصمك 10% على أول أوردر: ${LEAD_CODE_ADMIN}\n\nتقدر تتسوق من هنا 👇\n${siteUrl("index.html")}`;
+      : PROMO_CODES_ON ? `${hi}\nشكراً إنك اشتركت في عروضنا 🎁\nكود خصمك 10% على أول أوردر: ${LEAD_CODE_ADMIN}\n\nتقدر تتسوق من هنا 👇\n${siteUrl("index.html")}`
+      : `${hi}\nشكراً إنك اشتركت في عروضنا 🎁\nشوف أحدث المنتجات والعروض من هنا 👇\n${siteUrl("index.html")}`;
   return waLink(text, "20" + c.phone.slice(1));
 }
 

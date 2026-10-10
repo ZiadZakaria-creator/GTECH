@@ -716,7 +716,7 @@ nav.addEventListener("click", (e) => {
 $("#newsletterForm")?.addEventListener("submit", (e) => {
   e.preventDefault();
   e.target.reset();
-  toast("📩 شكراً لاشتراكك! كود الخصم وصل لبريدك");
+  toast(PROMO_CODES_ON ? "📩 شكراً لاشتراكك! كود الخصم وصل لبريدك" : "📩 شكراً لاشتراكك!");
 });
 
 // ============ زرار واتساب العائم ============
@@ -803,10 +803,11 @@ function openLeadPopup() {
       <form class="modal__box card-box lead__box" id="leadForm" novalidate>
         <button type="button" class="icon-btn modal__close" id="leadClose" aria-label="إغلاق">✕</button>
         <div class="lead__badge">🎁</div>
-        <h3 id="leadTitle" data-no-i18n>${typeof IS_EN !== "undefined" && IS_EN ? '<span class="lead__pct">10%</span> off your first order' : 'خصم <span class="lead__pct">10%</span> على أول أوردر'}</h3>
-        <p class="muted">اكتب رقم الواتساب بتاعك وخد كود الخصم فوراً، وكمان هتعرف العروض الجديدة قبل أي حد.</p>
+        ${PROMO_CODES_ON ? `<h3 id="leadTitle" data-no-i18n>${typeof IS_EN !== "undefined" && IS_EN ? '<span class="lead__pct">10%</span> off your first order' : 'خصم <span class="lead__pct">10%</span> على أول أوردر'}</h3>
+        <p class="muted">اكتب رقم الواتساب بتاعك وخد كود الخصم فوراً، وكمان هتعرف العروض الجديدة قبل أي حد.</p>` : `<h3 id="leadTitle">اعرف العروض أول بأول 🔔</h3>
+        <p class="muted">اكتب رقم الواتساب بتاعك وهنبعتلك العروض والمنتجات الجديدة قبل أي حد.</p>`}
         <label class="field"><input name="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="01xxxxxxxxx" dir="ltr" maxlength="14" aria-label="رقم الواتساب" /><em></em></label>
-        <button class="btn btn--primary btn--block" type="submit">ابعتلي الكود 🎉</button>
+        <button class="btn btn--primary btn--block" type="submit">${PROMO_CODES_ON ? "ابعتلي الكود 🎉" : "اشترك 🔔"}</button>
         <small class="muted">مش هنزعجك — عروض بس، وتقدر تقولنا نوقف في أي وقت.</small>
       </form>
     </div>`);
@@ -820,10 +821,15 @@ function openLeadPopup() {
     if (!isValidPhone(form.phone.value)) { err.textContent = "رقم موبايل غير صحيح (11 رقم يبدأ بـ 01)"; return; }
     const phone = normalizePhone(form.phone.value);
     store.set(LEAD_KEY, { phone, at: Date.now() });
-    store.set("gtech-promo", LEAD_CODE); // صفحة الدفع بتطبّقه لوحده
+    if (PROMO_CODES_ON) store.set("gtech-promo", LEAD_CODE); // صفحة الدفع بتطبّقه لوحده
     saveLead(phone).catch((x) => console.warn("lead", x));
     if (typeof track === "function") track("generate_lead");
-    form.innerHTML = `
+    form.innerHTML = !PROMO_CODES_ON ? `
+      <button type="button" class="icon-btn modal__close" aria-label="إغلاق">✕</button>
+      <div class="lead__badge">🎉</div>
+      <h3>تمام، اشتركت!</h3>
+      <p class="muted">هنبعتلك أحدث العروض على واتساب. ولو مش عايز رسايل تانية ابعتلنا "إيقاف".</p>
+      <button type="button" class="btn btn--primary btn--block" id="leadShop">يلا نتسوق 🛒</button>` : `
       <button type="button" class="icon-btn modal__close" aria-label="إغلاق">✕</button>
       <div class="lead__badge">🎉</div>
       <h3>الكود بتاعك جاهز!</h3>
@@ -832,7 +838,7 @@ function openLeadPopup() {
       <button type="button" class="btn btn--primary btn--block" id="leadShop">يلا نتسوق 🛒</button>`;
     form.querySelector(".modal__close").addEventListener("click", close);
     $("#leadShop").addEventListener("click", close);
-    $("#leadCode").addEventListener("click", () => {
+    $("#leadCode")?.addEventListener("click", () => {
       navigator.clipboard?.writeText(LEAD_CODE).then(() => toast("📋 الكود اتنسخ"), () => {});
     });
   });

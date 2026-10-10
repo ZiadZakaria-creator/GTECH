@@ -1,7 +1,8 @@
 // ============ صفحة إتمام الشراء ============
 // أسعار الشحن لكل محافظة جاية من shipping.js (وصاحب المتجر بيغيّرها من لوحة التحكم)
 // SHUKRAN10: للي اشتروا قبل كده (مكتوب في كارت الشكر اللي بيتحط جوه الأوردر)
-const promos = { GTECH10: 0.1, SHUKRAN10: 0.1 };
+const promos = PROMO_CODES_ON ? { GTECH10: 0.1, SHUKRAN10: 0.1 } : {};
+if (!PROMO_CODES_ON) { $("#promoForm").hidden = true; $(".promo__hint").hidden = true; }
 // عرض أول أوردر من التطبيق: خصم 20% (مايتجمعش مع كود خصم)
 const APP_FIRST = { code: "APP-FIRST20", rate: 0.2 };
 let firstOrder = null; // null = لسه بنتأكد، true = دي أول مرة يطلب، false = طلب قبل كده
