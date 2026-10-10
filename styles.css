@@ -400,7 +400,8 @@ button.mini-offer { width: 100%; text-align: start; font: inherit; color: inheri
 .footer__grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 40px; padding-bottom: 50px; }
 .footer__about p { color: var(--muted); margin: 18px 0; max-width: 340px; }
 .footer h4 { font-size: 1.1rem; margin-bottom: 18px; }
-.footer ul { display: grid; gap: 10px; }
+.footer ul { display: grid; gap: 2px; }
+.footer ul a { display: inline-block; padding: 8px 0; }
 .footer ul a, .contact-list li { color: var(--muted); transition: color .2s; }
 .footer ul a:hover { color: var(--primary-2); }
 .socials { display: flex; gap: 10px; }

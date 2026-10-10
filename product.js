@@ -125,7 +125,7 @@ function renderDetail(p) {
         ${soldOut ? "" : setupRecsHtml([p])}
 
         <div class="pd__perks">
-          <div><span>🚚</span><p>توصيل متوقع <b>${delivery}</b>${p.price >= 1000 ? " — مجاناً" : ""}</p></div>
+          <div><span>🚚</span><p>توصيل متوقع <b>${delivery}</b> — القاهرة والجيزة</p></div>
           <div><span>🛡️</span><p>${hasWarranty(p) ? `ضمان رسمي لمدة <b>${esc(warrantyText(p))}</b>` : "المنتج ده <b>من غير ضمان</b>"}</p></div>
           <div><span>🔄</span><p><a href="policies.html#returns">استرجاع أو استبدال خلال <b>14 يوم</b></a></p></div>
         </div>
