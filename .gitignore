@@ -3,3 +3,6 @@ android/build/
 android/app/build/
 android/local.properties
 *.jks
+
+# إعدادات Firebase لتطبيق الأندرويد (بتتكتب في الـ workflow من secret)
+android/app/google-services.json

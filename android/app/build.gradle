@@ -2,6 +2,14 @@
 // بيتبني أوتوماتيك على GitHub (.github/workflows/android.yml)، وأي تعديل في اللوحة بيوصله من غير تحديث للتطبيق
 plugins {
     id "com.android.application"
+    id "com.google.firebase.crashlytics"
+}
+
+// Firebase Crashlytics: بيبلّغ عن أي قفلة للتطبيق في Firebase Console.
+// بيشتغل بس لما يكون فيه google-services.json (الـ workflow بيكتبه من secret اسمه GOOGLE_SERVICES_JSON)،
+// ومن غيره التطبيق بيتبني عادي من غير تقارير.
+if (file("google-services.json").exists()) {
+    apply plugin: "com.google.gms.google-services"
 }
 
 def buildNumber = (System.getenv("VERSION_CODE") ?: "1") as int
@@ -39,4 +47,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+}
+
+dependencies {
+    implementation platform("com.google.firebase:firebase-bom:35.0.0")
+    implementation "com.google.firebase:firebase-crashlytics"
 }
