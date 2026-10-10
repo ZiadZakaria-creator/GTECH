@@ -826,11 +826,13 @@ body.no-scroll { overflow: hidden; }
 .track li { position: relative; z-index: 1; display: grid; justify-items: center; gap: 6px; text-align: center; }
 .track li span {
   display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; font-size: 1.05rem;
-  background: var(--surface-2); border: 2px solid var(--border); filter: grayscale(1); opacity: .6;
+  background: var(--surface-2); border: 2px solid var(--border); color: var(--muted); opacity: .7;
+  background-origin: border-box; overflow: hidden;
 }
+.track li span svg { width: 52%; height: 52%; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 .track li small { color: var(--muted); font-size: .82rem; font-weight: 600; }
 .track li.done span { background: var(--success); border-color: var(--success); color: #fff; font-weight: 900; filter: none; opacity: 1; }
-.track li.current span { background: var(--gradient); border-color: transparent; filter: none; opacity: 1; box-shadow: 0 0 0 6px rgba(10,132,255,.18); animation: pulseRing 2s infinite; }
+.track li.current span { background: var(--gradient); background-origin: border-box; border-color: transparent; color: #fff; filter: none; opacity: 1; box-shadow: 0 0 0 6px rgba(10,132,255,.18); animation: pulseRing 2s infinite; }
 .track li.current small, .track li.done small { color: var(--text); }
 @keyframes pulseRing { 50% { box-shadow: 0 0 0 10px rgba(10,132,255,.05); } }
 
