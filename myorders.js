@@ -29,7 +29,7 @@ function start() {
 // كارت "صاحبك عليا" فوق الطلبات، ومعاه عدد المكافآت
 let refShownFor = "";
 async function renderMyReferral(phone) {
-  if (!phone || refShownFor === phone) return;
+  if (!REFERRAL_ON || !phone || refShownFor === phone) return;
   refShownFor = phone;
   if (!$("#myRef")) $("#myOrders").insertAdjacentHTML("beforebegin", '<div id="myRef"></div>');
   $("#myRef").innerHTML = referralCardHtml(phone);

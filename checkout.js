@@ -241,7 +241,7 @@ async function placeOrder() {
   $("#okAddr").textContent = `${order.address.street}، ${order.address.city}، ${order.address.gov}`;
 
   if (isTransfer(order.payment.method)) showPayBox(order);
-  $("#successView .success__box").insertAdjacentHTML("afterend", referralCardHtml(order.customer.phone));
+  if (REFERRAL_ON) $("#successView .success__box").insertAdjacentHTML("afterend", referralCardHtml(order.customer.phone));
 
   $("#checkoutView").hidden = true;
   $("#successView").hidden = false;
@@ -349,6 +349,7 @@ function showPayBox(order) {
 // ============ صاحبك عليا ============
 // مكافأة العميل (لو صحابه اشتروا من لينكه) ← أو خصم الصاحب لو جه من لينك حد. نفس الـ 10%، وبيتطبّق لوحده.
 async function applyReferral() {
+  if (!REFERRAL_ON) return;
   const own = user?.phone ? referralCode(user.phone) : "";
   if (promo === "REF-" + own) promo = null; // مينفعش تستخدم لينكك إنت
   if (appOffer() || (promo && !/^REF-/.test(promo))) return renderSummary();

@@ -730,13 +730,14 @@ document.body.insertAdjacentHTML("beforeend", `
 const REF_KEY = "gtech-ref";
 (() => {
   const code = (new URLSearchParams(location.search).get("ref") || "").toUpperCase();
-  if (!/^[0-9A-Z]{4,8}$/.test(code)) return;
+  if (!REFERRAL_ON || !/^[0-9A-Z]{4,8}$/.test(code)) return;
   if (user?.phone && referralCode(user.phone) === code) return; // لينكك إنت
   store.set(REF_KEY, { code, at: Date.now() });
   setTimeout(() => toast("🎁 صاحبك بعتلك خصم 10% على أول أوردر — هيتحسب لوحده في صفحة الدفع"), 1200);
 })();
 // الكود اللي العميل جه بيه (صالح 30 يوم)
 function activeRef() {
+  if (!REFERRAL_ON) return "";
   const r = store.get(REF_KEY, null);
   return r && Date.now() - r.at < 30 * 86400000 ? r.code : "";
 }
