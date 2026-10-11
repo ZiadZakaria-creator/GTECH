@@ -54,7 +54,7 @@ function renderSummary() {
     return `
       <div class="sum-item">
         <span class="sum-item__icon">${productVisual(p)}<i>${num(i.qty)}</i></span>
-        <div><b>${p.name}</b>${i.opts ? `<small>${i.opts}</small>` : ""}</div>
+        <div><b><a href="${productUrl(p.id)}" class="cart-item__link">${escapeHtml(p.name)}</a></b>${i.opts ? `<small>${escapeHtml(i.opts)}</small>` : ""}</div>
         <strong>${fmt(p.price * i.qty)}</strong>
       </div>`;
   }).join("");

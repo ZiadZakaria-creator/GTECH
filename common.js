@@ -155,8 +155,8 @@ function renderCart() {
         <div class="cart-item">
           <a href="${productUrl(p.id)}" class="cart-item__icon">${productVisual(p)}</a>
           <div class="cart-item__info">
-            <b>${p.name}</b>
-            ${i.opts ? `<em>${i.opts}</em>` : ""}
+            <b><a href="${productUrl(p.id)}" class="cart-item__link">${escapeHtml(p.name)}</a></b>
+            ${i.opts ? `<em>${escapeHtml(i.opts)}</em>` : ""}
             <small>${fmt(p.price)}</small>
             <div class="qty">
               <button data-qty="${idx}" data-d="1" aria-label="زيادة">+</button>
