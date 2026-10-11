@@ -1746,3 +1746,23 @@ h1, h2, h3 { text-wrap: balance; }
   .cp-table th, .cp-table td { padding: 8px 6px; }
   .cp-table tbody th { white-space: normal; }
 }
+
+/* كارت "جهّز سيتك" في الرئيسية */
+.setup-promo { padding-block: 4px 12px; }
+.setup-promo__card { position: relative; overflow: hidden; display: flex; align-items: center; justify-content: space-between; gap: 18px 28px; flex-wrap: wrap; padding: 22px 26px; border-radius: var(--radius); border: 1px solid rgba(10,132,255,.45); background: radial-gradient(120% 140% at 100% 0%, rgba(10,132,255,.22), transparent 60%), radial-gradient(90% 120% at 0% 100%, rgba(124,92,255,.2), transparent 60%), var(--surface); box-shadow: var(--shadow); }
+.setup-promo__text { display: flex; align-items: center; gap: 16px; flex: 1 1 380px; min-width: 0; }
+.setup-promo__icon { flex: none; display: grid; place-items: center; width: 58px; height: 58px; border-radius: 16px; background: var(--gradient); font-size: 1.8rem; box-shadow: 0 8px 24px rgba(10,132,255,.35); }
+.setup-promo h2 { font-size: clamp(1.25rem, 2.6vw, 1.6rem); margin: 0 0 4px; }
+.setup-promo p { margin: 0; color: var(--muted); line-height: 1.7; }
+.setup-promo__actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.setup-promo__chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.setup-promo__chips .chip { text-decoration: none; color: var(--text); font-variant-numeric: tabular-nums; }
+@media (max-width: 600px) {
+  .setup-promo__card { padding: 18px 16px; }
+  .setup-promo__text { flex-basis: 100%; align-items: flex-start; }
+  .setup-promo__icon { width: 48px; height: 48px; font-size: 1.5rem; }
+  .setup-promo__actions { width: 100%; }
+  .setup-promo__chips { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); width: 100%; }
+  .setup-promo__chips .chip { padding: 8px 4px; text-align: center; font-size: .82rem; }
+  .setup-promo__actions .btn { width: 100%; }
+}

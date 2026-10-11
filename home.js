@@ -630,3 +630,17 @@ if ("IntersectionObserver" in window && !reduceMotion) {
   }), { threshold: 0.35 });
   reelVideos.forEach((v) => reelObserver.observe(v));
 }
+
+// ============ كارت "جهّز سيتك": أقل سعر لسيت جيمنج كامل (ماوس + كيبورد + سماعة) من المتاح ============
+function renderSetupPromo() {
+  const el = $("#setupPromoFrom");
+  if (!el) return;
+  const gaming = /جيمنج|gaming/i;
+  const cheapest = (cat, needGaming) => shopProducts()
+    .filter((p) => inStock(p) && p.price > 0 && productCategory(p) === cat && (!needGaming || gaming.test(p.name)))
+    .reduce((m, p) => Math.min(m, p.price), Infinity);
+  const from = cheapest("mice", true) + cheapest("keyboards") + cheapest("audio", true);
+  el.textContent = Number.isFinite(from) ? ` — سيت كامل يبدأ من ${fmt(from)}` : "";
+}
+document.addEventListener("productschange", renderSetupPromo);
+renderSetupPromo();
