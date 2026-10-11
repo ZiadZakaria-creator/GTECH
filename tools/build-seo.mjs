@@ -95,24 +95,60 @@ const clip = (s, n) => (s.length > n ? s.slice(0, n - 1).replace(/\s+\S*$/, "") 
 const price = (n) => Number(n).toLocaleString("en-US");
 const jsonLd = (o) => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, "\\u003c")}</script>`;
 
-// الصور المرفوعة من اللوحة متخزنة جوه Firestore، فبنطلعها ملفات عادية عشان جوجل يقدر يفهرسها
+// الصور المرفوعة من اللوحة متخزنة جوه Firestore، فبنطلعها ملفات عادية (p/img/) عشان جوجل يقدر يفهرسها،
+// والمتجر نفسه بيعرضها من الملفات دي (p/img/map.json) بدل ما كل صورة تبقى قراءة من Firestore
+// (الخطة المجانية 50 ألف قراءة في اليوم، والصور كانت أغلب الاستهلاك).
+// الصورة اللي اتحولت قبل كده بننزلها من الموقع المنشور نفسه، فـ Firestore بيتقري للصور الجديدة بس.
+const IMG_MAP = {};       // fs key ← اسم الملف في p/img
+let PREV_MAP = {};        // نفس الخريطة من آخر نشر
+let fatalReads = 0;       // Firestore رافض (429 = الحصة خلصت / 5xx) ← مانشرش نسخة ناقصة
+const isFatal = (err) => /^(429|5\d\d)\b/.test(String(err?.message || ""));
+async function loadPrevMap() {
+  try {
+    const res = await fetch(`${SITE}p/img/map.json`, { cache: "no-store" });
+    if (res.ok) PREV_MAP = await res.json();
+  } catch {}
+}
+async function fromPublished(key) {
+  const file = PREV_MAP[key];
+  if (!file) return null;
+  try {
+    const res = await fetch(`${SITE}p/img/${file}`);
+    if (!res.ok) return null;
+    writeFileSync(join(OUT, "p/img", file), Buffer.from(await res.arrayBuffer()));
+    return file;
+  } catch {
+    return null;
+  }
+}
 async function imageUrls(p) {
   const urls = [];
-  for (const [i, src] of (p.images || []).slice(0, 4).entries()) {
+  for (const [i, src] of (p.images || []).entries()) {
     try {
       if (src.startsWith("fs:")) {
-        const data = docToObject(await getJson(`${FS}/productImages/${encodeURIComponent(src.slice(3))}?key=${apiKey}`)).data;
-        const m = data?.match(/^data:image\/(\w+);base64,(.+)$/);
-        if (!m) continue;
-        const name = `${p.id}-${i + 1}.${m[1] === "jpeg" ? "jpg" : m[1]}`;
-        writeFileSync(join(OUT, "p/img", name), Buffer.from(m[2], "base64"));
-        urls.push(`${SITE}p/img/${name}`);
+        const key = src.slice(3);
+        let file = await fromPublished(key);
+        if (!file) {
+          const data = docToObject(await getJson(`${FS}/productImages/${encodeURIComponent(key)}?key=${apiKey}`)).data;
+          const m = data?.match(/^data:image\/(\w+);base64,(.+)$/);
+          if (!m) continue;
+          // الاسم القديم (رقم المنتج-ترتيب الصورة) لو مش محجوز لصورة تانية، وإلا اسم فيه رقم الصورة نفسها
+          const ext = m[1] === "jpeg" ? "jpg" : m[1];
+          const taken = new Set([...Object.values(PREV_MAP), ...Object.values(IMG_MAP)]);
+          file = taken.has(`${p.id}-${i + 1}.${ext}`) ? `${p.id}-${key}.${ext}` : `${p.id}-${i + 1}.${ext}`;
+          writeFileSync(join(OUT, "p/img", file), Buffer.from(m[2], "base64"));
+        }
+        IMG_MAP[key] = file;
+        if (urls.length < 4) urls.push(`${SITE}p/img/${file}`);
+      } else if (urls.length >= 4) {
+        continue;
       } else if (/^https?:/.test(src)) {
         urls.push(src);
       } else if (!src.startsWith("data:")) {
         urls.push(SITE + src.replace(/^\.?\//, ""));
       }
     } catch (err) {
+      if (isFatal(err)) fatalReads++;
       console.warn(`image ${p.id}#${i + 1}:`, err.message);
     }
   }
@@ -475,9 +511,13 @@ try {
 } catch (err) {
   console.warn("shipping settings (بنستخدم الافتراضي):", err.message);
 }
+await loadPrevMap();
 try {
   const docs = (await getJson(`${FS}/products?pageSize=300&key=${apiKey}`)).documents || [];
-  const list = docs.map(docToObject).filter((p) => p.active !== false && p.id).sort((a, b) => a.id - b.id);
+  const all = docs.map(docToObject);
+  const list = all.filter((p) => p.active !== false && p.id).sort((a, b) => a.id - b.id);
+  // نسخة ثابتة من الكتالوج: المتجر بيرجعلها لو Firestore مردّش (الحصة خلصت أو مفيش نت)
+  writeFileSync(join(OUT, "catalog.json"), JSON.stringify({ at: new Date().toISOString(), items: all }));
   let reviews = [];
   try {
     let token = "";
@@ -487,6 +527,7 @@ try {
       token = body.nextPageToken || "";
     } while (token);
   } catch (err) {
+    if (isFatal(err)) fatalReads++;
     console.warn("reviews:", err.message);
   }
   const imagesById = {};
@@ -498,13 +539,17 @@ try {
     writeFileSync(join(OUT, `p/${p.id}.html`), productPage(template, p, images, mine));
     entries.push({ url: `${SITE}p/${p.id}.html`, lastmod: p.updatedAt, images });
   }
-  console.log(`✅ ${list.length} صفحة منتج`);
+  if (fatalReads) throw new Error(`Firestore رفض ${fatalReads} قراءة (غالباً الحصة اليومية خلصت)`);
+  writeFileSync(join(OUT, "p/img/map.json"), JSON.stringify(IMG_MAP));
+  console.log(`✅ ${list.length} صفحة منتج · ${Object.keys(IMG_MAP).length} صورة (${Object.keys(IMG_MAP).filter((k) => PREV_MAP[k]).length} من النشر اللي فات)`);
   categoryPages(readFileSync("index.html", "utf8"), list);
   contentPages(readFileSync("wishlist.html", "utf8"), list, imagesById);
   productLinks(list);
 } catch (err) {
-  // لو Firestore مردّش مانوقفش النشر: روابط p/ هتتحول لـ product.html من 404.html
-  console.warn("⚠️ مقدرناش نجيب المنتجات:", err.message);
+  // لو Firestore مردّش بنوقف النشر خالص (exit 1) ← GitHub Pages بيفضل على آخر نسخة كاملة،
+  // بدل ما ننشر موقع من غير صفحات منتجات ولا Merchant feed ولا سايت ماب
+  console.error("⛔ وقفنا النشر: مقدرناش نجيب المنتجات أو صورها من Firestore:", err.message);
+  process.exit(1);
 }
 writeFileSync(join(OUT, "sitemap.xml"), sitemap(entries));
 writeFileSync(join(OUT, "merchant-feed.xml"), `<?xml version="1.0" encoding="UTF-8"?>

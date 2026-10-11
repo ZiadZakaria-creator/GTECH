@@ -121,16 +121,28 @@ async function refreshCatalog() {
   }
 }
 
+// الكتالوج المتحفظ لسه طازة (أقل من 5 دقايق) ← مش بنقرا 70 منتج من Firestore تاني مع كل صفحة
+const CATALOG_FRESH_MS = 5 * 60 * 1000;
 async function loadLatestCatalog() {
   let list = null;
   if (USE_FIREBASE_CATALOG()) {
+    const cached = store.get(CATALOG_CACHE, null);
+    if (!IN_ADMIN && cached?.items?.length && Date.now() - (cached.at || 0) < CATALOG_FRESH_MS) return;
     try {
       list = await fetchRemoteProducts();
       store.set(CATALOG_CACHE, { at: Date.now(), items: list });
     } catch (err) {
       console.warn("catalog", err);
-      catalogFailed = true;
-      return;
+      // Firestore مردّش (الحصة خلصت مثلاً) ← النسخة الثابتة اللي اتعملت وقت النشر (catalog.json)
+      try {
+        const res = await fetch("catalog.json", { cache: "no-cache" });
+        if (!res.ok) throw new Error("catalog.json " + res.status);
+        list = (await res.json()).items;
+      } catch (err2) {
+        console.warn("catalog fallback", err2);
+        catalogFailed = true;
+        return;
+      }
     }
   } else {
     list = store.get(LOCAL_PRODUCTS, null);
@@ -143,9 +155,19 @@ async function loadLatestCatalog() {
 const TRANSPARENT = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 const imageCache = new Map();
 
+// خريطة الصور اللي اتحولت ملفات ثابتة وقت النشر (tools/build-seo.mjs ← p/img/map.json):
+// الصورة بتتحمّل من GitHub Pages ومش بتبقى قراءة من Firestore (الحصة المجانية 50 ألف قراءة في اليوم)
+let staticImagesJob = null;
+const staticImages = () => (staticImagesJob ||= fetch("p/img/map.json", { cache: "no-cache" })
+  .then((r) => (r.ok ? r.json() : {})).catch(() => ({})));
+
 function fetchStoredImage(key) {
   if (imageCache.has(key)) return imageCache.get(key);
   const job = (async () => {
+    if (!IN_ADMIN) {
+      const file = (await staticImages())[key];
+      if (file) return "p/img/" + file;
+    }
     try {
       const hit = sessionStorage.getItem("img:" + key);
       if (hit) return hit;
