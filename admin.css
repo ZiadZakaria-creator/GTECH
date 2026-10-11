@@ -587,3 +587,60 @@
 .od-del { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 10px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-size: .95rem; cursor: pointer; transition: color .15s, border-color .15s, background-color .15s; }
 .od-del:hover, .od-del:focus-visible { color: var(--danger, #ef4444); border-color: rgba(239,68,68,.5); background: rgba(239,68,68,.08); }
 .od-del:disabled { opacity: .4; cursor: wait; }
+
+/* ============ الفاتورة (A4) — بتظهر في الطباعة بس ============ */
+#invoice { display: none; }
+@media print {
+  @page { size: A4; margin: 12mm; }
+  body.printing-invoice > *:not(#invoice) { display: none !important; }
+  body.printing-invoice { background: #fff !important; }
+  body.printing-invoice #invoice { display: block; }
+}
+.inv {
+  --ink: #0b1220; --sub: #5b6577; --line: #dfe4ec; --soft: #f4f7fb; --accent: #0a84ff;
+  font-family: Cairo, Tahoma, sans-serif; color: var(--ink); background: #fff; font-size: 12.5px; line-height: 1.6;
+  font-variant-numeric: tabular-nums; -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+.inv small { font-size: .82em; color: var(--sub); font-weight: 600; }
+.inv__cur { font-size: .78em; font-weight: 700; opacity: .75; }
+#invoice { box-sizing: border-box; width: 100%; padding: 0 3mm; }
+.inv__head { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 16px; border-bottom: 3px solid var(--ink); }
+.inv__brand { display: flex; align-items: center; gap: 12px; }
+.inv__logo { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 13px; background: linear-gradient(135deg, #00d4ff, #0a84ff); color: #fff; font-weight: 900; font-size: 30px; line-height: 1; }
+.inv__name { display: block; direction: ltr; font-size: 22px; font-weight: 900; letter-spacing: 1px; line-height: 1.1; }
+.inv__name span { color: var(--accent); font-size: .55em; letter-spacing: 4px; }
+.inv__brand small { display: block; margin-top: 2px; }
+.inv__title { text-align: left; }
+.inv__title h1 { font-size: 30px; font-weight: 900; line-height: 1; letter-spacing: -.5px; }
+.inv__no { margin-top: 6px; font-family: ui-monospace, Menlo, Consolas, monospace; font-weight: 700; font-size: 13px; }
+.inv__date { color: var(--sub); font-weight: 600; }
+.inv__parties { display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 18px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.inv__parties h2 { font-size: 10.5px; font-weight: 800; color: var(--accent); letter-spacing: 1px; margin-bottom: 4px; }
+.inv__parties p { margin: 0; }
+.inv__right { text-align: right; }
+.inv__url { text-align: right; color: var(--sub); }
+.inv__muted { color: var(--sub); }
+.inv__table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+.inv__table th { background: var(--soft); color: var(--sub); font-size: 10.5px; font-weight: 800; text-align: right; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+.inv__table td { padding: 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.inv__table td b { font-weight: 800; }
+.inv__table td small { display: block; }
+.inv__table .n { width: 28px; color: var(--sub); text-align: center; }
+.inv__table .q { width: 60px; text-align: center; }
+.inv__table .m { width: 110px; text-align: left; white-space: nowrap; }
+.inv__war { color: var(--accent) !important; }
+.inv__table tr { break-inside: avoid; }
+.inv__bottom { display: grid; grid-template-columns: 1fr 260px; gap: 20px; align-items: start; margin-top: 16px; break-inside: avoid; }
+.inv__pay { padding: 12px 14px; border: 1px dashed var(--line); border-radius: 10px; }
+.inv__pay p { margin: 6px 0 0; }
+.inv__stamp { display: inline-block; padding: 3px 12px; border: 2px solid var(--ink); border-radius: 6px; font-weight: 900; font-size: 13px; letter-spacing: .5px; transform: rotate(-2deg); }
+.inv__pay.is-paid .inv__stamp { border-color: #16a34a; color: #16a34a; }
+.inv__pay.is-cancelled .inv__stamp { border-color: #dc2626; color: #dc2626; }
+.inv__totals { margin: 0; }
+.inv__totals div { display: flex; justify-content: space-between; padding: 5px 0; }
+.inv__totals dt { color: var(--sub); font-weight: 700; }
+.inv__totals dd { margin: 0; font-weight: 800; }
+.inv__grand { margin-top: 6px; padding: 10px 12px !important; border-radius: 10px; background: var(--ink); color: #fff; }
+.inv__grand dt, .inv__grand dd, .inv__grand .inv__cur { color: #fff !important; font-size: 15px; font-weight: 900; }
+.inv__foot { margin-top: 26px; padding-top: 12px; border-top: 1px solid var(--line); text-align: center; color: var(--sub); font-size: 10.5px; break-inside: avoid; }
+.inv__thanks { color: var(--ink); font-weight: 800; font-size: 13px; margin-bottom: 4px; }

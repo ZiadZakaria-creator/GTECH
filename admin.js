@@ -464,7 +464,7 @@ $("#overlay").addEventListener("click", closeOrder);
 document.addEventListener("keydown", (e) => e.key === "Escape" && closeOrder());
 
 $("#drawerBody").addEventListener("click", async (e) => {
-  if (e.target.id === "printBtn") return window.print();
+  if (e.target.id === "printBtn") return printInvoice(orders.find((x) => x.id === openId));
   const b = e.target.closest("[data-set-status]");
   if (!b || !openId) return;
   const status = b.dataset.setStatus;
