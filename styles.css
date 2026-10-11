@@ -1142,6 +1142,7 @@ img[data-fs].is-loaded { opacity: 1; }
 .choice[hidden] { display: none; }
 .pay-note { margin-top: 12px; padding: 12px 14px; border-radius: var(--radius-sm); background: rgba(10,132,255,.08); color: var(--text-2); font-size: .88rem; line-height: 1.8; }
 .pay-box { display: grid; gap: 10px; margin: 18px auto; max-width: 520px; padding: 20px; text-align: center; border: 1px solid rgba(10,132,255,.4); }
+.pay-box[hidden] { display: none; } /* من غيرها كان بيظهر فاضي في طلبات الدفع عند الاستلام */
 .pay-box__target { display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap; padding: 12px; border-radius: var(--radius-sm); background: var(--soft-2); }
 .pay-box__target b { font-size: 1.3rem; letter-spacing: .5px; }
 .pay-box__actions { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
