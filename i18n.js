@@ -469,6 +469,8 @@ const I18N_EN = {
 "⚡ وصل حديثاً — إصدار 2026": "⚡ Just arrived — 2026 edition",
 "التكنولوجيا": "Technology",
 "بين إيديك": "in your hands",
+"إكسسوارات جيمنج": "Gaming accessories",
+"بأسعار واضحة": "at clear prices",
 "اكتشف أحدث الهواتف الذكية، اللابتوبات، السماعات والأجهزة القابلة للارتداء من أشهر الماركات العالمية — بأسعار تنافسية وتقسيط بدون فوائد.": "Discover the latest smartphones, laptops, headphones and wearables from top global brands — at competitive prices with interest-free installments.",
 "تسوق الآن": "Shop now",
 "شوف العروض": "See offers",
