@@ -1769,3 +1769,28 @@ h1, h2, h3 { text-wrap: balance; }
   .setup-promo__chips .chip { padding: 8px 4px; text-align: center; font-size: .82rem; }
   .setup-promo__actions .btn { width: 100%; }
 }
+
+/* ============ موبايل: إحساس التطبيق (mobile-native) ============ */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+/* iOS بيعمل زووم للصفحة لو خط الخانة أقل من 16px ومش بيرجع — على اللمس الخانات 16px */
+@media (pointer: coarse) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), textarea, select { font-size: 16px !important; }
+}
+/* الضغط المطوّل على زرار مايحددش الكلام اللي عليه (الكلام العادي يفضل قابل للنسخ) */
+.btn, .chip, .tab, .icon-btn, .add-btn, .qty button, .product__wish, .product__compare, .od-del, .setup-item__swap .btn {
+  -webkit-user-select: none; user-select: none;
+}
+/* اللمس مفيهوش hover: المتصفح بيسيب حالة الـ hover لازقة بعد الدوسة (الكارت يفضل مرفوع) — بنلغي الحركة على اللمس.
+   رد الفعل وقت الضغط بيفضل من :active */
+@media (hover: none), (pointer: coarse) {
+  .btn--primary:hover, .icon-btn:hover, .category:hover, .product:hover, .add-btn:hover, .mini-offer:hover,
+  .socials a:hover, .thumb:hover, .rv__stars button:hover, .wa-float:hover, .social__btn:hover, .alert-chip:hover,
+  .shelf__all:hover, .reel:hover, .cp-card:hover,
+  .product:hover .product__media > img, .product:hover .product__media span, .alert-chip:hover em,
+  .shelf__all:hover svg, .tab:hover .tab__icon { transform: none; }
+  [dir="ltr"] .shelf__all:hover svg { transform: scaleX(-1); }
+}
+/* رابط "تخطّى للمحتوى" لمستخدمي الكيبورد وقارئ الشاشة: بيظهر بس لما ياخد الفوكس */
+.skip-link { position: absolute; top: 8px; inset-inline-start: 8px; z-index: 300; padding: 10px 16px; border-radius: 10px; background: var(--primary); color: #fff; font-weight: 800; text-decoration: none; transform: translateY(-160%); transition: transform .15s; }
+.skip-link:focus, .skip-link:focus-visible { transform: none; outline: 2px solid #fff; outline-offset: 2px; }
+main:focus { outline: none; }

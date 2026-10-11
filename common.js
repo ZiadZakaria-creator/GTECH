@@ -39,8 +39,8 @@ function productCard(p, i = 0) {
         ${productVisual(p)}
         ${p.images?.[1] ? productVisual(p, p.images[1], 'class="product__alt" aria-hidden="true"') : ""}
       </a>
-      <button class="product__wish ${wishlist.includes(p.id) ? "active" : ""}" data-wish="${p.id}" aria-label="أضف للمفضلة">${heartIcon}</button>
-      <button class="product__compare ${compareList.includes(p.id) ? "active" : ""}" data-compare="${p.id}" aria-label="قارن" title="قارن">⚖️</button>
+      <button class="product__wish ${wishlist.includes(p.id) ? "active" : ""}" data-wish="${p.id}" aria-label="أضف للمفضلة" aria-pressed="${wishlist.includes(p.id)}">${heartIcon}</button>
+      <button class="product__compare ${compareList.includes(p.id) ? "active" : ""}" data-compare="${p.id}" aria-label="قارن" title="قارن" aria-pressed="${compareList.includes(p.id)}">⚖️</button>
       <div class="product__body">
         <span class="product__brand">${escapeHtml(p.brand)}</span>
         <h3 class="product__name"><a href="${url}">${escapeHtml(p.name)}</a></h3>
@@ -66,7 +66,7 @@ function toggleCompare(id) {
   if (!on && compareList.length >= COMPARE_MAX) return toast(`تقدر تقارن ${num(COMPARE_MAX)} منتجات بس — شيل واحد الأول`);
   compareList = on ? compareList.filter((x) => x !== id) : [...compareList, id];
   store.set("gtech-compare", compareList);
-  $$(`[data-compare="${id}"]`).forEach((b) => b.classList.toggle("active", !on));
+  $$(`[data-compare="${id}"]`).forEach((b) => { b.classList.toggle("active", !on); b.setAttribute("aria-pressed", String(!on)); });
   renderCompareTray();
   document.dispatchEvent(new Event("comparechange"));
   if (!on) toast(compareList.length > 1 ? `⚖️ اتضاف للمقارنة (${num(compareList.length)})` : "⚖️ اتضاف للمقارنة — اختار منتج كمان");
@@ -241,7 +241,7 @@ function addToCart(id, qty = 1, opts = "") {
 function toggleWish(id) {
   wishlist = wishlist.includes(id) ? wishlist.filter((w) => w !== id) : [...wishlist, id];
   const on = wishlist.includes(id);
-  $$(`[data-wish="${id}"]`).forEach((b) => b.classList.toggle("active", on));
+  $$(`[data-wish="${id}"]`).forEach((b) => { b.classList.toggle("active", on); b.setAttribute("aria-pressed", String(on)); });
   bump($("#wishCount"), wishlist.length);
   store.set("gtech-wish", wishlist);
   document.dispatchEvent(new Event("wishchange"));

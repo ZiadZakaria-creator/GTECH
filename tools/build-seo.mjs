@@ -428,7 +428,7 @@ function contentPages(pageTemplate, list, imagesById) {
   <meta property="og:url" content="${url}" />
   <meta property="og:image" content="${SITE}images/og-cover.jpg?v=3" />
   ${[crumbs, ...ld].map(jsonLd).join("\n  ")}`;
-    const main = `<main>
+    const main = `<main id="main" tabindex="-1">
     <div class="container">
       <nav class="breadcrumb" aria-label="مسار التصفح"><a href="index.html">الرئيسية</a><span>›</span><b>${esc(crumb)}</b></nav>
     </div>
@@ -446,7 +446,7 @@ function contentPages(pageTemplate, list, imagesById) {
       .replace('  <meta name="robots" content="noindex" />\n', "")
       .replace(/<title>[^<]*<\/title>/, `<title>${esc(title)}</title>`)
       .replace(/<meta name="description" content="[^"]*" \/>/, `<meta name="description" content="${esc(description)}" />\n  ${head}`)
-      .replace(/<main>[\s\S]*?<\/main>/, main)
+      .replace(/<main[^>]*>[\s\S]*?<\/main>/, main)
       .replace(/\s*<script src="wishlist\.js"><\/script>/, "");
   };
 
