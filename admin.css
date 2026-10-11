@@ -581,3 +581,9 @@
 .camp-card__side label { display: flex; gap: 6px; align-items: center; cursor: pointer; }
 
 .ad-gate__warn { margin: 4px 0 6px; padding: 10px 14px; border-radius: 12px; background: rgba(245,158,11,.12); border: 1px solid rgba(245,158,11,.45); color: #fbbf24; font-size: .9rem; line-height: 1.7; }
+
+/* زرار حذف الطلب جنب الحالة (للطلبات التجريبية/الوهمية) */
+.od-status-cell { display: inline-flex; align-items: center; gap: 8px; }
+.od-del { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 10px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-size: .95rem; cursor: pointer; transition: color .15s, border-color .15s, background-color .15s; }
+.od-del:hover, .od-del:focus-visible { color: var(--danger, #ef4444); border-color: rgba(239,68,68,.5); background: rgba(239,68,68,.08); }
+.od-del:disabled { opacity: .4; cursor: wait; }

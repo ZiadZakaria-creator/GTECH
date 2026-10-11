@@ -49,6 +49,10 @@ const localOrders = {
     store.set(ORDERS_KEY, orders);
     document.dispatchEvent(new Event("orderschange"));
   },
+  async remove(id) {
+    store.set(ORDERS_KEY, store.get(ORDERS_KEY, []).filter((o) => o.id !== id));
+    document.dispatchEvent(new Event("orderschange"));
+  },
 };
 
 const firebaseOrders = {
@@ -90,6 +94,11 @@ const firebaseOrders = {
     const col = await this.col();
     await col.doc(id).update({ ...changes, updatedAt: new Date().toISOString() });
   },
+  // حذف نهائي (الأدمن بس — قواعد الأمان) لطلبات التجربة والطلبات الوهمية
+  async remove(id) {
+    const col = await this.col();
+    await col.doc(id).delete();
+  },
 };
 
 // حساب Firebase للعميل: لو داخل بـ Google يبقى هو، وإلا حساب مجهول (Anonymous)
@@ -110,6 +119,7 @@ const ordersBackend = USE_FIREBASE ? firebaseOrders : localOrders;
 const submitOrder = (order) => ordersBackend.submit(order);
 const watchOrders = (onData, onError) => ordersBackend.watch(onData, onError);
 const updateOrder = (id, changes) => ordersBackend.update(id, changes);
+const deleteOrder = (id) => ordersBackend.remove(id);
 const watchMyOrders = (phone, onData, onError) => ordersBackend.watchMine(phone, onData, onError);
 
 // العميل يقدر يلغي طلبه طول ما لسه ماتشحنش (جديد أو متأكد ومفيش رقم تتبع)

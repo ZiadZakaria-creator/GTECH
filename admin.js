@@ -200,7 +200,7 @@ function render() {
       <td data-label="المنتجات">${num(itemsCount(o))} منتج</td>
       <td data-label="الإجمالي"><b>${fmt(o.totals.total)}</b></td>
       <td data-label="الدفع">${escapeHtml(o.payment.label)}${o.payment.status === "pending" ? ` <span class="pay-pill">⏳ مستني التحويل</span>` : o.payment.status === "paid" ? ` <span class="pay-pill pay-pill--ok">✅ اتدفع</span>` : ""}</td>
-      <td data-label="الحالة">${statusPill(o.status)}</td>
+      <td data-label="الحالة"><span class="od-status-cell">${statusPill(o.status)}<button type="button" class="od-del" data-del="${escapeHtml(o.id)}" aria-label="حذف الطلب ${escapeHtml(o.id)}" title="حذف الطلب نهائياً">🗑</button></span></td>
     </tr>`).join("");
 
   const empty = !list.length;
@@ -248,9 +248,33 @@ $("#searchBox").addEventListener("input", (e) => { query = e.target.value; rende
 
 // ============ تفاصيل الطلب ============
 $("#ordersBody").addEventListener("click", (e) => {
+  const del = e.target.closest("[data-del]");
+  if (del) return removeOrder(del.dataset.del, del);
   const row = e.target.closest("tr[data-id]");
   if (row) openOrder(row.dataset.id);
 });
+
+// حذف طلب نهائي (طلبات التجربة والوهمية): لو الطلب لسه مش ملغي، المخزون اللي اتخصم بيرجع الأول
+async function removeOrder(id, btn) {
+  const o = orders.find((x) => x.id === id);
+  if (!o) return;
+  const msg = `حذف الطلب ${o.id} (${o.customer.name} — ${fmt(o.totals.total)}) نهائياً؟\n\nالحذف مش بيترجع، والطلب هيختفي من اللوحة والتقارير ومن "طلباتي" عند العميل.` +
+    (o.status !== "cancelled" ? "\nولو كان مخصوم من المخزون، الكمية هترجع." : "");
+  if (!confirm(msg)) return;
+  btn.disabled = true;
+  try {
+    if (o.status !== "cancelled") await syncStockForStatus(o, o.status, "cancelled");
+    await deleteOrder(o.id);
+    if (openId === o.id) closeOrder();
+    toast(`🗑 الطلب ${o.id} اتحذف`);
+  } catch (err) {
+    console.warn("delete order", err);
+    btn.disabled = false;
+    toast(/permission/i.test(String(err?.code || err?.message))
+      ? "❌ قواعد الأمان في Firebase لسه مش سامحة بالحذف — انشر القواعد الجديدة (firestore.rules) وجرّب تاني"
+      : "❌ مقدرناش نحذف الطلب، جرّب تاني");
+  }
+}
 
 function openOrder(id, show = true) {
   const o = orders.find((x) => x.id === id);
