@@ -113,16 +113,26 @@ const SOURCE_INFO = {
   google: ["جوجل", "#34A853"], whatsapp: ["واتساب", "#25D366"], direct: ["مباشر / لينك", "#8a98b8"], other: ["مواقع تانية", "#a78bfa"],
 };
 function renderAnalytics(days, rangeOrders) {
-  const sum = (f) => days.reduce((s, d) => s + (visitDays[d]?.[f] || 0), 0);
-  const visitors = sum("visitors");
-  const tracked = days.some((d) => visitDays[d] && "viewers" in visitDays[d]);
+  const sum = (f, list = days) => list.reduce((s, d) => s + (visitDays[d]?.[f] || 0), 0);
+  // مسار الشراء: كل الخطوات على نفس الأيام. خطوات "شافوا/السلة/الدفع" بدأت تتعد متأخر،
+  // فلو حسبنا الزوار والطلبات على الفترة كلها المسار بيطلع غلط (طلبات أكتر من اللي دخلوا الدفع)
+  const fDays = days.filter((d) => visitDays[d] && "viewers" in visitDays[d]);
+  const tracked = fDays.length > 0;
+  const stepDays = tracked ? fDays : days;
+  const daySet = new Set(stepDays);
+  const cairoDay = (iso) => new Date(iso).toLocaleDateString("en-CA", { timeZone: "Africa/Cairo" });
+  const stepOrders = tracked ? rangeOrders.filter((o) => daySet.has(cairoDay(o.createdAt))) : rangeOrders;
+  const visitors = sum("visitors", stepDays);
   const steps = [
     ["👀", "دخلوا المتجر", visitors],
-    ["🔎", "شافوا منتج", sum("viewers")],
-    ["🛒", "ضافوا للسلة", sum("carts")],
-    ["💳", "دخلوا صفحة الدفع", sum("checkouts")],
-    ["✅", "طلبوا فعلاً", rangeOrders.length],
+    ["🔎", "شافوا منتج", sum("viewers", stepDays)],
+    ["🛒", "ضافوا للسلة", sum("carts", stepDays)],
+    ["💳", "دخلوا صفحة الدفع", sum("checkouts", stepDays)],
+    ["✅", "طلبوا فعلاً", stepOrders.length],
   ];
+  const sinceNote = tracked && fDays.length < days.length
+    ? `<p class="muted an-note">📅 المسار محسوب من ${new Date(fDays[0] + "T12:00:00+02:00").toLocaleDateString(LOCALE, { day: "numeric", month: "long" })} (${num(fDays.length)} يوم) — من ساعة ما بدأنا نعدّ الخطوات دي، عشان كل الأرقام تبقى على نفس الأيام.</p>`
+    : "";
   $("#funnel").innerHTML = steps.map(([icon, label, n], i) => {
     const w = visitors ? Math.max(4, Math.min(100, (n / visitors) * 100)) : 0;
     const prev = i ? steps[i - 1][2] : 0;
@@ -132,10 +142,14 @@ function renderAnalytics(days, rangeOrders) {
         <div class="funnel__bar"><i style="width:${w}%"></i></div>
         ${i ? `<small class="muted">${pct(n, prev)} من الخطوة اللي قبلها</small>` : `<small class="muted">${num(100)}٪</small>`}
       </div>`;
-  }).join("") + (tracked ? "" : `<p class="muted an-note">⏳ خطوات "شافوا منتج / السلة / الدفع" بتتعد من النهارده — بعد ما تحدّث قواعد الأمان في Firebase.</p>`);
+  }).join("") + sinceNote + (tracked ? "" : `<p class="muted an-note">⏳ خطوات "شافوا منتج / السلة / الدفع" بتتعد من النهارده — بعد ما تحدّث قواعد الأمان في Firebase.</p>`);
 
+  // المصادر برضه: الطلبات من نفس الأيام اللي المصادر اتسجلت فيها بس (عشان نسبة "اشتروا" تبقى صح)
+  const sDays = days.filter((d) => visitDays[d] && Object.keys(visitDays[d]).some((k) => k.startsWith("src_")));
+  const sSet = new Set(sDays);
+  const srcOrders = sDays.length ? rangeOrders.filter((o) => sSet.has(cairoDay(o.createdAt))) : rangeOrders;
   const rows = Object.keys(SOURCE_INFO).map((k) => {
-    const ords = rangeOrders.filter((o) => (o.source || "direct") === k);
+    const ords = srcOrders.filter((o) => (o.source || "direct") === k);
     return { k, v: sum("src_" + k), n: ords.length, money: ords.reduce((s, o) => s + (o.totals?.total || 0), 0) };
   }).filter((r) => r.v || r.n).sort((a, b) => b.v - a.v || b.money - a.money);
   const totalSrc = rows.reduce((s, r) => s + r.v, 0);
