@@ -1,6 +1,6 @@
 // ============ الصفحة الرئيسية ============
 const params = new URLSearchParams(location.search);
-let filter = params.get("cat") || "all";
+let filter = params.get("cat") || document.documentElement.dataset.cat || "all";
 let query = params.get("q") || "";
 const grid = $("#productsGrid");
 

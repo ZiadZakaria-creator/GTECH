@@ -140,7 +140,8 @@ function productPage(template, p, images, reviews = []) {
   const specs = Object.entries(p.specs || {}).filter(([, v]) => v);
   const highlights = (p.highlights || []).filter(Boolean);
   const descText = (p.desc || highlights.join("، ") || p.name).replace(/\s+/g, " ").trim();
-  const title = `${p.name} بسعر ${price(p.price)} جنيه | GTECH MASR`;
+  // العنوان من غير اللون (جوجل بيقص العناوين الطويلة)
+  const title = `${p.name.split(" – ")[0]} بسعر ${price(p.price)} ج.م | GTECH MASR`;
   const description = clip(`${p.name} — ${descText}`, 160);
   const model = specs.find(([k]) => /موديل/.test(k))?.[1];
   if (images.length && p.price > 0) feedItem(p, url, images, inStock, descText);
@@ -189,7 +190,7 @@ function productPage(template, p, images, reviews = []) {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "الرئيسية", item: SITE },
-      { "@type": "ListItem", position: 2, name: cat, item: `${SITE}?cat=${p.cat}` },
+      { "@type": "ListItem", position: 2, name: cat, item: CATEGORIES[p.cat] ? `${SITE}c/${p.cat}.html` : SITE },
       { "@type": "ListItem", position: 3, name: p.name, item: url },
     ],
   };
@@ -214,7 +215,7 @@ function productPage(template, p, images, reviews = []) {
     <div class="container seo-pd">
       ${images[0] ? `<img src="${esc(images[0])}" alt="${esc(p.name)}" width="600" height="600" />` : ""}
       <div>
-        <p class="seo-pd__crumbs"><a href="index.html">الرئيسية</a> › <a href="index.html?cat=${esc(p.cat)}#products">${esc(cat)}</a></p>
+        <p class="seo-pd__crumbs"><a href="index.html">الرئيسية</a> › <a href="${CATEGORIES[p.cat] ? `c/${esc(p.cat)}.html` : `index.html?cat=${esc(p.cat)}`}#products">${esc(cat)}</a></p>
         <h1>${esc(p.name)}</h1>
         <p class="seo-pd__price"><b>${price(p.price)} ج.م</b>${p.old ? ` <s>${price(p.old)} ج.م</s>` : ""} — ${inStock ? "متوفر" : "نفد من المخزون"}</p>
         ${p.brand ? `<p>الماركة: ${esc(p.brand)}</p>` : ""}
@@ -228,6 +229,7 @@ function productPage(template, p, images, reviews = []) {
   return template
     .replace('<html lang="ar" dir="rtl">', `<html lang="ar" dir="rtl" data-product="${p.id}">`)
     .replace('<meta charset="UTF-8" />', '<meta charset="UTF-8" />\n  <base href="../" />')
+    .replace('  <meta name="robots" content="noindex" />\n', "") // ده لـ product.html?id= بس
     .replace(/<title>[^<]*<\/title>/, `<title>${esc(title)}</title>`)
     .replace(/<meta name="description" content="[^"]*" \/>/, `<meta name="description" content="${esc(description)}" />${head}`)
     .replace('<section class="pd" id="productDetail"></section>', `<section class="pd" id="productDetail">${body}</section>`);
@@ -254,12 +256,86 @@ function productLinks(list) {
     <details>
       <summary>كل منتجات GTECH MASR (${list.length})</summary>
       ${cats.map((c) => `<div class="all-links__cat">
-        <h3><a href="index.html?cat=${esc(c)}#products">${esc(CATEGORIES[c] || "منتجات تانية")}</a></h3>
+        <h3><a href="${CATEGORIES[c] ? `c/${esc(c)}.html` : `index.html?cat=${esc(c)}`}#products">${esc(CATEGORIES[c] || "منتجات تانية")}</a></h3>
         <ul>${groups[c].map((p) => `<li><a href="p/${p.id}.html">${esc(p.name)}</a></li>`).join("")}</ul>
       </div>`).join("\n      ")}
     </details>
   </section>`;
   writeFileSync(index, readFileSync(index, "utf8").replace("<!--SEO-PRODUCT-LINKS-->", html));
+}
+
+// ============ صفحات الأقسام c/<قسم>.html ============
+// صفحة ثابتة لكل قسم (ماوسات، كيبوردات…) بعنوان ووصف خاص بيها عشان تظهر في بحث
+// "ماوسات جيمنج" مثلاً. الصفحة نفسها هي الرئيسية بالظبط ومفلترة على القسم (data-cat في home.js)
+const CATEGORY_SEO = {
+  mice: "ماوسات جيمنج ولاسلكي",
+  keyboards: "كيبوردات ميكانيكال وجيمنج",
+  audio: "سماعات هيدسيت جيمنج وبلوتوث",
+  earphones: "إيربودز وسماعات سلك",
+  speakers: "سبيكرات بلوتوث",
+  storage: "هاردات خارجية وSSD",
+  controllers: "دراعات جيمنج",
+  monitors: "شاشات كمبيوتر",
+  gpus: "كروت شاشة",
+};
+const BRAND_NAMES = { HYPERX: "HyperX", "WESTERN DIGITAL": "WD", GAMESIR: "GameSir", "T-DAGGER": "T-Dagger", JBL: "JBL", AULA: "AULA", SODO: "SODO", JEDEL: "JeDEL", "COUGAR-EGY": "Cougar" };
+const brandName = (b) => BRAND_NAMES[b] || b.toLowerCase().replace(/(^|[\s-])\S/g, (m) => m.toUpperCase());
+const salePrice = (p) => {
+  const sale = Number(CATEGORY_SALES[productCategory(p)]) || 0;
+  return sale && p.price > 0 ? Math.round(p.price * (1 - sale / 100)) : p.price;
+};
+function categoryPages(indexTemplate, list) {
+  const groups = {};
+  for (const p of list) (groups[productCategory(p)] ||= []).push(p);
+  const cats = Object.keys(CATEGORIES).filter((c) => groups[c]?.length);
+  mkdirSync(join(OUT, "c"), { recursive: true });
+  for (const c of cats) {
+    const items = groups[c].filter((p) => p.price > 0).sort((a, b) => salePrice(a) - salePrice(b));
+    if (!items.length) continue;
+    const url = `${SITE}c/${c}.html`;
+    const name = CATEGORY_SEO[c] || CATEGORIES[c];
+    const min = price(salePrice(items[0]));
+    const brands = [...new Set(items.map((p) => p.brand).filter(Boolean))].slice(0, 6)
+      .map(brandName);
+    const title = `${name} في مصر | أسعار تبدأ من ${min} ج.م | GTECH MASR`;
+    const intro = `${items.length} منتج${brands.length ? ` من ${brands.join(" و")}` : ""}، والأسعار تبدأ من ${min} ج.م. الدفع عند الاستلام وتوصيل القاهرة والجيزة.`;
+    const itemList = {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name,
+      numberOfItems: items.length,
+      itemListElement: items.map((p, i) => ({ "@type": "ListItem", position: i + 1, url: `${SITE}p/${p.id}.html`, name: p.name })),
+    };
+    const crumbs = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "الرئيسية", item: SITE },
+        { "@type": "ListItem", position: 2, name: CATEGORIES[c], item: url },
+      ],
+    };
+    const others = cats.filter((x) => x !== c).map((x) => `<a href="c/${x}.html">${esc(CATEGORIES[x])}</a>`).join(" · ");
+    const listHtml = `<section class="container all-links" aria-label="${esc(name)}">
+    <h2>كل ${esc(name)} (${items.length})</h2>
+    <p>${esc(intro)}</p>
+    <div class="all-links__cat"><ul>${items.map((p) => `<li><a href="p/${p.id}.html">${esc(p.name)} — ${price(salePrice(p))} ج.م</a></li>`).join("")}</ul></div>
+    <p>أقسام تانية: ${others}</p>
+  </section>`;
+    const html = indexTemplate
+      .replace('<html lang="ar" dir="rtl">', `<html lang="ar" dir="rtl" data-cat="${c}">`)
+      .replace('<meta charset="UTF-8" />', '<meta charset="UTF-8" />\n  <base href="../" />')
+      .replace(/<title>[^<]*<\/title>/, `<title>${esc(title)}</title>`)
+      .replace(/<meta name="description" content="[^"]*" \/>/, `<meta name="description" content="${esc(intro)}" />\n  ${jsonLd(itemList)}\n  ${jsonLd(crumbs)}`)
+      .replace(/<link rel="canonical" href="[^"]*" \/>/, `<link rel="canonical" href="${url}" />`)
+      .replace(/<meta property="og:title" content="[^"]*" \/>/, `<meta property="og:title" content="${esc(name)} | GTECH MASR" />`)
+      .replace(/<meta property="og:description" content="[^"]*" \/>/, `<meta property="og:description" content="${esc(intro)}" />`)
+      .replace(/<meta property="og:url" content="[^"]*" \/>/, `<meta property="og:url" content="${url}" />`)
+      .replace(/<h1>[\s\S]*?<\/h1>/, `<h1>${esc(name)}<br /><span class="gradient-text">بأسعار واضحة</span></h1>`)
+      .replace("<!--SEO-PRODUCT-LINKS-->", listHtml);
+    writeFileSync(join(OUT, `c/${c}.html`), html);
+    entries.push({ url, lastmod: items.map((p) => p.updatedAt || "").sort().pop() || undefined });
+  }
+  console.log(`📂 ${cats.length} صفحة قسم`);
 }
 
 const template = readFileSync("product.html", "utf8");
@@ -293,6 +369,7 @@ try {
     entries.push({ url: `${SITE}p/${p.id}.html`, lastmod: p.updatedAt, images });
   }
   console.log(`✅ ${list.length} صفحة منتج`);
+  categoryPages(readFileSync("index.html", "utf8"), list);
   productLinks(list);
 } catch (err) {
   // لو Firestore مردّش مانوقفش النشر: روابط p/ هتتحول لـ product.html من 404.html
