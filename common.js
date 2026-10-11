@@ -134,6 +134,8 @@ function renderCart() {
   const bundleOff = bundleTotal();
   const total = cart.reduce((s, i) => s + i.qty * findProduct(i.id).price, 0) - bundleOff;
   bump($("#cartCount"), count);
+  const navCount = document.getElementById("bnavCount");
+  if (navCount) { navCount.textContent = num(count); navCount.hidden = !count; }
   $("#cartTotal").textContent = fmt(total);
   // سطر خصم الباكدج فوق الإجمالي
   const totalRow = $(".cart__total");
@@ -718,6 +720,42 @@ $("#newsletterForm")?.addEventListener("submit", (e) => {
   e.target.reset();
   toast(PROMO_CODES_ON ? "📩 شكراً لاشتراكك! كود الخصم وصل لبريدك" : "📩 شكراً لاشتراكك!");
 });
+
+// ============ شريط التنقل تحت (الموبايل) ============
+// زي التطبيقات: الرئيسية · الأقسام · جهّز سيتك · السلة. بيظهر على الشاشات الصغيرة بس (styles.css)،
+// ومش بيظهر في صفحة المنتج (فيها شريط "أضف للسلة") ولا صفحة الدفع (عشان مايلهيش عن الطلب)
+(() => {
+  if (document.querySelector("#checkoutForm, .ad-app") || /\/admin\//.test(location.pathname) || document.body.classList.contains("product-page")) return;
+  const page = (location.pathname.split("/").pop() || "index.html").replace(/^$/, "index.html");
+  const onHome = page === "index.html" && !document.documentElement.dataset.cat;
+  const ico = (d) => `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+  const items = [
+    { key: "home", href: "index.html", label: "الرئيسية", icon: ico('<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/>'), active: onHome },
+    { key: "cats", href: "index.html#categories", label: "الأقسام", icon: ico('<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>'), active: !!document.documentElement.dataset.cat },
+    { key: "setup", href: "setup.html", label: "جهّز سيتك", icon: ico('<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8"/><path d="M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01M8 19h.01M12 19h.01M16 19h.01"/>'), active: page === "setup.html" },
+  ];
+  document.body.insertAdjacentHTML("beforeend", `
+    <nav class="bnav" aria-label="تنقل سريع">
+      ${items.map((it) => `<a class="bnav__item ${it.active ? "active" : ""}" href="${it.href}" data-bnav="${it.key}" ${it.active ? 'aria-current="page"' : ""}>${it.icon}<span>${it.label}</span></a>`).join("")}
+      <button type="button" class="bnav__item" data-bnav="cart" aria-label="السلة">${ico('<circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>')}<span>السلة</span><b class="bnav__count" id="bnavCount" hidden></b></button>
+    </nav>`);
+  document.body.classList.add("has-bnav");
+  const count = cart.reduce((s, i) => s + i.qty, 0);
+  const badge = document.getElementById("bnavCount");
+  badge.textContent = num(count);
+  badge.hidden = !count;
+  document.querySelector(".bnav").addEventListener("click", (e) => {
+    const it = e.target.closest("[data-bnav]");
+    if (!it) return;
+    if (it.dataset.bnav === "cart") return openCart(true);
+    // على الرئيسية نفسها: ننزل للقسم من غير ما نعيد تحميل الصفحة
+    const target = it.dataset.bnav === "cats" ? document.getElementById("categories") : it.dataset.bnav === "home" && onHome ? document.body : null;
+    if (target && page === "index.html") {
+      e.preventDefault();
+      target === document.body ? scrollTo({ top: 0, behavior: "smooth" }) : target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  });
+})();
 
 // ============ زرار واتساب العائم ============
 document.body.insertAdjacentHTML("beforeend", `

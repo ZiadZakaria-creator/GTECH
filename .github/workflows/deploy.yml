@@ -45,6 +45,12 @@ jobs:
       - name: Build product pages for Google (SEO)
         run: node tools/build-seo.mjs _site "${{ steps.pages.outputs.base_url }}"
 
+      # نسخ WebP صغيرة من صور المنتجات للكروت (الموبايل بيحمّل أخف بكتير)
+      - name: Product image thumbnails
+        run: |
+          pip install --quiet pillow
+          python3 tools/thumbs.py _site
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site

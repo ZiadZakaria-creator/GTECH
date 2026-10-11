@@ -227,6 +227,13 @@ function hydrateImage(img) {
     .then((src) => {
       // صور المنتجات على خلفية سادة (متجهزة في اللوحة) بتظهر كاملة على نفس لون خلفيتها
       const fit = /^cfit-([0-9a-f]{6})-/.exec(img.dataset.fs);
+      // الكروت والسلة والقوائم بتاخد النسخة الصغيرة (p/img/t/*.webp — tools/thumbs.py)، وصورة المنتج الكبيرة بتاخد الأصلية.
+      // لو المصغرة مش موجودة (صورة لسه جديدة) بنرجع للأصلية من غير ما نبيّن الإيموجي
+      const full = src;
+      if (src.startsWith("p/img/") && !img.classList.contains("gallery__main")) {
+        src = src.replace(/^p\/img\/([^/]+)\.\w+$/, "p/img/t/$1.webp");
+        img.onerror = () => { img.onerror = () => imgFallback(img); img.src = full; };
+      }
       if (fit) Object.assign(img.style, { objectFit: "contain", background: "#" + fit[1] });
       else detectPlainBackground(src).then((bg) => { if (bg) Object.assign(img.style, { objectFit: "contain", background: bg }); });
       img.src = src;
