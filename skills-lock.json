@@ -13,6 +13,12 @@
       "skillPath": "skills/ad-creative/SKILL.md",
       "computedHash": "7c2beab672f7f50542c40472fe45ad4a1920f2395ccf14f79bb54cf58a004b22"
     },
+    "agent-browser": {
+      "source": "vercel-labs/agent-browser",
+      "sourceType": "github",
+      "skillPath": "skills/agent-browser/SKILL.md",
+      "computedHash": "dd491d53824ad9286ec950aee667098446332429a6d41fe28b4ba11f1959264c"
+    },
     "ai-image-generation": {
       "source": "qu-skills/superpowers",
       "sourceType": "github",
