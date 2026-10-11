@@ -527,7 +527,7 @@ const I18N_EN = {
 "التقسيط": "Installments",
 "الأسئلة الشائعة": "FAQ",
 "📍 القاهرة، مصر": "📍 Cairo, Egypt",
-"🕘 يومياً 10 ص – 11 م": "🕘 Daily 10 AM – 11 PM",
+"🕘 يومياً 11 ص – 11 م": "🕘 Daily 11 AM – 11 PM",
 "GTECH MASR. جميع الحقوق محفوظة.": "GTECH MASR. All rights reserved.",
 "فوري": "Fawry",
 "سلة التسوق": "Shopping cart",
