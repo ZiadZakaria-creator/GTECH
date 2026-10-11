@@ -7,6 +7,7 @@
 // التشغيل: node tools/build-seo.mjs <فولدر الموقع> <رابط الموقع>
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
+import { COMPARISONS, GUIDES } from "./content.mjs";
 
 const OUT = process.argv[2] || "_site";
 const DEFAULT_SITE = "https://ziadzakaria-creator.github.io/GTECH/";
@@ -223,6 +224,7 @@ function productPage(template, p, images, reviews = []) {
         ${p.desc ? `<p>${esc(p.desc)}</p>` : ""}
         ${highlights.length ? `<ul>${highlights.map((h) => `<li>${esc(h)}</li>`).join("")}</ul>` : ""}
         ${specs.length ? `<table>${specs.map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join("")}</table>` : ""}
+        ${COMPARISONS.filter((c) => c.a === p.id || c.b === p.id).map((c) => `<p>⚖️ <a href="compare/${c.slug}.html">${esc(c.title)}</a></p>`).join("")}
       </div>
     </div>`;
 
@@ -319,6 +321,7 @@ function categoryPages(indexTemplate, list) {
     <h2>كل ${esc(name)} (${items.length})</h2>
     <p>${esc(intro)}</p>
     <div class="all-links__cat"><ul>${items.map((p) => `<li><a href="p/${p.id}.html">${esc(p.name)} — ${price(salePrice(p))} ج.م</a></li>`).join("")}</ul></div>
+    ${relatedLinks(c)}
     <p>أقسام تانية: ${others}</p>
   </section>`;
     const html = indexTemplate
@@ -336,6 +339,131 @@ function categoryPages(indexTemplate, list) {
     entries.push({ url, lastmod: items.map((p) => p.updatedAt || "").sort().pop() || undefined });
   }
   console.log(`📂 ${cats.length} صفحة قسم`);
+}
+
+// ============ صفحات المقارنة وأدلة الشراء (tools/content.mjs) ============
+const contentFor = (cat) => [
+  ...COMPARISONS.filter((c) => c.cat === cat).map((c) => ({ href: `compare/${c.slug}.html`, title: c.title })),
+  ...GUIDES.filter((g) => g.cat === cat).map((g) => ({ href: `guides/${g.slug}.html`, title: g.title })),
+];
+const relatedLinks = (cat, self = "") => {
+  const l = contentFor(cat).filter((x) => x.href !== self);
+  return l.length ? `<p>📖 قبل ما تختار: ${l.map((x) => `<a href="${x.href}">${esc(x.title)}</a>`).join(" · ")}</p>` : "";
+};
+
+function contentPages(pageTemplate, list, imagesById) {
+  const byId = Object.fromEntries(list.map((p) => [p.id, p]));
+  const live = (id) => (byId[id] && byId[id].price > 0 ? byId[id] : null);
+  const warranty = (p) => {
+    const w = String(p.warranty || "").trim();
+    return !w || /^(لا|بدون|مفيش)/.test(w) ? "بدون ضمان" : `ضمان ${w}`;
+  };
+  const card = (p) => `<a class="cp-card" href="p/${p.id}.html">
+      ${imagesById[p.id]?.[0] ? `<img src="${esc(imagesById[p.id][0])}" alt="${esc(p.name)}" width="300" height="300" loading="lazy" />` : ""}
+      <b>${esc(p.name)}</b>
+      <span class="cp-card__price">${price(salePrice(p))} ج.م</span>
+      <small>${esc(warranty(p))}</small>
+    </a>`;
+  // "وR50i" بتتعرض مقلوبة جنب الكلام الإنجليزي ← مسافة بعد واو العطف قبل أي حرف لاتيني أو رقم
+  const fill = (html) => html.replace(/(^|[\s>(])و(?=[A-Za-z0-9])/g, "$1و ")
+    .replace(/\{\{price:(\d+)\}\}/g, (_, id) => (live(+id) ? `${price(salePrice(live(+id)))} ج.م` : "—"))
+    .replace(/\{\{link:(\d+)\}\}/g, (_, id) => (live(+id) ? `<a href="p/${id}.html">${esc(live(+id).name)}</a>` : ""))
+    .replace(/\{\{cat:(\w+)\}\}/g, (_, c) => `<a href="c/${c}.html">${esc(CATEGORIES[c] || "المنتجات")}</a>`)
+    .replace(/\{\{min:(\w+)\}\}/g, (_, c) => {
+      const ps = list.filter((p) => productCategory(p) === c && p.price > 0).map(salePrice);
+      return ps.length ? `${price(Math.min(...ps))} ج.م` : "";
+    })
+    .replace(/\{\{cards:([\d,]+)\}\}/g, (_, ids) => {
+      const ps = ids.split(",").map(Number).map(live).filter(Boolean);
+      return ps.length ? `<div class="cp-cards">${ps.map(card).join("")}</div>` : "";
+    });
+
+  const page = ({ url, title, description, h1, crumb, body, ld = [] }) => {
+    const crumbs = { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [
+      { "@type": "ListItem", position: 1, name: "الرئيسية", item: SITE },
+      { "@type": "ListItem", position: 2, name: crumb, item: url },
+    ] };
+    const head = `<link rel="canonical" href="${url}" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="GTECH MASR" />
+  <meta property="og:locale" content="ar_EG" />
+  <meta property="og:title" content="${esc(title)}" />
+  <meta property="og:description" content="${esc(description)}" />
+  <meta property="og:url" content="${url}" />
+  <meta property="og:image" content="${SITE}images/og-cover.jpg?v=3" />
+  ${[crumbs, ...ld].map(jsonLd).join("\n  ")}`;
+    const main = `<main>
+    <div class="container">
+      <nav class="breadcrumb" aria-label="مسار التصفح"><a href="index.html">الرئيسية</a><span>›</span><b>${esc(crumb)}</b></nav>
+    </div>
+    <section class="section section--page">
+      <article class="container cp" data-no-i18n>
+        <h1>${esc(h1)}</h1>
+        ${body}
+        <div class="cp-cta"><a class="btn btn--primary" href="setup.html">🧮 جهّز سيتك بميزانيتك</a><a class="btn btn--ghost" href="https://wa.me/201100053123" target="_blank" rel="noopener">💬 اسألنا على واتساب</a></div>
+        <p class="cp-note">💵 الدفع عند الاستلام · 🚚 توصيل القاهرة والجيزة · الأسعار من الموقع وبتتحدث تلقائي</p>
+      </article>
+    </section>
+  </main>`;
+    return pageTemplate
+      .replace('<meta charset="UTF-8" />', '<meta charset="UTF-8" />\n  <base href="../" />')
+      .replace('  <meta name="robots" content="noindex" />\n', "")
+      .replace(/<title>[^<]*<\/title>/, `<title>${esc(title)}</title>`)
+      .replace(/<meta name="description" content="[^"]*" \/>/, `<meta name="description" content="${esc(description)}" />\n  ${head}`)
+      .replace(/<main>[\s\S]*?<\/main>/, main)
+      .replace(/\s*<script src="wishlist\.js"><\/script>/, "");
+  };
+
+  mkdirSync(join(OUT, "compare"), { recursive: true });
+  mkdirSync(join(OUT, "guides"), { recursive: true });
+  let n = 0;
+  for (const c of COMPARISONS) {
+    const A = live(c.a), B = live(c.b);
+    if (!A || !B) { console.warn(`مقارنة ${c.slug}: منتج مش متاح، اتشالت`); continue; }
+    const short = (p) => (p === A ? c.names?.[0] : c.names?.[1]) || p.name.split(" – ")[0];
+    const keys = [...new Set([...Object.keys(A.specs || {}), ...Object.keys(B.specs || {})])]
+      .filter((k) => !/اللون|الموديل|الضمان|أنظمة التشغيل|المتطلبات/.test(k) && (A.specs?.[k] || B.specs?.[k]));
+    const row = (label, a, b) => `<tr><th scope="row">${esc(label)}</th><td>${a}</td><td>${b}</td></tr>`;
+    const table = `<div class="cp-table-wrap"><table class="cp-table">
+      <thead><tr><th scope="col"></th><th scope="col"><a href="p/${A.id}.html">${esc(short(A))}</a></th><th scope="col"><a href="p/${B.id}.html">${esc(short(B))}</a></th></tr></thead>
+      <tbody>
+        ${row("السعر", `<b>${price(salePrice(A))} ج.م</b>`, `<b>${price(salePrice(B))} ج.م</b>`)}
+        ${row("الضمان", esc(warranty(A)), esc(warranty(B)))}
+        ${row("الماركة", esc(brandName(A.brand || "")), esc(brandName(B.brand || "")))}
+        ${keys.map((k) => row(k, esc(A.specs?.[k] || "—"), esc(B.specs?.[k] || "—"))).join("\n        ")}
+      </tbody></table></div>`;
+    const body = fill(`<p class="cp-lead">${c.intro}</p>
+        {{cards:${c.a},${c.b}}}
+        <h2>أهم الفروق</h2>
+        <ul>${c.points.map((x) => `<li>${x}</li>`).join("")}</ul>
+        <h2>تختار مين؟</h2>
+        <div class="cp-verdict">${c.verdict.map(([who, why]) => `<div><b>${who}</b><p>${why}</p></div>`).join("")}</div>
+        <h2>المواصفات جنب بعض</h2>
+        ${table}
+        ${c.note ? `<p class="cp-lead">${c.note}</p>` : ""}
+        ${relatedLinks(c.cat, `compare/${c.slug}.html`)}`);
+    const url = `${SITE}compare/${c.slug}.html`;
+    writeFileSync(join(OUT, `compare/${c.slug}.html`), page({
+      url, h1: `${c.title} مقارنة بالمواصفات والسعر`, crumb: "مقارنة",
+      title: `${c.title} مقارنة المواصفات والسعر | GTECH MASR`,
+      description: clip(`${c.intro} الأسعار الحالية: ${short(A)} بـ ${price(salePrice(A))} ج.م و${short(B)} بـ ${price(salePrice(B))} ج.م.`, 160),
+      body,
+      ld: [{ "@context": "https://schema.org", "@type": "ItemList", name: c.title, itemListElement: [A, B].map((p, i) => ({ "@type": "ListItem", position: i + 1, url: `${SITE}p/${p.id}.html`, name: p.name })) }],
+    }));
+    entries.push({ url, lastmod: [A.updatedAt, B.updatedAt].filter(Boolean).sort().pop() });
+    n++;
+  }
+  for (const g of GUIDES) {
+    const url = `${SITE}guides/${g.slug}.html`;
+    writeFileSync(join(OUT, `guides/${g.slug}.html`), page({
+      url, h1: g.title, crumb: "دليل الشراء", title: `${g.title} | GTECH MASR`, description: g.description,
+      body: fill(g.body + relatedLinks(g.cat, `guides/${g.slug}.html`)),
+      ld: [{ "@context": "https://schema.org", "@type": "Article", headline: g.title, description: g.description, inLanguage: "ar", author: { "@type": "Organization", name: "GTECH MASR" }, publisher: { "@type": "Organization", name: "GTECH MASR" }, mainEntityOfPage: url }],
+    }));
+    entries.push({ url });
+    n++;
+  }
+  console.log(`📖 ${n} صفحة مقارنة ودليل`);
 }
 
 const template = readFileSync("product.html", "utf8");
@@ -361,8 +489,10 @@ try {
   } catch (err) {
     console.warn("reviews:", err.message);
   }
+  const imagesById = {};
   for (const p of list) {
     const images = await imageUrls(p);
+    imagesById[p.id] = images;
     const mine = reviews.filter((r) => r.productId === p.id && r.stars >= 1 && r.stars <= 5)
       .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
     writeFileSync(join(OUT, `p/${p.id}.html`), productPage(template, p, images, mine));
@@ -370,6 +500,7 @@ try {
   }
   console.log(`✅ ${list.length} صفحة منتج`);
   categoryPages(readFileSync("index.html", "utf8"), list);
+  contentPages(readFileSync("wishlist.html", "utf8"), list, imagesById);
   productLinks(list);
 } catch (err) {
   // لو Firestore مردّش مانوقفش النشر: روابط p/ هتتحول لـ product.html من 404.html
