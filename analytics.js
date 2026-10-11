@@ -61,3 +61,29 @@ function track(event, { items = [], value, orderId } = {}) {
     }, orderId ? { event_id: orderId } : undefined);
   } catch (err) { console.warn("analytics", err); }
 }
+
+// ============ Google Customer Reviews ============
+// بعد الطلب جوجل بيعرض على العميل يقيّم المتجر: لو وافق بيبعتله استبيان بالإيميل بعد ميعاد التوصيل.
+// تقييمات حقيقية من ناس اشترت فعلاً (ممكن تطلع نجوم المتجر في جوجل). بيشتغل بس لو العميل كتب إيميل،
+// وجوجل مش بيبعت الاستبيان غير لو العميل وافق في الشباك (مكتوب في سياسة الخصوصية).
+function offerCustomerReviews(order) {
+  const id = typeof GOOGLE_MERCHANT_ID !== "undefined" ? Number(GOOGLE_MERCHANT_ID) : 0;
+  const email = order?.customer?.email;
+  if (!ANALYTICS_ON || !id || !email) return;
+  // ميعاد التوصيل بتوقيت القاهرة: السريع خلال يوم (بنحسبه 2 احتياطي)، العادي 2-4 أيام (بناخد الآخر)
+  const days = order.shipping?.method === "express" ? 2 : 4;
+  const eta = new Date(Date.now() + days * 86400000).toLocaleDateString("en-CA", { timeZone: "Africa/Cairo" });
+  window.___gcfg = { lang: document.documentElement.lang === "en" ? "en" : "ar" };
+  window.renderOptIn = () => window.gapi.load("surveyoptin", () => window.gapi.surveyoptin.render({
+    merchant_id: id,
+    order_id: String(order.id),
+    email,
+    delivery_country: "EG",
+    estimated_delivery_date: eta,
+    opt_in_style: "CENTER_DIALOG",
+  }));
+  const s = document.createElement("script");
+  s.src = "https://apis.google.com/js/platform.js?onload=renderOptIn";
+  s.async = true;
+  document.head.appendChild(s);
+}

@@ -52,6 +52,8 @@ const EMAIL_CONFIG = {
 // سيبهم فاضيين لحد ما تعمل الحسابات — مفيش حاجة بتتحمّل وهما فاضيين
 // tiktokPixel: من TikTok Ads Manager ← Tools ← Events ← Web Events ← Set up web events ← انسخ الـ Pixel ID وحطه هنا
 const ANALYTICS_IDS = { ga4: "G-H47X3Z8EW9", metaPixel: "1089060123727450", tiktokPixel: "DB3QL6JC77U2V8MQGM3G" };
+// Google Customer Reviews (مراجعات العملاء من جوجل): رقم حساب Merchant Center. امسحه عشان توقف الاستبيان.
+const GOOGLE_MERCHANT_ID = "5872766083";
 
 // ============ إشعار فوري على موبايلك بكل أوردر جديد (ntfy — مجاني) ============
 // نزّل تطبيق ntfy على موبايلك ← + ← اكتب اسم القناة دي بالظبط ← Subscribe.

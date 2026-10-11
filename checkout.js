@@ -247,6 +247,7 @@ async function placeOrder() {
   $("#successView").hidden = false;
   document.title = "GTECH MASR | تم إرسال الطلب";
   scrollTo({ top: 0, behavior: "smooth" });
+  if (typeof offerCustomerReviews === "function") offerCustomerReviews(order);
 }
 
 document.addEventListener("cartchange", renderSummary);
