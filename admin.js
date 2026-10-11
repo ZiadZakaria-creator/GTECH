@@ -289,6 +289,16 @@ function openOrder(id, show = true) {
     o.payment?.status === "paid" ? `✅ الطلب مدفوع، مش هتدفع حاجة للمندوب.` : `💵 جهّز ${egpTxt(t.total)} للمندوب عند الاستلام.`,
     `المندوب هيكلمك قبل ما يوصل، ولو في أي حاجة كلمنا هنا 🙏`,
   ].filter((l) => l !== null).join("\n") : "";
+  // بعد التسليم: نطلب رأي العميل الحقيقي (اللينك بيفتح نافذة "شاركنا رأيك" في طلباتي على الطلب ده)
+  const rateMsg = o.status === "delivered" ? [
+    `أهلاً ${c.name} 👋`,
+    `معاك GTECH MASR، طلبك رقم ${o.id} وصلك؟ نتمنى يكون عجبك 💙`,
+    ``,
+    `لو عندك دقيقة، قولنا رأيك في المنتج بالنجوم من هنا:`,
+    siteUrl(`myorders.html?rate=${encodeURIComponent(o.id)}`),
+    ``,
+    `رأيك بيساعد غيرك يختار، ولو في أي مشكلة في الطلب رد علينا هنا وهنحلها 🙏`,
+  ].join("\n") : "";
   // تنبيه مشكلة توصيل: منطقة العميل خارج نطاق شركة الشحن + اختيارات يرد بيها
   const paid = o.payment?.status === "paid";
   const zoneMsg = [
@@ -325,6 +335,7 @@ function openOrder(id, show = true) {
         <a class="btn btn--ghost btn--sm" href="tel:${escapeHtml(c.phone)}">📞 اتصال</a>
         <a class="btn btn--primary btn--sm" href="${waLink(greet, intlPhone)}" target="_blank" rel="noopener" title="رسالة جاهزة فيها المنتجات والإجمالي والعنوان ولينك التتبع">✅ ابعت تأكيد الطلب</a>
         ${shipMsg ? `<a class="btn btn--ghost btn--sm" href="${waLink(shipMsg, intlPhone)}" target="_blank" rel="noopener">🚚 ابعت إنه اتشحن</a>` : ""}
+        ${rateMsg ? `<a class="btn btn--ghost btn--sm" href="${waLink(rateMsg, intlPhone)}" target="_blank" rel="noopener" title="رسالة للعميل فيها لينك يقيّم المنتج بالنجوم">⭐ اطلب رأيه</a>` : ""}
         <a class="btn btn--sm btn--warn" href="${waLink(zoneMsg, intlPhone)}" target="_blank" rel="noopener" title="ابعت للعميل إن منطقته خارج نطاق التوصيل">⚠️ مشكلة توصيل</a>
       </div>
     </section>

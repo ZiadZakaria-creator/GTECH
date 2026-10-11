@@ -5,9 +5,9 @@
   <meta name="author" content="ZiraTech" />
   <meta name="copyright" content="© ZiraTech. All rights reserved." />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="noindex" />
-  <title>GTECH MASR | تفاصيل المنتج</title>
-  <meta name="description" content="GTECH MASR متجر إلكترونيات في مصر: ماوسات وكيبوردات وسماعات جيمنج وإكسسوارات كمبيوتر أصلية بأفضل الأسعار. توصيل القاهرة والجيزة والدفع عند الاستلام." />
+  <title>جهّز سيت أب جيمنج بميزانيتك | ماوس وكيبورد وسماعة | GTECH MASR</title>
+  <link rel="canonical" href="https://ziadzakaria-creator.github.io/GTECH/setup.html" />
+  <meta name="description" content="اكتب ميزانيتك واختار القطع اللي محتاجها، وإحنا نجهّزلك أحسن سيت ماوس وكيبورد وسماعة ودراع من منتجاتنا بأسعارها الحقيقية. الدفع عند الاستلام وتوصيل القاهرة والجيزة." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="styles.css" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a84ff'/><text x='32' y='44' font-size='36' font-family='Arial' font-weight='900' fill='white' text-anchor='middle'>G</text></svg>" />
 </head>
-<body class="product-page">
+<body class="wishlist-page">
 
   <!-- شريط علوي -->
   <div class="topbar">
@@ -79,32 +79,51 @@
 
   <main>
     <div class="container">
-      <nav class="breadcrumb" id="breadcrumb" aria-label="مسار التصفح"></nav>
+      <nav class="breadcrumb" aria-label="مسار التصفح"><a href="index.html">الرئيسية</a><span>›</span><b>جهّز سيتك</b></nav>
     </div>
 
-    <section class="pd" id="productDetail"></section>
-
-    <div class="container">
-      <div class="pd-tabs" id="pdTabs" role="tablist">
-        <button class="pd-tab active" data-panel="desc" role="tab">الوصف</button>
-        <button class="pd-tab" data-panel="specs" role="tab">المواصفات</button>
-        <button class="pd-tab" data-panel="reviews" role="tab">التقييمات <span id="reviewsCount"></span></button>
-      </div>
-      <div class="pd-panel active" id="panel-desc"></div>
-      <div class="pd-panel" id="panel-specs"></div>
-      <div class="pd-panel" id="panel-reviews"></div>
-    </div>
-
-    <section class="section" id="related">
+    <section class="section section--page">
       <div class="container">
         <div class="section__head">
           <div>
-            <span class="eyebrow">ممكن يعجبك كمان</span>
-            <h2>منتجات مشابهة</h2>
+            <span class="eyebrow">🧮 جهّز سيتك بميزانيتك</span>
+            <h1 class="setup-title">سيت أب كامل <span class="gradient-text">على قد ميزانيتك</span></h1>
+            <p class="muted">اختار ميزانيتك والقطع اللي محتاجها، وإحنا نختارلك أحسن تشكيلة من المتاح بأسعار الموقع. تقدر تبدّل أي قطعة بأرخص أو أغلى.</p>
           </div>
-          <a href="index.html#products" class="link-more">كل المنتجات ←</a>
         </div>
-        <div class="products" id="relatedGrid"></div>
+
+        <div class="setup-controls card-box">
+          <div class="setup-controls__row">
+            <span class="setup-controls__label">💰 الميزانية</span>
+            <div class="chips" id="budgetChips"></div>
+            <form class="setup-budget" id="budgetForm">
+              <label class="sr-only" for="budgetInput">ميزانية تانية بالجنيه</label>
+              <input id="budgetInput" name="budget" type="number" inputmode="numeric" min="100" step="50" dir="ltr" autocomplete="off" placeholder="مثلاً 2500…" />
+              <button class="btn btn--ghost btn--sm" type="submit">احسب</button>
+            </form>
+          </div>
+          <div class="setup-controls__row">
+            <span class="setup-controls__label">🧩 القطع</span>
+            <div class="chips" id="slotChips"></div>
+          </div>
+        </div>
+
+        <div class="setup-grid" id="setupGrid" aria-live="polite"></div>
+        <div class="empty-block" id="setupEmpty" hidden>
+          <span>🧮</span>
+          <h3>مفيش سيت في الميزانية دي</h3>
+          <p id="setupEmptyText"></p>
+        </div>
+
+        <div class="setup-bar card-box" id="setupBar" hidden>
+          <div>
+            <small>إجمالي السيت</small>
+            <b id="setupTotal"></b>
+            <small id="setupLeft"></small>
+          </div>
+          <button type="button" class="btn btn--primary" id="setupAdd">🛒 ضيف السيت كله للسلة</button>
+        </div>
+        <p class="setup-note muted">💵 الدفع عند الاستلام · 🚚 توصيل القاهرة والجيزة · الشحن بيتحسب في صفحة الدفع</p>
       </div>
     </section>
   </main>
@@ -172,8 +191,6 @@
   <script src="common.js"></script>
   <script src="reviews.js"></script>
   <script src="visits.js"></script>
-  <script src="api.js"></script>
-  <script src="alerts.js"></script>
-  <script src="product.js"></script>
+  <script src="setup.js"></script>
 </body>
 </html>

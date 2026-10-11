@@ -340,7 +340,7 @@ function categoryPages(indexTemplate, list) {
 
 const template = readFileSync("product.html", "utf8");
 mkdirSync(join(OUT, "p/img"), { recursive: true });
-const entries = [{ url: SITE }, { url: `${SITE}policies.html` }];
+const entries = [{ url: SITE }, { url: `${SITE}setup.html` }, { url: `${SITE}policies.html` }];
 try {
   const s = docToObject(await getJson(`${FS}/settings/shipping?key=${apiKey}`));
   for (const [g] of SHIP_GOVS) if (s.rates && g in s.rates) shipRates[g] = s.rates[g] == null ? null : Number(s.rates[g]);

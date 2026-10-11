@@ -106,6 +106,20 @@ function renderOrders(list) {
         </footer>
       </article>`;
   }).join("");
+  openRateFromLink();
+}
+
+// لينك رسالة "اطلب رأيه" من اللوحة: myorders.html?rate=رقم الطلب ← بيفتح نافذة التقييم مرة واحدة
+let rateLinkDone = false;
+function openRateFromLink() {
+  const id = new URLSearchParams(location.search).get("rate");
+  if (rateLinkDone || !id) return;
+  const btn = $$("[data-rate]");
+  const b = [...btn].find((x) => x.dataset.rate === id);
+  rateLinkDone = true;
+  if (!b) return;
+  b.closest(".my-order")?.scrollIntoView({ block: "center" });
+  openRate(shownOrders.find((x) => x.id === id), b);
 }
 
 // إلغاء الطلب من العميل (قبل الشحن)
