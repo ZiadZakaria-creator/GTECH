@@ -100,6 +100,7 @@ function renderOrders(list) {
           <b>الإجمالي: ${fmt(o.totals.total)}</b>
           <a class="btn btn--ghost btn--sm" target="_blank" rel="noopener"
              href="${waLink(`السلام عليكم، عندي استفسار عن طلبي رقم ${o.id}`)}">💬 استفسار</a>
+          ${o.status === "delivered" ? `<button class="btn btn--ghost btn--sm my-rate" data-rate="${escapeHtml(o.id)}">${rateLabel(o)}</button>` : ""}
           ${["delivered", "cancelled"].includes(o.status) ? `<button class="btn btn--primary btn--sm my-reorder" data-reorder="${escapeHtml(o.id)}">🔁 اطلب تاني</button>` : ""}
           ${canCustomerCancel(o) ? `<button class="btn btn--ghost btn--sm my-cancel" data-cancel="${escapeHtml(o.id)}">✖ إلغاء الطلب</button>` : ""}
         </footer>
@@ -112,6 +113,8 @@ let shownOrders = [];
 $("#myOrders").addEventListener("click", async (e) => {
   const re = e.target.closest("[data-reorder]");
   if (re) return reorder(shownOrders.find((x) => x.id === re.dataset.reorder));
+  const rt = e.target.closest("[data-rate]");
+  if (rt) return openRate(shownOrders.find((x) => x.id === rt.dataset.rate), rt);
   const b = e.target.closest("[data-cancel]");
   if (!b) return;
   const o = shownOrders.find((x) => x.id === b.dataset.cancel);
@@ -126,6 +129,93 @@ $("#myOrders").addEventListener("click", async (e) => {
     console.warn("cancel", err);
     b.disabled = false;
     toast("❌ مقدرناش نلغي الطلب دلوقتي، كلمنا على واتساب وهنلغيه لك");
+  }
+});
+
+// ============ "شاركنا رأيك": تقييم منتجات الطلب بعد ما يتسلّم ============
+// نفس تقييمات صفحة المنتج (reviews.js): بيتنشر باسم العميل في صفحة المنتج، وكل منتج تقييم واحد يتعدّل.
+// ده تقييم المنتج على موقعنا؛ استبيان جوجل عن المتجر بيتعرض مرة واحدة في صفحة "تم الطلب" (شروط جوجل).
+const rateItems = (o) => [...new Map(o.items.map((i) => [i.id, i])).values()].filter((i) => findProduct(i.id));
+const rateLabel = (o) => {
+  const items = rateItems(o);
+  return items.length && items.every((i) => myReviewFor(i.id)) ? "✏️ عدّل رأيك" : "⭐ شاركنا رأيك";
+};
+
+document.body.insertAdjacentHTML("beforeend", `
+  <div class="modal" id="rateModal" hidden role="dialog" aria-modal="true" aria-labelledby="rateTitle">
+    <form class="modal__box card-box rate-box" id="rateForm">
+      <button type="button" class="icon-btn modal__close" data-rate-close aria-label="إغلاق">✕</button>
+      <h3 id="rateTitle">شاركنا رأيك</h3>
+      <p class="muted">إيه رأيك في اللي وصلك؟ تقييمك بيظهر باسمك في صفحة المنتج وبيساعد غيرك يختار.</p>
+      <div class="rate-box__items" id="rateItems"></div>
+      <div class="rate-box__actions">
+        <button type="button" class="btn btn--ghost" data-rate-close>مش دلوقتي</button>
+        <button type="submit" class="btn btn--primary">نشر التقييم</button>
+      </div>
+    </form>
+  </div>`);
+
+let rateOrder = null;
+let rateOpener = null;
+function openRate(o, opener) {
+  if (!o) return;
+  rateOrder = o;
+  rateOpener = opener;
+  $("#rateItems").innerHTML = rateItems(o).map((i) => {
+    const p = findProduct(i.id);
+    const mine = myReviewFor(i.id);
+    const v = mine?.stars || 0;
+    return `
+      <fieldset class="rate-item" data-item="${i.id}">
+        <legend class="rate-item__head"><span class="my-item__img">${productVisual(p)}</span><b>${escapeHtml(p.name)}</b></legend>
+        <div class="rv__stars" data-value="${v}" role="radiogroup" aria-label="تقييم ${escapeHtml(p.name)}">
+          ${[1, 2, 3, 4, 5].map((s) => `<button type="button" data-star="${s}" class="${s <= v ? "on" : ""}" role="radio" aria-checked="${s === v}" aria-label="${num(s)} من 5">★</button>`).join("")}
+        </div>
+        <textarea name="text-${i.id}" rows="2" maxlength="500" placeholder="اكتب رأيك… (اختياري)">${escapeHtml(mine?.text || "")}</textarea>
+      </fieldset>`;
+  }).join("");
+  $("#rateModal").hidden = false;
+  document.body.classList.add("no-scroll");
+  $("#rateItems [data-star]")?.focus();
+}
+function closeRate() {
+  $("#rateModal").hidden = true;
+  document.body.classList.remove("no-scroll");
+  rateOpener?.focus();
+}
+$("#rateModal").addEventListener("click", (e) => {
+  if (e.target.id === "rateModal" || e.target.closest("[data-rate-close]")) return closeRate();
+  const b = e.target.closest("[data-star]");
+  if (!b) return;
+  const box = b.parentElement;
+  box.dataset.value = b.dataset.star;
+  box.querySelectorAll("button").forEach((x) => {
+    x.classList.toggle("on", +x.dataset.star <= +b.dataset.star);
+    x.setAttribute("aria-checked", x === b);
+  });
+});
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("#rateModal").hidden) closeRate(); });
+$("#rateForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const picks = [...$$("#rateItems .rate-item")].map((f) => ({
+    id: +f.dataset.item, stars: +f.querySelector(".rv__stars").dataset.value,
+    text: f.querySelector("textarea").value.trim().slice(0, 500),
+  })).filter((x) => x.stars >= 1);
+  if (!picks.length) return toast("⭐ اختار عدد النجوم الأول");
+  const btn = e.target.querySelector("[type=submit]");
+  btn.disabled = true;
+  btn.textContent = "جاري النشر…";
+  try {
+    for (const x of picks) await saveReview(x.id, x.stars, x.text);
+    if (rateOpener && rateOrder) rateOpener.textContent = rateLabel(rateOrder);
+    closeRate();
+    toast("⭐ شكراً! رأيك اتنشر في صفحة المنتج");
+  } catch (err) {
+    console.error(err);
+    toast("❌ التقييم ماتحفظش، جرّب تاني");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "نشر التقييم";
   }
 });
 
