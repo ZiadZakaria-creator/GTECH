@@ -1,5 +1,9 @@
 # GTECH — متجر الإلكترونيات
 
+> **© ZiraTech — جميع الحقوق محفوظة / All rights reserved.**
+> الكود ده ملك ZiraTech ومش مفتوح المصدر. وجوده هنا عشان النشر على GitHub Pages بس، ومش مسموح بنسخه أو استخدامه أو إعادة نشره كله أو جزء منه من غير إذن كتابي. التفاصيل في [LICENSE](LICENSE).
+> This code is proprietary and is public only so it can be hosted on GitHub Pages. Copying, reuse or redistribution without written permission is prohibited. See [LICENSE](LICENSE).
+
 تصميم موقع متجر إلكترونيات عربي (RTL) بواجهة داكنة عصرية.
 
 ## التشغيل

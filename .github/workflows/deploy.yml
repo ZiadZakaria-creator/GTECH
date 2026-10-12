@@ -51,6 +51,10 @@ jobs:
           pip install --quiet pillow
           python3 tools/thumbs.py _site
 
+      # الكود المنشور مضغوط وعليه حقوق الملكية (الأصلي المقروء بيفضل في الريبو بس)
+      - name: Minify JS and CSS
+        run: bash tools/minify.sh _site
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
