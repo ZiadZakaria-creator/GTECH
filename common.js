@@ -26,6 +26,8 @@ let wishlist = store.get("gtech-wish", []);
 const heartIcon = '<svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.3-9.2C1.3 8.2 3.7 4.5 7.4 4.5c2 0 3.4 1 4.6 2.6 1.2-1.6 2.6-2.6 4.6-2.6 3.7 0 6.1 3.7 4.7 7.3C19.5 16.4 12 21 12 21z"/></svg>';
 const cartPlusIcon = '<svg viewBox="0 0 24 24"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 2-1.5L21 8H6.2"/><path d="M13 10v4M11 12h4"/></svg>';
 
+const bellIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>';
+
 const stars = (r) => "★".repeat(Math.round(r)) + "☆".repeat(5 - Math.round(r));
 
 // ============ كارت المنتج ============
@@ -50,7 +52,9 @@ function productCard(p, i = 0) {
             ${p.old ? `<del>${fmt(p.old)}</del>` : ""}
             <b>${fmt(p.price)}</b>
           </div>
-          <button class="add-btn" data-add="${p.id}" aria-label="أضف للسلة" ${inStock(p) ? "" : "disabled"}>${cartPlusIcon}<span class="add-btn__txt">أضف</span></button>
+          ${inStock(p)
+            ? `<button class="add-btn" data-add="${p.id}" aria-label="أضف للسلة">${cartPlusIcon}<span class="add-btn__txt">أضف</span></button>`
+            : `<a class="notify-btn" href="${url}#notify" aria-label="نفد — نبّهني لما يرجع ${escapeHtml(p.name)}">${bellIcon}<span>نبّهني</span></a>`}
         </div>
       </div>
     </article>`;

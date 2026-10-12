@@ -201,7 +201,7 @@ function ovStock() {
       <li><span class="ov-thumb">${productVisual(p)}</span><span class="ov-list__txt"><b>${escapeHtml(p.name)}</b><small>${escapeHtml(categories[p.cat] || "")}</small></span>
         <span class="ov-stock ${(p.stock ?? 0) === 0 ? "is-out" : ""}"><b>${num(p.stock ?? 0)}</b><small>${(p.stock ?? 0) === 0 ? "نفد" : "متبقي"}</small></span></li>`).join("") || '<li class="ov-empty">✅ مفيش منتجات قربت تخلص</li>'}
     </ul>
-    <div class="ov-card__foot"><small class="muted">التنبيه لما الكمية أقل من ${num(LOW_STOCK)}، واللي بيخلص بيتشال من المتجر</small><button class="btn btn--ghost btn--sm" data-go="products" data-low="1">📦 تحديث المخزون</button></div>`;
+    <div class="ov-card__foot"><small class="muted">التنبيه لما الكمية أقل من ${num(LOW_STOCK)}، واللي بيخلص بيظهر في المتجر بعلامة "نفد"</small><button class="btn btn--ghost btn--sm" data-go="products" data-low="1">📦 تحديث المخزون</button></div>`;
 }
 
 function ovBest() {

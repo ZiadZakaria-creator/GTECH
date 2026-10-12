@@ -85,7 +85,7 @@ const productsStore = USE_FIREBASE
 // حدود منطقية للأرقام (عشان الأخطاء في الكتابة زي أصفار زيادة)
 const MAX_PRICE = 100000000;
 const MAX_STOCK = 1000000;
-// المخزون القليل: أقل من 3 قطع ← إشعار في اللوحة (والمنتج اللي بيخلص بيتشال من أقسام المتجر لوحده)
+// المخزون القليل: أقل من 3 قطع ← إشعار في اللوحة (واللي بيخلص بيفضل ظاهر في المتجر بعلامة "نفد")
 const LOW_STOCK = 3;
 const isLowStock = (p) => p.active !== false && (p.stock ?? 99) < LOW_STOCK;
 
@@ -144,7 +144,7 @@ function checkLowStock() {
     if (fresh.length) {
       const p = fresh[0];
       toast(fresh.length > 1 ? `⚠️ ${num(fresh.length)} منتجات مخزونها قلّ عن ${num(LOW_STOCK)}`
-        : (p.stock ?? 0) <= 0 ? `⛔ "${p.name}" خلص من المخزون واتشال من المتجر` : `⚠️ "${p.name}" باقي منه ${num(p.stock)} بس`);
+        : (p.stock ?? 0) <= 0 ? `⛔ "${p.name}" خلص من المخزون — ظاهر في المتجر بعلامة "نفد"` : `⚠️ "${p.name}" باقي منه ${num(p.stock)} بس`);
       if (soundOn) beep();
     }
   }

@@ -328,7 +328,7 @@ function categoryPages(indexTemplate, list) {
   const cats = Object.keys(CATEGORIES).filter((c) => groups[c]?.length);
   mkdirSync(join(OUT, "c"), { recursive: true });
   for (const c of cats) {
-    const items = groups[c].filter((p) => p.price > 0 && (p.stock ?? 1) > 0).sort((a, b) => salePrice(a) - salePrice(b));
+    const items = groups[c].filter((p) => p.price > 0).sort((a, b) => ((b.stock ?? 1) > 0) - ((a.stock ?? 1) > 0) || salePrice(a) - salePrice(b));
     if (!items.length) continue;
     const url = `${SITE}c/${c}.html`;
     const name = CATEGORY_SEO[c] || CATEGORIES[c];

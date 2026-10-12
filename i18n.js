@@ -11,6 +11,7 @@ const I18N_EN = {
 "خصم 20%": "20% off",
 "إيربودز أنكر ساوندكور الأصلية": "Original Anker Soundcore earbuds",
 "أضف": "Add",
+"نبّهني": "Notify me",
 "عرض الكل": "View all",
 "تصفّح كل المنتجات": "Browse all products",
 "🔥 أقوى الخصومات": "🔥 Top deals",

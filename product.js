@@ -29,7 +29,7 @@ function notFound() {
       <p>ممكن يكون الرابط غلط أو المنتج اتشال من المتجر.</p>
       <a href="index.html#products" class="btn btn--primary">تصفح المنتجات</a>
     </div>`;
-  renderRelated(listedProducts().slice(0, 4));
+  renderRelated(shopProducts().slice(0, 4));
 }
 
 let gallery = views;
@@ -366,8 +366,13 @@ function initPage() {
   shownVersion = version;
   if (!visible) return notFound();
   renderDetail(product);
-  const same = listedProducts().filter((x) => x.cat === product.cat && x.id !== product.id);
-  const others = listedProducts().filter((x) => x.cat !== product.cat);
+  if (location.hash === "#notify" && !inStock(product) && typeof openAlert === "function" && !hasMyAlert(product.id, "stock")) {
+    history.replaceState(null, "", location.pathname + location.search);
+    openAlert(product, "stock");
+  }
+  const avail = (a, b) => inStock(b) - inStock(a);
+  const same = shopProducts().filter((x) => x.cat === product.cat && x.id !== product.id).sort(avail);
+  const others = shopProducts().filter((x) => x.cat !== product.cat).sort(avail);
   renderRelated([...same, ...others].slice(0, 4));
 }
 

@@ -38,8 +38,6 @@ const discount = (p) => (p.old ? Math.round((1 - p.price / p.old) * 100) : 0);
 const isForSale = (p) => p.active !== false;
 const inStock = (p) => (p.stock ?? 1) > 0;
 const shopProducts = () => products.filter(isForSale);
-// المعروض في الأقسام والبحث: المنتج اللي مخزونه خلص بيتشال لحد ما يرجع (صفحته بتفضل شغالة بزرار "نبّهني لما يرجع")
-const listedProducts = () => shopProducts().filter(inStock);
 const productTag = (p) => p.tag || (discount(p) ? `-${discount(p)}%` : "");
 
 // بيكمّل أي بيانات ناقصة عشان باقي الموقع يشتغل من غير مشاكل
