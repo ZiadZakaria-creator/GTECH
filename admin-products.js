@@ -85,6 +85,9 @@ const productsStore = USE_FIREBASE
 // حدود منطقية للأرقام (عشان الأخطاء في الكتابة زي أصفار زيادة)
 const MAX_PRICE = 100000000;
 const MAX_STOCK = 1000000;
+// المخزون القليل: أقل من 3 قطع ← إشعار في اللوحة (والمنتج اللي بيخلص بيتشال من أقسام المتجر لوحده)
+const LOW_STOCK = 3;
+const isLowStock = (p) => p.active !== false && (p.stock ?? 99) < LOW_STOCK;
 
 // ============ الحالة ============
 let adminProducts = [];
@@ -120,6 +123,40 @@ function watchProducts() {
     toast(err?.code === "permission-denied" ? "⛔ محتاج تحدّث قواعد الأمان في Firebase" : "❌ مشكلة في تحميل المنتجات");
   });
 }
+// المنتجات بتتراقب من أول ما اللوحة تفتح، عشان إشعار المخزون يوصل وانت في أي قسم
+document.addEventListener("dashboardready", watchProducts);
+
+// ============ إشعار المخزون القليل ============
+let lowSeen = null; // المنتج ← آخر كمية اتبلّغت عنها
+function checkLowStock() {
+  const low = adminProducts.filter(isLowStock).sort((a, b) => (a.stock ?? 0) - (b.stock ?? 0));
+  const btn = $("#lowStockBtn");
+  btn.hidden = !low.length;
+  btn.querySelector("b").textContent = num(low.length);
+  btn.title = low.length ? `${num(low.length)} منتج مخزونه أقل من ${num(LOW_STOCK)}` : "";
+  const now = new Map(low.map((p) => [p.id, p.stock ?? 0]));
+  if (lowSeen === null) {
+    // أول تحميل: ملخص واحد بس
+    if (low.length) toast(`⚠️ ${num(low.length)} منتج مخزونه أقل من ${num(LOW_STOCK)} — دوس على ⚠️ فوق`);
+  } else {
+    // منتج لسه قلّ عن الحد أو كميته نزلت تاني
+    const fresh = low.filter((p) => !lowSeen.has(p.id) || (p.stock ?? 0) < lowSeen.get(p.id));
+    if (fresh.length) {
+      const p = fresh[0];
+      toast(fresh.length > 1 ? `⚠️ ${num(fresh.length)} منتجات مخزونها قلّ عن ${num(LOW_STOCK)}`
+        : (p.stock ?? 0) <= 0 ? `⛔ "${p.name}" خلص من المخزون واتشال من المتجر` : `⚠️ "${p.name}" باقي منه ${num(p.stock)} بس`);
+      if (soundOn) beep();
+    }
+  }
+  lowSeen = now;
+}
+$("#lowStockBtn").addEventListener("click", () => {
+  showSection("products");
+  $("#prodState").value = "low";
+  renderProductsTable();
+});
+if (!$("#dashboard").hidden) watchProducts(); // وضع التجربة: اللوحة بتفتح قبل ما الملف ده يتحمّل
+
 $("#adSections").addEventListener("click", (e) => {
   const b = e.target.closest("[data-section]");
   if (b) showSection(b.dataset.section);
@@ -139,6 +176,7 @@ function onProducts(list) {
   adminProducts = list.map(normalizeProduct).sort((a, b) => a.id - b.id);
   productsLoaded = true;
   renderProductsTable();
+  checkLowStock();
   document.dispatchEvent(new Event("adminproducts"));
   if (editing) {
     const fresh = adminProducts.find((p) => p.id === editing.id);
@@ -149,7 +187,7 @@ function onProducts(list) {
 // ============ جدول المنتجات ============
 function stockBadge(p) {
   if (p.stock <= 0) return `<span class="stock-badge stock-badge--out">نفد</span>`;
-  if (p.stock <= 5) return `<span class="stock-badge stock-badge--low">${num(p.stock)}</span>`;
+  if (p.stock < LOW_STOCK) return `<span class="stock-badge stock-badge--low">${num(p.stock)}</span>`;
   return `<span class="stock-badge">${num(p.stock)}</span>`;
 }
 
@@ -162,7 +200,7 @@ function renderProductsTable() {
     (!q || p.name.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q)) &&
     (cat === "all" || p.cat === cat) &&
     (state === "all" || (state === "active" && p.active) || (state === "hidden" && !p.active) ||
-      (state === "low" && p.stock > 0 && p.stock <= 5) || (state === "out" && p.stock <= 0) ||
+      (state === "low" && p.stock < LOW_STOCK) || (state === "out" && p.stock <= 0) ||
       (state === "noimg" && !p.images.length))
   );
 

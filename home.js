@@ -34,7 +34,7 @@ const inFilter = (p) => filter === "all" || p.cat === filter || (CAT_GROUPS[filt
 
 function baseList() {
   const q = query.trim().toLowerCase();
-  return shopProducts().filter((p) =>
+  return listedProducts().filter((p) =>
     inFilter(p) &&
     (!q || p.name.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q))
   );
@@ -98,7 +98,6 @@ function renderFilterPanel(list) {
     ${chipGroup("الرام", "ram", rams)}
     ${chipGroup("المساحة", "storage", storages)}
     <div class="fp-foot">
-      <label class="fp-switch"><input type="checkbox" id="fpStock" ${filters.inStockOnly ? "checked" : ""}/> <span>المتوفر بس</span></label>
       <button type="button" class="link-btn" data-clear-filters ${activeFilterCount() ? "" : "hidden"}>امسح الفلاتر</button>
     </div>`;
   if (focused === "fpMin" || focused === "fpMax") {
@@ -129,7 +128,7 @@ const shelfMode = () => !showAll && filter === "all" && !query.trim() && !active
 const shelfOrder = (a, b) => (inStock(b) - inStock(a)) || b.id - a.id;
 
 function renderShelves() {
-  const all = shopProducts();
+  const all = listedProducts();
   $("#shelves").innerHTML = SHELVES.map((sh) => {
     let list = sh.pick(all);
     if (sh.key === "budget") { /* مترتبة بالسعر في pick */ }
@@ -187,7 +186,7 @@ function renderProducts() {
   grid.innerHTML = shelves ? "" : list.map(productCard).join("");
   $("#emptyState").hidden = shelves || list.length > 0;
   // قسم لسه مفيهوش منتجات خالص (مش فلتر أو بحث)
-  const soonCat = !list.length && filter !== "all" && !shopProducts().some((p) => p.cat === filter);
+  const soonCat = !list.length && filter !== "all" && !listedProducts().some((p) => p.cat === filter);
   $("#emptyText").textContent = !catalogLoaded && !products.length ? "⏳ جاري تحميل المنتجات…" : catalogFailed && !products.length ? "📡 مقدرناش نحمّل المنتجات — اتأكد من النت وجرّب تاني" : soonCat ? `📦 قسم ${categoryLabel(filter)} هينزل فيه منتجات قريب جداً — تابعنا!` : "لا توجد منتجات مطابقة لبحثك 🔍";
   const count = activeFilterCount();
   $("#filterCount").hidden = !count;
@@ -264,13 +263,13 @@ const categoryIconHtml = (k) => CATEGORY_SVG[k]
   : `<span class="category__icon">${CATEGORY_ICONS[k] || "📦"}</span>`;
 function renderCategories() {
   const counts = {};
-  shopProducts().forEach((p) => { counts[p.cat] = (counts[p.cat] || 0) + 1; });
+  listedProducts().forEach((p) => { counts[p.cat] = (counts[p.cat] || 0) + 1; });
   $("#categoryCards").innerHTML = Object.entries(categories).map(([k, label]) => `
     <button class="category" data-filter="${k}" style="--cc:${CATEGORY_SVG[k]?.[0] || "#0a84ff"}">
       ${categoryIconHtml(k)}<h3>${label}</h3>
       <small>${counts[k] ? `${num(counts[k])} منتج` : "قريباً"}</small>
     </button>`).join("");
-  const total = shopProducts().length;
+  const total = listedProducts().length;
   const tabIcon = (k) => `<svg class="tab__icon" viewBox="0 0 24 24" aria-hidden="true">${k === "all" ? '<rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/>' : CATEGORY_SVG[k]?.[1] || ""}</svg>`;
   const tab = (k, label, n) => `
     <button type="button" class="tab" role="tab" data-filter="${k}" style="--tc:${k === "all" ? "#3b9bff" : CATEGORY_SVG[k]?.[0] || "#3b9bff"}">
@@ -596,7 +595,7 @@ document.addEventListener("catalogloaded", () => { renderProducts(); renderCateg
 // بالترتيب حسب عدد المنتجات، والضغط على أي ماركة بيفلتر المنتجات بيها
 function renderBrands() {
   const counts = {};
-  shopProducts().forEach((p) => { const b = String(p.brand || "").trim().toUpperCase(); if (b) counts[b] = (counts[b] || 0) + 1; });
+  listedProducts().forEach((p) => { const b = String(p.brand || "").trim().toUpperCase(); if (b) counts[b] = (counts[b] || 0) + 1; });
   const list = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
   if (list.length < 3) return;
   const item = (b, dup) => `<button type="button" class="brands__item" data-brand="${escapeHtml(b)}" ${dup ? 'aria-hidden="true" tabindex="-1"' : ""}>${escapeHtml(b)}</button>`;

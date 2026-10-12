@@ -1,7 +1,6 @@
 // ============ لوحة التحكم: نظرة عامة ============
 // كل الأرقام هنا محسوبة من الطلبات والمنتجات الحقيقية (مفيش أرقام تقديرية)
 let ovDays = store.get("gtech-ov-range", 30);
-const OV_LOW = 5; // المخزون القليل
 const OV_STATUS_COLORS = { new: "#fbbf24", confirmed: "#3b9bff", shipped: "#a78bfa", delivered: "#22c55e", cancelled: "#ff4d6d" };
 const OV_STATUS_HINT = { new: "محتاجة تأكيد", confirmed: "متأكدة · جاهزة للشحن", shipped: "مع شركة الشحن", delivered: "اتسلّمت للعميل", cancelled: "اتلغت" };
 const ovIcon = (path) => `<svg viewBox="0 0 24 24" aria-hidden="true">${path}</svg>`;
@@ -193,7 +192,7 @@ function ovRecent() {
 
 // ---------- المخزون + الأكثر مبيعاً + الشحن ----------
 function ovStock() {
-  const low = ovProducts().filter((p) => p.active !== false && (p.stock ?? 99) <= OV_LOW).sort((a, b) => (a.stock ?? 0) - (b.stock ?? 0));
+  const low = ovProducts().filter(isLowStock).sort((a, b) => (a.stock ?? 0) - (b.stock ?? 0));
   const badge = $("#lowStockBadge");
   badge.hidden = !low.length; badge.textContent = num(low.length);
   $("#ovStock").innerHTML = `
@@ -202,7 +201,7 @@ function ovStock() {
       <li><span class="ov-thumb">${productVisual(p)}</span><span class="ov-list__txt"><b>${escapeHtml(p.name)}</b><small>${escapeHtml(categories[p.cat] || "")}</small></span>
         <span class="ov-stock ${(p.stock ?? 0) === 0 ? "is-out" : ""}"><b>${num(p.stock ?? 0)}</b><small>${(p.stock ?? 0) === 0 ? "نفد" : "متبقي"}</small></span></li>`).join("") || '<li class="ov-empty">✅ مفيش منتجات قربت تخلص</li>'}
     </ul>
-    <div class="ov-card__foot"><small class="muted">التنبيه لما الكمية ${num(OV_LOW)} أو أقل</small><button class="btn btn--ghost btn--sm" data-go="products" data-low="1">📦 تحديث المخزون</button></div>`;
+    <div class="ov-card__foot"><small class="muted">التنبيه لما الكمية أقل من ${num(LOW_STOCK)}، واللي بيخلص بيتشال من المتجر</small><button class="btn btn--ghost btn--sm" data-go="products" data-low="1">📦 تحديث المخزون</button></div>`;
 }
 
 function ovBest() {

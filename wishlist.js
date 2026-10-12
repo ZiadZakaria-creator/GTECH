@@ -8,7 +8,7 @@ function renderWishlist() {
   $("#wishActions").hidden = !has;
 
   const cats = new Set(list.map((p) => p.cat));
-  const suggest = shopProducts()
+  const suggest = listedProducts()
     .filter((p) => !wishlist.includes(p.id))
     .sort((a, b) => cats.has(b.cat) - cats.has(a.cat) || discount(b) - discount(a))
     .slice(0, 4);

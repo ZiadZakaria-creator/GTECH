@@ -328,7 +328,7 @@ function categoryPages(indexTemplate, list) {
   const cats = Object.keys(CATEGORIES).filter((c) => groups[c]?.length);
   mkdirSync(join(OUT, "c"), { recursive: true });
   for (const c of cats) {
-    const items = groups[c].filter((p) => p.price > 0).sort((a, b) => salePrice(a) - salePrice(b));
+    const items = groups[c].filter((p) => p.price > 0 && (p.stock ?? 1) > 0).sort((a, b) => salePrice(a) - salePrice(b));
     if (!items.length) continue;
     const url = `${SITE}c/${c}.html`;
     const name = CATEGORY_SEO[c] || CATEGORIES[c];
@@ -406,7 +406,7 @@ function contentPages(pageTemplate, list, imagesById) {
     .replace(/\{\{link:(\d+)\}\}/g, (_, id) => (live(+id) ? `<a href="p/${id}.html">${esc(live(+id).name)}</a>` : ""))
     .replace(/\{\{cat:(\w+)\}\}/g, (_, c) => `<a href="c/${c}.html">${esc(CATEGORIES[c] || "المنتجات")}</a>`)
     .replace(/\{\{min:(\w+)\}\}/g, (_, c) => {
-      const ps = list.filter((p) => productCategory(p) === c && p.price > 0).map(salePrice);
+      const ps = list.filter((p) => productCategory(p) === c && p.price > 0 && (p.stock ?? 1) > 0).map(salePrice);
       return ps.length ? `${price(Math.min(...ps))} ج.م` : "";
     })
     .replace(/\{\{cards:([\d,]+)\}\}/g, (_, ids) => {
