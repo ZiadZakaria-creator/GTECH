@@ -154,6 +154,16 @@ function renderCart() {
   }
   renderFreeShip(total + bundleOff);
 
+  // طمأنة الدفع عند الاستلام والشحن فوق زرار إتمام الشراء (بتقلّل التردد قبل الـcheckout)
+  const cartFoot = document.querySelector(".cart__foot");
+  if (cartFoot && !document.getElementById("cartReassure")) {
+    const note = document.createElement("p");
+    note.id = "cartReassure";
+    note.style.cssText = "font-size:12.5px;color:var(--muted);text-align:center;margin:0 0 12px;line-height:1.6";
+    note.innerHTML = "💵 الدفع عند الاستلام · 🚚 الشحن يتحسب حسب محافظتك<br>توصيل القاهرة والجيزة بس";
+    cartFoot.insertBefore(note, document.getElementById("checkoutBtn"));
+  }
+
   $("#cartItems").innerHTML = cart.length
     ? cart.map((i, idx) => {
         const p = findProduct(i.id);

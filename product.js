@@ -43,6 +43,13 @@ function renderDetail(p) {
   const lowStock = p.stock <= 5;
   const soldOut = !inStock(p);
   const delivery = new Date(Date.now() + 2 * 86400000).toLocaleDateString(LOCALE, { weekday: "long", day: "numeric", month: "long" });
+  // تكلفة الشحن للمحافظات اللي بنوصّلها (القاهرة والجيزة) — بتظهر في صفحة المنتج عشان مفيش مفاجآت في الطلب
+  const shipRates = Object.entries((typeof shippingSettings !== "undefined" && shippingSettings.rates) || {})
+    .filter(([g, r]) => (typeof DELIVERY_ONLY === "undefined" || !DELIVERY_ONLY.length || DELIVERY_ONLY.includes(g)) && r != null)
+    .map(([, r]) => Number(r));
+  const shipText = shipRates.length
+    ? (Math.min(...shipRates) === Math.max(...shipRates) ? `شحن ${fmt(shipRates[0])}` : `الشحن من ${fmt(Math.min(...shipRates))}`)
+    : "الشحن بيتحسب وقت الطلب";
 
   document.title = `${p.name} | GTECH MASR`;
   setWhatsAppProduct(p);
@@ -129,7 +136,8 @@ function renderDetail(p) {
         ${soldOut ? "" : setupRecsHtml([p])}
 
         <div class="pd__perks">
-          <div><span>🚚</span><p>توصيل متوقع <b>${delivery}</b> — القاهرة والجيزة</p></div>
+          <div><span>💵</span><p>الدفع <b>عند الاستلام</b> — ادفع لما يوصلك</p></div>
+          <div><span>🚚</span><p><b>${shipText}</b> للقاهرة والجيزة · متوقع ${delivery}</p></div>
           <div><span>🛡️</span><p>${hasWarranty(p) ? `ضمان رسمي لمدة <b>${esc(warrantyText(p))}</b>` : "المنتج ده <b>من غير ضمان</b>"}</p></div>
           <div><span>🔄</span><p><a href="policies.html#returns">استرجاع أو استبدال خلال <b>14 يوم</b></a></p></div>
         </div>
