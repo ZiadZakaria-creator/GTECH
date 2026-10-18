@@ -651,3 +651,141 @@
 .inv__grand dt, .inv__grand dd, .inv__grand .inv__cur { color: #fff !important; font-size: 15px; font-weight: 900; }
 .inv__foot { margin-top: 26px; padding-top: 12px; border-top: 1px solid var(--line); text-align: center; color: var(--sub); font-size: 10.5px; break-inside: avoid; }
 .inv__thanks { color: var(--ink); font-weight: 800; font-size: 13px; margin-bottom: 4px; }
+
+/* ============================================================
+   🪟 GLASSMORPHISM SKIN — إعادة تصميم اللوحة (مظهر فقط، صفر تعديل وظيفي)
+   فاتح = لوك زجاجي هادي زي المرجع · غامق = زجاج داكن أنيق
+   ============================================================ */
+body.admin {
+  --ad-grad: linear-gradient(135deg, #6a8bff, #7c5cff 55%, #9b6bff);
+  --ad-radius: 22px;
+  --ad-blur: blur(22px) saturate(140%);
+  /* غامق (الافتراضي الاحتياطي) */
+  --ad-card-bg: rgba(21, 29, 51, .52);
+  --ad-card-bd: 1px solid rgba(150, 172, 224, .14);
+  --ad-card-sh: 0 22px 46px -22px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.05);
+  --ad-glass-soft: rgba(255,255,255,.04);
+  --ad-bg:
+    radial-gradient(1000px 760px at 88% -6%, rgba(99,102,241,.30), transparent 60%),
+    radial-gradient(880px 760px at 4% 106%, rgba(139,92,255,.26), transparent 60%),
+    radial-gradient(760px 620px at -6% 44%, rgba(8,145,178,.22), transparent 60%),
+    linear-gradient(160deg, #0a0f1e, #070b16 55%, #05070f);
+}
+:root[data-theme="light"] body.admin {
+  --ad-grad: linear-gradient(135deg, #5b7cfa, #7c5cff 55%, #a66bff);
+  --ad-card-bg: rgba(255,255,255,.56);
+  --ad-card-bd: 1px solid rgba(255,255,255,.72);
+  --ad-card-sh: 0 16px 38px -18px rgba(70,80,140,.38), inset 0 1px 0 rgba(255,255,255,.65);
+  --ad-glass-soft: rgba(255,255,255,.5);
+  --ad-bg:
+    radial-gradient(980px 760px at 88% -6%, rgba(129,140,248,.40), transparent 58%),
+    radial-gradient(860px 760px at 3% 106%, rgba(244,114,182,.30), transparent 58%),
+    radial-gradient(720px 620px at -8% 46%, rgba(94,234,212,.26), transparent 58%),
+    radial-gradient(620px 520px at 24% 6%, rgba(96,165,250,.24), transparent 58%),
+    linear-gradient(150deg, #eceffb, #e7ecfb 52%, #eef0fb);
+}
+
+/* الخلفية الحالمة الثابتة */
+body.admin { background: transparent; }
+body.admin::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: var(--ad-bg); background-attachment: fixed;
+}
+
+/* كل الكروت = زجاج */
+body.admin .card-box,
+body.admin .ov-kpi,
+body.admin .ov-card,
+body.admin .ad-panel,
+body.admin .sms-meter,
+body.admin .stat {
+  background: var(--ad-card-bg) !important;
+  border: var(--ad-card-bd) !important;
+  border-radius: var(--ad-radius) !important;
+  box-shadow: var(--ad-card-sh);
+  -webkit-backdrop-filter: var(--ad-blur); backdrop-filter: var(--ad-blur);
+}
+body.admin .ov-card, body.admin .ov-kpi, body.admin .stat { transition: transform .25s, box-shadow .25s; }
+body.admin .ov-kpi:hover, body.admin .stat:hover { transform: translateY(-3px); }
+
+/* القائمة الجانبية = لوح زجاجي */
+body.admin .ad-side {
+  background: var(--ad-card-bg); border-inline-end: var(--ad-card-bd);
+  -webkit-backdrop-filter: var(--ad-blur); backdrop-filter: var(--ad-blur);
+}
+body.admin .ad-help { background: var(--ad-glass-soft); border: var(--ad-card-bd); border-radius: 16px; }
+
+/* الشريط العلوي = زجاج */
+body.admin .ad-top {
+  background: color-mix(in srgb, var(--ad-card-bg) 86%, transparent);
+  border-bottom: var(--ad-card-bd);
+  -webkit-backdrop-filter: var(--ad-blur); backdrop-filter: var(--ad-blur);
+}
+
+/* عنصر القائمة النشط — ناعم في الفاتح، متوهّج في الغامق */
+body.admin .ad-side .ad-sec.active {
+  background: var(--ad-grad); color: #fff;
+  box-shadow: 0 12px 28px -12px rgba(124,92,255,.7);
+}
+:root[data-theme="light"] body.admin .ad-side .ad-sec.active {
+  background: linear-gradient(135deg, rgba(91,124,250,.16), rgba(139,92,255,.14));
+  color: #4f46e5; box-shadow: inset 0 0 0 1px rgba(99,102,241,.3);
+}
+:root[data-theme="light"] body.admin .ad-side .ad-sec.active .ad-sec__icon { opacity: 1; }
+body.admin .ad-side .ad-sec:hover { background: var(--ad-glass-soft); }
+
+/* الأزرار والتدرّجات */
+body.admin .btn--primary { background: var(--ad-grad); }
+body.admin .ov-bar u { background: var(--ad-grad); }
+body.admin .funnel__bar i { background: var(--ad-grad); }
+body.admin .ad-user__av, body.admin .logo__mark { background: var(--ad-grad); }
+
+/* حقول/قوائم/بحث = حبوب زجاجية */
+body.admin .ad-toolbar__side input,
+body.admin .ad-toolbar__side select,
+body.admin .visits-head select,
+body.admin .field input,
+body.admin .field select,
+body.admin .field textarea {
+  background: var(--ad-glass-soft);
+  border: var(--ad-card-bd);
+}
+body.admin .status-tabs, body.admin .ov-range, body.admin .ov-dates {
+  background: var(--ad-glass-soft); border: var(--ad-card-bd);
+}
+
+/* الأقسام الداخلية (od-sec / ov-st__big / ov-ship) تبان أرفع فوق الزجاج */
+body.admin .od-sec,
+body.admin .ov-st__big,
+body.admin .ov-ship__box,
+body.admin .excel-stat,
+body.admin .bulk-item {
+  background: var(--ad-glass-soft); border: var(--ad-card-bd);
+}
+
+/* صفوف الجداول hover أنعم */
+body.admin .orders tbody tr:hover { background: var(--ad-glass-soft); }
+
+/* شاشة الدخول = كارت زجاجي */
+body.admin .ad-gate__box { box-shadow: var(--ad-card-sh); -webkit-backdrop-filter: var(--ad-blur); backdrop-filter: var(--ad-blur); }
+
+/* المودالات */
+body.admin .modal__box {
+  background: var(--ad-card-bg) !important; border: var(--ad-card-bd) !important;
+  -webkit-backdrop-filter: var(--ad-blur); backdrop-filter: var(--ad-blur);
+}
+
+/* الدروَر (تفاصيل الطلب / محرر المنتج) */
+body.admin .order-drawer {
+  background: color-mix(in srgb, var(--ad-card-bg) 94%, transparent);
+  -webkit-backdrop-filter: var(--ad-blur); backdrop-filter: var(--ad-blur);
+}
+
+/* عناوين أوضح فوق الزجاج الفاتح */
+:root[data-theme="light"] body.admin .ov-head h1,
+:root[data-theme="light"] body.admin .ov-card__head h3,
+:root[data-theme="light"] body.admin .ad-top__head .ad-top__title { color: #1e293b; }
+
+@media (prefers-reduced-motion: reduce) {
+  body.admin .ov-kpi:hover, body.admin .stat:hover { transform: none; }
+}
