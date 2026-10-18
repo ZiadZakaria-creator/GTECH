@@ -1840,3 +1840,22 @@ main:focus { outline: none; }
   body.has-bnav .setup-bar { bottom: 74px; }
 }
 @media (max-width: 760px) and (prefers-reduced-motion: reduce) { .bnav__item:active svg { transform: none; } }
+
+/* ====== بحث الهيدر: يتجمّع كأيقونة نضيفة في العرض المتوسط ويتوسّع بالضغط ====== */
+@media (min-width: 901px) and (max-width: 1280px) {
+  .header .search {
+    flex: none; max-width: none; margin-inline-start: auto;
+    background: transparent; border-color: transparent; padding: 0; position: relative;
+  }
+  .header .search:focus-within { box-shadow: none; }
+  .header .search input {
+    position: absolute; top: calc(100% + 12px); inset-inline-end: 0; z-index: 60;
+    width: 340px; max-width: 72vw; padding: 13px 16px; border-radius: 14px;
+    background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-soft);
+    opacity: 0; visibility: hidden; transform: translateY(-8px) scale(.98); transform-origin: top;
+    transition: opacity .18s, transform .18s, visibility .18s;
+  }
+  .header .search.search--open input { opacity: 1; visibility: visible; transform: none; }
+  .header .search.search--open button { box-shadow: 0 0 0 4px rgba(10,132,255,.18); }
+}
+@media (prefers-reduced-motion: reduce) { .header .search input { transition: none; } }

@@ -201,7 +201,7 @@ addEventListener("appinstalled", () => {
   const nav = document.getElementById("nav");
   const adminActions = document.querySelector(".ad-top__actions");
   if (nav) {
-    nav.insertAdjacentHTML("beforeend", '<button class="nav-install" type="button" data-install hidden>📲 نزّل التطبيق</button>');
+    // "نزّل التطبيق" اتشال من الهيدر — بيفضل في البانر فوق الصفحة والكارت جوه الصفحة
     // شريط صغير فوق الصفحة على الموبايل
     document.querySelector(".header")?.insertAdjacentHTML("afterend", `
       <div class="app-banner" id="appBanner" hidden>
@@ -221,4 +221,24 @@ addEventListener("appinstalled", () => {
     if (e.target.closest("[data-install], [data-install-btn]")) installApp();
   });
   renderInstallUI();
+})();
+
+// بحث الهيدر: في العرض المتوسط (901–1280) يتجمّع كأيقونة، والضغط عليها بيوسّع الحقل
+(() => {
+  const search = document.querySelector(".header .search");
+  if (!search) return;
+  const input = search.querySelector("input");
+  const btn = search.querySelector("button");
+  const collapsed = () => matchMedia("(min-width:901px) and (max-width:1280px)").matches;
+  btn?.addEventListener("click", (e) => {
+    if (!collapsed()) return; // في العرض الواسع البحث متوسّع أصلاً
+    e.preventDefault();
+    if (search.classList.toggle("search--open")) input?.focus();
+  });
+  document.addEventListener("click", (e) => {
+    if (!search.contains(e.target)) search.classList.remove("search--open");
+  });
+  input?.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") { search.classList.remove("search--open"); input.blur(); }
+  });
 })();
