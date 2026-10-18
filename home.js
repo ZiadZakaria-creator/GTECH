@@ -266,11 +266,13 @@ const categoryIconHtml = (k) => CATEGORY_SVG[k]
 function renderCategories() {
   const counts = {};
   shopProducts().forEach((p) => { counts[p.cat] = (counts[p.cat] || 0) + 1; });
+  // كارت القسم = رابط حقيقي لصفحة القسم الثابتة (c/<قسم>.html) عشان جوجل يزحف منها،
+  // والـ JS بيعمل preventDefault وبيفلتر على الصفحة فوراً (نفس تجربة المستخدم).
   $("#categoryCards").innerHTML = Object.entries(categories).map(([k, label]) => `
-    <button class="category" data-filter="${k}" style="--cc:${CATEGORY_SVG[k]?.[0] || "#0a84ff"}">
+    <a class="category" data-filter="${k}" href="${counts[k] ? `c/${k}.html#products` : `index.html?cat=${k}#products`}" style="--cc:${CATEGORY_SVG[k]?.[0] || "#0a84ff"}">
       ${categoryIconHtml(k)}<h3>${label}</h3>
       <small>${counts[k] ? `${num(counts[k])} منتج` : "قريباً"}</small>
-    </button>`).join("");
+    </a>`).join("");
   const total = shopProducts().length;
   const tabIcon = (k) => `<svg class="tab__icon" viewBox="0 0 24 24" aria-hidden="true">${k === "all" ? '<rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/>' : CATEGORY_SVG[k]?.[1] || ""}</svg>`;
   const tab = (k, label, n) => `
