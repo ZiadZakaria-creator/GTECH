@@ -443,8 +443,8 @@
 
 /* الرسم */
 .ov-legend { display: flex; gap: 16px; font-size: .8rem; font-weight: 700; color: var(--text-2); }
-.ov-lg::before { content: ""; display: inline-block; width: 16px; height: 3px; border-radius: 3px; margin-inline-end: 6px; vertical-align: middle; background: #22d3ee; }
-.ov-lg--b::before { background: repeating-linear-gradient(90deg, #a78bfa 0 4px, transparent 4px 7px); }
+.ov-lg::before { content: ""; display: inline-block; width: 16px; height: 3px; border-radius: 3px; margin-inline-end: 6px; vertical-align: middle; background: #20D9F3; }
+.ov-lg--b::before { background: repeating-linear-gradient(90deg, #8955FF 0 4px, transparent 4px 7px); }
 .ov-plot { position: relative; display: grid; grid-template-columns: 1fr 52px; grid-template-rows: 250px 26px; flex: 1; min-height: 276px; }
 .ov-y { position: relative; grid-column: 2; grid-row: 1; }
 .ov-y span { position: absolute; left: 6px; transform: translateY(50%); font-size: .72rem; color: var(--muted); direction: ltr; }
@@ -454,7 +454,7 @@
 .ov-hits { position: absolute; inset: 0; display: flex; flex-direction: row-reverse; }
 .ov-hits span { flex: 1; }
 .ov-guide { position: absolute; top: 0; bottom: 0; width: 1px; background: rgba(59,155,255,.5); pointer-events: none; }
-.ov-dot { position: absolute; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: #22d3ee; box-shadow: 0 0 0 4px rgba(59,155,255,.25); pointer-events: none; }
+.ov-dot { position: absolute; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: #20D9F3; box-shadow: 0 0 0 4px rgba(59,155,255,.25); pointer-events: none; }
 .ov-tip { position: absolute; transform: translate(-50%, -100%); padding: 8px 12px; border-radius: 12px; background: var(--glass-strong, #0b1120); border: 1px solid var(--border); box-shadow: var(--shadow-soft); display: grid; gap: 1px; text-align: center; white-space: nowrap; pointer-events: none; z-index: 2; }
 .ov-tip small { color: var(--muted); font-size: .72rem; }
 .ov-tip b { font-size: .98rem; }
@@ -508,7 +508,7 @@
 .ov-stock.is-out b { color: var(--danger); }
 .ov-empty { justify-content: center; color: var(--muted); font-size: .88rem; padding: 26px 0 !important; }
 .ov-bar { display: block; height: 4px; border-radius: 4px; background: var(--soft-2); overflow: hidden; margin-top: 4px; }
-.ov-bar u { display: block; height: 100%; border-radius: 4px; background: linear-gradient(90deg, #22d3ee, #7c5cff); }
+.ov-bar u { display: block; height: 100%; border-radius: 4px; background: linear-gradient(90deg, #20D9F3, #7c5cff); }
 .ov-bar--ok u { background: linear-gradient(90deg, #22c55e, #4ade80); }
 .ov-note { padding: 10px 14px; border-radius: 12px; background: rgba(59,155,255,.1); border: 1px solid rgba(59,155,255,.25); color: #9fd0ff; font-size: .82rem; font-weight: 700; }
 
@@ -658,21 +658,23 @@
    فينتك غامق: تركواز + بنفسجي نيون + أحمر للسالب/التنبيهات
    ============================================================ */
 body.admin {
-  --ad-grad: linear-gradient(135deg, #22d3ee, #8b5cf6);
-  --ad-grad-soft: linear-gradient(135deg, rgba(34,211,238,.18), rgba(139,92,246,.16));
-  --ad-red: #f4536b;
-  --ad-radius: 20px;
-  --ad-blur: blur(16px) saturate(135%);
+  /* الباليت المحدّد بالظبط */
+  --ad-blue: #168BFF; --ad-cyan: #20D9F3; --ad-teal: #15DFC2; --ad-purple: #8955FF;
+  --ad-grad: linear-gradient(135deg, #20D9F3, #168BFF 52%, #8955FF);
+  --ad-grad-soft: linear-gradient(135deg, rgba(32,217,243,.18), rgba(137,85,255,.16));
+  --ad-red: #FF668E;
+  --ad-radius: 16px;
+  --ad-blur: blur(16px) saturate(140%);
   /* غامق (الافتراضي — زي المرجع) */
-  --ad-card-bg: rgba(17,24,43,.62);
-  --ad-card-bd: 1px solid rgba(94,124,180,.16);
-  --ad-card-sh: 0 24px 48px -26px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,255,255,.045);
-  --ad-soft: rgba(255,255,255,.035);
+  --ad-card-bg: rgba(11,27,54,.70);          /* #0A1B36 */
+  --ad-card-bd: 1px solid rgba(28,65,106,.75); /* #1C416A حافة زرقا لامعة */
+  --ad-card-sh: 0 20px 44px -24px rgba(0,0,0,.82), 0 0 26px -14px rgba(22,139,255,.22), inset 0 1px 0 rgba(130,180,240,.08);
+  --ad-soft: rgba(16,36,71,.5);              /* #102447 elevated */
   --ad-bg:
-    radial-gradient(1000px 680px at 86% -10%, rgba(34,211,238,.16), transparent 58%),
-    radial-gradient(900px 700px at 6% 108%, rgba(139,92,246,.18), transparent 58%),
-    radial-gradient(560px 460px at 92% 112%, rgba(244,83,107,.10), transparent 60%),
-    linear-gradient(165deg, #0a1020, #080c18 55%, #060910);
+    radial-gradient(1000px 680px at 86% -10%, rgba(22,139,255,.18), transparent 58%),
+    radial-gradient(900px 700px at 6% 108%, rgba(137,85,255,.16), transparent 58%),
+    radial-gradient(560px 460px at 92% 112%, rgba(255,102,142,.08), transparent 60%),
+    linear-gradient(165deg, #030B1E, #040E22 55%, #03091A);
 }
 :root[data-theme="light"] body.admin {
   --ad-grad: linear-gradient(135deg, #0ea5c4, #7c5cff);
@@ -684,7 +686,7 @@ body.admin {
   --ad-bg:
     radial-gradient(900px 680px at 86% -10%, rgba(34,211,238,.26), transparent 58%),
     radial-gradient(820px 700px at 6% 108%, rgba(139,92,246,.22), transparent 58%),
-    radial-gradient(520px 440px at 92% 112%, rgba(244,83,107,.14), transparent 60%),
+    radial-gradient(520px 440px at 92% 112%, rgba(255,102,142,.15), transparent 60%),
     linear-gradient(160deg, #eef2fb, #e9eefb 55%, #eef1fb);
 }
 
@@ -702,14 +704,18 @@ body.admin .ov-card,
 body.admin .ad-panel,
 body.admin .sms-meter,
 body.admin .stat {
-  background: var(--ad-card-bg) !important;
+  background: linear-gradient(160deg, rgba(120,170,235,.05), transparent 42%), var(--ad-card-bg) !important;
   border: var(--ad-card-bd) !important;
   border-radius: var(--ad-radius) !important;
   box-shadow: var(--ad-card-sh);
   -webkit-backdrop-filter: var(--ad-blur); backdrop-filter: var(--ad-blur);
 }
 body.admin .ov-card, body.admin .ov-kpi, body.admin .stat { transition: transform .25s, box-shadow .25s, border-color .25s; }
-body.admin .ov-kpi:hover, body.admin .stat:hover { transform: translateY(-3px); border-color: rgba(34,211,238,.4) !important; }
+body.admin .ov-kpi:hover, body.admin .stat:hover, body.admin .ov-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(32,140,230,.6) !important;
+  box-shadow: 0 26px 52px -22px rgba(0,0,0,.85), 0 0 34px -12px rgba(22,139,255,.35), inset 0 1px 0 rgba(130,180,240,.1);
+}
 
 /* القائمة الجانبية = لوح زجاجي */
 body.admin .ad-side {
@@ -728,7 +734,7 @@ body.admin .ad-top {
 /* عنصر القائمة النشط — توهّج نيون */
 body.admin .ad-side .ad-sec.active {
   background: var(--ad-grad); color: #06121a;
-  box-shadow: 0 10px 30px -8px rgba(34,211,238,.55);
+  box-shadow: 0 10px 30px -8px rgba(22,139,255,.5);
 }
 body.admin .ad-side .ad-sec.active .ad-sec__icon { opacity: 1; }
 body.admin .ad-side .ad-sec.active .tab__count { background: rgba(0,0,0,.2); color: #06121a; }
@@ -736,7 +742,7 @@ body.admin .ad-side .ad-sec:hover { background: var(--ad-soft); }
 body.admin .ad-side .tab__count { background: rgba(34,211,238,.16); color: #5fe6f5; }
 
 /* الأزرار والتدرّجات */
-body.admin .btn--primary { background: var(--ad-grad); color: #06121a; box-shadow: 0 10px 30px -10px rgba(34,211,238,.5); }
+body.admin .btn--primary { background: var(--ad-grad); color: #06121a; box-shadow: 0 10px 30px -10px rgba(22,139,255,.45); }
 body.admin .btn--primary:hover { box-shadow: 0 16px 40px -10px rgba(139,92,246,.6); }
 body.admin .ov-bar u { background: var(--ad-grad); }
 body.admin .funnel__bar i { background: var(--ad-grad); }
@@ -771,8 +777,8 @@ body.admin .ov-id, body.admin .ov-pp, body.admin .ov-note, body.admin .ad-help s
 
 /* 🔴 الأحمر ضمن الباليت: السالب والتنبيهات والحالات الملغية */
 body.admin .ov-delta--down { color: var(--ad-red); }
-body.admin .stock-badge--out, body.admin .ov-stock.is-out b { color: var(--ad-red); background: rgba(244,83,107,.14); }
-body.admin .pill-status--cancelled { color: var(--ad-red) !important; background: rgba(244,83,107,.14) !important; }
+body.admin .stock-badge--out, body.admin .ov-stock.is-out b { color: var(--ad-red); background: rgba(255,102,142,.15); }
+body.admin .pill-status--cancelled { color: var(--ad-red) !important; background: rgba(255,102,142,.15) !important; }
 body.admin .btn--primary.danger, body.admin .danger { color: var(--ad-red); }
 body.admin .ad-lowstock { animation: none; }
 

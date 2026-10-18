@@ -1,7 +1,7 @@
 // ============ لوحة التحكم: نظرة عامة ============
 // كل الأرقام هنا محسوبة من الطلبات والمنتجات الحقيقية (مفيش أرقام تقديرية)
 let ovDays = store.get("gtech-ov-range", 30);
-const OV_STATUS_COLORS = { new: "#fbbf24", confirmed: "#22d3ee", shipped: "#a78bfa", delivered: "#22c55e", cancelled: "#ff4d6d" };
+const OV_STATUS_COLORS = { new: "#fbbf24", confirmed: "#20D9F3", shipped: "#8955FF", delivered: "#22c55e", cancelled: "#FF668E" };
 const OV_STATUS_HINT = { new: "محتاجة تأكيد", confirmed: "متأكدة · جاهزة للشحن", shipped: "مع شركة الشحن", delivered: "اتسلّمت للعميل", cancelled: "اتلغت" };
 const ovIcon = (path) => `<svg viewBox="0 0 24 24" aria-hidden="true">${path}</svg>`;
 const OV_ICONS = {
@@ -71,8 +71,8 @@ function ovKpis(buckets) {
   const fresh = [...custs].filter((p) => !before.has(p)).length;
   const cancelled = cur.length - cv.length;
   const cards = [
-    { k: "sales", label: "إجمالي المبيعات", value: fmt(sales), delta: ovDelta(sales, pSales), hint: "مقارنة بالفترة اللي قبلها", color: "#22d3ee", spark: buckets.map((b) => b.sales) },
-    { k: "orders", label: "عدد الطلبات", value: num(cv.length), delta: ovDelta(cv.length, pv.length), hint: cancelled ? `${num(cancelled)} ملغي مش محسوب` : "من غير الملغي", color: "#a78bfa", spark: buckets.map((b) => b.count) },
+    { k: "sales", label: "إجمالي المبيعات", value: fmt(sales), delta: ovDelta(sales, pSales), hint: "مقارنة بالفترة اللي قبلها", color: "#20D9F3", spark: buckets.map((b) => b.sales) },
+    { k: "orders", label: "عدد الطلبات", value: num(cv.length), delta: ovDelta(cv.length, pv.length), hint: cancelled ? `${num(cancelled)} ملغي مش محسوب` : "من غير الملغي", color: "#8955FF", spark: buckets.map((b) => b.count) },
     { k: "avg", label: "متوسط قيمة الطلب", value: fmt(avg), delta: ovDelta(avg, pAvg), hint: "مقارنة بالفترة اللي قبلها", color: "#22c55e", spark: buckets.map((b) => (b.count ? b.sales / b.count : 0)) },
     { k: "customers", label: "العملاء", value: num(custs.size), delta: ovDelta(custs.size, pCusts.size), hint: `${num(fresh)} عميل جديد`, color: "#ff9f0a", spark: buckets.map((b) => b.customers) },
   ];
@@ -114,11 +114,11 @@ function ovChart(buckets) {
     <div class="ov-y">${ticks.map((t) => `<span style="bottom:${t * 92 + 2}%">${num(Math.round(maxS * t / (maxS >= 10000 ? 1000 : 1)))}${maxS >= 10000 && t ? "k" : ""}</span>`).join("")}</div>
     <div class="ov-canvas">
       <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-        <defs><linearGradient id="ovFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#22d3ee" stop-opacity=".38"/><stop offset="1" stop-color="#22d3ee" stop-opacity="0"/></linearGradient></defs>
+        <defs><linearGradient id="ovFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#20D9F3" stop-opacity=".38"/><stop offset="1" stop-color="#20D9F3" stop-opacity="0"/></linearGradient></defs>
         ${ticks.map((t) => `<line x1="0" x2="100" y1="${H - t * 92 - 2}" y2="${H - t * 92 - 2}" class="ov-grid"/>`).join("")}
         <path d="${area}" fill="url(#ovFill)"/>
-        <path d="${lineC}" fill="none" stroke="#a78bfa" stroke-width="2" stroke-dasharray="5 5" vector-effect="non-scaling-stroke"/>
-        <path d="${line}" fill="none" stroke="#22d3ee" stroke-width="3" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>
+        <path d="${lineC}" fill="none" stroke="#8955FF" stroke-width="2" stroke-dasharray="5 5" vector-effect="non-scaling-stroke"/>
+        <path d="${line}" fill="none" stroke="#20D9F3" stroke-width="3" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>
       </svg>
       <i class="ov-guide" id="ovGuide" hidden></i><i class="ov-dot" id="ovDot" hidden></i>
       <div class="ov-tip" id="ovTip" hidden></div>
@@ -160,8 +160,8 @@ function ovStatus() {
     </div>
     <div class="ov-pay">
       <div class="ov-pay__head"><b>حالة الدفع</b><span class="ov-chip ov-chip--ok">${num(pct(paid + cod, valid.length))}% مضمون</span></div>
-      <div class="ov-pay__bar">${[[paid, "#22c55e"], [cod, "#22d3ee"], [pending, "#fbbf24"]].map(([v, c]) => v ? `<i style="flex:${v};background:${c}"></i>` : "").join("") || '<i style="flex:1"></i>'}</div>
-      <div class="ov-pay__lg"><span style="--c:#22c55e">اتدفع ${num(paid)}</span><span style="--c:#22d3ee">عند الاستلام ${num(cod)}</span><span style="--c:#fbbf24">مستني التحويل ${num(pending)}</span></div>
+      <div class="ov-pay__bar">${[[paid, "#22c55e"], [cod, "#20D9F3"], [pending, "#fbbf24"]].map(([v, c]) => v ? `<i style="flex:${v};background:${c}"></i>` : "").join("") || '<i style="flex:1"></i>'}</div>
+      <div class="ov-pay__lg"><span style="--c:#22c55e">اتدفع ${num(paid)}</span><span style="--c:#20D9F3">عند الاستلام ${num(cod)}</span><span style="--c:#fbbf24">مستني التحويل ${num(pending)}</span></div>
     </div>`;
 }
 
