@@ -741,10 +741,10 @@ body.admin .ov-card, body.admin .ov-kpi, body.admin .stat { transition: transfor
   }
 }
 
-/* القائمة الجانبية = لوح زجاجي */
+/* القائمة الجانبية = لوح معتم ثابت (مفيش شفافية تخلّي الأورورا تبان ورا الأزرار) */
 body.admin .ad-side {
-  background: var(--ad-card-bg); border-inline-end: var(--ad-card-bd);
-  -webkit-backdrop-filter: var(--ad-blur); backdrop-filter: var(--ad-blur);
+  background: #0A1526; border-inline-end: var(--ad-card-bd);
+  -webkit-backdrop-filter: none; backdrop-filter: none;
 }
 body.admin .ad-help { background: var(--ad-soft); border: var(--ad-card-bd); border-radius: 16px; }
 
@@ -762,7 +762,6 @@ body.admin .ad-side .ad-sec.active {
 }
 body.admin .ad-side .ad-sec.active .ad-sec__icon { opacity: 1; }
 body.admin .ad-side .ad-sec.active .tab__count { background: rgba(0,0,0,.2); color: #06121a; }
-body.admin .ad-side .ad-sec:hover { background: var(--ad-soft); }
 body.admin .ad-side .tab__count { background: rgba(34,211,238,.16); color: #36DCEC; }
 
 /* الأزرار والتدرّجات */
