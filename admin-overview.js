@@ -1,7 +1,7 @@
 // ============ لوحة التحكم: نظرة عامة ============
 // كل الأرقام هنا محسوبة من الطلبات والمنتجات الحقيقية (مفيش أرقام تقديرية)
 let ovDays = store.get("gtech-ov-range", 30);
-const OV_STATUS_COLORS = { new: "#fbbf24", confirmed: "#20D9F3", shipped: "#8955FF", delivered: "#22c55e", cancelled: "#FF668E" };
+const OV_STATUS_COLORS = { new: "#e3b24a", confirmed: "#20D9F3", shipped: "#8955FF", delivered: "#24DEB5", cancelled: "#FF668E" };
 const OV_STATUS_HINT = { new: "محتاجة تأكيد", confirmed: "متأكدة · جاهزة للشحن", shipped: "مع شركة الشحن", delivered: "اتسلّمت للعميل", cancelled: "اتلغت" };
 const ovIcon = (path) => `<svg viewBox="0 0 24 24" aria-hidden="true">${path}</svg>`;
 const OV_ICONS = {
@@ -73,8 +73,8 @@ function ovKpis(buckets) {
   const cards = [
     { k: "sales", label: "إجمالي المبيعات", value: fmt(sales), delta: ovDelta(sales, pSales), hint: "مقارنة بالفترة اللي قبلها", color: "#20D9F3", spark: buckets.map((b) => b.sales) },
     { k: "orders", label: "عدد الطلبات", value: num(cv.length), delta: ovDelta(cv.length, pv.length), hint: cancelled ? `${num(cancelled)} ملغي مش محسوب` : "من غير الملغي", color: "#8955FF", spark: buckets.map((b) => b.count) },
-    { k: "avg", label: "متوسط قيمة الطلب", value: fmt(avg), delta: ovDelta(avg, pAvg), hint: "مقارنة بالفترة اللي قبلها", color: "#22c55e", spark: buckets.map((b) => (b.count ? b.sales / b.count : 0)) },
-    { k: "customers", label: "العملاء", value: num(custs.size), delta: ovDelta(custs.size, pCusts.size), hint: `${num(fresh)} عميل جديد`, color: "#ff9f0a", spark: buckets.map((b) => b.customers) },
+    { k: "avg", label: "متوسط قيمة الطلب", value: fmt(avg), delta: ovDelta(avg, pAvg), hint: "مقارنة بالفترة اللي قبلها", color: "#24DEB5", spark: buckets.map((b) => (b.count ? b.sales / b.count : 0)) },
+    { k: "customers", label: "العملاء", value: num(custs.size), delta: ovDelta(custs.size, pCusts.size), hint: `${num(fresh)} عميل جديد`, color: "#4f8fe8", spark: buckets.map((b) => b.customers) },
   ];
   $("#ovKpis").innerHTML = cards.map((c) => `
     <article class="card-box ov-kpi" style="--kc:${c.color}">
@@ -160,8 +160,8 @@ function ovStatus() {
     </div>
     <div class="ov-pay">
       <div class="ov-pay__head"><b>حالة الدفع</b><span class="ov-chip ov-chip--ok">${num(pct(paid + cod, valid.length))}% مضمون</span></div>
-      <div class="ov-pay__bar">${[[paid, "#22c55e"], [cod, "#20D9F3"], [pending, "#fbbf24"]].map(([v, c]) => v ? `<i style="flex:${v};background:${c}"></i>` : "").join("") || '<i style="flex:1"></i>'}</div>
-      <div class="ov-pay__lg"><span style="--c:#22c55e">اتدفع ${num(paid)}</span><span style="--c:#20D9F3">عند الاستلام ${num(cod)}</span><span style="--c:#fbbf24">مستني التحويل ${num(pending)}</span></div>
+      <div class="ov-pay__bar">${[[paid, "#24DEB5"], [cod, "#20D9F3"], [pending, "#e3b24a"]].map(([v, c]) => v ? `<i style="flex:${v};background:${c}"></i>` : "").join("") || '<i style="flex:1"></i>'}</div>
+      <div class="ov-pay__lg"><span style="--c:#24DEB5">اتدفع ${num(paid)}</span><span style="--c:#20D9F3">عند الاستلام ${num(cod)}</span><span style="--c:#e3b24a">مستني التحويل ${num(pending)}</span></div>
     </div>`;
 }
 

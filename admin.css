@@ -663,6 +663,9 @@ body.admin {
   --ad-grad: linear-gradient(135deg, #20D9F3, #168BFF 52%, #8955FF);
   --ad-grad-soft: linear-gradient(135deg, rgba(32,217,243,.18), rgba(137,85,255,.16));
   --ad-red: #FF668E;
+  /* تهدئة الأخضر والكهرماني عشان يتناسقوا مع الثيم البارد */
+  --success: #24DEB5; --danger: #FF668E; --danger-text: #ff8fb0;
+  --warn: #e3b24a; --star: #e3b24a;
   --ad-radius: 16px;
   --ad-blur: blur(16px) saturate(140%);
   /* غامق (الافتراضي — زي المرجع) */
