@@ -670,11 +670,12 @@ body.admin {
   --ad-card-bd: 1px solid rgba(28,65,106,.75); /* #1C416A حافة زرقا لامعة */
   --ad-card-sh: 0 20px 44px -24px rgba(0,0,0,.82), 0 0 26px -14px rgba(22,139,255,.22), inset 0 1px 0 rgba(130,180,240,.08);
   --ad-soft: rgba(16,36,71,.5);              /* #102447 elevated */
-  --ad-bg:
-    radial-gradient(1000px 680px at 88% -12%, rgba(22,139,255,.11), transparent 56%),
-    radial-gradient(880px 680px at 4% 110%, rgba(137,85,255,.10), transparent 56%),
-    radial-gradient(520px 440px at 94% 114%, rgba(255,102,142,.055), transparent 60%),
-    linear-gradient(165deg, #02060F, #03081A 55%, #01030A);
+  /* خلفية غامقة أساسية (الحركة الزجاجية في ::after) */
+  --ad-bg: linear-gradient(165deg, #02060F, #03081A 55%, #01030A);
+  --ad-aurora-1: rgba(22,139,255,.16);
+  --ad-aurora-2: rgba(137,85,255,.15);
+  --ad-aurora-3: rgba(21,223,194,.10);
+  --ad-aurora-4: rgba(255,102,142,.07);
 }
 :root[data-theme="light"] body.admin {
   --ad-grad: linear-gradient(135deg, #0ea5c4, #7c5cff);
@@ -683,19 +684,36 @@ body.admin {
   --ad-card-bd: 1px solid rgba(15,23,42,.08);
   --ad-card-sh: 0 16px 36px -20px rgba(30,41,90,.3), inset 0 1px 0 rgba(255,255,255,.7);
   --ad-soft: rgba(15,23,42,.035);
-  --ad-bg:
-    radial-gradient(900px 680px at 86% -10%, rgba(34,211,238,.26), transparent 58%),
-    radial-gradient(820px 700px at 6% 108%, rgba(139,92,246,.22), transparent 58%),
-    radial-gradient(520px 440px at 92% 112%, rgba(255,102,142,.15), transparent 60%),
-    linear-gradient(160deg, #eef2fb, #e9eefb 55%, #eef1fb);
+  --ad-bg: linear-gradient(160deg, #eef2fb, #e9eefb 55%, #eef1fb);
+  --ad-aurora-1: rgba(34,211,238,.26);
+  --ad-aurora-2: rgba(139,92,246,.22);
+  --ad-aurora-3: rgba(21,223,194,.18);
+  --ad-aurora-4: rgba(255,102,142,.14);
 }
 
-/* الخلفية الثابتة */
-body.admin { background: transparent; }
+/* الخلفية: طبقة أساسية غامقة + طبقة أورورا زجاجية متحركة */
+body.admin { background: #02060F; }
 body.admin::before {
-  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
-  background: var(--ad-bg); background-attachment: fixed;
+  content: ""; position: fixed; inset: 0; z-index: -2; pointer-events: none;
+  background: var(--ad-bg);
 }
+body.admin::after {
+  content: ""; position: fixed; inset: -20%; z-index: -1; pointer-events: none;
+  filter: blur(70px); opacity: .9;
+  background:
+    radial-gradient(42% 42% at 20% 18%, var(--ad-aurora-1), transparent 70%),
+    radial-gradient(46% 46% at 82% 28%, var(--ad-aurora-2), transparent 70%),
+    radial-gradient(40% 40% at 70% 82%, var(--ad-aurora-3), transparent 70%),
+    radial-gradient(38% 38% at 26% 86%, var(--ad-aurora-4), transparent 70%);
+  animation: adAurora 26s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes adAurora {
+  0%   { transform: translate3d(0,0,0) scale(1) rotate(0deg); }
+  50%  { transform: translate3d(2.5%, -2%, 0) scale(1.12) rotate(4deg); }
+  100% { transform: translate3d(-2%, 2.5%, 0) scale(1.06) rotate(-3deg); }
+}
+@media (prefers-reduced-motion: reduce) { body.admin::after { animation: none; } }
 
 /* الكروت = زجاج داكن */
 body.admin .card-box,
@@ -711,10 +729,12 @@ body.admin .stat {
   -webkit-backdrop-filter: var(--ad-blur); backdrop-filter: var(--ad-blur);
 }
 body.admin .ov-card, body.admin .ov-kpi, body.admin .stat { transition: transform .25s, box-shadow .25s, border-color .25s; }
-body.admin .ov-kpi:hover, body.admin .stat:hover, body.admin .ov-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(32,140,230,.6) !important;
-  box-shadow: 0 26px 52px -22px rgba(0,0,0,.85), 0 0 34px -12px rgba(22,139,255,.35), inset 0 1px 0 rgba(130,180,240,.1);
+@media (hover: hover) {
+  body.admin .ov-kpi:hover, body.admin .stat:hover, body.admin .ov-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(32,140,230,.6) !important;
+    box-shadow: 0 26px 52px -22px rgba(0,0,0,.85), 0 0 34px -12px rgba(22,139,255,.35), inset 0 1px 0 rgba(130,180,240,.1);
+  }
 }
 
 /* القائمة الجانبية = لوح زجاجي */
@@ -820,19 +840,33 @@ body.admin .ad-side .ad-sec:focus-visible {
 body.admin .ad-side .ad-sec.active:focus-visible {
   box-shadow: 0 10px 30px -8px rgba(22,139,255,.5), inset 0 0 0 1.6px rgba(255,255,255,.55);
 }
-/* الوقوف على عنصر القائمة: خلفية خفيفة + حد داخلي باهت + نص أوضح */
+/* مفيش وميض لمس على الموبايل */
+body.admin a, body.admin button, body.admin .ad-sec, body.admin .icon-btn,
+body.admin .tab, body.admin .ov-range button { -webkit-tap-highlight-color: transparent; }
+
+/* الوقوف على عنصر القائمة: خلفية خفيفة + نص/أيقونة أوضح — من غير بوكس */
 body.admin .ad-side .ad-sec {
   transition: background-color .2s, color .2s, box-shadow .2s, transform .15s;
 }
-body.admin .ad-side .ad-sec:not(.active):hover {
-  background: var(--ad-soft);
-  color: #eaf2ff;
-  box-shadow: inset 0 0 0 1px rgba(90,135,200,.22);
+/* الهوفر للماوس فقط (مايعلقش بعد اللمس على الموبايل) */
+@media (hover: hover) {
+  body.admin .ad-side .ad-sec:not(.active):hover {
+    background: var(--ad-soft); color: #eaf2ff;
+  }
+  body.admin .ad-side .ad-sec:not(.active):hover .ad-sec__icon { opacity: 1; color: #5fe6f5; }
 }
-body.admin .ad-side .ad-sec:not(.active):active { transform: translateX(-1px); }
-body.admin .ad-side .ad-sec:not(.active):hover .ad-sec__icon { opacity: 1; color: #5fe6f5; }
+body.admin .ad-side .ad-sec:not(.active):active { background: var(--ad-soft); }
 /* الأزرار العامة في اللوحة: فوكس بظل أزرق ناعم بدل الإطار الحاد */
 body.admin .btn:focus-visible, body.admin .icon-btn:focus-visible, body.admin .ov-range button:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(3,8,20,1), 0 0 0 4px rgba(32,217,243,.55);
+  box-shadow: 0 0 0 2px #03081A, 0 0 0 4px rgba(32,217,243,.5);
+}
+
+/* ============================================================
+   📱 إصلاح القائمة على الموبايل في الوضع الإنجليزي (LTR)
+   القائمة على الشمال، فالإخفاء لازم يكون لليسار مش لليمين
+   ============================================================ */
+@media (max-width: 1000px) {
+  html[dir="ltr"] .ad-side { transform: translateX(-100%); }
+  html[dir="ltr"] body.ad-menu-open .ad-side { transform: none; }
 }
