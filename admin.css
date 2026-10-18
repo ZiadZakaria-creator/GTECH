@@ -658,27 +658,28 @@
    فينتك غامق: تركواز + بنفسجي نيون + أحمر للسالب/التنبيهات
    ============================================================ */
 body.admin {
-  /* الباليت المحدّد بالظبط */
-  --ad-blue: #168BFF; --ad-cyan: #20D9F3; --ad-teal: #15DFC2; --ad-purple: #8955FF;
-  --ad-grad: linear-gradient(135deg, #20D9F3, #168BFF 52%, #8955FF);
-  --ad-grad-soft: linear-gradient(135deg, rgba(32,217,243,.18), rgba(137,85,255,.16));
-  --ad-red: #FF668E;
-  /* تهدئة الأخضر والكهرماني عشان يتناسقوا مع الثيم البارد */
-  --success: #24DEB5; --danger: #FF668E; --danger-text: #ff8fb0;
-  --warn: #e3b24a; --star: #e3b24a;
+  /* ===== نظام ألوان مبني بـ OKLCH ومتحقّق من التباين (WCAG) ===== */
+  /* بريميتيف الأكسنت */
+  --ad-cyan: #13C2D2; --ad-blue: #00B3F2; --ad-teal: #41C6A3; --ad-purple: #AE9DF5;
+  --ad-grad: linear-gradient(135deg, #36DCEC, #00B3F2 52%, #AE9DF5);
+  --ad-grad-soft: linear-gradient(135deg, rgba(54,220,236,.16), rgba(174,157,245,.14));
+  --ad-red: #E85B75;
+  /* توكنز دلالية (نقطتها على النيوترال/الحالات المتحقّقة) */
+  --text: #EAF1F8; --text-2: #c3d0de; --muted: #92A2B2;
+  --success: #54D5AB; --danger: #E85B75; --danger-text: #ff9fb0;
+  --warn: #EDBB64; --star: #EDBB64;
   --ad-radius: 16px;
   --ad-blur: blur(16px) saturate(140%);
-  /* غامق (الافتراضي — زي المرجع) */
-  --ad-card-bg: rgba(11,27,54,.70);          /* #0A1B36 */
-  --ad-card-bd: 1px solid rgba(28,65,106,.75); /* #1C416A حافة زرقا لامعة */
-  --ad-card-sh: 0 20px 44px -24px rgba(0,0,0,.82), 0 0 26px -14px rgba(22,139,255,.22), inset 0 1px 0 rgba(130,180,240,.08);
-  --ad-soft: rgba(16,36,71,.5);              /* #102447 elevated */
-  /* خلفية غامقة أساسية (الحركة الزجاجية في ::after) */
-  --ad-bg: linear-gradient(165deg, #02060F, #03081A 55%, #01030A);
-  --ad-aurora-1: rgba(22,139,255,.16);
-  --ad-aurora-2: rgba(137,85,255,.15);
-  --ad-aurora-3: rgba(21,223,194,.10);
-  --ad-aurora-4: rgba(255,102,142,.07);
+  /* النيوترال (نيڤي) */
+  --ad-card-bg: rgba(18,28,42,.72);            /* surface #121C2A */
+  --ad-card-bd: 1px solid rgba(54,112,145,.55); /* border-strong #367091 */
+  --ad-card-sh: 0 20px 44px -24px rgba(0,0,0,.82), 0 0 26px -14px rgba(0,179,242,.20), inset 0 1px 0 rgba(140,190,235,.07);
+  --ad-soft: rgba(28,41,55,.5);                /* elevated #1C2937 */
+  --ad-bg: linear-gradient(165deg, #050C18, #060E1C 55%, #040A14); /* bg #050C18 */
+  --ad-aurora-1: rgba(0,179,242,.14);
+  --ad-aurora-2: rgba(174,157,245,.13);
+  --ad-aurora-3: rgba(65,198,163,.09);
+  --ad-aurora-4: rgba(232,91,117,.06);
 }
 :root[data-theme="light"] body.admin {
   --ad-grad: linear-gradient(135deg, #0ea5c4, #7c5cff);
@@ -691,7 +692,7 @@ body.admin {
   --ad-aurora-1: rgba(34,211,238,.26);
   --ad-aurora-2: rgba(139,92,246,.22);
   --ad-aurora-3: rgba(21,223,194,.18);
-  --ad-aurora-4: rgba(255,102,142,.14);
+  --ad-aurora-4: rgba(232,91,117,.14);
 }
 
 /* الخلفية: طبقة أساسية غامقة + طبقة أورورا زجاجية متحركة */
@@ -735,8 +736,8 @@ body.admin .ov-card, body.admin .ov-kpi, body.admin .stat { transition: transfor
 @media (hover: hover) {
   body.admin .ov-kpi:hover, body.admin .stat:hover, body.admin .ov-card:hover {
     transform: translateY(-3px);
-    border-color: rgba(32,140,230,.6) !important;
-    box-shadow: 0 26px 52px -22px rgba(0,0,0,.85), 0 0 34px -12px rgba(22,139,255,.35), inset 0 1px 0 rgba(130,180,240,.1);
+    border-color: rgba(0,179,242,.6) !important;
+    box-shadow: 0 26px 52px -22px rgba(0,0,0,.85), 0 0 34px -12px rgba(0,179,242,.35), inset 0 1px 0 rgba(130,180,240,.1);
   }
 }
 
@@ -757,20 +758,20 @@ body.admin .ad-top {
 /* عنصر القائمة النشط — توهّج نيون */
 body.admin .ad-side .ad-sec.active {
   background: var(--ad-grad); color: #06121a;
-  box-shadow: 0 10px 30px -8px rgba(22,139,255,.5);
+  box-shadow: 0 10px 30px -8px rgba(0,179,242,.5);
 }
 body.admin .ad-side .ad-sec.active .ad-sec__icon { opacity: 1; }
 body.admin .ad-side .ad-sec.active .tab__count { background: rgba(0,0,0,.2); color: #06121a; }
 body.admin .ad-side .ad-sec:hover { background: var(--ad-soft); }
-body.admin .ad-side .tab__count { background: rgba(34,211,238,.16); color: #5fe6f5; }
+body.admin .ad-side .tab__count { background: rgba(34,211,238,.16); color: #36DCEC; }
 
 /* الأزرار والتدرّجات */
-body.admin .btn--primary { background: var(--ad-grad); color: #06121a; box-shadow: 0 10px 30px -10px rgba(22,139,255,.45); }
+body.admin .btn--primary { background: var(--ad-grad); color: #06121a; box-shadow: 0 10px 30px -10px rgba(0,179,242,.45); }
 body.admin .btn--primary:hover { box-shadow: 0 16px 40px -10px rgba(139,92,246,.6); }
 body.admin .ov-bar u { background: var(--ad-grad); }
 body.admin .funnel__bar i { background: var(--ad-grad); }
 body.admin .ad-user__av, body.admin .logo__mark { background: var(--ad-grad); color: #06121a; }
-body.admin .ov-range button.active { background: var(--ad-grad-soft); color: #5fe6f5; box-shadow: inset 0 0 0 1px rgba(34,211,238,.4); }
+body.admin .ov-range button.active { background: var(--ad-grad-soft); color: #36DCEC; box-shadow: inset 0 0 0 1px rgba(34,211,238,.4); }
 
 /* حقول/قوائم/تابات */
 body.admin .ad-toolbar__side input,
@@ -796,12 +797,12 @@ body.admin .bulk-item {
 body.admin .orders tbody tr:hover { background: var(--ad-soft); }
 
 /* ألوان المبيعات/اللينكات تركواز */
-body.admin .ov-id, body.admin .ov-pp, body.admin .ov-note, body.admin .ad-help small { color: #5fe6f5; }
+body.admin .ov-id, body.admin .ov-pp, body.admin .ov-note, body.admin .ad-help small { color: #36DCEC; }
 
 /* 🔴 الأحمر ضمن الباليت: السالب والتنبيهات والحالات الملغية */
 body.admin .ov-delta--down { color: var(--ad-red); }
-body.admin .stock-badge--out, body.admin .ov-stock.is-out b { color: var(--ad-red); background: rgba(255,102,142,.15); }
-body.admin .pill-status--cancelled { color: var(--ad-red) !important; background: rgba(255,102,142,.15) !important; }
+body.admin .stock-badge--out, body.admin .ov-stock.is-out b { color: var(--ad-red); background: rgba(232,91,117,.15); }
+body.admin .pill-status--cancelled { color: var(--ad-red) !important; background: rgba(232,91,117,.15) !important; }
 body.admin .btn--primary.danger, body.admin .danger { color: var(--ad-red); }
 body.admin .ad-lowstock { animation: none; }
 
@@ -832,16 +833,16 @@ body.admin .order-drawer {
    ============================================================ */
 /* إطار الفوكس العام في اللوحة: أنعم وأقرب للعنصر */
 body.admin :where(a, button, summary, select, [tabindex]):focus-visible {
-  outline: 2px solid rgba(32,217,243,.55);
+  outline: 2px solid rgba(54,220,236,.55);
   outline-offset: 1px;
 }
 /* عناصر القائمة الجانبية: حلقة داخلية ناعمة من غير فجوة */
 body.admin .ad-side .ad-sec:focus-visible {
   outline: none;
-  box-shadow: inset 0 0 0 1.5px rgba(32,217,243,.6);
+  box-shadow: inset 0 0 0 1.5px rgba(54,220,236,.6);
 }
 body.admin .ad-side .ad-sec.active:focus-visible {
-  box-shadow: 0 10px 30px -8px rgba(22,139,255,.5), inset 0 0 0 1.6px rgba(255,255,255,.55);
+  box-shadow: 0 10px 30px -8px rgba(0,179,242,.5), inset 0 0 0 1.6px rgba(255,255,255,.55);
 }
 /* مفيش وميض لمس على الموبايل */
 body.admin a, body.admin button, body.admin .ad-sec, body.admin .icon-btn,
@@ -856,13 +857,13 @@ body.admin .ad-side .ad-sec {
   body.admin .ad-side .ad-sec:not(.active):hover {
     background: var(--ad-soft); color: #eaf2ff;
   }
-  body.admin .ad-side .ad-sec:not(.active):hover .ad-sec__icon { opacity: 1; color: #5fe6f5; }
+  body.admin .ad-side .ad-sec:not(.active):hover .ad-sec__icon { opacity: 1; color: #36DCEC; }
 }
 body.admin .ad-side .ad-sec:not(.active):active { background: var(--ad-soft); }
 /* الأزرار العامة في اللوحة: فوكس بظل أزرق ناعم بدل الإطار الحاد */
 body.admin .btn:focus-visible, body.admin .icon-btn:focus-visible, body.admin .ov-range button:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px #03081A, 0 0 0 4px rgba(32,217,243,.5);
+  box-shadow: 0 0 0 2px #03081A, 0 0 0 4px rgba(54,220,236,.5);
 }
 
 /* ============================================================
