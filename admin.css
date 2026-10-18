@@ -682,17 +682,22 @@ body.admin {
   --ad-aurora-4: rgba(232,91,117,.06);
 }
 :root[data-theme="light"] body.admin {
+  /* ===== نظام لايت مبني بـ OKLCH ومتحقّق من التباين (WCAG AA على خلفية الكرت #fafbfe) =====
+     --text 15.9:1 · --text-2 8.7:1 · --muted 5.3:1 · success 5.2:1 · danger 5.2:1 · warn 4.9:1 */
+  --text: #112033; --text-2: #3A4A5E; --muted: #5C6B7D;
+  --success: #097A50; --danger: #C5324C; --danger-text: #C5324C;
+  --warn: #B45309; --star: #B45309;
   --ad-grad: linear-gradient(135deg, #0ea5c4, #7c5cff);
-  --ad-grad-soft: linear-gradient(135deg, rgba(14,165,196,.14), rgba(124,92,255,.12));
-  --ad-card-bg: rgba(255,255,255,.72);
-  --ad-card-bd: 1px solid rgba(15,23,42,.08);
-  --ad-card-sh: 0 16px 36px -20px rgba(30,41,90,.3), inset 0 1px 0 rgba(255,255,255,.7);
-  --ad-soft: rgba(15,23,42,.035);
-  --ad-bg: linear-gradient(160deg, #eef2fb, #e9eefb 55%, #eef1fb);
-  --ad-aurora-1: rgba(34,211,238,.26);
-  --ad-aurora-2: rgba(139,92,246,.22);
-  --ad-aurora-3: rgba(21,223,194,.18);
-  --ad-aurora-4: rgba(232,91,117,.14);
+  --ad-grad-soft: linear-gradient(135deg, rgba(14,165,196,.12), rgba(124,92,255,.10));
+  --ad-card-bg: rgba(255,255,255,.82);
+  --ad-card-bd: 1px solid rgba(15,23,42,.10);
+  --ad-card-sh: 0 16px 36px -22px rgba(30,41,90,.22), inset 0 1px 0 rgba(255,255,255,.7);
+  --ad-soft: rgba(15,23,42,.05);
+  --ad-bg: linear-gradient(160deg, #f1f4fc, #eef1fb 55%, #f1f3fc);
+  --ad-aurora-1: rgba(34,211,238,.12);
+  --ad-aurora-2: rgba(139,92,246,.10);
+  --ad-aurora-3: rgba(21,223,194,.08);
+  --ad-aurora-4: rgba(232,91,117,.05);
 }
 
 /* الخلفية: طبقة أساسية غامقة + طبقة أورورا زجاجية متحركة */
