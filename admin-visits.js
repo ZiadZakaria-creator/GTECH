@@ -108,9 +108,10 @@ function renderVisits() {
 }
 
 // ============ مسار الشراء ومصادر الزوار ============
+// ألوان متناسقة بنفس درجة السطوع/التشبع (عيلة تركواز→أزرق→بنفسجي) — مميّزة بس مريحة للعين
 const SOURCE_INFO = {
-  facebook: ["فيسبوك", "#1877F2"], instagram: ["إنستجرام", "#E1306C"], tiktok: ["تيك توك", "#25F4EE"],
-  google: ["جوجل", "#34A853"], whatsapp: ["واتساب", "#25D366"], direct: ["مباشر / لينك", "#8a98b8"], other: ["مواقع تانية", "#a78bfa"],
+  facebook: ["فيسبوك", "#4f8fe8"], instagram: ["إنستجرام", "#cf6fb8"], tiktok: ["تيك توك", "#2fd0e0"],
+  google: ["جوجل", "#2fc6b0"], whatsapp: ["واتساب", "#45cf9a"], direct: ["مباشر / لينك", "#8a9bc0"], other: ["مواقع تانية", "#9b7bf0"],
 };
 function renderAnalytics(days, rangeOrders) {
   const sum = (f, list = days) => list.reduce((s, d) => s + (visitDays[d]?.[f] || 0), 0);
