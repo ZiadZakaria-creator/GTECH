@@ -681,6 +681,15 @@ const I18N_EN = {
 "ارجع للمتجر": "Back to the store"
 };
 const I18N_PATTERNS = [
+// ---- أنماط لوحة التحكم (تلميحات فيها أرقام) ----
+["^(.+?) عميل جديد$", "{1} new customers"],
+["^(.+?) ملغي مش محسوب$", "{1} cancelled (not counted)"],
+["^(.+?)% اتسلّمت$", "{1}% delivered"],
+["^اتدفع (.+?)$", "Paid {1}"],
+["^عند الاستلام (.+?)$", "Cash on delivery {1}"],
+["^مستني التحويل (.+?)$", "Awaiting transfer {1}"],
+["^اتسلّم (.+?) اتلغى (.+?)$", "{1} delivered · {2} cancelled"],
+["^(.+?) قطعة · (.+?)$", "{1} pcs · {2}"],
 ["^عرض الكل \\((.+?)\\)$", "View all ({1})"],
 ["^🎁 عندك (.+?) (?:مكافأة|مكافآت) — الخصم هيتحسب لوحده في أوردرك الجاي$", "🎁 You have {1} reward(s) — the discount applies automatically to your next order"],
 ["^وفّر (.+?)$", "Save {1}"],
@@ -977,8 +986,8 @@ function setLang(l) {
   else location.replace(u.toString());
 }
 document.addEventListener("DOMContentLoaded", () => {
-  const actions = document.querySelector(".header__actions");
-  if (!actions) return; // لوحة التحكم مالهاش زرار لغة
+  const actions = document.querySelector(".header__actions, .ad-top__actions");
+  if (!actions) return;
   const other = IS_EN ? "ar" : "en";
   const label = IS_EN ? "ع" : "EN";
   const title = IS_EN ? "العربية" : "English";
