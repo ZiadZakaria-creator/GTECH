@@ -37,6 +37,12 @@
       "skillPath": "ai-music/SKILL.md",
       "computedHash": "29b2cf42e8945cc9b14ace58d5b7dcf04454c0839d41a30725c331e551f2aa24"
     },
+    "ai-research-explore": {
+      "source": "lllllllama/rigorpilot-skills",
+      "sourceType": "github",
+      "skillPath": "skills/ai-research-explore/SKILL.md",
+      "computedHash": "0fded4e9aeef0de63322b9f77504a16f790d4e71682a5065ecf48da6d68d1943"
+    },
     "ai-video-generation": {
       "source": "qu-skills/superpowers",
       "sourceType": "github",
@@ -48,6 +54,18 @@
       "sourceType": "github",
       "skillPath": "skills/algorithmic-art/SKILL.md",
       "computedHash": "b2ca295de7f9c86c444f1fa21239e22e0eb7013ced1c652169b9402cc96ff744"
+    },
+    "analyze-project": {
+      "source": "lllllllama/rigorpilot-skills",
+      "sourceType": "github",
+      "skillPath": "skills/analyze-project/SKILL.md",
+      "computedHash": "32c05191bc8a4dc7522e026c61faecb92e1bb9523f56050d67f9f0fdaddf28ec"
+    },
+    "animate": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "skillPath": "skills/animate/SKILL.md",
+      "computedHash": "7598d33e7f60dd5c24531eaaa897621cc3bdb48e8050324211627973bc59c4ce"
     },
     "animation-vocabulary": {
       "source": "emilkowalski/skills",
@@ -90,6 +108,12 @@
       "sourceType": "github",
       "skillPath": "skills/content-strategy/SKILL.md",
       "computedHash": "7677dba18780b18ea2247b44d2cc8be05ec1dbec319da51a21cf297eb3d0fd1b"
+    },
+    "copy-editing": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "skillPath": "skills/copy-editing/SKILL.md",
+      "computedHash": "92731d3f0fd28f0e432c1031230e6553a2267f517a3e4cd9a44f37ff82ebba04"
     },
     "copywriting": {
       "source": "coreyhaines31/marketingskills",
