@@ -119,13 +119,19 @@ function renderDetail(p) {
             <button id="qtyMinus" aria-label="نقص">−</button>
           </div>
           <button class="btn btn--primary" id="addMain" ${soldOut ? "disabled" : ""}>${soldOut ? "نفد من المخزون" : `${cartPlusIcon} أضف للسلة`}</button>
-          <button class="btn btn--ghost" id="buyNow" ${soldOut ? "disabled" : ""}>اشتري الآن</button>
+          <button class="btn btn--ghost pd__buynow" id="buyNow" ${soldOut ? "disabled" : ""}>⚡ اشتري الآن</button>
           <button class="icon-btn pd__wish ${wishlist.includes(p.id) ? "active" : ""}" data-wish="${p.id}" aria-label="أضف للمفضلة">${heartIcon}</button>
           <button class="icon-btn pd__compare ${compareList.includes(p.id) ? "active" : ""}" data-compare="${p.id}" aria-label="قارن" title="قارن بمنتج تاني">⚖️</button>
           <button class="icon-btn" id="shareBtn" aria-label="مشاركة">
             <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>
           </button>
         </div>
+
+        ${soldOut ? "" : `<ul class="pd__assure">
+          <li>💵 الدفع عند الاستلام</li>
+          <li>🔄 استرجاع خلال ١٤ يوم</li>
+          <li>🚚 توصيل القاهرة والجيزة</li>
+        </ul>`}
 
         ${soldOut ? "" : `<a class="btn pd__wa" id="waOrder" href="#" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3.5A11 11 0 0 0 3.4 17.2L2 22l4.9-1.3A11 11 0 0 0 20.5 3.5Zm-8.4 17a9 9 0 0 1-4.6-1.3l-.3-.2-2.9.8.8-2.8-.2-.3a9 9 0 1 1 7.2 3.8Zm5-6.7c-.3-.1-1.6-.8-1.9-.9s-.4-.1-.6.1-.7.9-.8 1-.3.2-.6.1a7.4 7.4 0 0 1-3.7-3.2c-.3-.5.3-.4.8-1.4a.5.5 0 0 0 0-.5l-.8-2c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.2c0-.1-.2-.2-.5-.3Z"/></svg>
