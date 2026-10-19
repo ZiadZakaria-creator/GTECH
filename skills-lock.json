@@ -103,6 +103,12 @@
       "skillPath": "skills/community-marketing/SKILL.md",
       "computedHash": "07ae29742d77a243b988267ae4bfdab90b3ca8219ab15db0feeed94c054ba1c2"
     },
+    "computer-use": {
+      "source": "stablyai/orca",
+      "sourceType": "github",
+      "skillPath": "skills/computer-use/SKILL.md",
+      "computedHash": "1130dcb48ca8c1cf00e1c15242e95f0141cad5299b9fc2ebbcd2779c8c2f3194"
+    },
     "content-strategy": {
       "source": "coreyhaines31/marketingskills",
       "sourceType": "github",
@@ -341,7 +347,7 @@
       "source": "heygen-com/hyperframes",
       "sourceType": "github",
       "skillPath": "skills/music-to-video/SKILL.md",
-      "computedHash": "414148d019f0c0f76077465c0684208a2470136dc4d184af04a12dc692b00088"
+      "computedHash": "8fcdb92e400f2ec38d019352b021632054c05dc80d247963b158d60c60495f6f"
     },
     "postgresql-optimization": {
       "source": "github/awesome-copilot",
