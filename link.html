@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>GTECH MASR | كل سيت-أب الجيمنج في مكان واحد</title>
+<meta name="description" content="متجر GTECH MASR لإكسسوارات الجيمنج والكمبيوتر الأصلية — كيبوردات، ماوسات، سماعات، دراعات. الدفع عند الاستلام وتوصيل القاهرة والجيزة." />
+<meta name="robots" content="noindex,follow" />
+<link rel="canonical" href="https://ziadzakaria-creator.github.io/GTECH/" />
+<meta property="og:title" content="GTECH MASR — إكسسوارات جيمنج أصلية" />
+<meta property="og:description" content="كيبوردات · ماوسات · سماعات · دراعات — الدفع عند الاستلام، توصيل القاهرة والجيزة." />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" />
+<style>
+  :root{
+    --bg:#070b14; --surface:#111a2e; --surface-2:#16223b;
+    --text:#e8eefc; --muted:#9aa8c6; --border:rgba(148,163,184,.16);
+    --cyan:#00d4ff; --blue:#0a84ff; --vio:#7c5cff; --wa:#25d366;
+    --grad:linear-gradient(135deg,var(--cyan),var(--blue) 52%,var(--vio));
+    color-scheme:dark;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{min-height:100%}
+  body{
+    font-family:"Cairo",system-ui,"Segoe UI",sans-serif;color:var(--text);
+    background:
+      radial-gradient(130% 70% at 85% 0%,rgba(10,132,255,.22),transparent 55%),
+      radial-gradient(120% 70% at 0% 100%,rgba(124,92,255,.2),transparent 55%),
+      var(--bg);
+    background-attachment:fixed;
+    display:flex;justify-content:center;
+    padding:calc(28px + env(safe-area-inset-top,0px)) max(18px,env(safe-area-inset-left,0px)) calc(36px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-right,0px));
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{width:100%;max-width:460px;display:flex;flex-direction:column;align-items:center;gap:18px}
+
+  /* brand */
+  .logo{display:flex;align-items:center;gap:13px;direction:ltr;margin-top:6px}
+  .logo .lg{width:66px;height:66px;border-radius:19px;display:grid;place-items:center;
+    background:var(--grad);color:#061225;font-weight:900;font-size:44px;line-height:1;
+    box-shadow:0 16px 36px -12px rgba(10,132,255,.6),inset 0 2px 0 rgba(255,255,255,.4)}
+  .logo .lt{font-size:40px;font-weight:900;letter-spacing:2px}
+  .logo .ls{align-self:flex-end;color:var(--cyan);font-size:15px;font-weight:800;letter-spacing:6px;margin-bottom:9px}
+  .tagline{text-align:center;color:var(--text);font-weight:800;font-size:1.18rem;line-height:1.4;max-width:34ch}
+  .tagline .g{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+  /* trust chips */
+  .trust{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+  .trust span{font-size:.82rem;font-weight:700;color:var(--muted);
+    padding:6px 13px;border-radius:999px;background:var(--surface);border:1px solid var(--border)}
+
+  /* buttons */
+  .links{width:100%;display:flex;flex-direction:column;gap:12px;margin-top:4px}
+  .btn{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--text);
+    background:var(--surface);border:1px solid var(--border);border-radius:16px;
+    padding:16px 18px;font-weight:800;font-size:1.05rem;transition:transform .12s,border-color .2s,background .2s}
+  .btn .ic{width:30px;text-align:center;font-size:1.4rem;flex:none}
+  .btn .arrow{margin-inline-start:auto;color:var(--muted);font-size:1.1rem}
+  @media (hover:hover){.btn:hover{transform:translateY(-2px);border-color:var(--cyan);background:var(--surface-2)}}
+  .btn:active{transform:translateY(0)}
+  .btn--main{background:var(--grad);color:#061225;border:none;font-size:1.15rem;
+    box-shadow:0 16px 38px -14px rgba(10,132,255,.7)}
+  .btn--main .arrow{color:rgba(6,18,37,.6)}
+  .btn--wa{border-color:rgba(37,211,102,.4)}
+  .btn--wa .ic{color:var(--wa)}
+
+  /* category row */
+  .cats{width:100%;display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
+  .cat{display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;
+    color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:14px;
+    padding:12px 4px;font-size:.72rem;font-weight:700;transition:transform .12s,border-color .2s}
+  .cat .ci{font-size:1.5rem}
+  @media (hover:hover){.cat:hover{transform:translateY(-2px);border-color:var(--cyan)}}
+  .section-label{align-self:flex-end;color:var(--muted);font-size:.8rem;font-weight:800;margin:6px 4px -4px}
+
+  /* socials */
+  .socials{display:flex;gap:12px;margin-top:8px}
+  .socials a{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;
+    background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:1.2rem;
+    text-decoration:none;transition:transform .12s,border-color .2s}
+  @media (hover:hover){.socials a:hover{transform:translateY(-2px);border-color:var(--cyan)}}
+  .foot{color:var(--muted);font-size:.78rem;text-align:center;margin-top:10px}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="logo"><span class="lg">G</span><span class="lt">GTECH</span><span class="ls">MASR</span></div>
+    <p class="tagline">كل سيت-أب الجيمنج بتاعك<br><span class="g">في متجر واحد</span> 🎮⚡</p>
+    <div class="trust">
+      <span>💵 الدفع عند الاستلام</span>
+      <span>🚚 القاهرة والجيزة</span>
+      <span>✅ ماركات أصلية</span>
+    </div>
+
+    <nav class="links" aria-label="روابط المتجر">
+      <a class="btn btn--main" data-store href="index.html#products"><span class="ic">🛒</span>تصفّح المتجر كله<span class="arrow">←</span></a>
+      <a class="btn btn--wa" id="waBtn" href="https://wa.me/201100053123" target="_blank" rel="noopener"><span class="ic">💬</span>اطلب أو اسأل على واتساب<span class="arrow">←</span></a>
+    </nav>
+
+    <span class="section-label">تسوّق حسب القسم</span>
+    <nav class="cats" aria-label="الأقسام">
+      <a class="cat" data-store href="index.html?cat=keyboards#products"><span class="ci">⌨️</span>كيبوردات</a>
+      <a class="cat" data-store href="index.html?cat=mice#products"><span class="ci">🖱️</span>ماوسات</a>
+      <a class="cat" data-store href="index.html?cat=audio#products"><span class="ci">🎧</span>سماعات</a>
+      <a class="cat" data-store href="index.html?cat=controllers#products"><span class="ci">🕹️</span>دراعات</a>
+      <a class="cat" data-store href="index.html?cat=storage#products"><span class="ci">💾</span>تخزين</a>
+    </nav>
+
+    <div class="socials" aria-label="تابعنا">
+      <a href="https://www.tiktok.com/@gtech_masr" target="_blank" rel="noopener" aria-label="تيك توك">♪</a>
+      <a href="https://www.facebook.com/profile.php?id=61582595856275" target="_blank" rel="noopener" aria-label="فيسبوك">f</a>
+      <a href="https://wa.me/201100053123" target="_blank" rel="noopener" aria-label="واتساب">✆</a>
+    </div>
+
+    <p class="foot">GTECH MASR · إكسسوارات جيمنج وكمبيوتر أصلية</p>
+  </main>
+
+  <script>
+    // نحافظ على مصدر الزيارة (utm_source) على كل روابط المتجر عشان لوحة التحكم تعرف إن الزائر جه من تيك توك/البايو
+    (function(){
+      try{
+        var q=new URLSearchParams(location.search);
+        var src=(q.get("utm_source")||"tiktok").toLowerCase();
+        var med=(q.get("utm_medium")||"bio").toLowerCase();
+        document.querySelectorAll("a[data-store]").forEach(function(a){
+          var u=new URL(a.getAttribute("href"), location.href);
+          u.searchParams.set("utm_source", src);
+          u.searchParams.set("utm_medium", med);
+          a.setAttribute("href", u.pathname.split("/").pop() + u.search + u.hash);
+        });
+      }catch(e){}
+    })();
+  </script>
+</body>
+</html>
