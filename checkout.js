@@ -28,24 +28,25 @@ function totals() {
 function renderSummary() {
   if (placed) return;
   const empty = !cart.length;
-  const locked = !empty && !user;
-  $("#checkoutView").hidden = empty || locked;
+  // الطلب بقى متاح للجميع (بدون بوابة تسجيل دخول) — الدخول اختياري للعملاء الراجعين
+  $("#checkoutView").hidden = empty;
   $("#emptyView").hidden = !empty;
-  $("#loginView").hidden = !locked;
-  if (empty || locked) return;
+  $("#loginView").hidden = true;
+  if (empty) return;
   if (!checkoutTracked && typeof track === "function") {
     checkoutTracked = true;
     track("begin_checkout", { items: cart.map((i) => { const p = findProduct(i.id); return { id: p.id, name: p.name, price: p.price, qty: i.qty }; }) });
   }
 
-  // بيانات التواصل جاية من الحساب
-  form.elements.name.value = user.name;
-  // لو الحساب مفيهوش رقم (دخول بـ Google) العميل يكتبه هنا مرة واحدة
-  const phoneEl = form.elements.phone;
-  phoneEl.readOnly = !!user.phone;
-  if (user.phone) phoneEl.value = user.phone;
-  if (!form.elements.email.value && user.email) form.elements.email.value = user.email;
-  $("#accountNote").innerHTML = `✔ داخل باسم <b>${escapeHtml(user.name)}</b> — <button type="button" class="link-btn" id="switchUser">مش إنت؟ غيّر الحساب</button>`;
+  // لو العميل داخل بحساب: نملّالـه بياناته (ويفضل يقدر يعدّلها). لو ضيف: يكتب بنفسه.
+  if (user) {
+    if (!form.elements.name.value) form.elements.name.value = user.name || "";
+    if (user.phone && !form.elements.phone.value) form.elements.phone.value = user.phone;
+    if (!form.elements.email.value && user.email) form.elements.email.value = user.email;
+    $("#accountNote").innerHTML = `✔ داخل باسم <b>${escapeHtml(user.name)}</b> — <button type="button" class="link-btn" id="switchUser">مش إنت؟ غيّر الحساب</button>`;
+  } else {
+    $("#accountNote").innerHTML = `طلبت من قبل؟ <button type="button" class="link-btn" id="loginPrefill">سجّل دخول</button> ونملّالك بياناتك`;
+  }
 
   const count = cart.reduce((s, i) => s + i.qty, 0);
   $("#sumCount").textContent = `(${num(count)} منتج)`;
@@ -153,6 +154,7 @@ const shipLabels = { standard: "شحن عادي (2-4 أيام)", express: "شح�
 const gate = () => requireLogin(renderSummary, "سجّل دخولك عشان تكمّل الطلب");
 $("#loginGateBtn").addEventListener("click", gate);
 form.addEventListener("click", (e) => {
+  if (e.target.id === "loginPrefill") return gate();
   if (e.target.id !== "switchUser") return;
   user = null;
   store.set("gtech-user", null);
@@ -169,7 +171,7 @@ function buildOrder(d, t) {
     id: newOrderId(),
     createdAt: new Date().toISOString(),
     status: "new",
-    customer: { name: user.name, phone: normalizePhone(d.phone), email: d.email.trim() },
+    customer: { name: d.name.trim().replace(/\s+/g, " "), phone: normalizePhone(d.phone), email: d.email.trim() },
     address: { gov: d.gov, city: d.city.trim(), street: d.address.trim(), notes: d.notes.trim() },
     items: cart.map((i) => {
       const p = findProduct(i.id);
@@ -186,8 +188,7 @@ function buildOrder(d, t) {
 }
 
 async function placeOrder() {
-  if (!user) return gate();
-  if (SMS_ON && !(await phoneSessionMatches(user))) {
+  if (user && SMS_ON && !(await phoneSessionMatches(user))) {
     user = { ...user, verified: false };
     store.set("gtech-user", user);
     renderAccount();
@@ -211,11 +212,12 @@ async function placeOrder() {
       });
     notifyStoreOfOrder(order).catch((err) => console.warn("store email", err));
     pushStoreOfOrder(order).catch((err) => console.warn("store push", err));
-    if (!user.phone) {
-      user = { ...user, phone: order.customer.phone };
-      store.set("gtech-user", user);
-      renderAccount();
-    }
+    // نحفظ بيانات العميل محلياً (حتى لو طلب كضيف) عشان "طلباتي" تشتغل والمرة الجاية تتملّى لوحدها
+    user = user
+      ? { ...user, phone: user.phone || order.customer.phone }
+      : { name: order.customer.name, phone: order.customer.phone, ...(order.customer.email ? { email: order.customer.email } : {}) };
+    store.set("gtech-user", user);
+    renderAccount();
   } catch {
     btn.disabled = false;
     btn.textContent = "إرسال الطلب";
@@ -253,7 +255,6 @@ async function placeOrder() {
 document.addEventListener("cartchange", renderSummary);
 document.addEventListener("productschange", renderSummary);
 renderSummary();
-if (cart.length && !user) gate();
 
 function showEmailStatus(text) {
   $("#okEmail").hidden = false;
