@@ -374,10 +374,22 @@
       "computedHash": "b8a9cd747705923a7a29cda12e478594e3a5062d8f7c7bfbf19d7fc0b24cee76"
     },
     "product-photography": {
-      "source": "inference-sh/skills",
+      "source": "101-skills/superpowers",
       "sourceType": "github",
       "skillPath": "guides/photo/product-photography/SKILL.md",
       "computedHash": "7553fa76097f15bebbeaa01e9db720c0437e0732412a6e739f6d16df21370700"
+    },
+    "product-shots": {
+      "source": "motiful/product-shots",
+      "sourceType": "github",
+      "skillPath": "skills/product-shots/SKILL.md",
+      "computedHash": "00a4c9a381fdced1a4da758a05dde55e0454df353accef0198c897f6a6524525"
+    },
+    "product-shots-detail-page": {
+      "source": "motiful/product-shots",
+      "sourceType": "github",
+      "skillPath": "skills/product-shots-detail-page/SKILL.md",
+      "computedHash": "ee00aacabb795982efc66e5026d59b04a9f3d6cd0d6e3ac8501f324aafc6e955"
     },
     "redesign-existing-projects": {
       "source": "leonxlnx/taste-skill",
@@ -403,6 +415,12 @@
       "skillPath": "skills/remotion-to-hyperframes/SKILL.md",
       "computedHash": "17c26590575d28118b783f6a534288ac38df50fae5b95826ee9d4976328ad687"
     },
+    "revops": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "skillPath": "skills/revops/SKILL.md",
+      "computedHash": "c98322283f0f1117f976641b8e73d87605644f19eeb89095232dbabd7d5db92f"
+    },
     "schema": {
       "source": "coreyhaines31/marketingskills",
       "sourceType": "github",
@@ -414,6 +432,12 @@
       "sourceType": "github",
       "skillPath": "skills/seo-audit/SKILL.md",
       "computedHash": "6cc692cab02f5a7ae863fee10ffa9d93d8a63cbe7762b7f6c50e04b7283a1d43"
+    },
+    "shots": {
+      "source": "hypersocialinc/shots",
+      "sourceType": "github",
+      "skillPath": "skills/shots/SKILL.md",
+      "computedHash": "bfe18c88b3b7604238c043e8bf0c2a1068f579b3ee45042f38cc95b9a10d94d6"
     },
     "slideshow": {
       "source": "heygen-com/hyperframes",
