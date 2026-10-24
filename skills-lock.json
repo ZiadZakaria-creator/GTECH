@@ -329,7 +329,7 @@
       "source": "heygen-com/hyperframes",
       "sourceType": "github",
       "skillPath": "skills/media-use/SKILL.md",
-      "computedHash": "fc91b41c15db0bdd013535b5b60150906e63000fd0d180d9b31c7f248335756d"
+      "computedHash": "96be427a1130e41053c0cded69bf91112040c405fc566a5290049995e64da524"
     },
     "mobile-native": {
       "source": "emilkowalski/skills",
@@ -443,7 +443,7 @@
       "source": "heygen-com/hyperframes",
       "sourceType": "github",
       "skillPath": "skills/slideshow/SKILL.md",
-      "computedHash": "fa178947b4cfe834d416c4d826d50cdd1f92dfb22395569032a40aa5d26819cc"
+      "computedHash": "2cce5d13b634a742a25e62a1d78366ee97d0bf51a708eb4746e44a0579a3b6a7"
     },
     "supabase-postgres-best-practices": {
       "source": "supabase/agent-skills",
@@ -480,6 +480,18 @@
       "sourceType": "github",
       "skillPath": "plugins/vibehost/skills/vibehost-deploy/SKILL.md",
       "computedHash": "9e908c0cbe815d38564600f015a5f9270fa6c5ceada12a74ae27a8c25dff609f"
+    },
+    "video-edit": {
+      "source": "gencraft-labs/skills",
+      "sourceType": "github",
+      "skillPath": "video-edit/SKILL.md",
+      "computedHash": "8db3460bb7f1d42e6f6e4ebf90054b9da161ce71de0a27c1020ba53c937c57cc"
+    },
+    "video-outpainting": {
+      "source": "prime-skills/runcomfy-agent-skills",
+      "sourceType": "github",
+      "skillPath": "video-outpainting/SKILL.md",
+      "computedHash": "a7002954aae638beb0feba74b12732e0aeca2829149da4dbe9b6f01941599e65"
     },
     "web-design-guidelines": {
       "source": "vercel-labs/agent-skills",
