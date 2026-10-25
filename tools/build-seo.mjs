@@ -167,6 +167,9 @@ const CATEGORY_GUESS = [
 const productCategory = (p) => (CATEGORIES[p.cat] ? p.cat
   : CATEGORY_GUESS.find(([, re]) => re.test(`${p.name || ""} ${p.specs?.["النوع"] || ""}`))?.[0] || p.cat || "");
 
+const TITLE_MAX = 65;
+let DUP_NAMES = new Set(); // أسماء منتجات متكررة (نفس الموديل بألوان مختلفة)
+
 function productPage(template, p, images, reviews = []) {
   const url = `${SITE}p/${p.id}.html`;
   p = { ...p, cat: productCategory(p) };
@@ -177,8 +180,15 @@ function productPage(template, p, images, reviews = []) {
   const specs = Object.entries(p.specs || {}).filter(([, v]) => v);
   const highlights = (p.highlights || []).filter(Boolean);
   const descText = (p.desc || highlights.join("، ") || p.name).replace(/\s+/g, " ").trim();
-  // العنوان من غير اللون (جوجل بيقص العناوين الطويلة)
-  const title = `${p.name.split(" – ")[0]} بسعر ${price(p.price)} ج.م | GTECH MASR`;
+  // العنوان من غير اللون (جوجل بيقص العناوين الطويلة)، إلا لو منتج تاني بنفس الاسم (ألوان مختلفة) عشان مايتكررش.
+  // وبنشيل اسم المتجر أو نقصّه لو العنوان طويل، عشان الاسم والسعر يفضلوا باينين في نتيجة البحث
+  const base = p.name.split(" – ")[0];
+  const color = DUP_NAMES.has(base) ? p.name.split(" – ").slice(1).join(" ") : "";
+  const shown = color ? `${base} ${color}` : base;
+  const forPrice = `بسعر ${price(p.price)} ج.م`;
+  const title = [`${shown} ${forPrice} | GTECH MASR`, `${shown} ${forPrice} | GTECH`, `${shown} ${forPrice}`]
+    .find((t) => t.length <= TITLE_MAX)
+    || [clip(base, TITLE_MAX - forPrice.length - (color ? color.length + 2 : 1)), color, forPrice].filter(Boolean).join(" "); // اللون مايتقصش
   const description = clip(`${p.name} — ${descText}`, 160);
   const model = specs.find(([k]) => /موديل/.test(k))?.[1];
   if (images.length && p.price > 0) feedItem(p, url, images, inStock, descText);
@@ -336,7 +346,8 @@ function categoryPages(indexTemplate, list) {
     const brands = [...new Set(items.map((p) => p.brand).filter(Boolean))].slice(0, 6)
       .map(brandName);
     const title = `${name} في مصر | أسعار تبدأ من ${min} ج.م | GTECH MASR`;
-    const intro = `${items.length} منتج${brands.length ? ` من ${brands.join(" و")}` : ""}، والأسعار تبدأ من ${min} ج.م. الدفع عند الاستلام وتوصيل القاهرة والجيزة.`;
+    let intro = `${items.length} منتج${brands.length ? ` من ${brands.join(" و")}` : ""}، والأسعار تبدأ من ${min} ج.م. الدفع عند الاستلام وتوصيل القاهرة والجيزة.`;
+    if (intro.length < 120) intro = intro.replace(" ج.م. ", " ج.م، كلها منتجات أصلية وأسعارها واضحة. "); // وصف قصير ← جوجل بيكمّله من الصفحة
     const itemList = {
       "@context": "https://schema.org",
       "@type": "ItemList",
@@ -516,6 +527,9 @@ try {
   const docs = (await getJson(`${FS}/products?pageSize=300&key=${apiKey}`)).documents || [];
   const all = docs.map(docToObject);
   const list = all.filter((p) => p.active !== false && p.id).sort((a, b) => a.id - b.id);
+  const baseCount = {};
+  for (const p of list) { const b = String(p.name || "").split(" – ")[0]; baseCount[b] = (baseCount[b] || 0) + 1; }
+  DUP_NAMES = new Set(Object.keys(baseCount).filter((b) => baseCount[b] > 1));
   // نسخة ثابتة من الكتالوج: المتجر بيرجعلها لو Firestore مردّش (الحصة خلصت أو مفيش نت)
   writeFileSync(join(OUT, "catalog.json"), JSON.stringify({ at: new Date().toISOString(), items: all }));
   let reviews = [];
