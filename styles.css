@@ -2093,3 +2093,32 @@ main:focus { outline: none; }
   .stage__ring::after, .stage__spark, .stage__img.is-active { animation: none; }
   .stage__img { transition: opacity .3s; }
 }
+
+/* زوار إعلان تيك توك: منتجات الإعلان أول حاجة */
+.tt-land { padding: 28px 0 8px; }
+.tt-land__head { text-align: center; margin-bottom: 18px; }
+.tt-land__eyebrow { display: inline-block; font-weight: 800; font-size: .82rem; padding: 6px 14px; border-radius: 999px; background: rgba(255,0,80,.12); color: #ff3b7a; border: 1px solid rgba(255,0,80,.3); }
+.tt-land__head h2 { font-family: "Alexandria", "Cairo", system-ui, sans-serif; font-size: clamp(1.5rem, 4vw, 2.1rem); margin: 10px 0 4px; }
+.tt-land__head p { color: var(--muted); font-size: .92rem; }
+.tt-land__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.tt-card { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 16px; border-radius: 22px; background: var(--card, rgba(255,255,255,.04)); border: 1px solid color-mix(in oklab, var(--cc) 35%, var(--border)); }
+.tt-card__img { position: relative; display: grid; place-items: center; height: 190px; border-radius: 16px; margin-bottom: 6px;
+  background: radial-gradient(closest-side, color-mix(in oklab, var(--cc) 28%, transparent), transparent); }
+.tt-card__img img { max-width: 80%; max-height: 170px; object-fit: contain; filter: drop-shadow(0 18px 18px rgba(0,0,0,.4)); transition: transform .3s; }
+.tt-card:hover .tt-card__img img { transform: translateY(-5px) rotate(-3deg); }
+.tt-card__off { position: absolute; top: 8px; left: 8px; font-style: normal; font-weight: 900; font-size: .8rem; padding: 4px 9px; border-radius: 999px; background: #ff3b5c; color: #fff; }
+.tt-card small { color: var(--cc); font-weight: 800; font-size: .75rem; }
+.tt-card h3 { font-size: .98rem; line-height: 1.5; }
+.tt-card h3 a { color: inherit; }
+.tt-card__hl { color: var(--muted); font-size: .84rem; }
+.tt-card__price { display: flex; align-items: baseline; gap: 8px; margin-top: auto; padding-top: 6px; }
+.tt-card__price b { font-size: 1.25rem; font-weight: 900; }
+.tt-card__price s { color: var(--muted); font-size: .85rem; }
+.tt-card__cta { display: flex; gap: 8px; }
+.tt-card__cta .btn { flex: 1; padding-inline: 10px; justify-content: center; }
+@media (max-width: 900px) {
+  .tt-land__grid { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 78%; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 6px; }
+  .tt-card { scroll-snap-align: center; }
+  .tt-card__cta .btn { padding: 11px 12px; font-size: .9rem; white-space: nowrap; }
+  .tt-card__cta .btn--ghost { flex: none; }
+}

@@ -588,6 +588,51 @@ $("#orderStrip").addEventListener("click", (e) => {
 document.addEventListener("userchange", startOrderStrip);
 startOrderStrip();
 
+// ============ زوار إعلان تيك توك ============
+// الإعلان بيقول "سيت أب الجيمنج اللاسلكي كامل، اختار اللي يناسبك" ولينكه على الرئيسية،
+// فاللي جاي منه بيلاقي منتجات الإعلان نفسها أول حاجة بدل ما يدوّر عليها
+const TIKTOK_PICKS = [18, 19, 49]; // G309 · Pulsefire Fuse · Cloud II Core
+const fromTikTok = (() => {
+  try {
+    if (detectSource() === "tiktok") sessionStorage.setItem("gtech-tt-land", "1");
+    return sessionStorage.getItem("gtech-tt-land") === "1";
+  } catch { return false; }
+})();
+
+function renderTikTokLanding() {
+  const box = $("#ttLand");
+  if (!box || !fromTikTok) return;
+  const items = TIKTOK_PICKS.map((id) => shopProducts().find((p) => p.id === id)).filter((p) => p && inStock(p));
+  box.hidden = !items.length;
+  if (!items.length) return;
+  box.innerHTML = `
+    <div class="container">
+      <div class="tt-land__head">
+        <span class="tt-land__eyebrow">🎬 من إعلان تيك توك</span>
+        <h2 id="ttLandTitle">السيت أب اللاسلكي اللي شفته 👇</h2>
+        <p>اختار اللي يناسبك · الدفع عند الاستلام · توصيل القاهرة والجيزة</p>
+      </div>
+      <div class="tt-land__grid">${items.map((p) => {
+        const off = discount(p);
+        return `
+        <article class="tt-card" style="--cc:${CATEGORY_COLORS[p.cat] || "#0a84ff"}">
+          <a class="tt-card__img" href="${productUrl(p.id)}" aria-label="${escapeHtml(p.name)}">
+            ${floatsFor(p) ? `<img src="images/float/${p.id}.webp" alt="${escapeHtml(p.name)}">` : productVisual(p)}
+            ${off ? `<em class="tt-card__off" dir="ltr">-${num(off)}%</em>` : ""}
+          </a>
+          <small>${escapeHtml(p.brand)}</small>
+          <h3><a href="${productUrl(p.id)}">${escapeHtml(p.name)}</a></h3>
+          ${p.highlights?.[0] ? `<p class="tt-card__hl">${escapeHtml(p.highlights[0])}</p>` : ""}
+          <div class="tt-card__price"><b>${fmt(p.price)}</b>${p.old ? `<s>${fmt(p.old)}</s>` : ""}</div>
+          <div class="tt-card__cta"><button type="button" class="btn btn--primary" data-add="${p.id}">🛒 أضف للسلة</button><a class="btn btn--ghost" href="${productUrl(p.id)}">التفاصيل</a></div>
+        </article>`;
+      }).join("")}</div>
+    </div>`;
+}
+document.addEventListener("productschange", renderTikTokLanding);
+document.addEventListener("catalogloaded", renderTikTokLanding);
+renderTikTokLanding();
+
 // ============ مسرح المنتجات في الواجهة ============
 // منتج متاح من كل قسم (من اللي ليهم صورة مقصوصة) بيطلع على المنصة واحد ورا التاني، ووراه اسم القسم وكارت بسعره الحقيقي
 const STAGE_PICKS = [["mice", "MOUSE"], ["controllers", "CONTROLLER"], ["audio", "HEADSET"], ["keyboards", "KEYBOARD"], ["earphones", "EARBUDS"], ["speakers", "SPEAKER"]];
