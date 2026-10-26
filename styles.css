@@ -233,10 +233,11 @@ h1, .section h2, .shelf__head h3, .how__card h2, .category h3, .spot__price b, .
 .stage__cta { color: var(--cc); font-weight: 800; font-size: .8rem; }
 .stage__thumbs { position: absolute; bottom: 0; left: 50%; translate: -50% 0; display: flex; gap: 8px; z-index: 2; }
 .stage__thumb {
-  width: 48px; height: 48px; padding: 6px; border-radius: 14px; cursor: pointer; display: grid; place-items: center;
+  width: 48px; height: 48px; padding: 6px; border-radius: 14px; cursor: pointer; display: block; box-sizing: border-box; flex: none;
   background: var(--card, rgba(255,255,255,.04)); border: 1px solid var(--border); transition: transform .2s, border-color .2s, box-shadow .2s;
 }
-.stage__thumb img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.stage__thumb { overflow: hidden; }
+.stage__thumb img { width: 100%; height: 100%; min-width: 0; min-height: 0; object-fit: contain; }
 .stage__thumb:hover { transform: translateY(-3px); }
 .stage__thumb[aria-pressed="true"] { border-color: var(--cc); box-shadow: 0 0 0 1px var(--cc), 0 8px 22px -8px var(--cc); transform: translateY(-3px); }
 .orbit {
