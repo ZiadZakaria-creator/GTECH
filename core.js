@@ -32,7 +32,8 @@ const num = (n) => n.toLocaleString(LOCALE === "ar-EG" ? "ar-EG" : "en-US");
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => document.querySelectorAll(s);
 const toLatinDigits = (s) => s.replace(/[٠-٩]/g, (d) => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
-const normalizePhone = (s) => toLatinDigits(s).replace(/[\s-]/g, "");
+// الملء التلقائي في الموبايل بيكتب الرقم +20 10… أو 0020… ← نرجّعه 010…
+const normalizePhone = (s) => toLatinDigits(s).replace(/[\s()-]/g, "").replace(/^(?:\+|00)?20(?=1\d{9}$)/, "0");
 const isValidPhone = (s) => /^01[0125]\d{8}$/.test(normalizePhone(s));
 const escapeHtml = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
@@ -154,7 +155,8 @@ function renderInstallUI() {
   const show = canInstall();
   document.querySelectorAll("[data-install]").forEach((el) => { el.hidden = !show; });
   const banner = document.getElementById("appBanner");
-  if (banner) banner.hidden = !show || store.get("gtech-app-banner-closed", false);
+  // مش في صفحة الدفع: مايسحبش العميل برا الطلب
+  if (banner) banner.hidden = !show || store.get("gtech-app-banner-closed", false) || document.body.classList.contains("checkout-page");
 }
 
 async function installApp() {

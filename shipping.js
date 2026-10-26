@@ -73,6 +73,14 @@ async function loadShippingSettings() {
 const deliversTo = (gov, s = shippingSettings) => typeof s.rates[gov] === "number";
 const hasExpress = (gov, s = shippingSettings) => !!gov && s.express.price > 0 && s.express.govs.includes(gov);
 
+// سعر الشحن العادي قبل ما العميل يختار المحافظة: لو كل المحافظات اللي بنوصّلها بنفس السعر (القاهرة والجيزة 60)
+// بنعرضه من الأول عشان الإجمالي مايتغيرش فجأة في الآخر. null لو الأسعار مختلفة.
+function defaultShipCost(subtotal, s = shippingSettings) {
+  const rates = [...new Set(Object.values(s.rates).filter((v) => typeof v === "number"))];
+  if (rates.length !== 1) return null;
+  return s.freeOver > 0 && subtotal >= s.freeOver ? 0 : rates[0];
+}
+
 // سعر الشحن: null لو المحافظة لسه متختارتش أو مش بنوصّلها
 function shipCost(gov, method, subtotal, s = shippingSettings) {
   if (!gov || !deliversTo(gov, s)) return null;

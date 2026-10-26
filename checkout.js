@@ -4,6 +4,12 @@
 const promos = { ...(PROMO_CODES_ON ? { GTECH10: 0.1, SHUKRAN10: 0.1 } : {}), ...partnerRates() };
 if (!PROMO_CODES_ON) $(".promo__hint").hidden = true;          // التلميح بيقول GTECH10
 if (!Object.keys(promos).length) $("#promoForm").hidden = true; // خانة الكود بتظهر لو فيه كود شراكة شغال
+// خانة كود مفتوحة بتخلّي اللي معندوش كود يسيب الصفحة يدوّر على واحد ← لينك صغير بيفتحها
+else if (!store.get("gtech-promo", "")) {
+  $("#promoForm").hidden = true;
+  $("#promoToggle").hidden = false;
+  $("#promoToggle").addEventListener("click", () => { $("#promoToggle").hidden = true; $("#promoForm").hidden = false; $("#promoForm").code.focus(); });
+}
 // عرض أول أوردر من التطبيق: خصم 20% (مايتجمعش مع كود خصم)
 const APP_FIRST = { code: "APP-FIRST20", rate: 0.2 };
 // عرض التطبيق متوقف — عشان ترجّعه خليها true
@@ -21,7 +27,8 @@ function totals() {
   const bundle = bundleTotal(); // خصم باكدجات السيت أب
   const base = sub - bundle;    // خصم أول أوردر أو الكود بيتحسب على السعر بعد الباكدج
   const app = appOffer();
-  const ship = shipCost(form.gov.value, form.ship.value, sub) ?? 0;
+  const gov = form.gov.value;
+  const ship = shipCost(gov, form.ship.value, sub) ?? (!gov && form.ship.value === "standard" ? defaultShipCost(sub) : null) ?? 0;
   const disc = app ? Math.round(base * APP_FIRST.rate) : promo ? Math.round(base * promos[promo]) : 0;
   return { sub, bundle, ship, disc, total: base + ship - disc, app };
 }
@@ -69,12 +76,12 @@ function renderSummary() {
   $("#expressChoice").hidden = !!gov && !express;
   $("#expressNote").textContent = `خلال 24 ساعة (${s.express.govs.join(" و") || "محافظات محددة"})`;
   if (!express && form.ship.value === "express") form.ship.value = "standard";
-  const std = shipCost(gov, "standard", t.sub);
+  const std = shipCost(gov, "standard", t.sub) ?? (gov ? null : defaultShipCost(t.sub));
   const priceText = (v) => (v === null ? (gov ? "—" : "حسب المحافظة") : v ? fmt(v) : "مجاناً");
   $('[data-ship-price="standard"]').textContent = priceText(std);
   $('[data-ship-price="express"]').textContent = fmt(s.express.price);
   $("#sumSub").textContent = fmt(t.sub);
-  const shipNow = shipCost(gov, form.ship.value, t.sub);
+  const shipNow = shipCost(gov, form.ship.value, t.sub) ?? (!gov && form.ship.value === "standard" ? defaultShipCost(t.sub) : null);
   $("#sumShip").textContent = shipNow === null ? (gov ? "مش متاح" : "اختار المحافظة") : shipNow ? fmt(shipNow) : "مجاناً";
   const left = s.freeOver - t.sub;
   $("#freeShipHint").hidden = !(s.freeOver > 0 && left > 0 && std);
@@ -86,6 +93,10 @@ function renderSummary() {
   $("#sumBundle").textContent = "− " + fmt(t.bundle);
   $("#sumDisc").textContent = "− " + fmt(t.disc);
   $("#sumTotal").textContent = fmt(t.total);
+  $("#coBarTotal").textContent = fmt(t.total);
+  $("#assureCod").hidden = form.pay.value !== "cod";
+  // بديل للي مش عايز يملا الفورم: نفس الطلب في رسالة واتساب جاهزة
+  $("#waOrder").href = waLink(`أهلاً GTECH، عايز أطلب:\n${cart.map((i) => `• ${findProduct(i.id).name} × ${num(i.qty)}`).join("\n")}\nالإجمالي: ${fmt(t.total - t.ship)} + الشحن\nالاسم: \nالعنوان: `);
 }
 
 // ============ كود الخصم ============
@@ -139,11 +150,11 @@ form.addEventListener("submit", (e) => {
   const fields = Object.keys(rules).map((n) => form.elements[n]);
   const bad = fields.filter((el) => !validateField(el));
   if (bad.length) {
+    if (typeof gtag === "function") gtag("event", "checkout_error", { fields: bad.map((el) => el.name).join(",") });
     bad[0].focus();
     bad[0].scrollIntoView({ behavior: "smooth", block: "center" });
     return toast("⚠️ راجع البيانات المطلوبة");
   }
-  if (!form.agree.checked) return toast("⚠️ لازم توافق على الشروط والأحكام");
   const soldOut = cart.map((i) => findProduct(i.id)).find((p) => !inStock(p));
   if (soldOut) return toast(`😔 "${soldOut.name}" نفد من المخزون، شيله من السلة وكمّل`);
   placeOrder();
@@ -222,7 +233,9 @@ async function placeOrder() {
   } catch {
     btn.disabled = false;
     btn.textContent = "إرسال الطلب";
-    return toast("❌ حصلت مشكلة في الإرسال، جرّب تاني");
+    $("#waOrder").classList.add("wa-order--alert"); // الطلب مايضيعش: واتساب جاهز بنفس المنتجات
+    $("#waOrder").scrollIntoView({ behavior: "smooth", block: "center" });
+    return toast("❌ حصلت مشكلة في الإرسال، جرّب تاني أو اطلب على واتساب");
   }
 
   placed = true;
@@ -252,6 +265,13 @@ async function placeOrder() {
   scrollTo({ top: 0, behavior: "smooth" });
   if (typeof offerCustomerReviews === "function") offerCustomerReviews(order);
 }
+
+// واتساب بدل الفورم: نفس حدث "طلب بواتساب" اللي في صفحة المنتج
+$("#waOrder").addEventListener("click", () => {
+  if (typeof track === "function") track("whatsapp_order", { items: cart.map((i) => { const p = findProduct(i.id); return { id: p.id, name: p.name, price: p.price, qty: i.qty }; }) });
+});
+// زرار الطلب الثابت تحت (موبايل) بيستخبى لما زرار الملخص الأصلي يبان
+new IntersectionObserver(([e]) => document.body.classList.toggle("co-btn-visible", e.isIntersecting)).observe($("#placeOrder"));
 
 document.addEventListener("cartchange", renderSummary);
 document.addEventListener("productschange", renderSummary);
