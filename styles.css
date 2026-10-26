@@ -59,13 +59,14 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: clip; } /* أي عنصر أعرض من الشاشة مايخليش الصفحة تتحرك يمين وشمال على الموبايل */
 body {
   font-family: "Cairo", system-ui, sans-serif;
   background: var(--bg);
   color: var(--text);
   line-height: 1.7;
   overflow-x: hidden;
+  overflow-x: clip; /* hidden مع html{clip} كانت هتخلي الـ body يسكرول لوحده وتبوّظ الـ sticky */
 }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
@@ -1358,11 +1359,15 @@ html[dir="ltr"] .pd__highlights li::before { right: auto; left: 0; }
 @media (max-width: 420px) {
   .header__actions { gap: 5px; }
   .header .icon-btn { width: 40px; height: 40px; border-radius: 11px; }
-  .header .account__btn--in { width: 40px; }
+  .header .account__btn, .header .account__btn--in { width: 40px; }
   .logo__mark { width: 40px; height: 40px; }
 }
+@media (max-width: 370px) {
+  .logo__sub { display: none; }
+}
+/* المفضلة بتنزل في القائمة على الموبايل: الهيدر كان أعرض من الشاشة (≈412px) والصفحة كلها بتتزق لجنب */
 .nav-wish { display: none; }
-@media (max-width: 400px) {
+@media (max-width: 480px) {
   .header__actions a[href="wishlist.html"] { display: none; }
   .nav .nav-wish { display: block; }
 }
