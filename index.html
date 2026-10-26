@@ -25,7 +25,7 @@
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "GTECH MASR", "url": "https://ziadzakaria-creator.github.io/GTECH/", "inLanguage": "ar", "potentialAction": {"@type": "SearchAction", "target": "https://ziadzakaria-creator.github.io/GTECH/?q={search_term_string}#products", "query-input": "required name=search_term_string"}}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@700;800;900&family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@700;800;900&family=Big+Shoulders+Display:wght@900&family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
   <script>try{document.documentElement.dataset.theme=localStorage.getItem("gtech-theme")||"dark"}catch(e){}</script>
   <script src="i18n.js"></script>
   <link rel="manifest" href="manifest.webmanifest" />
@@ -35,7 +35,7 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="GTECH MASR" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <link rel="stylesheet" href="styles.css?v=81" />
+  <link rel="stylesheet" href="styles.css?v=82" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a84ff'/><text x='32' y='44' font-size='36' font-family='Arial' font-weight='900' fill='white' text-anchor='middle'>G</text></svg>" />
 </head>
 <body>
@@ -113,27 +113,17 @@
           </div>
         </div>
 
-        <div class="hero__visual hero__visual--founder" aria-hidden="true">
-          <div class="orbit"></div>
-          <img class="hero__ziad" src="images/ziad.webp" alt="" width="760" height="935" fetchpriority="high" />
-          <div class="hero__founder"><b>👋 أنا زياد</b><small>بختار كل منتج بنفسي، وبرد عليك بنفسي على واتساب</small></div>
-          <div class="device device--phone">
-            <div class="device__screen">
-              <span class="device__notch"></span>
-              <div class="device__ui">
-                <b>GTECH MASR</b>
-                <i></i><i></i><i></i>
-              </div>
-            </div>
+        <!-- مسرح المنتجات: منتج حقيقي من كل قسم بيتبدّل (home.js ← renderStage) -->
+        <div class="hero__visual stage" id="heroStage" style="--cc:#22c55e">
+          <span class="stage__word" id="stageWord" aria-hidden="true">MOUSE</span>
+          <span class="stage__ring" aria-hidden="true"></span>
+          <span class="stage__floor" aria-hidden="true"></span>
+          <i class="stage__spark" aria-hidden="true"></i><i class="stage__spark" aria-hidden="true"></i><i class="stage__spark" aria-hidden="true"></i>
+          <div class="stage__items" id="stageItems">
+            <img class="stage__img is-active" src="images/float/27.webp" alt="" width="315" height="520" fetchpriority="high" />
           </div>
-          <div class="float-card float-card--1">
-            <span>🎧</span>
-            <div><b>إيربودز أنكر</b><small>أصلية 100%</small></div>
-          </div>
-          <div class="float-card float-card--2">
-            <span>🖱️</span>
-            <div><b>ماوسات جيمنج</b><small id="heroMiceFrom">بأسعار تبدأ صغيرة</small></div>
-          </div>
+          <a class="stage__tag" id="stageTag" hidden></a>
+          <div class="stage__thumbs" id="stageThumbs" role="group" aria-label="اختار منتج"></div>
         </div>
       </div>
     </section>

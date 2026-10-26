@@ -511,7 +511,6 @@ function renderMiniOffers() {
   const mice = from("mice"), kb = from("keyboards");
   const parts = [mice && `ماوسات من <b>${fmt(mice)}</b>`, kb && `كيبوردات من <b>${fmt(kb)}</b>`].filter(Boolean);
   if (parts.length) $("#setupPromoText").innerHTML = parts.join(" · ");
-  if (mice) $("#heroMiceFrom").textContent = `من ${fmt(mice)}`;
   $("#setupPromo").dataset.jump = mice || !kb ? "mice" : "keyboards";
 }
 renderMiniOffers();
@@ -589,87 +588,68 @@ $("#orderStrip").addEventListener("click", (e) => {
 document.addEventListener("userchange", startOrderStrip);
 startOrderStrip();
 
-// ============ ستوري المنتجات جوه الموبايل اللي في الواجهة ============
-// بيعرض أحدث المنتجات اللي ليها صور واحد ورا التاني زي الستوري، ولو مفيش صور بيفضل تصميم GTECH MASR
-const STORY_MS = 3800;
-const socialIcons = {
-  facebook: '<svg viewBox="0 0 24 24"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v2H8v4h2v6h4v-6h3l1-4h-4V8z" fill="currentColor" stroke="none"/></svg>',
-  tiktok: '<svg viewBox="0 0 24 24"><path d="M16 3c.4 2.4 1.9 4 4 4.3v3.3a7.6 7.6 0 0 1-4-1.3v6.2A5.5 5.5 0 1 1 10.5 10v3.4a2.2 2.2 0 1 0 2.2 2.1V3H16z" fill="currentColor" stroke="none"/></svg>',
-};
-let storyItems = [], storyIndex = 0, storyTimer = null, storyPaused = false, storySig = "";
+// ============ مسرح المنتجات في الواجهة ============
+// منتج متاح من كل قسم (من اللي ليهم صورة مقصوصة) بيطلع على المنصة واحد ورا التاني، ووراه اسم القسم وكارت بسعره الحقيقي
+const STAGE_PICKS = [["mice", "MOUSE"], ["controllers", "CONTROLLER"], ["audio", "HEADSET"], ["keyboards", "KEYBOARD"], ["earphones", "EARBUDS"], ["speakers", "SPEAKER"]];
+const STAGE_MS = 4200;
+let stageItems = [], stageIndex = 0, stageTimer = null, stagePaused = false, stageSig = "";
 
-function renderPhoneStory() {
-  const screen = $(".device__screen");
-  if (!screen) return;
-  const items = shopProducts().filter((p) => p.images?.length && inStock(p))
-    .sort((a, b) => (discount(b) - discount(a)) || (b.id - a.id)).slice(0, 6);
-  const sig = items.map((p) => `${p.id}:${p.price}:${p.images[0]}`).join("|");
-  if (sig === storySig) return;
-  storySig = sig;
-  storyItems = items;
-  clearTimeout(storyTimer);
-  screen.querySelector(".story")?.remove();
-  if (!items.length) {
-    $(".hero__visual").classList.remove("story-on");
-    return screen.classList.remove("has-story");
-  }
-  const links = Object.entries(typeof SOCIAL_LINKS === "object" ? SOCIAL_LINKS : {}).filter(([k, v]) => v && socialIcons[k]);
-  screen.insertAdjacentHTML("beforeend", `
-    <div class="story">
-      <div class="story__bars">${items.map(() => "<i><b></b></i>").join("")}</div>
-      <div class="story__head"><span class="story__avatar">G</span><b>GTECH MASR</b><small>عروض النهارده</small></div>
-      <div class="story__slides">${items.map((p, i) => {
-        const off = discount(p);
-        return `
-        <a class="story__slide ${i === 0 ? "is-active" : ""}" href="${productUrl(p.id)}" tabindex="-1">
-          <span class="story__img">${productVisual(p)}${off ? `<em class="story__off">-${num(off)}%</em>` : ""}</span>
-          <span class="story__info">
-            <small>${escapeHtml(p.brand)}</small>
-            <b>${escapeHtml(p.name)}</b>
-            <span class="story__price">${fmt(p.price)}${p.old ? ` <s>${fmt(p.old)}</s>` : ""}</span>
-            <span class="story__cta">اطلبه دلوقتي ←</span>
-          </span>
-        </a>`;
-      }).join("")}</div>
-      <button type="button" class="story__nav story__nav--prev" aria-label="المنتج اللي فات"></button>
-      <button type="button" class="story__nav story__nav--next" aria-label="المنتج اللي بعده"></button>
-      ${links.length ? `<div class="story__social">${links.map(([k, v]) => `<a href="${escapeHtml(v)}" target="_blank" rel="noopener" aria-label="GTECH MASR على ${k === "facebook" ? "فيسبوك" : "تيك توك"}">${socialIcons[k]}</a>`).join("")}</div>` : ""}
-    </div>`);
-  screen.classList.add("has-story");
-  $(".hero__visual").removeAttribute("aria-hidden");
-  $(".hero__visual").classList.add("story-on"); // الكروت العايمة بتتشال عشان ماتغطيش الستوري
-  showStory(0);
+function renderStage() {
+  const box = $("#heroStage");
+  if (!box) return;
+  const live = shopProducts().filter((p) => inStock(p) && floatsFor(p));
+  const items = STAGE_PICKS.map(([cat, word]) => {
+    const p = live.filter((x) => x.cat === cat).sort((a, b) => discount(b) - discount(a) || a.price - b.price)[0];
+    return p && { p, word };
+  }).filter(Boolean);
+  const sig = items.map(({ p }) => `${p.id}:${p.price}:${p.old}`).join("|");
+  if (!items.length || sig === stageSig) return;
+  stageSig = sig;
+  stageItems = items;
+  $("#stageItems").innerHTML = items.map(({ p }, i) =>
+    `<img class="stage__img stage__img--${p.cat}" src="images/float/${p.id}.webp" alt="" ${i ? 'loading="lazy"' : 'fetchpriority="high"'}>`).join("");
+  $("#stageThumbs").innerHTML = items.map(({ p }, i) =>
+    `<button type="button" class="stage__thumb" data-stage="${i}" aria-label="${escapeHtml(p.name)}" style="--cc:${CATEGORY_COLORS[p.cat] || "#0a84ff"}"><img src="images/float/${p.id}.webp" alt="" loading="lazy"></button>`).join("");
+  showStage(Math.min(stageIndex, items.length - 1));
 }
 
-function showStory(i) {
-  const screen = $(".device__screen");
-  const story = screen?.querySelector(".story");
-  if (!story || !storyItems.length) return;
-  storyIndex = (i + storyItems.length) % storyItems.length;
-  story.querySelectorAll(".story__slide").forEach((s, n) => s.classList.toggle("is-active", n === storyIndex));
-  story.querySelectorAll(".story__bars i").forEach((bar, n) => {
-    bar.classList.toggle("is-done", n < storyIndex);
-    bar.classList.remove("is-active");
-    if (n === storyIndex) { void bar.offsetWidth; bar.classList.add("is-active"); }
-  });
-  story.style.setProperty("--story-ms", STORY_MS + "ms");
-  clearTimeout(storyTimer);
-  if (!storyPaused && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    storyTimer = setTimeout(() => showStory(storyIndex + 1), STORY_MS);
+function showStage(i) {
+  const box = $("#heroStage");
+  if (!box || !stageItems.length) return;
+  stageIndex = (i + stageItems.length) % stageItems.length;
+  const { p, word } = stageItems[stageIndex];
+  box.style.setProperty("--cc", CATEGORY_COLORS[p.cat] || "#0a84ff");
+  box.querySelectorAll(".stage__img").forEach((img, n) => img.classList.toggle("is-active", n === stageIndex));
+  box.querySelectorAll(".stage__thumb").forEach((b, n) => b.setAttribute("aria-pressed", n === stageIndex));
+  const w = $("#stageWord");
+  w.textContent = word;
+  w.classList.remove("is-in"); void w.offsetWidth; w.classList.add("is-in");
+  const off = discount(p);
+  const tag = $("#stageTag");
+  tag.href = productUrl(p.id);
+  tag.hidden = false;
+  tag.innerHTML = `
+    <small>${escapeHtml(p.brand)}</small>
+    <b>${escapeHtml(p.name)}</b>
+    <span class="stage__price">${fmt(p.price)}${p.old ? ` <s>${fmt(p.old)}</s>` : ""}${off ? ` <em dir="ltr">-${num(off)}%</em>` : ""}</span>
+    <span class="stage__cta">اطلبه ←</span>`;
+  tag.classList.remove("is-in"); void tag.offsetWidth; tag.classList.add("is-in");
+  clearTimeout(stageTimer);
+  if (!stagePaused && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    stageTimer = setTimeout(() => showStage(stageIndex + 1), STAGE_MS);
   }
 }
 
 document.addEventListener("click", (e) => {
-  const nav = e.target.closest(".story__nav");
-  if (!nav) return;
-  showStory(storyIndex + (nav.classList.contains("story__nav--next") ? 1 : -1));
+  const t = e.target.closest("[data-stage]");
+  if (t) showStage(+t.dataset.stage);
 });
-const visual = $(".hero__visual");
-visual?.addEventListener("pointerenter", () => { storyPaused = true; clearTimeout(storyTimer); $(".story")?.classList.add("is-paused"); });
-visual?.addEventListener("pointerleave", () => { storyPaused = false; $(".story")?.classList.remove("is-paused"); showStory(storyIndex); });
-document.addEventListener("productschange", renderPhoneStory);
-document.addEventListener("catalogloaded", renderPhoneStory);
-renderPhoneStory();
+const stageBox = $("#heroStage");
+stageBox?.addEventListener("pointerenter", () => { stagePaused = true; clearTimeout(stageTimer); });
+stageBox?.addEventListener("pointerleave", () => { stagePaused = false; showStage(stageIndex); });
+document.addEventListener("productschange", renderStage);
+document.addEventListener("catalogloaded", renderStage);
+renderStage();
 
 // لو تحميل المنتجات فشل (من غير ما تتغير) نحدّث الرسالة بدل "جاري التحميل"
 document.addEventListener("catalogloaded", () => { renderProducts(); renderCategories(); renderMiniOffers(); });
