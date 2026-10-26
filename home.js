@@ -275,12 +275,18 @@ function renderCategories() {
     const list = shopProducts().filter((p) => p.cat === k);
     const live = list.filter(inStock);
     const from = Math.min(...(live.length ? live : list).map((p) => p.price));
-    const rep = [...(live.length ? live : list)].filter((p) => p.images?.length).sort((a, b) => b.price - a.price)[0]; // أشيك منتج في القسم
+    // أشيك منتج في القسم، ويفضّل اللي ليه صورة عايمة (من غير خلفية — tools/float.py) لو صورته لسه هي نفسها
+    const floats = (p) => typeof FLOAT_IMAGES !== "undefined" && p.images?.[0] === `fs:${FLOAT_IMAGES[p.id]}`;
+    const rep = [...(live.length ? live : list)].filter((p) => p.images?.length)
+      .sort((a, b) => floats(b) - floats(a) || b.price - a.price)[0];
+    const float = rep && floats(rep);
     const size = i === 0 ? "xl" : i === 1 ? "wide" : i >= 4 && rest && i - 4 >= tiles.length - 4 - rest
       ? (rest === 1 ? "full" : rest === 2 || i === tiles.length - rest ? "wide" : "") : "";
     return `
-    <a class="category bento__tile ${size ? `bento__tile--${size}` : ""}" data-filter="${k}" href="c/${k}.html#products" style="--cc:${CATEGORY_SVG[k]?.[0] || "#0a84ff"}">
-      <span class="bento__img">${rep ? productVisual(rep) : categoryIconHtml(k)}</span>
+    <a class="category bento__tile ${size ? `bento__tile--${size}` : ""} ${float ? "bento__tile--float" : ""}" data-filter="${k}" href="c/${k}.html#products" style="--cc:${CATEGORY_SVG[k]?.[0] || "#0a84ff"}">
+      <span class="bento__img">${float
+        ? `<img src="images/float/${rep.id}.webp" alt="${escapeHtml(rep.name)}" loading="lazy">`
+        : rep ? productVisual(rep) : categoryIconHtml(k)}</span>
       <span class="bento__txt">
         <small class="bento__count">${categoryIconHtml(k)}${num(counts[k])} منتج</small>
         <h3>${label}</h3>

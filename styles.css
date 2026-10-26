@@ -261,6 +261,18 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 .bento__tile--wide .bento__img, .bento__tile--full .bento__img { width: auto; height: calc(100% - 28px); }
 .bento__tile--xl .bento__img { width: 62%; inset-inline-end: 20px; top: 20px; border-radius: 24px; }
 .category:hover .bento__img { transform: scale(1.05) rotate(-1.5deg); }
+/* المنتج عايم على الكارت (صورة من غير خلفية): ضل تحته وهالة بلون القسم وراه */
+.bento__tile--float .bento__img { background: none; box-shadow: none; overflow: visible; width: 46%; }
+.bento__tile--float.bento__tile--wide .bento__img, .bento__tile--float.bento__tile--full .bento__img { width: auto; }
+.bento__tile--float.bento__tile--xl .bento__img { width: 62%; }
+.bento__tile--float .bento__img::before {
+  content: ""; position: absolute; inset: 12%; z-index: -1; border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--cc) 38%, transparent), transparent);
+  filter: blur(18px);
+}
+.bento__tile--float .bento__img img { filter: drop-shadow(0 18px 18px rgba(0,0,0,.45)) drop-shadow(0 4px 5px rgba(0,0,0,.3)); }
+[data-theme="light"] .bento__tile--float .bento__img img { filter: drop-shadow(0 16px 16px rgba(20,30,60,.22)) drop-shadow(0 3px 4px rgba(20,30,60,.16)); }
+.category:hover.bento__tile--float .bento__img { transform: translateY(-6px) scale(1.06) rotate(-2deg); }
 .bento__txt { position: absolute; inset-inline-start: 20px; bottom: 18px; display: flex; flex-direction: column; gap: 2px; max-width: 52%; }
 .bento__tile--xl .bento__txt { inset-inline-start: 28px; bottom: 26px; max-width: 70%; }
 .bento__count { display: inline-flex; align-items: center; gap: 6px; color: var(--cc); font-weight: 700; font-size: .85rem; }
@@ -1274,6 +1286,8 @@ img[data-fs].is-loaded { opacity: 1; }
   .bento__tile--wide .bento__txt, .bento__tile--xl .bento__txt, .bento__tile--full .bento__txt { max-width: 52%; }
   .category h3 { font-size: 1.1rem; }
   .bento__go { display: none; }
+  .categories .bento__tile--float .bento__img { width: 84px; }
+  .categories .bento__tile--float.bento__tile--xl .bento__img, .categories .bento__tile--float.bento__tile--wide .bento__img, .categories .bento__tile--float.bento__tile--full .bento__img { width: auto; }
   .products { grid-template-columns: 1fr 1fr; gap: 12px; }
   .product__media { height: 150px; font-size: 4rem; }
   .product__body { padding: 12px; }
