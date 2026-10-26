@@ -1,8 +1,9 @@
 // ============ صفحة إتمام الشراء ============
 // أسعار الشحن لكل محافظة جاية من shipping.js (وصاحب المتجر بيغيّرها من لوحة التحكم)
 // SHUKRAN10: للي اشتروا قبل كده (مكتوب في كارت الشكر اللي بيتحط جوه الأوردر)
-const promos = PROMO_CODES_ON ? { GTECH10: 0.1, SHUKRAN10: 0.1 } : {};
-if (!PROMO_CODES_ON) { $("#promoForm").hidden = true; $(".promo__hint").hidden = true; }
+const promos = { ...(PROMO_CODES_ON ? { GTECH10: 0.1, SHUKRAN10: 0.1 } : {}), ...partnerRates() };
+if (!PROMO_CODES_ON) $(".promo__hint").hidden = true;          // التلميح بيقول GTECH10
+if (!Object.keys(promos).length) $("#promoForm").hidden = true; // خانة الكود بتظهر لو فيه كود شراكة شغال
 // عرض أول أوردر من التطبيق: خصم 20% (مايتجمعش مع كود خصم)
 const APP_FIRST = { code: "APP-FIRST20", rate: 0.2 };
 // عرض التطبيق متوقف — عشان ترجّعه خليها true
@@ -90,7 +91,7 @@ function renderSummary() {
 // ============ كود الخصم ============
 $("#promoForm").addEventListener("submit", (e) => {
   e.preventDefault();
-  const code = e.target.code.value.trim().toUpperCase();
+  const code = normCode(e.target.code.value);
   if (!code) return;
   if (/^(REF|REWARD)-/.test(promo || "") && !promos[code]) return; // خصم صاحبك عليا متطبّق خلاص
   if (appOffer()) {

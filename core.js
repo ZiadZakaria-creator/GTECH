@@ -56,6 +56,20 @@ const store = {
   set(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch {} },
 };
 
+// أكواد الشراكة مع صناع المحتوى: شغالة لوحدها حتى لو PROMO_CODES_ON مقفولة، وكل كود بيقفل لوحده بعد آخر يوم (بتوقيت القاهرة).
+// الكود بيتسجل في الطلب (promo) فتعرف من اللوحة كام أوردر جه من كل شراكة.
+const PARTNER_CODES = {
+  FOMOGAMING: { rate: 0.07, last: "2026-11-09" }, // FOMO Gaming (مصطفى) — 7%
+};
+const normCode = (c) => String(c || "").replace(/\s+/g, "").toUpperCase(); // "Fomo gaming" = FOMOGAMING
+const partnerRates = () => Object.fromEntries(Object.entries(PARTNER_CODES)
+  .filter(([, c]) => cairoDay() <= c.last).map(([k, c]) => [k, c.rate]));
+// لينك فيه ?code=FOMOGAMING (في بايو صانع المحتوى) ← الكود يتطبّق لوحده في صفحة الدفع
+(() => {
+  const c = normCode(new URLSearchParams(location.search).get("code"));
+  if (c && partnerRates()[c]) store.set("gtech-promo", c);
+})();
+
 // ============ Firebase ============
 // بيتحمّل بس لما نحتاجه (دخول Google/Facebook أو قاعدة بيانات الطلبات)
 const FIREBASE_SDK = "https://www.gstatic.com/firebasejs/10.12.2/";
