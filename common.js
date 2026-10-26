@@ -37,7 +37,7 @@ function productCard(p, i = 0) {
   return `
     <article class="product ${inStock(p) ? "" : "product--soldout"}" style="animation-delay:${i * 50}ms;--cc:${CATEGORY_COLORS[p.cat] || "#0a84ff"}">
       <a href="${url}" class="product__media ${p.images?.[1] ? "has-alt" : ""}" style="--tint:${p.tint}" aria-label="${escapeHtml(p.name)}">
-        ${tag ? `<span class="product__tag ${tag === "جديد" ? "product__tag--new" : tag === "نفد" ? "product__tag--out" : ""}">${escapeHtml(tag)}</span>` : ""}
+        ${tag ? `<span dir="auto" class="product__tag ${tag === "جديد" ? "product__tag--new" : tag === "نفد" ? "product__tag--out" : ""}">${escapeHtml(tag)}</span>` : ""}
         ${productVisual(p)}
         ${p.images?.[1] ? productVisual(p, p.images[1], 'class="product__alt" aria-hidden="true"') : ""}
       </a>

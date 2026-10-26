@@ -25,7 +25,7 @@
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "GTECH MASR", "url": "https://ziadzakaria-creator.github.io/GTECH/", "inLanguage": "ar", "potentialAction": {"@type": "SearchAction", "target": "https://ziadzakaria-creator.github.io/GTECH/?q={search_term_string}#products", "query-input": "required name=search_term_string"}}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@700;800;900&family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
   <script>try{document.documentElement.dataset.theme=localStorage.getItem("gtech-theme")||"dark"}catch(e){}</script>
   <script src="i18n.js"></script>
   <link rel="manifest" href="manifest.webmanifest" />
@@ -35,7 +35,7 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="GTECH MASR" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <link rel="stylesheet" href="styles.css?v=80" />
+  <link rel="stylesheet" href="styles.css?v=81" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a84ff'/><text x='32' y='44' font-size='36' font-family='Arial' font-weight='900' fill='white' text-anchor='middle'>G</text></svg>" />
 </head>
 <body>
@@ -101,7 +101,7 @@
       <div class="hero__glow"></div>
       <div class="container hero__inner">
         <div class="hero__content">
-          <span class="pill">⚡ وصل حديثاً — إصدار 2026</span>
+          <span class="pill">💵 الدفع عند الاستلام · توصيل القاهرة والجيزة</span>
           <h1>إكسسوارات جيمنج<br /><span class="gradient-text">بأسعار واضحة</span></h1>
           <p>كل اللي جهازك محتاجه في مكان واحد: ماوسات وكيبوردات وسماعات جيمنج، إيربودز لموبايلك، وهاردات SSD وخارجية — أصلية من لوجيتك وريدراجون وهايبر إكس وأنكر، بأسعار تنافسية وتوصيل للقاهرة والجيزة.</p>
           <div class="hero__cta">
@@ -113,8 +113,10 @@
           </div>
         </div>
 
-        <div class="hero__visual" aria-hidden="true">
+        <div class="hero__visual hero__visual--founder" aria-hidden="true">
           <div class="orbit"></div>
+          <img class="hero__ziad" src="images/ziad.webp" alt="" width="760" height="935" fetchpriority="high" />
+          <div class="hero__founder"><b>👋 أنا زياد</b><small>بختار كل منتج بنفسي، وبرد عليك بنفسي على واتساب</small></div>
           <div class="device device--phone">
             <div class="device__screen">
               <span class="device__notch"></span>
@@ -160,13 +162,18 @@
       </div>
     </section>
 
-    <!-- المميزات -->
-    <section class="features">
-      <div class="container features__grid">
-        <div class="feature"><span class="feature__icon">🚚</span><div><h4>توصيل القاهرة والجيزة</h4><p>سريع خلال 24 ساعة أو عادي 2-4 أيام</p></div></div>
-        <div class="feature"><span class="feature__icon">🛡️</span><div><h4>ضمان رسمي</h4><p>على أغلب المنتجات — مدته في صفحة كل منتج</p></div></div>
-        <div class="feature"><span class="feature__icon">💳</span><div><h4>تقسيط مريح</h4><p>هيبقى متاح قريباً</p></div></div>
-        <div class="feature"><span class="feature__icon">🔄</span><div><h4>استرجاع سهل</h4><p>خلال 14 يوم</p></div></div>
+    <!-- اطلب في 3 خطوات: بيشيل خوف الدفع عند الاستلام -->
+    <section class="how-order" aria-labelledby="stepsTitle">
+      <div class="container">
+        <div class="how__card">
+          <h2 id="stepsTitle">اطلب في <span class="gradient-text">3 خطوات</span></h2>
+          <ol class="how__list">
+            <li><span class="how__n">1</span><div><b>اختار واطلب</b><p>من الموقع أو على واتساب، من غير ما تدفع حاجة</p></div></li>
+            <li><span class="how__n">2</span><div><b>هنكلمك نأكد</b><p>بنتواصل معاك نأكد الطلب والعنوان قبل الشحن</p></div></li>
+            <li><span class="how__n">3</span><div><b>استلم وادفع</b><p>كاش أو فيزا للمندوب لما توصلك، في القاهرة والجيزة</p></div></li>
+          </ol>
+          <p class="how__more">🛡️ ضمان رسمي على أغلب المنتجات (مدته في صفحة كل منتج) · 🔄 استرجاع خلال 14 يوم · 🚚 عادي 2-4 أيام أو سريع خلال 24 ساعة</p>
+        </div>
       </div>
     </section>
 
@@ -190,7 +197,7 @@
       <div class="container">
         <div class="section__head">
           <div>
-            <span class="eyebrow">الأكثر مبيعاً</span>
+            <span class="eyebrow">مختارات GTECH</span>
             <h2>منتجات مميزة</h2>
           </div>
         </div>
@@ -294,11 +301,17 @@
       <div class="container">
         <div class="section__head section__head--center">
           <div>
-            <span class="eyebrow">🎬 من غير فلاتر</span>
-            <h2>شوف المنتجات في الحقيقة</h2>
+            <span class="eyebrow">🎬 من تيك توك بتاعنا</span>
+            <h2>شوف المنتجات بتتحرك</h2>
           </div>
         </div>
         <div class="reels" id="reels">
+          <a class="reel reel--real" href="https://www.tiktok.com/@gtech_masr" target="_blank" rel="noopener">
+            <video muted loop playsinline preload="none" poster="videos/g305-review.jpg" data-src="videos/g305-review.mp4"></video>
+            <span class="reel__badge">🎥 تجربة حقيقية</span>
+            <span class="reel__cap"><small>رأيي بصراحة · زياد</small><b>Logitech G305 بعد التجربة</b></span>
+            <span class="reel__cta">شوف الفيديو على تيك توك ←</span>
+          </a>
           <a class="reel" href="#bundles" data-reel-jump="bundles">
             <video muted loop playsinline preload="none" poster="videos/unbox.jpg" data-src="videos/unbox.mp4"></video>
             <span class="reel__cap"><small>باكدج ريدراجون RGB</small><b>ماوس + كيبورد + سماعة</b></span>

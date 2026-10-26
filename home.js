@@ -129,31 +129,87 @@ const shelfMode = () => !showAll && filter === "all" && !query.trim() && !active
 // المتوفر الأول، وبعدين الأحدث
 const shelfOrder = (a, b) => (inStock(b) - inStock(a)) || b.id - a.id;
 
-function renderShelves() {
+// الشرايط: "أقوى الخصومات" عرض كبير (منتج بطل + 4 جنبه)، والباقي شريط واحد بتابات بدل 4 شرايط شبه بعض
+let shelfTab = "budget";
+const floatsFor = (p) => typeof FLOAT_IMAGES !== "undefined" && p.images?.[0] === `fs:${FLOAT_IMAGES[p.id]}`;
+function shelfLists() {
   const all = shopProducts();
-  $("#shelves").innerHTML = SHELVES.map((sh) => {
+  return SHELVES.map((sh) => {
     let list = sh.pick(all);
-    if (sh.key === "budget") { /* مترتبة بالسعر في pick */ }
-    else if (sh.key !== "deals") list = [...list].sort(shelfOrder);
-    else list = [...list].sort((a, b) => (inStock(b) - inStock(a)) || discount(b) - discount(a));
-    if (list.length < 2) return "";
-    return `
-      <div class="shelf" data-shelf="${sh.key}">
-        <div class="shelf__head">
-          <div><h3>${sh.icon} ${sh.title}</h3><small class="muted">${sh.sub}</small></div>
-          <div class="shelf__nav">
-            <button type="button" class="shelf__arrow" data-shelf-dir="-1" aria-label="السابق">‹</button>
-            <button type="button" class="shelf__arrow" data-shelf-dir="1" aria-label="التالي">›</button>
-            <button type="button" class="shelf__all" data-shelf-all="${sh.key}"><span>عرض الكل</span><span class="shelf__count">${num(list.length)}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+    if (sh.key === "deals") list = [...list].sort((a, b) => (inStock(b) - inStock(a)) || discount(b) - discount(a));
+    else if (sh.key !== "budget") list = [...list].sort(shelfOrder); // budget مترتبة بالسعر في pick
+    return { ...sh, list };
+  }).filter((sh) => sh.list.length >= 2);
+}
+function spotlightHtml(sh) {
+  const live = sh.list.filter(inStock);
+  const hero = [...live].sort((a, b) => floatsFor(b) - floatsFor(a) || discount(b) - discount(a))[0] || sh.list[0];
+  const side = sh.list.filter((p) => p !== hero).slice(0, 4);
+  const save = hero.old ? hero.old - hero.price : 0;
+  return `
+    <div class="spot" style="--cc:${CATEGORY_COLORS[hero.cat] || "#0a84ff"}">
+      <div class="shelf__head">
+        <div><h3>${sh.icon} ${sh.title}</h3><small class="muted">${sh.sub}</small></div>
+        <div class="shelf__nav"><button type="button" class="shelf__all" data-shelf-all="deals"><span>عرض الكل</span><span class="shelf__count">${num(sh.list.length)}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button></div>
+      </div>
+      <div class="spot__grid">
+        <article class="spot__hero">
+          <a class="spot__img ${floatsFor(hero) ? "is-float" : ""}" href="${productUrl(hero.id)}" aria-label="${escapeHtml(hero.name)}">
+            ${floatsFor(hero) ? `<img src="images/float/${hero.id}.webp" alt="${escapeHtml(hero.name)}" loading="lazy">` : productVisual(hero)}
+          </a>
+          ${discount(hero) ? `<span class="spot__off"><b>-${num(discount(hero))}%</b>خصم</span>` : ""}
+          <div class="spot__info">
+            <small>${escapeHtml(hero.brand)}</small>
+            <h4><a href="${productUrl(hero.id)}">${escapeHtml(hero.name)}</a></h4>
+            <div class="spot__price"><b>${fmt(hero.price)}</b>${hero.old ? `<del>${fmt(hero.old)}</del>` : ""}</div>
+            ${save ? `<span class="spot__save">وفّر ${fmt(save)}</span>` : ""}
+            <div class="spot__cta">${inStock(hero) ? `<button type="button" class="btn btn--primary" data-add="${hero.id}">🛒 أضف للسلة</button>` : ""}<a class="btn btn--ghost" href="${productUrl(hero.id)}">التفاصيل</a></div>
           </div>
+        </article>
+        <div class="spot__side">${side.map((p) => `
+          <a class="spot__mini ${inStock(p) ? "" : "is-out"}" href="${productUrl(p.id)}">
+            <span class="spot__thumb">${productVisual(p)}</span>
+            <span class="spot__mtxt"><b>${escapeHtml(p.name)}</b><span><strong>${fmt(p.price)}</strong>${p.old ? ` <del>${fmt(p.old)}</del>` : ""}</span></span>
+            ${discount(p) ? `<em>-${num(discount(p))}%</em>` : ""}
+          </a>`).join("")}</div>
+      </div>
+    </div>`;
+}
+function tabbedShelfHtml(list) {
+  if (!list.some((sh) => sh.key === shelfTab)) shelfTab = list[0].key;
+  const cur = list.find((sh) => sh.key === shelfTab);
+  return `
+    <div class="shelf shelf--tabs">
+      <div class="shelf__head">
+        <div><h3>🧭 اختار على حسب احتياجك</h3>
+          <div class="shelf__tabs" role="tablist">${list.map((sh) => `<button type="button" role="tab" class="shelf__tab ${sh.key === shelfTab ? "active" : ""}" aria-selected="${sh.key === shelfTab}" data-shelf-tab="${sh.key}">${sh.icon} ${sh.title}</button>`).join("")}</div>
         </div>
-        <div class="shelf__track">${list.slice(0, SHELF_MAX).map(productCard).join("")}</div>
-      </div>`;
-  }).join("");
-  $("#showAllCount").textContent = `(${num(all.length)})`;
+        <div class="shelf__nav">
+          <button type="button" class="shelf__arrow" data-shelf-dir="-1" aria-label="السابق">‹</button>
+          <button type="button" class="shelf__arrow" data-shelf-dir="1" aria-label="التالي">›</button>
+          <button type="button" class="shelf__all" data-shelf-all="${cur.key}"><span>عرض الكل</span><span class="shelf__count">${num(cur.list.length)}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+        </div>
+      </div>
+      <p class="muted shelf__sub">${cur.sub}</p>
+      <div class="shelf__track">${cur.list.slice(0, SHELF_MAX).map(productCard).join("")}</div>
+    </div>`;
+}
+function renderShelves() {
+  const lists = shelfLists();
+  const deals = lists.find((sh) => sh.key === "deals");
+  const rest = lists.filter((sh) => sh.key !== "deals");
+  $("#shelves").innerHTML = (deals ? spotlightHtml(deals) : "") + (rest.length ? tabbedShelfHtml(rest) : "");
+  $("#showAllCount").textContent = `(${num(shopProducts().length)})`;
 }
 
 $("#shelves").addEventListener("click", (e) => {
+  const tab = e.target.closest("[data-shelf-tab]");
+  if (tab) {
+    shelfTab = tab.dataset.shelfTab;
+    const old = $("#shelves .shelf--tabs");
+    old.outerHTML = tabbedShelfHtml(shelfLists().filter((sh) => sh.key !== "deals"));
+    return;
+  }
   const arrow = e.target.closest("[data-shelf-dir]");
   if (arrow) {
     const track = arrow.closest(".shelf").querySelector(".shelf__track");
