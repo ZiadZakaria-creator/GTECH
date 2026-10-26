@@ -233,33 +233,49 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 .link-more { color: var(--primary-2); font-weight: 700; }
 .link-more:hover { text-decoration: underline; }
 
-/* ============ Categories ============ */
-.categories { display: grid; grid-template-columns: repeat(9, 1fr); gap: 12px; }
+/* ============ Categories: بينتو بصور المنتجات ============ */
+.categories { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 210px; gap: 14px; }
 .category {
   --cc: #0a84ff;
-  display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 30px 12px;
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-  transition: transform .3s, border-color .3s, box-shadow .3s; text-align: center;
+  position: relative; overflow: hidden; isolation: isolate;
+  border-radius: calc(var(--radius) + 6px); border: 1px solid var(--border);
+  background:
+    radial-gradient(120% 90% at 100% 100%, color-mix(in srgb, var(--cc) 22%, transparent), transparent 60%),
+    var(--surface);
   color: inherit; text-decoration: none; cursor: pointer;
+  transition: transform .35s cubic-bezier(.2,.9,.3,1), border-color .3s, box-shadow .3s;
 }
-.category:hover { transform: translateY(-6px); border-color: rgba(10,132,255,.5); box-shadow: var(--shadow); }
-.category__icon {
-  position: relative; display: grid; place-items: center; width: 70px; height: 70px; margin-bottom: 10px; border-radius: 22px; font-size: 2rem;
-  color: var(--cc);
-  background: linear-gradient(145deg, color-mix(in srgb, var(--cc) 24%, transparent), color-mix(in srgb, var(--cc) 5%, transparent));
-  border: 1px solid color-mix(in srgb, var(--cc) 45%, transparent);
-  box-shadow: 0 12px 28px -14px var(--cc), inset 0 1px 0 rgba(255,255,255,.08);
-  transition: transform .35s cubic-bezier(.2,1.4,.4,1), box-shadow .3s, background .3s;
+.category:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--cc) 55%, transparent); box-shadow: 0 22px 44px -22px color-mix(in srgb, var(--cc) 70%, transparent); }
+.bento__tile--xl { grid-column: span 2; grid-row: span 2; }
+.bento__tile--wide { grid-column: span 2; }
+.bento__tile--full { grid-column: 1 / -1; }
+/* الصورة في الركن (شمال فوق) والكلام تحت يمين */
+.bento__img {
+  position: absolute; inset-inline-end: 14px; top: 14px; width: 40%; aspect-ratio: 1; z-index: -1;
+  border-radius: 18px; overflow: hidden; background: #fff;
+  box-shadow: 0 18px 30px -18px rgba(0,0,0,.55);
+  transition: transform .5s cubic-bezier(.2,.9,.3,1);
 }
-.category__icon svg { width: 34px; height: 34px; stroke-width: 1.7; filter: drop-shadow(0 0 6px color-mix(in srgb, var(--cc) 70%, transparent)); }
-.category:hover .category__icon {
-  transform: translateY(-3px) scale(1.08);
-  background: linear-gradient(145deg, color-mix(in srgb, var(--cc) 38%, transparent), color-mix(in srgb, var(--cc) 10%, transparent));
-  box-shadow: 0 16px 34px -12px var(--cc), 0 0 0 4px color-mix(in srgb, var(--cc) 12%, transparent), inset 0 1px 0 rgba(255,255,255,.12);
+.bento__img img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.bento__img > span { display: grid; place-items: center; width: 100%; height: 100%; font-size: 3rem; background: var(--surface-2, #1b2436); }
+.bento__tile--wide .bento__img, .bento__tile--full .bento__img { width: auto; height: calc(100% - 28px); }
+.bento__tile--xl .bento__img { width: 62%; inset-inline-end: 20px; top: 20px; border-radius: 24px; }
+.category:hover .bento__img { transform: scale(1.05) rotate(-1.5deg); }
+.bento__txt { position: absolute; inset-inline-start: 20px; bottom: 18px; display: flex; flex-direction: column; gap: 2px; max-width: 52%; }
+.bento__tile--xl .bento__txt { inset-inline-start: 28px; bottom: 26px; max-width: 70%; }
+.bento__count { display: inline-flex; align-items: center; gap: 6px; color: var(--cc); font-weight: 700; font-size: .85rem; }
+.bento__count .category__icon { display: inline-grid; width: auto; height: auto; margin: 0; background: none; border: 0; box-shadow: none; font-size: 1rem; }
+.bento__count .category__icon svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.8; filter: none; }
+.category h3 { font-size: 1.25rem; font-weight: 800; line-height: 1.35; }
+.bento__tile--xl h3 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
+.bento__from { color: var(--muted); font-size: .9rem; }
+.bento__from b { color: var(--text); font-weight: 800; }
+.bento__go {
+  position: absolute; inset-inline-start: 16px; top: 16px; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%;
+  background: color-mix(in srgb, var(--cc) 16%, transparent); color: var(--cc); font-weight: 800;
+  transition: transform .3s, background .3s;
 }
-.category:hover { border-color: color-mix(in srgb, var(--cc, #0a84ff) 50%, transparent); }
-.category h3 { font-size: 1.05rem; }
-.category small { color: var(--muted); }
+.category:hover .bento__go { transform: translateX(-4px); background: var(--cc); color: #fff; }
 
 /* ============ Tabs ============ */
 .tabs { display: flex; gap: 6px; padding: 5px; background: var(--surface); border: 1px solid var(--border); border-radius: 999px; flex-wrap: wrap; }
@@ -1210,7 +1226,6 @@ img[data-fs].is-loaded { opacity: 1; }
 
 /* ============ Responsive ============ */
 @media (max-width: 1100px) {
-  .categories { grid-template-columns: repeat(4, 1fr); }
   .products { grid-template-columns: repeat(3, 1fr); }
   .search { max-width: 260px; }
 }
@@ -1250,8 +1265,15 @@ img[data-fs].is-loaded { opacity: 1; }
   .topbar__links { display: none; }
   .topbar__inner { justify-content: center; text-align: center; }
   .section { padding: 64px 0; }
-  .categories { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-  .category:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .categories { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 168px; gap: 10px; }
+  .bento__tile--xl { grid-row: span 1; }
+  .bento__tile--xl .bento__img { width: auto; height: calc(100% - 32px); top: 16px; inset-inline-end: 16px; }
+  .bento__tile--xl h3 { font-size: 1.6rem; }
+  .bento__img { width: 74px; top: 12px; inset-inline-end: 12px; border-radius: 14px; }
+  .bento__txt { inset-inline-start: 14px; bottom: 14px; max-width: calc(100% - 28px); }
+  .bento__tile--wide .bento__txt, .bento__tile--xl .bento__txt, .bento__tile--full .bento__txt { max-width: 52%; }
+  .category h3 { font-size: 1.1rem; }
+  .bento__go { display: none; }
   .products { grid-template-columns: 1fr 1fr; gap: 12px; }
   .product__media { height: 150px; font-size: 4rem; }
   .product__body { padding: 12px; }
