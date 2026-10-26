@@ -73,5 +73,5 @@ const ORDER_PUSH_TOPIC = "gtech-orders-5d31c3d785f3de02";
 // امسح أي لينك مش عايزه يظهر
 const SOCIAL_LINKS = {
   facebook: "https://www.facebook.com/profile.php?id=61582595856275",
-  tiktok: "https://www.tiktok.com/@ziadzkariaebrahim",
+  tiktok: "https://www.tiktok.com/@gtech_masr",
 };
