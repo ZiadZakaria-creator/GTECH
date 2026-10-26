@@ -259,6 +259,7 @@ const CATEGORY_SVG = {
   gpus: ["#ff4d6d", '<rect x="2" y="6" width="20" height="11" rx="2"/><circle cx="8.5" cy="11.5" r="2.8"/><circle cx="15.5" cy="11.5" r="2.8"/><path d="M5 17v2.5M9 17v2.5M13 17v2.5"/>'],
   speakers: ["#2dd4bf", '<rect x="6" y="2.5" width="12" height="19" rx="3"/><circle cx="12" cy="14.5" r="3.5"/><circle cx="12" cy="7" r="1.3"/>'],
   controllers: ["#ff9f0a", '<path d="M6.5 7.5h11a4 4 0 0 1 3.9 3.1l1 4.6a2.6 2.6 0 0 1-4.5 2.2L16 15.5H8l-1.9 1.9a2.6 2.6 0 0 1-4.5-2.2l1-4.6a4 4 0 0 1 3.9-3.1z"/><path d="M7.5 10.5v3M6 12h3"/><path d="M15.5 11h.01M17.5 13h.01"/>'],
+  accessories: ["#a3e635", '<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/>'],
 };
 const categoryIconHtml = (k) => CATEGORY_SVG[k]
   ? `<span class="category__icon"><svg viewBox="0 0 24 24" aria-hidden="true">${CATEGORY_SVG[k][1]}</svg></span>`

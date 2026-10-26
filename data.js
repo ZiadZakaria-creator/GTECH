@@ -9,6 +9,7 @@ const categories = {
   monitors: "شاشات",
   gpus: "كروت شاشة",
   controllers: "دراعات جيمنج",
+  accessories: "إكسسوارات وسيت أب",
 };
 
 // ============ عروض على قسم كامل ============

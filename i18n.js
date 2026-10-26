@@ -499,6 +499,7 @@ const I18N_EN = {
 "التكنولوجيا": "Technology",
 "بين إيديك": "in your hands",
 "إكسسوارات جيمنج": "Gaming accessories",
+"إكسسوارات وسيت أب": "Accessories & setup",
 "بأسعار واضحة": "at clear prices",
 "اكتشف أحدث الهواتف الذكية، اللابتوبات، السماعات والأجهزة القابلة للارتداء من أشهر الماركات العالمية — بأسعار تنافسية وتقسيط بدون فوائد.": "Discover the latest smartphones, laptops, headphones and wearables from top global brands — at competitive prices with interest-free installments.",
 "تسوق الآن": "Shop now",

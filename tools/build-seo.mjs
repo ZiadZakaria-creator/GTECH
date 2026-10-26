@@ -325,6 +325,7 @@ const CATEGORY_SEO = {
   controllers: "دراعات جيمنج",
   monitors: "شاشات كمبيوتر",
   gpus: "كروت شاشة",
+  accessories: "إكسسوارات جيمنج وإضاءة سيت أب",
 };
 const BRAND_NAMES = { HYPERX: "HyperX", "WESTERN DIGITAL": "WD", GAMESIR: "GameSir", "T-DAGGER": "T-Dagger", JBL: "JBL", AULA: "AULA", SODO: "SODO", JEDEL: "JeDEL", "COUGAR-EGY": "Cougar" };
 const brandName = (b) => BRAND_NAMES[b] || b.toLowerCase().replace(/(^|[\s-])\S/g, (m) => m.toUpperCase());
