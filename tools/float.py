@@ -11,7 +11,7 @@ import numpy as np
 from PIL import Image
 from rembg import remove, new_session
 
-SITE = "https://ziadzakaria-creator.github.io/GTECH/"
+SITE = "https://gtechmasr.com/"
 OUT = "images/float"
 get = lambda path: urllib.request.urlopen(SITE + path).read()
 

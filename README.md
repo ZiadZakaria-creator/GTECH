@@ -44,7 +44,7 @@
 الموقع بيتنشر تلقائياً على GitHub Pages مع كل push على الفرع الافتراضي
 عن طريق `.github/workflows/deploy.yml`.
 
-الرابط: https://ziadzakaria-creator.github.io/GTECH/
+الرابط: https://gtechmasr.com/
 
 إعداد لمرة واحدة: Settings → Pages → Source: **GitHub Actions**
 (الريبو لازم يكون Public، أو حساب GitHub Pro لو Private).

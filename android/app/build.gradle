@@ -1,4 +1,4 @@
-// تطبيق أندرويد للوحة التحكم بس: شاشة واحدة بتفتح https://ziadzakaria-creator.github.io/GTECH/admin/
+// تطبيق أندرويد للوحة التحكم بس: شاشة واحدة بتفتح https://gtechmasr.com/admin/
 // بيتبني أوتوماتيك على GitHub (.github/workflows/android.yml)، وأي تعديل في اللوحة بيوصله من غير تحديث للتطبيق
 plugins {
     id "com.android.application"

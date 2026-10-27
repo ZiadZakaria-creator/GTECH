@@ -31,17 +31,17 @@
 
 ## 6. كود تأكيد SMS
 1. **Authentication ← Sign-in method ← Phone ← Enable**.
-2. **Authentication ← Settings ← Authorized domains ← Add domain**: `ziadzakaria-creator.github.io`
+2. **Authentication ← Settings ← Authorized domains ← Add domain**: `gtechmasr.com` و `www.gtechmasr.com` (و `ziadzakaria-creator.github.io` للينك القديم)
 3. للتجربة من غير ما تصرف رسايل: **Phone ← Phone numbers for testing** وضيف رقم تجريبي وكود ثابت.
-4. جرّب على `https://ziadzakaria-creator.github.io/GTECH/?sms=1`، ولما يشتغل خلّي `PHONE_VERIFICATION = true` في `firebase-config.js`.
+4. جرّب على `https://gtechmasr.com/?sms=1`، ولما يشتغل خلّي `PHONE_VERIFICATION = true` في `firebase-config.js`.
 - الخطة المجانية فيها 10 رسايل في اليوم؛ لأكتر من كده لازم تضيف وسيلة دفع (Blaze).
 
 ## 7. تسجيل الدخول بـ Google و Facebook (اختياري)
 - **Authentication ← Sign-in method ← Google ← Enable**.
 - **Facebook**: محتاج تطبيق من https://developers.facebook.com (App ID + App Secret) تحطهم في Firebase، وتنسخ الـ OAuth redirect URI من Firebase لإعدادات تطبيق Facebook.
-- **Authentication ← Settings ← Authorized domains ← Add domain**: `ziadzakaria-creator.github.io`
+- **Authentication ← Settings ← Authorized domains ← Add domain**: `gtechmasr.com` و `www.gtechmasr.com` (و `ziadzakaria-creator.github.io` للينك القديم)
 
 ## بعد الربط
-- لوحة التحكم: https://ziadzakaria-creator.github.io/GTECH/admin/
+- لوحة التحكم: https://gtechmasr.com/admin/
 - ادخل بالإيميل وكلمة السر اللي عملتهم في خطوة 4.
 - العلامة فوق هتتغير من **🧪 تجريبي** لـ **🟢 مباشر**.

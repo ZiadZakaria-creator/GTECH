@@ -30,8 +30,10 @@ import java.nio.charset.StandardCharsets;
 // تطبيق لوحة التحكم: بيفتح صفحة اللوحة من الموقع جوه التطبيق.
 // اللوحة نفسها بتتحدث من الموقع، فالتطبيق مش محتاج تحديث مع كل تعديل.
 public class MainActivity extends Activity {
-    private static final String HOME = "https://ziadzakaria-creator.github.io/GTECH/admin/";
-    private static final String HOST = "ziadzakaria-creator.github.io";
+    private static final String HOME = "https://gtechmasr.com/admin/";
+    private static final String HOST = "gtechmasr.com";
+    // اللينك القديم قبل الدومين: GitHub بيحوّله للدومين، بس نفضل نعتبره من اللوحة
+    private static final String OLD_HOST = "ziadzakaria-creator.github.io";
     private static final int FILE_REQUEST = 1;
 
     private WebView web;
@@ -108,7 +110,8 @@ public class MainActivity extends Activity {
 
     private boolean isDashboard(Uri url) {
         String path = url.getPath() == null ? "" : url.getPath();
-        return "https".equals(url.getScheme()) && HOST.equals(url.getHost()) && path.startsWith("/GTECH/admin");
+        return "https".equals(url.getScheme())
+                && ((HOST.equals(url.getHost()) && path.startsWith("/admin")) || (OLD_HOST.equals(url.getHost()) && path.startsWith("/GTECH/admin")));
     }
 
     private void openExternal(Uri url) {

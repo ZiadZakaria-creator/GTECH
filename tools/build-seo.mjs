@@ -10,7 +10,7 @@ import { join } from "node:path";
 import { COMPARISONS, GUIDES } from "./content.mjs";
 
 const OUT = process.argv[2] || "_site";
-const DEFAULT_SITE = "https://ziadzakaria-creator.github.io/GTECH/";
+const DEFAULT_SITE = "https://gtechmasr.com/";
 const SITE = (process.argv[3] || DEFAULT_SITE).replace(/\/?$/, "/");
 
 const cfg = readFileSync("firebase-config.js", "utf8").split(/^const FIREBASE_CONFIG = /m)[1] || ""; // مش المثال المتعلّق
