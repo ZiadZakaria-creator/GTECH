@@ -987,7 +987,7 @@ function setLang(l) {
   else location.replace(u.toString());
 }
 document.addEventListener("DOMContentLoaded", () => {
-  const actions = document.querySelector(".header__actions, .ad-top__actions");
+  const actions = document.querySelector(".header__actions, .dash-top__actions");
   if (!actions) return;
   const other = IS_EN ? "ar" : "en";
   const label = IS_EN ? "ع" : "EN";

@@ -121,7 +121,7 @@ function setTheme(theme) {
   if (n) n.innerHTML = `${themeIcons[theme]} ${theme === "light" ? "الوضع الغامق" : "الوضع الفاتح"}`;
 }
 (() => {
-  const actions = document.querySelector(".header__actions, .ad-top__actions");
+  const actions = document.querySelector(".header__actions, .dash-top__actions");
   if (!actions) return;
   actions.insertAdjacentHTML("afterbegin", '<button class="icon-btn theme-toggle" id="themeToggle" type="button"></button>');
   // على الموبايل الزرار بيبقى جوه القائمة عشان الهيدر مايزحمش
@@ -215,7 +215,7 @@ addEventListener("appinstalled", () => {
 
 (() => {
   const nav = document.getElementById("nav");
-  const adminActions = document.querySelector(".ad-top__actions");
+  const adminActions = document.querySelector(".dash-top__actions");
   if (nav) {
     // "نزّل التطبيق" اتشال من الهيدر — بيفضل في البانر فوق الصفحة والكارت جوه الصفحة
     // شريط صغير فوق الصفحة على الموبايل

@@ -245,7 +245,7 @@ function ovShip() {
 function ovHead() {
   const { start } = ovPeriod();
   const h = new Date().getHours();
-  const name = $("#adUserName")?.textContent;
+  const name = $("#dashUserName")?.textContent;
   $("#ovHello").textContent = `${h < 12 ? "صباح الخير" : "مساء الخير"}${name ? " يا " + name : ""} 👋 ده ملخص أداء متجرك وأهم الحاجات اللي محتاجة انتباهك.`;
   const f = (d) => new Date(d).toLocaleDateString("ar-EG", { day: "numeric", month: "short" });
   $("#ovDates").textContent = ovDays === 1 ? `📅 النهارده ${f(Date.now())}` : `📅 ${f(start)} – ${f(Date.now())}`;

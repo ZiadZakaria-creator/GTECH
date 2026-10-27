@@ -65,12 +65,12 @@ async function initFirebaseAdmin() {
     }
     $("#adminLogout").hidden = !isAdmin;
     // اسم الأدمن فوق (من الإيميل)
-    $("#adUser").hidden = !isAdmin;
+    $("#dashUser").hidden = !isAdmin;
     if (isAdmin) {
       const nm = u.displayName || u.email.split("@")[0];
-      $("#adUserName").textContent = nm;
-      $("#adUserAv").textContent = nm.slice(0, 2).toUpperCase();
-      $("#adUser").title = u.email;
+      $("#dashUserName").textContent = nm;
+      $("#dashUserAv").textContent = nm.slice(0, 2).toUpperCase();
+      $("#dashUser").title = u.email;
     }
     if (isAdmin) startDashboard();
     else {

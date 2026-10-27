@@ -739,7 +739,7 @@ $("#newsletterForm")?.addEventListener("submit", (e) => {
 // زي التطبيقات: الرئيسية · الأقسام · جهّز سيتك · السلة. بيظهر على الشاشات الصغيرة بس (styles.css)،
 // ومش بيظهر في صفحة المنتج (فيها شريط "أضف للسلة") ولا صفحة الدفع (عشان مايلهيش عن الطلب)
 (() => {
-  if (document.querySelector("#checkoutForm, .ad-app") || /\/admin\//.test(location.pathname) || document.body.classList.contains("product-page")) return;
+  if (document.querySelector("#checkoutForm, .dash-app") || /\/admin\//.test(location.pathname) || document.body.classList.contains("product-page")) return;
   const page = (location.pathname.split("/").pop() || "index.html").replace(/^$/, "index.html");
   const onHome = page === "index.html" && !document.documentElement.dataset.cat;
   const ico = (d) => `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;

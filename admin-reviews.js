@@ -35,8 +35,8 @@ function renderAdminReviews() {
     <tr>
       <td><b>${escapeHtml(catalogList.find((p) => p.id === r.productId)?.name || `منتج #${r.productId}`)}</b></td>
       <td>${escapeHtml(r.name)}</td>
-      <td class="ad-stars">${"★".repeat(r.stars)}${"☆".repeat(5 - r.stars)}</td>
-      <td class="ad-review-text">${r.text ? escapeHtml(r.text) : `<span class="muted">—</span>`}</td>
+      <td class="dash-stars">${"★".repeat(r.stars)}${"☆".repeat(5 - r.stars)}</td>
+      <td class="dash-review-text">${r.text ? escapeHtml(r.text) : `<span class="muted">—</span>`}</td>
       <td>${new Date(r.createdAt).toLocaleDateString("ar-EG", { day: "numeric", month: "short", year: "numeric" })}</td>
       <td><button class="btn btn--ghost btn--sm" data-del-review="${escapeHtml(r.id)}">🗑 امسح</button></td>
     </tr>`).join("");

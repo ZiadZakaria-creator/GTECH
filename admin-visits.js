@@ -160,7 +160,7 @@ function renderAnalytics(days, rangeOrders) {
         <div class="funnel__bar"><i style="width:${totalSrc ? Math.max(3, (r.v / totalSrc) * 100) : 0}%;background:${SOURCE_INFO[r.k][1]}"></i></div>
         <small class="muted">${num(r.n)} طلب · ${fmt(r.money)}${r.v ? ` · ${pct(r.n, r.v)} اشتروا` : ""}</small>
       </div>`).join("")
-    : `<div class="ad-empty"><span>📣</span><p>المصادر بتتسجل من النهارده — حط في إعلاناتك لينك فيه <code dir="ltr">?utm_source=facebook</code> أو <code dir="ltr">tiktok</code> عشان يتعرف بالظبط</p></div>`;
+    : `<div class="dash-empty"><span>📣</span><p>المصادر بتتسجل من النهارده — حط في إعلاناتك لينك فيه <code dir="ltr">?utm_source=facebook</code> أو <code dir="ltr">tiktok</code> عشان يتعرف بالظبط</p></div>`;
 }
 
 // تلميح لما تقف على أي عمود

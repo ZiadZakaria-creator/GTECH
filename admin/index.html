@@ -24,73 +24,73 @@
   <meta name="apple-mobile-web-app-title" content="GTECH MASR Admin" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="admin.css?v=13" />
+  <link rel="stylesheet" href="admin.css?v=14" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a84ff'/><text x='32' y='44' font-size='36' font-family='Arial' font-weight='900' fill='white' text-anchor='middle'>G</text></svg>" />
 </head>
 <body class="admin">
 
-  <div class="ad-shell">
+  <div class="dash-shell">
   <!-- القائمة الجانبية -->
-  <aside class="ad-side" id="adSide" aria-label="أقسام لوحة التحكم">
-    <div class="ad-side__brand">
+  <aside class="dash-side" id="dashSide" aria-label="أقسام لوحة التحكم">
+    <div class="dash-side__brand">
       <a href="admin/" class="logo"><span class="logo__mark">G</span><span class="logo__text">TECH</span></a>
       <small>إدارة المتجر</small>
     </div>
-    <p class="ad-side__label">الرئيسية</p>
-    <nav class="ad-sections" id="adSections">
-      <button class="ad-sec active" data-section="overview"><svg class="ad-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg><span>لوحة التحكم</span></button>
-      <button class="ad-sec" data-section="orders"><svg class="ad-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span>الطلبات</span><span class="tab__count" id="newCountBadge" hidden></span></button>
-      <button class="ad-sec" data-section="products"><svg class="ad-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 7.5l9 4.5 9-4.5L12 3z"/><path d="M3 7.5V16.5L12 21l9-4.5V7.5"/><path d="M12 12v9"/></svg><span>المنتجات</span><span class="tab__count tab__count--warn" id="lowStockBadge" hidden></span></button>
-      <button class="ad-sec" data-section="leads"><svg class="ad-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/></svg><span>العملاء</span><span class="tab__count" id="leadsBadge" hidden></span></button>
-      <button class="ad-sec" data-section="carts"><svg class="ad-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 2-1.5L21 8H6.2"/><circle cx="10" cy="20" r="1"/><circle cx="17" cy="20" r="1"/></svg><span>سلات متروكة</span><span class="tab__count" id="cartsBadge" hidden></span></button>
-      <button class="ad-sec" data-section="visits"><svg class="ad-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>الزوار والتقارير</span></button>
-      <button class="ad-sec" data-section="shipping"><svg class="ad-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg><span>الشحن والدفع</span></button>
-      <button class="ad-sec" data-section="reviews"><svg class="ad-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.8-4.4 4.3 1 6.1L12 17l-5.4 2.8 1-6.1-4.4-4.3 6.1-.8L12 3z"/></svg><span>التقييمات</span></button>
+    <p class="dash-side__label">الرئيسية</p>
+    <nav class="dash-sections" id="dashSections">
+      <button class="dash-sec active" data-section="overview"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg><span>لوحة التحكم</span></button>
+      <button class="dash-sec" data-section="orders"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span>الطلبات</span><span class="tab__count" id="newCountBadge" hidden></span></button>
+      <button class="dash-sec" data-section="products"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 7.5l9 4.5 9-4.5L12 3z"/><path d="M3 7.5V16.5L12 21l9-4.5V7.5"/><path d="M12 12v9"/></svg><span>المنتجات</span><span class="tab__count tab__count--warn" id="lowStockBadge" hidden></span></button>
+      <button class="dash-sec" data-section="leads"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/></svg><span>العملاء</span><span class="tab__count" id="leadsBadge" hidden></span></button>
+      <button class="dash-sec" data-section="carts"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 2-1.5L21 8H6.2"/><circle cx="10" cy="20" r="1"/><circle cx="17" cy="20" r="1"/></svg><span>سلات متروكة</span><span class="tab__count" id="cartsBadge" hidden></span></button>
+      <button class="dash-sec" data-section="visits"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>الزوار والتقارير</span></button>
+      <button class="dash-sec" data-section="shipping"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg><span>الشحن والدفع</span></button>
+      <button class="dash-sec" data-section="reviews"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.8-4.4 4.3 1 6.1L12 17l-5.4 2.8 1-6.1-4.4-4.3 6.1-.8L12 3z"/></svg><span>التقييمات</span></button>
     </nav>
-    <div class="ad-side__foot">
-      <a class="ad-help" href="index.html" target="_blank" rel="noopener">
-        <span class="ad-help__icon">🛍️</span>
+    <div class="dash-side__foot">
+      <a class="dash-help" href="index.html" target="_blank" rel="noopener">
+        <span class="dash-help__icon">🛍️</span>
         <b>متجرك شغال</b>
         <small>افتح المتجر وشوفه زي العميل ←</small>
       </a>
-      <p class="ad-owner" dir="ltr">© ZiraTech — under the supervision of Eng. Ziad Zakaria Ebrahim &amp; Eng. Ramy Tarek Hafez</p>
+      <p class="dash-owner" dir="ltr">© ZiraTech — under the supervision of Eng. Ziad Zakaria Ebrahim &amp; Eng. Ramy Tarek Hafez</p>
     </div>
   </aside>
-  <div class="ad-scrim" id="adScrim"></div>
+  <div class="dash-scrim" id="dashScrim"></div>
 
-  <div class="ad-body">
-  <header class="ad-top">
-    <div class="ad-wrap ad-top__inner">
-      <button class="icon-btn ad-burger" id="adBurger" type="button" aria-label="القائمة">☰</button>
-      <div class="ad-top__head">
-        <span class="ad-top__title" id="adTitle">لوحة التحكم</span>
+  <div class="dash-body">
+  <header class="dash-top">
+    <div class="dash-wrap dash-top__inner">
+      <button class="icon-btn dash-burger" id="dashBurger" type="button" aria-label="القائمة">☰</button>
+      <div class="dash-top__head">
+        <span class="dash-top__title" id="dashTitle">لوحة التحكم</span>
         <span class="mode-badge" id="modeBadge"></span>
       </div>
-      <div class="ad-top__actions">
+      <div class="dash-top__actions">
         <button class="btn btn--ghost btn--sm" id="testEmailBtn" hidden title="ابعت إيميل تجريبي لإيميل المتجر">📧 تجربة الإيميل</button>
-        <button class="btn btn--sm ad-lowstock" id="lowStockBtn" type="button" hidden>⚠️ <b></b> <span>مخزون قليل</span></button>
+        <button class="btn btn--sm dash-lowstock" id="lowStockBtn" type="button" hidden>⚠️ <b></b> <span>مخزون قليل</span></button>
         <button class="icon-btn" id="soundBtn" aria-label="صوت الإشعارات" title="صوت الإشعارات"></button>
-        <a href="index.html" class="btn btn--ghost btn--sm ad-preview" target="_blank">↗ معاينة المتجر</a>
-        <div class="ad-user" id="adUser" hidden><span class="ad-user__av" id="adUserAv"></span><span class="ad-user__txt"><b id="adUserName"></b><small>مدير المتجر</small></span></div>
+        <a href="index.html" class="btn btn--ghost btn--sm dash-preview" target="_blank">↗ معاينة المتجر</a>
+        <div class="dash-user" id="dashUser" hidden><span class="dash-user__av" id="dashUserAv"></span><span class="dash-user__txt"><b id="dashUserName"></b><small>مدير المتجر</small></span></div>
         <button class="btn btn--ghost btn--sm" id="adminLogout" hidden>خروج</button>
       </div>
     </div>
   </header>
 
   <!-- دخول الأدمن (مع Firebase بس) -->
-  <section class="ad-gate" id="adminGate" hidden>
-    <form class="card-box ad-gate__box" id="adminLoginForm" novalidate>
+  <section class="dash-gate" id="adminGate" hidden>
+    <form class="card-box dash-gate__box" id="adminLoginForm" novalidate>
       <div class="modal__icon">🔐</div>
       <h1>دخول صاحب المتجر</h1>
       <p class="muted">سجّل بحساب الأدمن اللي عملته في Firebase</p>
-      <p class="ad-gate__warn" id="gateWarn" hidden></p>
+      <p class="dash-gate__warn" id="gateWarn" hidden></p>
       <label class="field"><span>البريد الإلكتروني</span><input name="email" type="email" dir="ltr" autocomplete="username" required /><em></em></label>
       <label class="field"><span>كلمة المرور</span><input name="password" type="password" dir="ltr" autocomplete="current-password" required /><em></em></label>
       <button class="btn btn--primary btn--block" type="submit">دخول</button>
     </form>
   </section>
 
-  <main class="ad-wrap ad-main" id="dashboard" hidden>
+  <main class="dash-wrap dash-main" id="dashboard" hidden>
     <div class="demo-note" id="demoNote" hidden>
       <div>
         <b>🧪 وضع تجريبي</b>
@@ -103,7 +103,7 @@
     </div>
 
     <!-- نظرة عامة -->
-    <div id="overviewSection" class="ad-section">
+    <div id="overviewSection" class="dash-section">
       <div class="ov-head">
         <div>
           <h1>نظرة عامة على المتجر</h1>
@@ -134,7 +134,7 @@
           <button class="btn btn--ghost btn--sm" data-go="orders">كل الطلبات ←</button></div>
         <div class="table-wrap">
           <table class="orders ov-table"><thead><tr><th>رقم الطلب</th><th>العميل</th><th>المنتجات</th><th>الإجمالي</th><th>الدفع</th><th>الحالة</th></tr></thead><tbody id="ovRecent"></tbody></table>
-          <div class="ad-empty" id="ovRecentEmpty" hidden><span>📭</span><p>مفيش طلبات لسه — أول ما عميل يطلب هيظهر هنا</p></div>
+          <div class="dash-empty" id="ovRecentEmpty" hidden><span>📭</span><p>مفيش طلبات لسه — أول ما عميل يطلب هيظهر هنا</p></div>
         </div>
       </section>
       <div class="ov-row ov-row--3">
@@ -145,14 +145,14 @@
     </div>
 
 
-    <div id="ordersSection" class="ad-section" hidden>
+    <div id="ordersSection" class="dash-section" hidden>
     <section class="sms-meter card-box" id="smsMeter" hidden></section>
       <section class="stats" id="stats"></section>
 
-      <section class="card-box ad-panel">
-        <div class="ad-toolbar">
+      <section class="card-box dash-panel">
+        <div class="dash-toolbar">
           <div class="status-tabs" id="statusTabs"></div>
-          <div class="ad-toolbar__side">
+          <div class="dash-toolbar__side">
             <select id="rangeSel" aria-label="الفترة">
               <option value="all">كل الفترات</option>
               <option value="today">النهارده</option>
@@ -171,7 +171,7 @@
             </thead>
             <tbody id="ordersBody"></tbody>
           </table>
-          <div class="ad-empty" id="ordersEmpty" hidden>
+          <div class="dash-empty" id="ordersEmpty" hidden>
             <span>📭</span>
             <p id="emptyText">مفيش طلبات لسه</p>
           </div>
@@ -179,7 +179,7 @@
       </section>
     </div>
 
-    <div id="productsSection" class="ad-section" hidden>
+    <div id="productsSection" class="dash-section" hidden>
       <div class="import-note" id="importNote" hidden>
         <div>
           <b>📥 المنتجات لسه مش في قاعدة البيانات</b>
@@ -190,9 +190,9 @@
 
       <section class="alerts-panel card-box" id="alertsPanel" hidden></section>
 
-      <section class="card-box ad-panel">
-        <div class="ad-toolbar">
-          <div class="ad-toolbar__side">
+      <section class="card-box dash-panel">
+        <div class="dash-toolbar">
+          <div class="dash-toolbar__side">
             <input type="search" id="prodSearch" placeholder="بحث باسم المنتج أو الماركة..." />
             <select id="prodCat" aria-label="القسم"><option value="all">كل الأقسام</option></select>
             <select id="prodState" aria-label="الحالة">
@@ -204,7 +204,7 @@
               <option value="noimg">📷 من غير صور</option>
             </select>
           </div>
-          <div class="ad-toolbar__side">
+          <div class="dash-toolbar__side">
             <button class="btn btn--ghost btn--sm" id="excelExportBtn" title="نزّل كل المنتجات في ملف Excel">⬇ تصدير Excel</button>
             <label class="btn btn--ghost btn--sm" id="excelImportBtn" title="ارفع ملف Excel لإضافة أو تحديث المنتجات">
               ⬆ استيراد من Excel
@@ -225,11 +225,11 @@
             </thead>
             <tbody id="productsBody"></tbody>
           </table>
-          <div class="ad-empty" id="productsEmpty" hidden><span>🛍️</span><p>مفيش منتجات مطابقة</p></div>
+          <div class="dash-empty" id="productsEmpty" hidden><span>🛍️</span><p>مفيش منتجات مطابقة</p></div>
         </div>
       </section>
     </div>
-    <div id="visitsSection" class="ad-section" hidden>
+    <div id="visitsSection" class="dash-section" hidden>
       <div class="visits-head">
         <p class="muted">كل زائر بيتعد مرة واحدة في اليوم. زياراتك إنت من المتصفح ده مش محسوبة.</p>
         <select id="visitsRange" aria-label="الفترة">
@@ -240,18 +240,18 @@
       </div>
       <section class="stats" id="visitStats"></section>
       <div class="an-grid">
-        <section class="card-box ad-panel">
+        <section class="card-box dash-panel">
           <h3 class="vchart__title">🛒 مسار الشراء</h3>
           <p class="muted an-sub">من كل اللي دخلوا المتجر، وصلوا لحد فين</p>
           <div id="funnel" class="funnel"></div>
         </section>
-        <section class="card-box ad-panel">
+        <section class="card-box dash-panel">
           <h3 class="vchart__title">📣 الزوار جايين منين</h3>
           <p class="muted an-sub">والطلبات والمبيعات اللي جت من كل مصدر</p>
           <div id="sources" class="sources"></div>
         </section>
       </div>
-      <section class="card-box ad-panel an-links">
+      <section class="card-box dash-panel an-links">
         <div><b>📊 التقارير الكاملة</b><p class="muted">تفاصيل أكتر عن الزوار والإعلانات (الدول، الأجهزة، الصفحات، أداء كل إعلان)</p></div>
         <div class="an-links__btns">
           <a class="btn btn--ghost btn--sm" href="https://analytics.google.com/analytics/web/#/realtime" target="_blank" rel="noopener">Google Analytics ↗</a>
@@ -259,25 +259,25 @@
           <a class="btn btn--ghost btn--sm" href="https://adsmanager.facebook.com/" target="_blank" rel="noopener">Meta Ads Manager ↗</a>
         </div>
       </section>
-      <section class="card-box ad-panel vchart-panel">
+      <section class="card-box dash-panel vchart-panel">
         <h3 class="vchart__title">الزوار في اليوم</h3>
         <div class="vchart" id="visitsChart"></div>
       </section>
-      <section class="card-box ad-panel">
+      <section class="card-box dash-panel">
         <h3 class="vchart__title">المنتجات الأكتر مشاهدة</h3>
         <div class="table-wrap">
           <table class="orders">
             <thead><tr><th>المنتج</th><th>المشاهدات</th><th>اتطلب</th><th>نسبة الشراء</th></tr></thead>
             <tbody id="topViewed"></tbody>
           </table>
-          <div class="ad-empty" id="topViewedEmpty" hidden><span>👀</span><p>مفيش مشاهدات لسه في الفترة دي</p></div>
+          <div class="dash-empty" id="topViewedEmpty" hidden><span>👀</span><p>مفيش مشاهدات لسه في الفترة دي</p></div>
         </div>
       </section>
     </div>
 
-    <div id="shippingSection" class="ad-section" hidden>
+    <div id="shippingSection" class="dash-section" hidden>
       <form class="ship-settings" id="shipForm">
-        <section class="card-box ad-panel">
+        <section class="card-box dash-panel">
           <h3 class="vchart__title">أسعار الشحن للعميل</h3>
           <p class="muted">السعر اللي العميل بيدفعه حسب محافظته. شيل علامة "بنوصّل" من أي محافظة مش عايز توصّلها.</p>
           <div class="ship-top">
@@ -297,7 +297,7 @@
         </section>
       </form>
 
-      <form class="card-box ad-panel bosta-box" id="payForm">
+      <form class="card-box dash-panel bosta-box" id="payForm">
         <h3 class="vchart__title">💳 الدفع بالتحويل</h3>
         <p class="muted">اكتب البيانات اللي العميل هيحوّل عليها. أي طريقة تسيبها فاضية مش هتظهر للعميل في صفحة الدفع.</p>
         <div class="ship-top">
@@ -308,7 +308,7 @@
         <button class="btn btn--primary" type="submit" id="paySave">حفظ</button>
       </form>
 
-      <section class="card-box ad-panel bosta-box">
+      <section class="card-box dash-panel bosta-box">
         <h3 class="vchart__title">📦 الربط مع بوسطة</h3>
         <p class="muted">بعد ما تحط المفتاح، هيظهر في كل طلب زرار "ابعت لبوسطة" بيعمل الشحنة عندهم ويجيب رقم التتبع، والعميل يشوفه في "طلباتي" وفي الإيميل.</p>
         <p class="muted">المفتاح بتجيبه من حسابك في بوسطة: Settings ← API Integration ← Create API Key. المفتاح بيتحفظ في قاعدة البيانات ومحدش يقدر يشوفه غير الأدمن.</p>
@@ -321,24 +321,24 @@
       </section>
     </div>
 
-    <div id="reviewsSection" class="ad-section" hidden>
-      <section class="card-box ad-panel">
+    <div id="reviewsSection" class="dash-section" hidden>
+      <section class="card-box dash-panel">
         <p class="muted carts-hint">تقييمات العملاء الحقيقية زي ما بتظهر في صفحات المنتجات. لو فيه تقييم سبام أو فيه ألفاظ، امسحه من هنا.</p>
         <div class="table-wrap">
           <table class="orders">
             <thead><tr><th>المنتج</th><th>العميل</th><th>التقييم</th><th>الرأي</th><th>التاريخ</th><th></th></tr></thead>
             <tbody id="reviewsBody"></tbody>
           </table>
-          <div class="ad-empty" id="reviewsEmpty" hidden><span>⭐</span><p>لسه مفيش تقييمات من العملاء</p></div>
+          <div class="dash-empty" id="reviewsEmpty" hidden><span>⭐</span><p>لسه مفيش تقييمات من العملاء</p></div>
         </div>
       </section>
     </div>
 
-    <div id="cartsSection" class="ad-section" hidden>
-      <section class="card-box ad-panel">
-        <div class="ad-toolbar">
+    <div id="cartsSection" class="dash-section" hidden>
+      <section class="card-box dash-panel">
+        <div class="dash-toolbar">
           <p class="muted carts-hint">العملاء المسجّلين اللي حطّوا حاجات في السلة ومكمّلوش الطلب من أكتر من ساعتين. زرار الواتساب بيفتح محادثة العميل برسالة جاهزة فيها السلة ورابط بيرجّعها زي ما هي (والإيميل للي داخلين بحساب Google).</p>
-          <div class="ad-toolbar__side">
+          <div class="dash-toolbar__side">
             <a class="btn btn--sm btn--wa" id="remindWaBtn" href="#" target="_blank" rel="noopener" hidden></a>
             <button class="btn btn--primary btn--sm" id="remindAllBtn" hidden></button>
           </div>
@@ -350,21 +350,21 @@
             </thead>
             <tbody id="cartsBody"></tbody>
           </table>
-          <div class="ad-empty" id="cartsEmpty" hidden><span>🛒</span><p>مفيش سلات متروكة دلوقتي</p></div>
+          <div class="dash-empty" id="cartsEmpty" hidden><span>🛒</span><p>مفيش سلات متروكة دلوقتي</p></div>
         </div>
       </section>
     </div>
 
-    <div id="leadsSection" class="ad-section" hidden>
-      <section class="card-box ad-panel">
-        <div class="ad-toolbar">
+    <div id="leadsSection" class="dash-section" hidden>
+      <section class="card-box dash-panel">
+        <div class="dash-toolbar">
           <div class="status-tabs" id="custFilters">
             <button class="tab active" data-cf="all">الكل <span class="tab__count"></span></button>
             <button class="tab" data-cf="buyer">🟢 اشتروا <span class="tab__count"></span></button>
             <button class="tab" data-cf="cart">🟡 سابوا سلة <span class="tab__count"></span></button>
             <button class="tab" data-cf="lead">⚪ لسه ماشتروش <span class="tab__count"></span></button>
           </div>
-          <div class="ad-toolbar__side">
+          <div class="dash-toolbar__side">
             <input type="search" id="custSearch" placeholder="بحث بالاسم، الموبايل، المحافظة..." />
             <button class="btn btn--primary btn--sm" id="campBtn" hidden>📣 ابعت عرض</button>
             <button class="btn btn--ghost btn--sm" id="leadsExport" hidden>⬇ تنزيل CSV</button>
@@ -378,7 +378,7 @@
             </thead>
             <tbody id="leadsBody"></tbody>
           </table>
-          <div class="ad-empty" id="leadsEmpty" hidden><span>📱</span><p>لسه مفيش أرقام عملاء</p></div>
+          <div class="dash-empty" id="leadsEmpty" hidden><span>📱</span><p>لسه مفيش أرقام عملاء</p></div>
         </div>
       </section>
     </div>

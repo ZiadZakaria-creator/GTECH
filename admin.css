@@ -1,28 +1,28 @@
 /* ============ لوحة التحكم ============ */
 .admin { background: var(--bg); }
-.ad-wrap { width: min(1400px, 100% - 32px); margin-inline: auto; }
+.dash-wrap { width: min(1400px, 100% - 32px); margin-inline: auto; }
 .danger { color: var(--danger); }
 
-.ad-top { position: sticky; top: 0; z-index: 50; background: var(--glass); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
-.ad-top__inner { display: flex; align-items: center; gap: 14px; height: 68px; }
-.ad-top .logo { font-size: 1.35rem; }
-.ad-top .logo__mark { width: 36px; height: 36px; }
-.ad-top__title { font-weight: 800; color: var(--muted); padding-inline-start: 14px; border-inline-start: 1px solid var(--border); }
-.ad-top__actions { display: flex; align-items: center; gap: 8px; margin-inline-start: auto; }
-.ad-top__actions [hidden] { display: none; }
+.dash-top { position: sticky; top: 0; z-index: 50; background: var(--glass); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
+.dash-top__inner { display: flex; align-items: center; gap: 14px; height: 68px; }
+.dash-top .logo { font-size: 1.35rem; }
+.dash-top .logo__mark { width: 36px; height: 36px; }
+.dash-top__title { font-weight: 800; color: var(--muted); padding-inline-start: 14px; border-inline-start: 1px solid var(--border); }
+.dash-top__actions { display: flex; align-items: center; gap: 8px; margin-inline-start: auto; }
+.dash-top__actions [hidden] { display: none; }
 .mode-badge { padding: 3px 12px; border-radius: 999px; font-size: .78rem; font-weight: 700; }
 .mode-badge--demo { background: rgba(251,191,36,.14); color: var(--warn); border: 1px solid rgba(251,191,36,.35); }
 .mode-badge--live { background: rgba(34,197,94,.14); color: var(--success); border: 1px solid rgba(34,197,94,.35); }
 
-.ad-gate { min-height: calc(100vh - 68px); display: grid; place-items: center; padding: 20px 16px; }
-.ad-gate[hidden] { display: none; }
-.ad-gate__box { width: min(400px, 100%); padding: 32px 28px; display: grid; gap: 14px; text-align: center; }
-.ad-gate__box .modal__icon { font-size: 1.8rem; }
-.ad-gate__box h1 { font-size: 1.4rem; }
-.ad-gate__box .field { text-align: right; }
+.dash-gate { min-height: calc(100vh - 68px); display: grid; place-items: center; padding: 20px 16px; }
+.dash-gate[hidden] { display: none; }
+.dash-gate__box { width: min(400px, 100%); padding: 32px 28px; display: grid; gap: 14px; text-align: center; }
+.dash-gate__box .modal__icon { font-size: 1.8rem; }
+.dash-gate__box h1 { font-size: 1.4rem; }
+.dash-gate__box .field { text-align: right; }
 
-.ad-main { padding: 26px 0 60px; display: grid; gap: 20px; }
-.ad-main[hidden] { display: none; }
+.dash-main { padding: 26px 0 60px; display: grid; gap: 20px; }
+.dash-main[hidden] { display: none; }
 
 .demo-note {
   display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
@@ -42,18 +42,18 @@
 .stat--warn { border-color: rgba(251,191,36,.45); background: linear-gradient(135deg, rgba(251,191,36,.08), var(--surface)); }
 .stat--warn .stat__icon { background: rgba(251,191,36,.15); }
 
-.ad-panel { padding: 18px; overflow: hidden; }
-.ad-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 16px; }
+.dash-panel { padding: 18px; overflow: hidden; }
+.dash-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 16px; }
 .status-tabs { display: flex; gap: 4px; padding: 4px; background: var(--bg-2); border: 1px solid var(--border); border-radius: 999px; overflow-x: auto; max-width: 100%; }
 .status-tabs .tab { white-space: nowrap; }
 .tab__count { display: inline-grid; place-items: center; min-width: 22px; height: 20px; padding: 0 6px; margin-inline-start: 4px; border-radius: 99px; background: var(--soft-3); font-size: .75rem; }
-.ad-toolbar__side { display: flex; gap: 8px; flex-wrap: wrap; }
-.ad-toolbar__side input, .ad-toolbar__side select, .visits-head select {
+.dash-toolbar__side { display: flex; gap: 8px; flex-wrap: wrap; }
+.dash-toolbar__side input, .dash-toolbar__side select, .visits-head select {
   padding: 8px 14px; border-radius: 999px; font: inherit; font-size: .9rem; color: var(--text);
   background: var(--bg-2); border: 1px solid var(--border); outline: 0;
 }
-.ad-toolbar__side input { width: 260px; }
-.ad-toolbar__side input:focus, .ad-toolbar__side select:focus, .visits-head select:focus { border-color: var(--primary); }
+.dash-toolbar__side input { width: 260px; }
+.dash-toolbar__side input:focus, .dash-toolbar__side select:focus, .visits-head select:focus { border-color: var(--primary); }
 
 .table-wrap { overflow-x: auto; }
 .orders { width: 100%; border-collapse: collapse; font-size: .92rem; }
@@ -64,9 +64,9 @@
 .orders tbody tr:hover { background: var(--surface-2); }
 .orders tr.is-new td:first-child { box-shadow: inset -3px 0 0 #fbbf24; }
 
-.ad-empty { display: grid; justify-items: center; gap: 6px; padding: 50px 0; color: var(--muted); }
-.ad-empty[hidden] { display: none; }
-.ad-empty span { font-size: 3rem; }
+.dash-empty { display: grid; justify-items: center; gap: 6px; padding: 50px 0; color: var(--muted); }
+.dash-empty[hidden] { display: none; }
+.dash-empty span { font-size: 3rem; }
 
 /* ============ تفاصيل الطلب ============ */
 .order-drawer { width: min(480px, 100%); }
@@ -95,15 +95,15 @@
 /* ============ موبايل ============ */
 @media (max-width: 1000px) {
   .stats { grid-template-columns: 1fr 1fr; }
-  .ad-toolbar__side input { width: 100%; flex: 1 1 200px; }
+  .dash-toolbar__side input { width: 100%; flex: 1 1 200px; }
 }
 @media (max-width: 720px) {
-  .ad-top__title, .ad-top__actions .btn--ghost:not(#adminLogout) { display: none; }
+  .dash-top__title, .dash-top__actions .btn--ghost:not(#adminLogout) { display: none; }
   .stats { gap: 10px; }
   .stat { padding: 14px; gap: 10px; }
   .stat__icon { display: none; }
   .stat b { font-size: 1.1rem; }
-  .ad-panel { padding: 12px; }
+  .dash-panel { padding: 12px; }
   .orders thead { display: none; }
   .orders, .orders tbody, .orders tr, .orders td { display: block; width: 100%; }
   .orders tr { margin-bottom: 10px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 14px; background: var(--bg-2); display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; }
@@ -119,7 +119,7 @@
 /* ============ طباعة الفاتورة ============ */
 @media print {
   body.admin { background: #fff; color: #000; }
-  .ad-top, .ad-side, .ad-main, .overlay, .toast, #drawerClose, .od-steps, .od-contact, #printBtn { display: none !important; }
+  .dash-top, .dash-side, .dash-main, .overlay, .toast, #drawerClose, .od-steps, .od-contact, #printBtn { display: none !important; }
   .order-drawer { position: static; transform: none !important; width: 100%; background: #fff; border: 0; }
   .order-drawer__body { overflow: visible; }
   .od-sec { background: #fff; border-color: #ccc; }
@@ -128,14 +128,14 @@
 }
 
 /* ============ الأقسام ============ */
-.ad-sections { display: flex; gap: 6px; padding: 5px; width: fit-content; background: var(--surface); border: 1px solid var(--border); border-radius: 999px; }
-.ad-sec { padding: 9px 22px; border-radius: 999px; font-weight: 700; color: var(--muted); display: flex; align-items: center; gap: 6px; transition: color .2s, background-color .2s, border-color .2s, box-shadow .2s, transform .2s; }
-.ad-sec:hover { color: var(--text); }
-.ad-sec.active { background: var(--gradient); color: #fff; }
-.ad-sec .tab__count { background: #fbbf24; color: #1a1300; }
-.ad-sec .tab__count[hidden] { display: none; }
-.ad-section { display: grid; gap: 20px; }
-.ad-section[hidden] { display: none; }
+.dash-sections { display: flex; gap: 6px; padding: 5px; width: fit-content; background: var(--surface); border: 1px solid var(--border); border-radius: 999px; }
+.dash-sec { padding: 9px 22px; border-radius: 999px; font-weight: 700; color: var(--muted); display: flex; align-items: center; gap: 6px; transition: color .2s, background-color .2s, border-color .2s, box-shadow .2s, transform .2s; }
+.dash-sec:hover { color: var(--text); }
+.dash-sec.active { background: var(--gradient); color: #fff; }
+.dash-sec .tab__count { background: #fbbf24; color: #1a1300; }
+.dash-sec .tab__count[hidden] { display: none; }
+.dash-section { display: grid; gap: 20px; }
+.dash-section[hidden] { display: none; }
 
 .import-note { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 16px 20px; border-radius: var(--radius); background: rgba(10,132,255,.08); border: 1px dashed rgba(10,132,255,.45); }
 .import-note[hidden] { display: none; }
@@ -151,12 +151,12 @@
 .stock-badge { display: inline-grid; place-items: center; min-width: 38px; padding: 3px 10px; border-radius: 99px; font-weight: 800; font-size: .85rem; background: rgba(34,197,94,.14); color: var(--success); }
 .stock-badge--low { background: rgba(251,191,36,.15); color: var(--warn); }
 /* زرار إشعار المخزون القليل فوق */
-.ad-lowstock { background: rgba(251,191,36,.14); color: var(--warn); border: 1px solid rgba(251,191,36,.45); font-weight: 800; animation: lowPulse 2s ease-in-out 3; }
-.ad-lowstock:hover { background: rgba(251,191,36,.24); }
-.ad-lowstock[hidden] { display: none; }
+.dash-lowstock { background: rgba(251,191,36,.14); color: var(--warn); border: 1px solid rgba(251,191,36,.45); font-weight: 800; animation: lowPulse 2s ease-in-out 3; }
+.dash-lowstock:hover { background: rgba(251,191,36,.24); }
+.dash-lowstock[hidden] { display: none; }
 @keyframes lowPulse { 50% { box-shadow: 0 0 0 6px rgba(251,191,36,.18); } }
-@media (max-width: 640px) { .ad-lowstock span { display: none; } }
-@media (prefers-reduced-motion: reduce) { .ad-lowstock { animation: none; } }
+@media (max-width: 640px) { .dash-lowstock span { display: none; } }
+@media (prefers-reduced-motion: reduce) { .dash-lowstock { animation: none; } }
 .stock-badge--out { background: rgba(255,77,109,.15); color: var(--danger); }
 .vis-toggle { padding: 5px 14px; border-radius: 99px; font-size: .82rem; font-weight: 700; border: 1px solid var(--border); color: var(--muted); background: var(--bg-2); }
 .vis-toggle.on { color: var(--success); border-color: rgba(34,197,94,.4); background: rgba(34,197,94,.1); }
@@ -194,8 +194,8 @@
   .products-table td[data-label="القسم"] { display: none; }
   .products-table td[data-label="السعر"] small { display: inline; margin-inline-start: 6px; }
   .pe-grid { grid-template-columns: 1fr; }
-  .ad-sections { width: 100%; overflow-x: auto; scrollbar-width: none; border-radius: 18px; }
-  .ad-sec { flex: 1 0 auto; justify-content: center; padding: 9px 14px; white-space: nowrap; font-size: .9rem; }
+  .dash-sections { width: 100%; overflow-x: auto; scrollbar-width: none; border-radius: 18px; }
+  .dash-sec { flex: 1 0 auto; justify-content: center; padding: 9px 14px; white-space: nowrap; font-size: .9rem; }
 }
 
 /* ============ عدّاد SMS ============ */
@@ -312,10 +312,10 @@
 .bosta-state:empty { display: none; }
 @media print { .ship-manual, [data-ship] { display: none !important; } }
 
-.ad-owner { text-align: center; padding: 18px 16px 28px; color: var(--muted); font-size: .82rem; }
-@media print { .ad-owner { display: none; } }
-.ad-stars { color: var(--star, #fbbf24); white-space: nowrap; letter-spacing: 1px; }
-.ad-review-text { max-width: 360px; white-space: normal; line-height: 1.7; }
+.dash-owner { text-align: center; padding: 18px 16px 28px; color: var(--muted); font-size: .82rem; }
+@media print { .dash-owner { display: none; } }
+.dash-stars { color: var(--star, #fbbf24); white-space: nowrap; letter-spacing: 1px; }
+.dash-review-text { max-width: 360px; white-space: normal; line-height: 1.7; }
 
 /* ============ الدفع بالتحويل ============ */
 .pay-pill { display: inline-block; margin-inline-start: 4px; padding: 1px 8px; border-radius: 99px; font-size: .72rem; font-weight: 700; background: rgba(251,191,36,.15); color: #fbbf24; white-space: nowrap; }
@@ -330,7 +330,7 @@
 
 /* ============ تحليلات: مسار الشراء ومصادر الزوار ============ */
 .an-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
-.an-grid .ad-panel { margin: 0; }
+.an-grid .dash-panel { margin: 0; }
 .an-sub { margin: -8px 0 14px; font-size: .88rem; }
 .funnel, .sources { display: grid; gap: 14px; }
 .funnel__label, .src__top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-weight: 700; }
@@ -354,52 +354,52 @@
 .btn--warn:hover { background: rgba(245,158,11,.24); }
 
 /* ============ الهيكل الجديد: قائمة جانبية + محتوى ============ */
-.ad-shell { display: flex; min-height: 100vh; }
-.ad-body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-.ad-side {
+.dash-shell { display: flex; min-height: 100vh; }
+.dash-body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.dash-side {
   position: sticky; top: 0; height: 100vh; width: 248px; flex: none; display: flex; flex-direction: column; gap: 6px;
   padding: 18px 14px; background: var(--bg-2); border-inline-end: 1px solid var(--border); overflow-y: auto; z-index: 60;
 }
-.ad-shell:has(#dashboard[hidden]) .ad-side { display: none; }
-.ad-side__brand { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 4px 6px 18px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
-.ad-side__brand .logo { font-size: 1.3rem; }
-.ad-side__brand .logo__mark { width: 36px; height: 36px; }
-.ad-side__brand small { color: var(--muted); font-size: .78rem; font-weight: 700; }
-.ad-side__label { color: var(--muted); font-size: .76rem; font-weight: 700; padding: 6px 10px 2px; }
-.ad-side .ad-sections { display: grid; gap: 4px; padding: 0; width: auto; background: none; border: 0; border-radius: 0; overflow: visible; }
-.ad-side .ad-sec {
+.dash-shell:has(#dashboard[hidden]) .dash-side { display: none; }
+.dash-side__brand { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 4px 6px 18px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+.dash-side__brand .logo { font-size: 1.3rem; }
+.dash-side__brand .logo__mark { width: 36px; height: 36px; }
+.dash-side__brand small { color: var(--muted); font-size: .78rem; font-weight: 700; }
+.dash-side__label { color: var(--muted); font-size: .76rem; font-weight: 700; padding: 6px 10px 2px; }
+.dash-side .dash-sections { display: grid; gap: 4px; padding: 0; width: auto; background: none; border: 0; border-radius: 0; overflow: visible; }
+.dash-side .dash-sec {
   display: flex; align-items: center; justify-content: flex-start; flex: none; gap: 12px; width: 100%; padding: 11px 12px; border-radius: 12px; border: 1px solid transparent;
   font-weight: 700; font-size: .92rem; color: var(--text-2); background: none; text-align: start; white-space: nowrap; transition: background .2s, color .2s, border-color .2s;
 }
-.ad-sec__icon { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; opacity: .85; }
-.ad-side .ad-sec span:not(.tab__count) { flex: 1; }
-.ad-side .ad-sec:hover { background: var(--surface); color: var(--text); }
-.ad-side .ad-sec.active { color: #fff; background: linear-gradient(135deg, rgba(10,132,255,.9), rgba(124,92,255,.85)); box-shadow: 0 10px 26px -12px rgba(10,132,255,.8); }
-.ad-side .ad-sec.active .ad-sec__icon { opacity: 1; }
-.ad-side .tab__count { margin: 0; background: rgba(10,132,255,.18); color: #7cc0ff; }
-.ad-side .ad-sec.active .tab__count { background: rgba(255,255,255,.22); color: #fff; }
+.dash-sec__icon { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; opacity: .85; }
+.dash-side .dash-sec span:not(.tab__count) { flex: 1; }
+.dash-side .dash-sec:hover { background: var(--surface); color: var(--text); }
+.dash-side .dash-sec.active { color: #fff; background: linear-gradient(135deg, rgba(10,132,255,.9), rgba(124,92,255,.85)); box-shadow: 0 10px 26px -12px rgba(10,132,255,.8); }
+.dash-side .dash-sec.active .dash-sec__icon { opacity: 1; }
+.dash-side .tab__count { margin: 0; background: rgba(10,132,255,.18); color: #7cc0ff; }
+.dash-side .dash-sec.active .tab__count { background: rgba(255,255,255,.22); color: #fff; }
 .tab__count--warn { background: rgba(251,191,36,.18) !important; color: #fbbf24 !important; }
-.ad-side__foot { margin-top: auto; display: grid; gap: 10px; padding-top: 14px; }
-.ad-help { display: grid; gap: 2px; padding: 14px; border-radius: 16px; background: var(--surface); border: 1px solid var(--border); transition: border-color .2s; }
-.ad-help:hover { border-color: rgba(10,132,255,.5); }
-.ad-help__icon { font-size: 1.3rem; }
-.ad-help b { font-size: .92rem; }
-.ad-help small { color: #7cc0ff; font-size: .78rem; font-weight: 700; }
-.ad-side .ad-owner { padding: 0 4px; font-size: .68rem; line-height: 1.5; text-align: start; }
-.ad-scrim { display: none; }
+.dash-side__foot { margin-top: auto; display: grid; gap: 10px; padding-top: 14px; }
+.dash-help { display: grid; gap: 2px; padding: 14px; border-radius: 16px; background: var(--surface); border: 1px solid var(--border); transition: border-color .2s; }
+.dash-help:hover { border-color: rgba(10,132,255,.5); }
+.dash-help__icon { font-size: 1.3rem; }
+.dash-help b { font-size: .92rem; }
+.dash-help small { color: #7cc0ff; font-size: .78rem; font-weight: 700; }
+.dash-side .dash-owner { padding: 0 4px; font-size: .68rem; line-height: 1.5; text-align: start; }
+.dash-scrim { display: none; }
 
 /* الشريط اللي فوق */
-.ad-top__inner { height: 66px; }
-.ad-top__head { display: flex; align-items: center; gap: 14px; }
-.ad-top__head .ad-top__title { padding: 0; border: 0; color: var(--text); font-size: 1.15rem; font-weight: 900; }
-.ad-burger { display: none; }
+.dash-top__inner { height: 66px; }
+.dash-top__head { display: flex; align-items: center; gap: 14px; }
+.dash-top__head .dash-top__title { padding: 0; border: 0; color: var(--text); font-size: 1.15rem; font-weight: 900; }
+.dash-burger { display: none; }
 .mode-badge { display: inline-flex; align-items: center; gap: 7px; background: none !important; border: 0 !important; padding: 0; font-size: .82rem; }
 .mode-badge::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 4px color-mix(in srgb, currentColor 18%, transparent); }
-.ad-user { display: flex; align-items: center; gap: 10px; padding-inline-start: 12px; border-inline-start: 1px solid var(--border); }
-.ad-user[hidden] { display: none; }
-.ad-user__av { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #0a84ff, #7c5cff); color: #fff; font-weight: 900; font-size: .8rem; direction: ltr; }
-.ad-user__txt b { display: block; font-size: .88rem; line-height: 1.2; max-width: 140px; overflow: hidden; text-overflow: ellipsis; direction: ltr; text-align: right; }
-.ad-user__txt small { color: var(--muted); font-size: .74rem; }
+.dash-user { display: flex; align-items: center; gap: 10px; padding-inline-start: 12px; border-inline-start: 1px solid var(--border); }
+.dash-user[hidden] { display: none; }
+.dash-user__av { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #0a84ff, #7c5cff); color: #fff; font-weight: 900; font-size: .8rem; direction: ltr; }
+.dash-user__txt b { display: block; font-size: .88rem; line-height: 1.2; max-width: 140px; overflow: hidden; text-overflow: ellipsis; direction: ltr; text-align: right; }
+.dash-user__txt small { color: var(--muted); font-size: .74rem; }
 
 /* ============ نظرة عامة ============ */
 #overviewSection { display: grid; gap: 18px; }
@@ -529,15 +529,15 @@
   .ov-row--chart, .ov-row--3 { grid-template-columns: 1fr; }
 }
 @media (max-width: 1000px) {
-  .ad-side { position: fixed; inset-block: 0; inset-inline-start: 0; transform: translateX(100%); transition: transform .3s ease; box-shadow: var(--shadow-soft); }
-  .ad-menu-open .ad-side { transform: none; }
-  .ad-menu-open .ad-scrim { display: block; position: fixed; inset: 0; z-index: 55; background: rgba(0,0,0,.55); backdrop-filter: blur(2px); }
-  .ad-burger { display: grid; }
-  .ad-shell:has(#dashboard[hidden]) .ad-burger { display: none; }
+  .dash-side { position: fixed; inset-block: 0; inset-inline-start: 0; transform: translateX(100%); transition: transform .3s ease; box-shadow: var(--shadow-soft); }
+  .dash-menu-open .dash-side { transform: none; }
+  .dash-menu-open .dash-scrim { display: block; position: fixed; inset: 0; z-index: 55; background: rgba(0,0,0,.55); backdrop-filter: blur(2px); }
+  .dash-burger { display: grid; }
+  .dash-shell:has(#dashboard[hidden]) .dash-burger { display: none; }
 }
 @media (max-width: 720px) {
-  .ad-user__txt, .ad-preview { display: none !important; }
-  .ad-user { padding: 0; border: 0; }
+  .dash-user__txt, .dash-preview { display: none !important; }
+  .dash-user { padding: 0; border: 0; }
   .ov-head h1 { font-size: 1.35rem; }
   .ov-head__tools { width: 100%; }
   .ov-range { width: 100%; overflow-x: auto; }
@@ -562,8 +562,8 @@
 :root[data-theme="light"] .ov-pp { color: #0a6fd6; }
 :root[data-theme="light"] .ov-pp--ok { color: #15803d; }
 :root[data-theme="light"] .ov-pp--wait, :root[data-theme="light"] .ov-chip, :root[data-theme="light"] .ov-stock b, :root[data-theme="light"] .tab__count--warn { color: #b45309 !important; }
-:root[data-theme="light"] .ov-note, :root[data-theme="light"] .ad-help small, :root[data-theme="light"] .ov-id { color: #0a6fd6; }
-:root[data-theme="light"] .ad-side .tab__count { color: #0a6fd6; }
+:root[data-theme="light"] .ov-note, :root[data-theme="light"] .dash-help small, :root[data-theme="light"] .ov-id { color: #0a6fd6; }
+:root[data-theme="light"] .dash-side .tab__count { color: #0a6fd6; }
 :root[data-theme="light"] .ov-tip { background: #fff; }
 :root[data-theme="light"] .ov-tip span { color: #6d28d9; }
 :root[data-theme="light"] .ov-thumb { box-shadow: inset 0 0 0 1px var(--border); }
@@ -587,7 +587,7 @@
 .camp-card__side { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; font-weight: 700; }
 .camp-card__side label { display: flex; gap: 6px; align-items: center; cursor: pointer; }
 
-.ad-gate__warn { margin: 4px 0 6px; padding: 10px 14px; border-radius: 12px; background: rgba(245,158,11,.12); border: 1px solid rgba(245,158,11,.45); color: #fbbf24; font-size: .9rem; line-height: 1.7; }
+.dash-gate__warn { margin: 4px 0 6px; padding: 10px 14px; border-radius: 12px; background: rgba(245,158,11,.12); border: 1px solid rgba(245,158,11,.45); color: #fbbf24; font-size: .9rem; line-height: 1.7; }
 
 /* زرار حذف الطلب جنب الحالة (للطلبات التجريبية/الوهمية) */
 .od-status-cell { display: inline-flex; align-items: center; gap: 8px; }
@@ -714,10 +714,10 @@ body.admin::after {
     radial-gradient(46% 46% at 82% 28%, var(--ad-aurora-2), transparent 70%),
     radial-gradient(40% 40% at 70% 82%, var(--ad-aurora-3), transparent 70%),
     radial-gradient(38% 38% at 26% 86%, var(--ad-aurora-4), transparent 70%);
-  animation: adAurora 26s ease-in-out infinite alternate;
+  animation: dashAurora 26s ease-in-out infinite alternate;
   will-change: transform;
 }
-@keyframes adAurora {
+@keyframes dashAurora {
   0%   { transform: translate3d(0,0,0) scale(1) rotate(0deg); }
   50%  { transform: translate3d(2.5%, -2%, 0) scale(1.12) rotate(4deg); }
   100% { transform: translate3d(-2%, 2.5%, 0) scale(1.06) rotate(-3deg); }
@@ -728,7 +728,7 @@ body.admin::after {
 body.admin .card-box,
 body.admin .ov-kpi,
 body.admin .ov-card,
-body.admin .ad-panel,
+body.admin .dash-panel,
 body.admin .sms-meter,
 body.admin .stat {
   background: linear-gradient(160deg, rgba(120,170,235,.05), transparent 42%), var(--ad-card-bg) !important;
@@ -747,39 +747,39 @@ body.admin .ov-card, body.admin .ov-kpi, body.admin .stat { transition: transfor
 }
 
 /* القائمة الجانبية = لوح معتم ثابت (مفيش شفافية تخلّي الأورورا تبان ورا الأزرار) */
-body.admin .ad-side {
+body.admin .dash-side {
   background: #0A1526; border-inline-end: var(--ad-card-bd);
   -webkit-backdrop-filter: none; backdrop-filter: none;
 }
-body.admin .ad-help { background: var(--ad-soft); border: var(--ad-card-bd); border-radius: 16px; }
+body.admin .dash-help { background: var(--ad-soft); border: var(--ad-card-bd); border-radius: 16px; }
 
 /* الشريط العلوي */
-body.admin .ad-top {
+body.admin .dash-top {
   background: color-mix(in srgb, var(--ad-card-bg) 88%, transparent);
   border-bottom: var(--ad-card-bd);
   -webkit-backdrop-filter: var(--ad-blur); backdrop-filter: var(--ad-blur);
 }
 
 /* عنصر القائمة النشط — توهّج نيون */
-body.admin .ad-side .ad-sec.active {
+body.admin .dash-side .dash-sec.active {
   background: var(--ad-grad); color: #06121a;
   box-shadow: 0 10px 30px -8px rgba(0,179,242,.5);
 }
-body.admin .ad-side .ad-sec.active .ad-sec__icon { opacity: 1; }
-body.admin .ad-side .ad-sec.active .tab__count { background: rgba(0,0,0,.2); color: #06121a; }
-body.admin .ad-side .tab__count { background: rgba(34,211,238,.16); color: #36DCEC; }
+body.admin .dash-side .dash-sec.active .dash-sec__icon { opacity: 1; }
+body.admin .dash-side .dash-sec.active .tab__count { background: rgba(0,0,0,.2); color: #06121a; }
+body.admin .dash-side .tab__count { background: rgba(34,211,238,.16); color: #36DCEC; }
 
 /* الأزرار والتدرّجات */
 body.admin .btn--primary { background: var(--ad-grad); color: #06121a; box-shadow: 0 10px 30px -10px rgba(0,179,242,.45); }
 body.admin .btn--primary:hover { box-shadow: 0 16px 40px -10px rgba(139,92,246,.6); }
 body.admin .ov-bar u { background: var(--ad-grad); }
 body.admin .funnel__bar i { background: var(--ad-grad); }
-body.admin .ad-user__av, body.admin .logo__mark { background: var(--ad-grad); color: #06121a; }
+body.admin .dash-user__av, body.admin .logo__mark { background: var(--ad-grad); color: #06121a; }
 body.admin .ov-range button.active { background: var(--ad-grad-soft); color: #36DCEC; box-shadow: inset 0 0 0 1px rgba(34,211,238,.4); }
 
 /* حقول/قوائم/تابات */
-body.admin .ad-toolbar__side input,
-body.admin .ad-toolbar__side select,
+body.admin .dash-toolbar__side input,
+body.admin .dash-toolbar__side select,
 body.admin .visits-head select,
 body.admin .field input,
 body.admin .field select,
@@ -801,17 +801,17 @@ body.admin .bulk-item {
 body.admin .orders tbody tr:hover { background: var(--ad-soft); }
 
 /* ألوان المبيعات/اللينكات تركواز */
-body.admin .ov-id, body.admin .ov-pp, body.admin .ov-note, body.admin .ad-help small { color: #36DCEC; }
+body.admin .ov-id, body.admin .ov-pp, body.admin .ov-note, body.admin .dash-help small { color: #36DCEC; }
 
 /* 🔴 الأحمر ضمن الباليت: السالب والتنبيهات والحالات الملغية */
 body.admin .ov-delta--down { color: var(--ad-red); }
 body.admin .stock-badge--out, body.admin .ov-stock.is-out b { color: var(--ad-red); background: rgba(232,91,117,.15); }
 body.admin .pill-status--cancelled { color: var(--ad-red) !important; background: rgba(232,91,117,.15) !important; }
 body.admin .btn--primary.danger, body.admin .danger { color: var(--ad-red); }
-body.admin .ad-lowstock { animation: none; }
+body.admin .dash-lowstock { animation: none; }
 
 /* شاشة الدخول + المودالات + الدروَر */
-body.admin .ad-gate__box, body.admin .modal__box {
+body.admin .dash-gate__box, body.admin .modal__box {
   background: var(--ad-card-bg) !important; border: var(--ad-card-bd) !important;
   box-shadow: var(--ad-card-sh);
   -webkit-backdrop-filter: var(--ad-blur); backdrop-filter: var(--ad-blur);
@@ -824,9 +824,9 @@ body.admin .order-drawer {
 /* عناوين أوضح في الفاتح */
 :root[data-theme="light"] body.admin .ov-head h1,
 :root[data-theme="light"] body.admin .ov-card__head h3,
-:root[data-theme="light"] body.admin .ad-top__head .ad-top__title { color: #0f1b2d; }
+:root[data-theme="light"] body.admin .dash-top__head .dash-top__title { color: #0f1b2d; }
 :root[data-theme="light"] body.admin .ov-id,
-:root[data-theme="light"] body.admin .ad-help small { color: #0e8ba0; }
+:root[data-theme="light"] body.admin .dash-help small { color: #0e8ba0; }
 
 @media (prefers-reduced-motion: reduce) {
   body.admin .ov-kpi:hover, body.admin .stat:hover { transform: none; }
@@ -841,29 +841,29 @@ body.admin :where(a, button, summary, select, [tabindex]):focus-visible {
   outline-offset: 1px;
 }
 /* عناصر القائمة الجانبية: حلقة داخلية ناعمة من غير فجوة */
-body.admin .ad-side .ad-sec:focus-visible {
+body.admin .dash-side .dash-sec:focus-visible {
   outline: none;
   box-shadow: inset 0 0 0 1.5px rgba(54,220,236,.6);
 }
-body.admin .ad-side .ad-sec.active:focus-visible {
+body.admin .dash-side .dash-sec.active:focus-visible {
   box-shadow: 0 10px 30px -8px rgba(0,179,242,.5), inset 0 0 0 1.6px rgba(255,255,255,.55);
 }
 /* مفيش وميض لمس على الموبايل */
-body.admin a, body.admin button, body.admin .ad-sec, body.admin .icon-btn,
+body.admin a, body.admin button, body.admin .dash-sec, body.admin .icon-btn,
 body.admin .tab, body.admin .ov-range button { -webkit-tap-highlight-color: transparent; }
 
 /* الوقوف على عنصر القائمة: خلفية خفيفة + نص/أيقونة أوضح — من غير بوكس */
-body.admin .ad-side .ad-sec {
+body.admin .dash-side .dash-sec {
   transition: background-color .2s, color .2s, box-shadow .2s, transform .15s;
 }
 /* الهوفر للماوس فقط (مايعلقش بعد اللمس على الموبايل) */
 @media (hover: hover) {
-  body.admin .ad-side .ad-sec:not(.active):hover {
+  body.admin .dash-side .dash-sec:not(.active):hover {
     background: var(--ad-soft); color: #eaf2ff;
   }
-  body.admin .ad-side .ad-sec:not(.active):hover .ad-sec__icon { opacity: 1; color: #36DCEC; }
+  body.admin .dash-side .dash-sec:not(.active):hover .dash-sec__icon { opacity: 1; color: #36DCEC; }
 }
-body.admin .ad-side .ad-sec:not(.active):active { background: var(--ad-soft); }
+body.admin .dash-side .dash-sec:not(.active):active { background: var(--ad-soft); }
 /* الأزرار العامة في اللوحة: فوكس بظل أزرق ناعم بدل الإطار الحاد */
 body.admin .btn:focus-visible, body.admin .icon-btn:focus-visible, body.admin .ov-range button:focus-visible {
   outline: none;
@@ -875,6 +875,6 @@ body.admin .btn:focus-visible, body.admin .icon-btn:focus-visible, body.admin .o
    القائمة على الشمال، فالإخفاء لازم يكون لليسار مش لليمين
    ============================================================ */
 @media (max-width: 1000px) {
-  html[dir="ltr"] .ad-side { transform: translateX(-100%); }
-  html[dir="ltr"] body.ad-menu-open .ad-side { transform: none; }
+  html[dir="ltr"] .dash-side { transform: translateX(-100%); }
+  html[dir="ltr"] body.dash-menu-open .dash-side { transform: none; }
 }
