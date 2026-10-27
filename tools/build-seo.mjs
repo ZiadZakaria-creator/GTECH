@@ -567,6 +567,10 @@ try {
   process.exit(1);
 }
 writeFileSync(join(OUT, "sitemap.xml"), sitemap(entries));
+// robots.txt بيشتغل من جذر الدومين بس، فبنعمله لما الموقع على دومين لوحده (مش فولدر جوه github.io)
+if (new URL(SITE).pathname === "/") {
+  writeFileSync(join(OUT, "robots.txt"), `User-agent: *\nAllow: /\nDisallow: /admin/\n\nSitemap: ${SITE}sitemap.xml\n`);
+}
 writeFileSync(join(OUT, "merchant-feed.xml"), `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
   <channel>
