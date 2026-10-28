@@ -5,7 +5,7 @@
   "description": "ماوسات وكيبوردات وسماعات جيمنج وإكسسوارات كمبيوتر أصلية — توصيل القاهرة والجيزة",
   "lang": "ar",
   "dir": "rtl",
-  "start_url": "./index.html?source=app",
+  "start_url": "./?source=app",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",

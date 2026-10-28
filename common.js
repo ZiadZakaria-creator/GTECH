@@ -427,7 +427,7 @@ async function logout() {
   user = null;
   store.set("gtech-user", null);
   try { sessionStorage.setItem("gtech-logged-out", "1"); } catch {}
-  location.replace("index.html");
+  location.replace("./");
 }
 try {
   if (sessionStorage.getItem("gtech-logged-out")) {
@@ -744,8 +744,8 @@ $("#newsletterForm")?.addEventListener("submit", (e) => {
   const onHome = page === "index.html" && !document.documentElement.dataset.cat;
   const ico = (d) => `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
   const items = [
-    { key: "home", href: "index.html", label: "الرئيسية", icon: ico('<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/>'), active: onHome },
-    { key: "cats", href: "index.html#categories", label: "الأقسام", icon: ico('<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>'), active: !!document.documentElement.dataset.cat },
+    { key: "home", href: "./", label: "الرئيسية", icon: ico('<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/>'), active: onHome },
+    { key: "cats", href: "./#categories", label: "الأقسام", icon: ico('<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>'), active: !!document.documentElement.dataset.cat },
     { key: "setup", href: "setup.html", label: "جهّز سيتك", icon: ico('<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8"/><path d="M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01M8 19h.01M12 19h.01M16 19h.01"/>'), active: page === "setup.html" },
   ];
   document.body.insertAdjacentHTML("beforeend", `

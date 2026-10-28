@@ -27,7 +27,7 @@ function notFound() {
       <span>🔍</span>
       <h1>المنتج ده مش موجود</h1>
       <p>ممكن يكون الرابط غلط أو المنتج اتشال من المتجر.</p>
-      <a href="index.html#products" class="btn btn--primary">تصفح المنتجات</a>
+      <a href="./#products" class="btn btn--primary">تصفح المنتجات</a>
     </div>`;
   renderRelated(shopProducts().slice(0, 4));
 }
@@ -61,8 +61,8 @@ function renderDetail(p) {
   }
 
   $("#breadcrumb").innerHTML = `
-    <a href="index.html">الرئيسية</a><span>›</span>
-    <a href="index.html?cat=${p.cat}#products">${categoryLabel(p.cat)}</a><span>›</span>
+    <a href="./">الرئيسية</a><span>›</span>
+    <a href="./?cat=${p.cat}#products">${categoryLabel(p.cat)}</a><span>›</span>
     <b>${esc(p.name)}</b>`;
 
   const optionsHtml = Object.entries(p.options).filter(([, values]) => values?.length).map(([label, values]) => `
@@ -89,7 +89,7 @@ function renderDetail(p) {
       </div>
 
       <div class="pd__info">
-        <a href="index.html?q=${encodeURIComponent(p.brand)}" class="product__brand">${esc(p.brand)}</a>
+        <a href="./?q=${encodeURIComponent(p.brand)}" class="product__brand">${esc(p.brand)}</a>
         <h1>${esc(p.name)}</h1>
         <div class="pd__meta">
           <span id="pdRating"></span>
@@ -102,7 +102,7 @@ function renderDetail(p) {
         </div>
         ${(() => {
           const b = typeof BUNDLES !== "undefined" && BUNDLES.find((x) => x.items.includes(p.id) && bundleAvailable(x));
-          return b ? `<a class="pd__bundle" href="index.html#bundles">🎁 موجود في <b>${b.name}</b> — اشتريه مع السيت أب ووفّر ${fmt(bundleFull(b) - bundlePrice(b))}</a>` : "";
+          return b ? `<a class="pd__bundle" href="./#bundles">🎁 موجود في <b>${b.name}</b> — اشتريه مع السيت أب ووفّر ${fmt(bundleFull(b) - bundlePrice(b))}</a>` : "";
         })()}
         <p class="pd__install">💳 <b>التقسيط هيبقى متاح قريباً</b> على GTECH MASR — تابعنا</p>
 

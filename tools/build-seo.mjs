@@ -262,7 +262,7 @@ function productPage(template, p, images, reviews = []) {
     <div class="container seo-pd">
       ${images[0] ? `<img src="${esc(images[0])}" alt="${esc(p.name)}" width="600" height="600" />` : ""}
       <div>
-        <p class="seo-pd__crumbs"><a href="index.html">الرئيسية</a> › <a href="${CATEGORIES[p.cat] ? `c/${esc(p.cat)}.html` : `index.html?cat=${esc(p.cat)}`}#products">${esc(cat)}</a></p>
+        <p class="seo-pd__crumbs"><a href="./">الرئيسية</a> › <a href="${CATEGORIES[p.cat] ? `c/${esc(p.cat)}.html` : `./?cat=${esc(p.cat)}`}#products">${esc(cat)}</a></p>
         <h1>${esc(p.name)}</h1>
         <p class="seo-pd__price"><b>${price(p.price)} ج.م</b>${p.old ? ` <s>${price(p.old)} ج.م</s>` : ""} — ${inStock ? "متوفر" : "نفد من المخزون"}</p>
         ${p.brand ? `<p>الماركة: ${esc(p.brand)}</p>` : ""}
@@ -304,7 +304,7 @@ function productLinks(list) {
     <details>
       <summary>كل منتجات GTECH MASR (${list.length})</summary>
       ${cats.map((c) => `<div class="all-links__cat">
-        <h3><a href="${CATEGORIES[c] ? `c/${esc(c)}.html` : `index.html?cat=${esc(c)}`}#products">${esc(CATEGORIES[c] || "منتجات تانية")}</a></h3>
+        <h3><a href="${CATEGORIES[c] ? `c/${esc(c)}.html` : `./?cat=${esc(c)}`}#products">${esc(CATEGORIES[c] || "منتجات تانية")}</a></h3>
         <ul>${groups[c].map((p) => `<li><a href="p/${p.id}.html">${esc(p.name)}</a></li>`).join("")}</ul>
       </div>`).join("\n      ")}
     </details>
@@ -442,7 +442,7 @@ function contentPages(pageTemplate, list, imagesById) {
   ${[crumbs, ...ld].map(jsonLd).join("\n  ")}`;
     const main = `<main id="main" tabindex="-1">
     <div class="container">
-      <nav class="breadcrumb" aria-label="مسار التصفح"><a href="index.html">الرئيسية</a><span>›</span><b>${esc(crumb)}</b></nav>
+      <nav class="breadcrumb" aria-label="مسار التصفح"><a href="./">الرئيسية</a><span>›</span><b>${esc(crumb)}</b></nav>
     </div>
     <section class="section section--page">
       <article class="container cp" data-no-i18n>

@@ -112,7 +112,7 @@ function renderFilterPanel(list) {
 // ============ شرايط المنتجات ============
 // أول ما الصفحة تفتح (من غير قسم ولا بحث ولا فلتر) بتظهر شرايط بتتسحب بدل شبكة كل المنتجات
 let showAll = params.has("cat") || params.has("q") || params.has("max");
-// لينك مباشر لصفحة "تحت سعر معين": index.html?max=500#products
+// لينك مباشر لصفحة "تحت سعر معين": ./?max=500#products
 const BUDGET = 500;
 if (params.has("max")) { filters.max = String(Number(toLatinDigits(params.get("max"))) || BUDGET); filters.sort = "price-asc"; }
 const SHELF_MAX = 10;

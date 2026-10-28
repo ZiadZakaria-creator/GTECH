@@ -101,11 +101,11 @@ function buildCustomers() {
 function customerWhatsApp(c) {
   const hi = `أهلاً${c.name ? " " + c.name.split(" ")[0] : ""} 👋 معاك GTECH MASR`;
   const text = c.status === "buyer"
-    ? `${hi}\nشكراً إنك اشتريت مننا قبل كده 🙏\nنزلنا منتجات وعروض جديدة، شوفها من هنا 👇\n${siteUrl("index.html")}`
+    ? `${hi}\nشكراً إنك اشتريت مننا قبل كده 🙏\nنزلنا منتجات وعروض جديدة، شوفها من هنا 👇\n${siteUrl("./")}`
     : c.status === "cart"
       ? `${hi}\nلاحظنا إنك سبت منتجات في السلة:\n${c.cart.items.map((i) => `• ${i.name}${i.qty > 1 ? ` × ${i.qty}` : ""}`).join("\n")}\nالإجمالي: ${egp(c.cart.total)}\n\nتقدر تكمّل طلبك في دقيقة من هنا 👇\n${cartLink(c.cart)}`
-      : PROMO_CODES_ON ? `${hi}\nشكراً إنك اشتركت في عروضنا 🎁\nكود خصمك 10% على أول أوردر: ${LEAD_CODE_ADMIN}\n\nتقدر تتسوق من هنا 👇\n${siteUrl("index.html")}`
-      : `${hi}\nشكراً إنك اشتركت في عروضنا 🎁\nشوف أحدث المنتجات والعروض من هنا 👇\n${siteUrl("index.html")}`;
+      : PROMO_CODES_ON ? `${hi}\nشكراً إنك اشتركت في عروضنا 🎁\nكود خصمك 10% على أول أوردر: ${LEAD_CODE_ADMIN}\n\nتقدر تتسوق من هنا 👇\n${siteUrl("./")}`
+      : `${hi}\nشكراً إنك اشتركت في عروضنا 🎁\nشوف أحدث المنتجات والعروض من هنا 👇\n${siteUrl("./")}`;
   return waLink(text, "20" + c.phone.slice(1));
 }
 
@@ -250,7 +250,7 @@ async function campCardUpdate() {
 function campDeals() {
   const list = shopProducts().filter((p) => inStock(p) && p.old > p.price).sort((a, b) => discount(b) - discount(a)).slice(0, 4);
   if (!list.length) return "";
-  return `أهلاً {name} 👋 معاك GTECH MASR\nأقوى عروضنا دلوقتي 🔥\n${list.map((p) => `• ${p.name} — ${pPrice(p.price)} بدل ${pPrice(p.old)}`).join("\n")}\n\n💵 الدفع عند الاستلام | 🚚 القاهرة والجيزة\nاطلب من هنا 👇\n${siteUrl("index.html")}`;
+  return `أهلاً {name} 👋 معاك GTECH MASR\nأقوى عروضنا دلوقتي 🔥\n${list.map((p) => `• ${p.name} — ${pPrice(p.price)} بدل ${pPrice(p.old)}`).join("\n")}\n\n💵 الدفع عند الاستلام | 🚚 القاهرة والجيزة\nاطلب من هنا 👇\n${siteUrl("./")}`;
 }
 function campProductText(p) {
   if (!p) return "";
