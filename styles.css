@@ -175,10 +175,10 @@ h1, .section h2, .shelf__head h3, .how__card h2, .category h3, .spot__price b, .
 
 .hero__visual { position: relative; height: 520px; display: grid; place-items: center; }
 /* مسرح المنتجات: المنتج على منصة منوّرة بلون قسمه، واسم القسم بخط كبير وراه */
-.stage { --cc: #22c55e; isolation: isolate; }
+.stage { --cc: #a78bfa; isolation: isolate; container-type: inline-size; }
 .stage__word {
   position: absolute; top: 6%; left: 50%; transform: translateX(-50%); z-index: -1; direction: ltr; white-space: nowrap;
-  font: 900 clamp(4rem, 9vw, 7.6rem)/1 "Big Shoulders Display", "Alexandria", system-ui, sans-serif; letter-spacing: .02em;
+  font: 900 min(7.6rem, calc(118cqi / var(--wlen, 6)))/1 "Big Shoulders Display", "Alexandria", system-ui, sans-serif; letter-spacing: .02em;
   color: transparent; -webkit-text-stroke: 1.5px color-mix(in oklab, var(--cc) 70%, transparent);
   background: linear-gradient(180deg, color-mix(in oklab, var(--cc) 34%, transparent), transparent 85%); -webkit-background-clip: text; background-clip: text;
   transition: -webkit-text-stroke-color .5s;
@@ -202,14 +202,17 @@ h1, .section h2, .shelf__head h3, .how__card h2, .category h3, .spot__price b, .
   box-shadow: 0 0 0 1px color-mix(in oklab, var(--cc) 35%, transparent), 0 0 60px -10px var(--cc);
   transition: background .6s, box-shadow .6s;
 }
-.stage__items { position: absolute; inset: 15% 14% 24% 26%; }
+.stage__items { position: absolute; inset: 15% 14% 24% 26%; z-index: 1; }
+.stage__waves { position: absolute; left: -6%; top: 30%; height: 40%; width: 112%; pointer-events: none; }
 .stage__img {
   position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0;
   transform: translateY(46px) scale(.8) rotate(8deg); filter: drop-shadow(0 34px 30px rgba(0,0,0,.55));
   transition: opacity .5s, transform .8s cubic-bezier(.2,.9,.25,1.15);
 }
 .stage__img--keyboards { inset: 0 -14%; width: 128%; }
-.stage__img.is-active { opacity: 1; transform: translateY(0) scale(1) rotate(-6deg); animation: stageFloat 4.2s ease-in-out .8s infinite; }
+.stage__img.is-active { opacity: 1; transform: translateY(0) scale(1) rotate(-6deg); animation: stageTurn .95s cubic-bezier(.2,.8,.2,1) both, stageFloat 4.2s ease-in-out .95s infinite; }
+/* المنتج بيلف وهو داخل (من الجنب لقدام) زي عروض الماركات */
+@keyframes stageTurn { from { opacity: 0; transform: perspective(900px) translateY(30px) rotateY(78deg) scale(.82) rotate(0deg); } 60% { opacity: 1; } to { opacity: 1; transform: perspective(900px) translateY(0) rotateY(0) scale(1) rotate(-6deg); } }
 @keyframes stageFloat { 50% { transform: translateY(-12px) scale(1) rotate(-4deg); } }
 .stage__spark { position: absolute; width: 6px; height: 6px; border-radius: 50%; background: var(--cc); box-shadow: 0 0 14px var(--cc); opacity: .8; animation: stageSpark 5s ease-in-out infinite; }
 .stage__spark:nth-of-type(1) { top: 22%; right: 12%; }
@@ -2091,6 +2094,7 @@ main:focus { outline: none; }
 @media (prefers-reduced-motion: reduce) { .header .search input { transition: none; } }
 @media (prefers-reduced-motion: reduce) {
   .stage__ring::after, .stage__spark, .stage__img.is-active { animation: none; }
+  .stage__waves { display: none; }
   .stage__img { transition: opacity .3s; }
 }
 

@@ -35,7 +35,7 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="GTECH MASR" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <link rel="stylesheet" href="styles.css?v=84" />
+  <link rel="stylesheet" href="styles.css?v=85" />
   <link rel="icon" href="favicon.ico" sizes="48x48" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
 </head>
@@ -118,13 +118,14 @@
         </div>
 
         <!-- مسرح المنتجات: منتج حقيقي من كل قسم بيتبدّل (home.js ← renderStage) -->
-        <div class="hero__visual stage" id="heroStage" style="--cc:#22c55e">
-          <span class="stage__word" id="stageWord" aria-hidden="true">MOUSE</span>
+        <div class="hero__visual stage" id="heroStage" style="--cc:#a78bfa">
+          <span class="stage__word" id="stageWord" aria-hidden="true" style="--wlen:6">HYPERX</span>
           <span class="stage__ring" aria-hidden="true"></span>
           <span class="stage__floor" aria-hidden="true"></span>
+          <canvas class="stage__waves" id="stageWaves" aria-hidden="true"></canvas>
           <i class="stage__spark" aria-hidden="true"></i><i class="stage__spark" aria-hidden="true"></i><i class="stage__spark" aria-hidden="true"></i>
           <div class="stage__items" id="stageItems">
-            <img class="stage__img is-active" src="images/float/27.webp" alt="" width="315" height="520" fetchpriority="high" />
+            <img class="stage__img is-active" src="images/float/49.webp" alt="" width="520" height="499" fetchpriority="high" />
           </div>
           <a class="stage__tag" id="stageTag" hidden></a>
           <div class="stage__thumbs" id="stageThumbs" role="group" aria-label="اختار منتج"></div>

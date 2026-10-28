@@ -634,18 +634,19 @@ document.addEventListener("catalogloaded", renderTikTokLanding);
 renderTikTokLanding();
 
 // ============ مسرح المنتجات في الواجهة ============
-// منتج متاح من كل قسم (من اللي ليهم صورة مقصوصة) بيطلع على المنصة واحد ورا التاني، ووراه اسم القسم وكارت بسعره الحقيقي
-const STAGE_PICKS = [["mice", "MOUSE"], ["controllers", "CONTROLLER"], ["audio", "HEADSET"], ["keyboards", "KEYBOARD"], ["earphones", "EARBUDS"], ["speakers", "SPEAKER"]];
+// منتج متاح من كل قسم (من اللي ليهم صورة مقصوصة) بيلف وهو داخل على المنصة واحد ورا التاني،
+// ووراه اسم الماركة بخط ضخم وموجات صوت بلون القسم، وكارت بسعره الحقيقي. السماعة أول واحدة.
+const STAGE_PICKS = ["audio", "mice", "controllers", "keyboards", "earphones", "speakers"];
 const STAGE_MS = 4200;
-let stageItems = [], stageIndex = 0, stageTimer = null, stagePaused = false, stageSig = "";
+let stageItems = [], stageIndex = 0, stageTimer = null, stagePaused = false, stageSig = "", stageColor = "#a78bfa";
 
 function renderStage() {
   const box = $("#heroStage");
   if (!box) return;
   const live = shopProducts().filter((p) => inStock(p) && floatsFor(p));
-  const items = STAGE_PICKS.map(([cat, word]) => {
+  const items = STAGE_PICKS.map((cat) => {
     const p = live.filter((x) => x.cat === cat).sort((a, b) => discount(b) - discount(a) || a.price - b.price)[0];
-    return p && { p, word };
+    return p && { p, word: String(p.brand || "").toUpperCase() };
   }).filter(Boolean);
   const sig = items.map(({ p }) => `${p.id}:${p.price}:${p.old}`).join("|");
   if (!items.length || sig === stageSig) return;
@@ -663,11 +664,13 @@ function showStage(i) {
   if (!box || !stageItems.length) return;
   stageIndex = (i + stageItems.length) % stageItems.length;
   const { p, word } = stageItems[stageIndex];
-  box.style.setProperty("--cc", CATEGORY_COLORS[p.cat] || "#0a84ff");
+  stageColor = CATEGORY_COLORS[p.cat] || "#0a84ff";
+  box.style.setProperty("--cc", stageColor);
   box.querySelectorAll(".stage__img").forEach((img, n) => img.classList.toggle("is-active", n === stageIndex));
   box.querySelectorAll(".stage__thumb").forEach((b, n) => b.setAttribute("aria-pressed", n === stageIndex));
   const w = $("#stageWord");
   w.textContent = word;
+  w.style.setProperty("--wlen", Math.max(word.length, 5));
   w.classList.remove("is-in"); void w.offsetWidth; w.classList.add("is-in");
   const off = discount(p);
   const tag = $("#stageTag");
@@ -695,6 +698,54 @@ stageBox?.addEventListener("pointerleave", () => { stagePaused = false; showStag
 document.addEventListener("productschange", renderStage);
 document.addEventListener("catalogloaded", renderStage);
 renderStage();
+
+// موجات الصوت ورا المنتج: خطوط جيبية بلون القسم، عالية في النص وبتتلاشى عند الأطراف.
+// بتترسم بس والمسرح ظاهر على الشاشة، ومش بتشتغل خالص مع "تقليل الحركة"
+(function stageWaves() {
+  const cv = $("#stageWaves");
+  if (!cv || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const ctx = cv.getContext("2d");
+  let w = 0, h = 0, raf = 0, onScreen = true, t = 0;
+  const size = () => {
+    const r = cv.getBoundingClientRect(), d = Math.min(devicePixelRatio || 1, 2);
+    w = r.width; h = r.height;
+    cv.width = Math.round(w * d); cv.height = Math.round(h * d);
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+  };
+  const LINES = 9;
+  const draw = () => {
+    t += 0.018;
+    ctx.clearRect(0, 0, w, h);
+    ctx.globalCompositeOperation = "lighter";
+    const g = ctx.createLinearGradient(0, 0, w, 0);
+    g.addColorStop(0, "rgba(0,0,0,0)");
+    g.addColorStop(0.25, stageColor);
+    g.addColorStop(0.5, "#22e4ff");
+    g.addColorStop(0.75, "#8a5cff");
+    g.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.strokeStyle = g;
+    ctx.shadowColor = stageColor;
+    ctx.shadowBlur = 8;
+    for (let k = 0; k < LINES; k++) {
+      const amp = h * (0.3 + 0.08 * Math.sin(t * 0.7 + k)), freq = 0.011 + k * 0.0011, ph = t * (1.4 + k * 0.12) + k * 0.9;
+      ctx.globalAlpha = 0.55 + 0.12 * (k % 3);
+      ctx.lineWidth = k % 3 ? 1.3 : 2.2;
+      ctx.beginPath();
+      for (let x = 0; x <= w; x += 4) {
+        const env = Math.sin(Math.PI * x / w) ** 2;
+        const y = h / 2 + env * amp * Math.sin(x * freq + ph);
+        x ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+      }
+      ctx.stroke();
+    }
+    raf = onScreen && !document.hidden ? requestAnimationFrame(draw) : 0;
+  };
+  const run = () => { if (!raf && onScreen && !document.hidden) raf = requestAnimationFrame(draw); };
+  size();
+  addEventListener("resize", size);
+  document.addEventListener("visibilitychange", run);
+  new IntersectionObserver(([e]) => { onScreen = e.isIntersecting; run(); }).observe(cv);
+})();
 
 // لو تحميل المنتجات فشل (من غير ما تتغير) نحدّث الرسالة بدل "جاري التحميل"
 document.addEventListener("catalogloaded", () => { renderProducts(); renderCategories(); renderMiniOffers(); });
