@@ -33,7 +33,7 @@ jobs:
       - name: Prepare site files
         run: |
           mkdir _site
-          cp *.html *.css *.js *.webmanifest _site/
+          cp *.html *.css *.js *.webmanifest favicon.ico _site/
           cp -r icons admin _site/
           [ -d images ] && cp -r images _site/ || true
           [ -d videos ] && cp -r videos _site/ || true
