@@ -412,6 +412,14 @@ function syncHeaderHeight() { document.documentElement.style.setProperty("--hdr"
 syncHeaderHeight();
 addEventListener("resize", () => { syncHeaderHeight(); moveInk(false); updateCatArrows(); }, { passive: true });
 document.fonts?.ready.then(() => moveInk(false));
+// المؤشر لازم يفضل فوق التاب بالظبط: عرض التاب بيتغير لما خط الأرقام يحمّل متأخر أو العدد يتحدّث،
+// ومكانه بيتزحزح لما أسهم الشريط تظهر أو تختفي (عرض الشريط نفسه بيتغير)
+if ("ResizeObserver" in window) {
+  const tabSizes = new ResizeObserver(() => moveInk(false));
+  const watch = () => { tabSizes.disconnect(); tabSizes.observe(tabsTrack); tabsTrack.querySelectorAll(".tab").forEach((t) => tabSizes.observe(t)); };
+  new MutationObserver(watch).observe(tabsTrack, { childList: true });
+  watch();
+}
 // لما الشريط يثبت فوق بياخد شكل أوضح
 addEventListener("scroll", () => {
   const stuck = catBar.getBoundingClientRect().top <= parseFloat(getComputedStyle(catBar).top) + 1 && scrollY > 200;
