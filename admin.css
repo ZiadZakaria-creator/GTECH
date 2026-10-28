@@ -878,3 +878,15 @@ body.admin .btn:focus-visible, body.admin .icon-btn:focus-visible, body.admin .o
   html[dir="ltr"] .dash-side { transform: translateX(-100%); }
   html[dir="ltr"] body.dash-menu-open .dash-side { transform: none; }
 }
+
+/* طلب من واتساب */
+.mo-box { width: min(640px, 100%); }
+.mo-box .fields { grid-template-columns: 1fr 1fr; gap: 12px; }
+.mo-items { display: grid; gap: 8px; }
+.mo-item { display: grid; grid-template-columns: 1fr 76px 36px; gap: 8px; align-items: center; }
+.mo-item select, .mo-item input { width: 100%; font: inherit; padding: 10px; border-radius: 12px; background: var(--bg-2); color: inherit; border: 1px solid var(--border); }
+.mo-sum { display: grid; gap: 4px; padding: 12px 14px; border-radius: 14px; background: var(--bg-2); border: 1px solid var(--border); font-size: .92rem; }
+.mo-sum div { display: flex; justify-content: space-between; gap: 10px; }
+.mo-sum b { font-size: 1.05rem; }
+.mo-sum .mo-err { color: #ff6b81; }
+@media (max-width: 600px) { .mo-box .fields { grid-template-columns: 1fr; } }

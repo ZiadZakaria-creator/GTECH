@@ -24,7 +24,7 @@
   <meta name="apple-mobile-web-app-title" content="GTECH MASR Admin" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="admin.css?v=14" />
+  <link rel="stylesheet" href="admin.css?v=15" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a84ff'/><text x='32' y='44' font-size='36' font-family='Arial' font-weight='900' fill='white' text-anchor='middle'>G</text></svg>" />
 </head>
 <body class="admin">
@@ -160,6 +160,7 @@
               <option value="30">آخر 30 يوم</option>
             </select>
             <input type="search" id="searchBox" placeholder="بحث برقم الطلب، الاسم، الموبايل..." />
+            <button class="btn btn--primary btn--sm" id="manualOrderBtn">➕ طلب من واتساب</button>
             <button class="btn btn--ghost btn--sm" id="exportBtn">⬇ تصدير Excel</button>
           </div>
         </div>
@@ -452,6 +453,31 @@
     </div>
   </div>
 
+  <!-- طلب من واتساب: الأدمن بيسجّل طلب العميل بنفسه عشان يظهر في الطلبات والإحصائيات (admin-manual-order.js) -->
+  <div class="modal" id="moModal" hidden role="dialog" aria-modal="true" aria-labelledby="moTitle">
+    <form class="modal__box card-box excel-box mo-box" id="moForm" novalidate>
+      <button type="button" class="icon-btn modal__close" data-close-mo aria-label="إغلاق">✕</button>
+      <h3 id="moTitle">➕ طلب من واتساب</h3>
+      <p class="muted">اكتب بيانات العميل زي ما بعتها، والطلب هيتسجّل في الطلبات زي طلبات الموقع بالظبط.</p>
+      <div class="fields">
+        <label class="field"><span>اسم العميل</span><input name="name" required autocomplete="off" /></label>
+        <label class="field"><span>رقم الموبايل</span><input name="phone" inputmode="tel" required autocomplete="off" placeholder="01xxxxxxxxx" /></label>
+        <label class="field"><span>المحافظة</span><select name="gov" required id="moGov"></select></label>
+        <label class="field"><span>المدينة / المنطقة</span><input name="city" required autocomplete="off" /></label>
+        <label class="field field--full"><span>العنوان بالتفصيل</span><input name="address" required autocomplete="off" placeholder="الشارع، رقم العمارة، الدور، علامة مميزة" /></label>
+        <label class="field field--full"><span>ملاحظات (اختياري)</span><input name="notes" autocomplete="off" /></label>
+      </div>
+      <h4>المنتجات</h4>
+      <div id="moItems" class="mo-items"></div>
+      <button type="button" class="btn btn--ghost btn--sm" id="moAddItem">+ منتج تاني</button>
+      <div class="mo-sum" id="moSum"></div>
+      <div class="excel-actions">
+        <button type="button" class="btn btn--ghost" data-close-mo>إلغاء</button>
+        <button type="submit" class="btn btn--primary" id="moSave">تسجيل الطلب</button>
+      </div>
+    </form>
+  </div>
+
   <!-- حملة عروض: رسالة واحدة لكل العملاء اللي ظاهرين بالفلتر، واحد ورا التاني -->
   <div class="modal" id="campModal" hidden role="dialog" aria-modal="true" aria-labelledby="campTitle">
     <div class="modal__box card-box excel-box camp-box">
@@ -540,5 +566,6 @@
   <script src="admin-shipping.js"></script>
   <script src="admin-reviews.js"></script>
   <script src="admin-overview.js"></script>
+  <script src="admin-manual-order.js"></script>
 </body>
 </html>
