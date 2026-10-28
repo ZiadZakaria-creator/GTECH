@@ -711,7 +711,7 @@ const heroFx = (() => {
   const off = { reset() {} };
   if (!cv || matchMedia("(prefers-reduced-motion: reduce)").matches) return off;
   const ctx = cv.getContext("2d");
-  let w = 0, h = 0, cx = 0, cy = 0, sw = 0, raf = 0, onScreen = true, t = 0, born = 0, parts = [];
+  let w = 0, h = 0, cx = 0, cy = 0, sw = 0, sh = 0, raf = 0, onScreen = true, t = 0, born = 0, parts = [];
   const rnd = (a, b) => a + Math.random() * (b - a);
   const size = () => {
     const r = cv.getBoundingClientRect(), d = Math.min(devicePixelRatio || 1, 2);
@@ -719,14 +719,14 @@ const heroFx = (() => {
     cv.width = Math.round(w * d); cv.height = Math.round(h * d);
     ctx.setTransform(d, 0, 0, d, 0, 0);
     const s = $("#hbItems").getBoundingClientRect();
-    cx = s.left - r.left + s.width / 2; cy = s.top - r.top + s.height / 2; sw = s.width;
+    cx = s.left - r.left + s.width / 2; cy = s.top - r.top + s.height / 2; sw = s.width; sh = s.height;
   };
   const GLYPHS = [["tri", "#4fd1c5"], ["circ", "#ff5c7a"], ["cross", "#6ea8ff"], ["sq", "#ff7ad9"]];
   const seed = () => {
     born = t;
     parts = stageCat === "mice" ? Array.from({ length: 40 }, () => ({ x: rnd(0, cx + sw), y: cy + rnd(-.3, .3) * h, len: rnd(80, 260), v: rnd(7, 18), a: rnd(.45, 1) }))
-      : stageCat === "controllers" ? Array.from({ length: 18 }, (_, i) => ({ x: rnd(0, w), y: rnd(0, h), s: rnd(12, 30), v: rnd(.25, .8), r: rnd(0, 6), vr: rnd(-.02, .02), g: GLYPHS[i % 4], a: rnd(.3, .7) }))
-      : Array.from({ length: 26 }, () => ({ x: rnd(0, w), y: rnd(0, h), r: rnd(1, 2.6), v: rnd(.15, .5), a: rnd(.2, .7) }));
+      : stageCat === "controllers" ? Array.from({ length: 16 }, (_, i) => ({ x: cx + rnd(-.6, .6) * sw, y: cy + rnd(-.6, .6) * sh, s: rnd(12, 30), v: rnd(.25, .8), r: rnd(0, 6), vr: rnd(-.02, .02), g: GLYPHS[i % 4], a: rnd(.3, .7) }))
+      : Array.from({ length: 22 }, () => ({ x: cx + rnd(-.6, .6) * sw, y: cy + rnd(-.6, .6) * sh, r: rnd(1, 2.6), v: rnd(.15, .5), a: rnd(.2, .7) }));
   };
   const grad = (a = 0, b = w) => {
     const g = ctx.createLinearGradient(a, 0, b, 0);
@@ -761,8 +761,8 @@ const heroFx = (() => {
     controllers() {
       ctx.lineWidth = 2.2;
       for (const p of parts) {
-        p.y -= p.v; p.r += p.vr; if (p.y < -40) { p.y = h + 40; p.x = rnd(0, w); }
-        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.globalAlpha = p.a; ctx.strokeStyle = p.g[1]; ctx.shadowColor = p.g[1]; ctx.shadowBlur = 10;
+        p.y -= p.v; p.r += p.vr; if (p.y < cy - sh * .62) { p.y = cy + sh * .6; p.x = cx + rnd(-.6, .6) * sw; }
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.globalAlpha *= p.a * Math.max(0, 1 - Math.abs(p.y - cy) / (sh * .62)); ctx.strokeStyle = p.g[1]; ctx.shadowColor = p.g[1]; ctx.shadowBlur = 10;
         const s = p.s / 2; ctx.beginPath();
         if (p.g[0] === "tri") { ctx.moveTo(0, -s); ctx.lineTo(s * .9, s * .7); ctx.lineTo(-s * .9, s * .7); ctx.closePath(); }
         else if (p.g[0] === "circ") ctx.arc(0, 0, s * .8, 0, Math.PI * 2);
@@ -808,7 +808,7 @@ const heroFx = (() => {
     // أي قسم تاني: نقط نور طايرة
     other() {
       ctx.fillStyle = stageColor; ctx.shadowColor = stageColor; ctx.shadowBlur = 10;
-      for (const p of parts) { p.y -= p.v; if (p.y < -10) { p.y = h + 10; p.x = rnd(0, w); } ctx.globalAlpha = p.a; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill(); }
+      for (const p of parts) { p.y -= p.v; if (p.y < cy - sh * .62) { p.y = cy + sh * .6; p.x = cx + rnd(-.6, .6) * sw; } ctx.globalAlpha = p.a; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill(); }
     },
   };
   const draw = () => {

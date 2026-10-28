@@ -1902,10 +1902,10 @@ h1, h2, h3 { text-wrap: balance; }
 }
 
 /* كارت "جهّز سيتك" في الرئيسية */
-.setup-promo { margin-top: -40px; position: relative; z-index: 2; padding-block: 0 4px; }
+.setup-promo { position: relative; z-index: 2; padding-block: 0 4px; }
 .setup-promo + .features { margin-top: 12px; }
 /* اطلب في 3 خطوات (مش .steps — دي بتاعة شريط خطوات الدفع) */
-.how-order { padding: 12px 0 8px; }
+.how-order { padding: 18px 0 8px; }
 .how__card { padding: 28px 28px 22px; border-radius: calc(var(--radius) + 6px); border: 1px solid var(--border);
   background: radial-gradient(90% 120% at 0% 0%, rgba(10,132,255,.12), transparent 60%), var(--surface); }
 .how__card h2 { line-height: 1.4; font-size: clamp(1.4rem, 2.6vw, 1.9rem); margin-bottom: 18px; }
@@ -2047,7 +2047,7 @@ main:focus { outline: none; }
 /* ============ البانر الرئيسي ============
    منتج من كل قسم بيتعرض كبير، وكل قسم ليه دخلة وتأثير خلفية خاص بيه (home.js ← renderStage / heroFx):
    السماعات موجات صوت، الماوسات خطوط سرعة، الدراعات رموز أزرار، الكيبوردات زراير RGB، الإيربودز دواير صوت، السبيكرات نبض بيز */
-.hb { padding: 26px 0 40px; }
+.hb { padding: 24px 0 18px; }
 .hb__card {
   --cc: #a78bfa; position: relative; isolation: isolate; overflow: hidden; container-type: inline-size;
   min-height: 540px; border-radius: 30px; border: 1px solid color-mix(in oklab, var(--cc) 30%, var(--border));
@@ -2063,13 +2063,13 @@ main:focus { outline: none; }
 .hb__fx { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
 .hb__word {
   position: absolute; z-index: 0; left: 30%; top: 50%; translate: -50% -58%; direction: ltr; white-space: nowrap; pointer-events: none;
-  font: 900 min(12rem, calc(100cqi / var(--wlen, 6)))/1 "Big Shoulders Display", "Alexandria", system-ui, sans-serif; letter-spacing: .02em;
+  font: 900 min(11rem, calc(78cqi / var(--wlen, 6)))/1 "Big Shoulders Display", "Alexandria", system-ui, sans-serif; letter-spacing: .02em;
   color: transparent; -webkit-text-stroke: 1.5px color-mix(in oklab, var(--cc) 60%, transparent);
   background: linear-gradient(180deg, color-mix(in oklab, var(--cc) 22%, transparent), transparent 80%); -webkit-background-clip: text; background-clip: text;
 }
 .hb__word.is-in { animation: hbWord .8s cubic-bezier(.2,.8,.2,1) both; }
 @keyframes hbWord { from { opacity: 0; letter-spacing: .25em; filter: blur(8px); } }
-.hb__stage { position: absolute; z-index: 1; left: 4%; top: 8%; width: 52%; height: 74%; }
+.hb__stage { position: absolute; z-index: 1; left: 6%; top: 7%; width: 48%; height: 72%; }
 .hb__floor { position: absolute; z-index: 0; left: 30%; bottom: 13%; width: 40%; height: 46px; translate: -50% 0; border-radius: 50%;
   background: radial-gradient(closest-side, color-mix(in oklab, var(--cc) 55%, transparent), transparent); filter: blur(2px); }
 .hb__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; filter: drop-shadow(0 40px 34px rgba(0,0,0,.6)); transition: opacity .4s; }
@@ -2087,9 +2087,9 @@ main:focus { outline: none; }
 @keyframes hbThump { 0% { opacity: 0; transform: scale(.7); } 40% { opacity: 1; transform: scale(1.08); } 55% { transform: scale(.97); } 70% { transform: scale(1.03); } to { opacity: 1; transform: scale(1); } }
 @keyframes hbFloat { 50% { translate: 0 -12px; } }
 
-.hb__copy { position: absolute; z-index: 2; right: 5%; top: 50%; translate: 0 -50%; width: 40%; display: grid; gap: 14px; text-align: right; color: #fff; }
+.hb__copy { position: absolute; z-index: 2; right: 5%; top: 50%; translate: 0 -50%; width: 38%; display: grid; gap: 14px; text-align: right; color: #fff; }
 .hb__h1 { font-family: "Alexandria", "Cairo", system-ui, sans-serif; font-size: clamp(.95rem, 1.6cqi, 1.1rem); font-weight: 800; color: rgba(255,255,255,.72); margin: 0; }
-.hb__kicker { margin: 0; font-family: "Alexandria", "Cairo", system-ui, sans-serif; font-weight: 900; font-size: clamp(2.2rem, 5.2cqi, 4rem); line-height: 1.25; }
+.hb__kicker { margin: 0; font-family: "Alexandria", "Cairo", system-ui, sans-serif; font-weight: 900; font-size: clamp(2rem, 4.1cqi, 3.2rem); line-height: 1.2; }
 .hb__kicker b { display: block; direction: ltr; text-align: right; color: var(--cc); text-shadow: 0 0 40px color-mix(in oklab, var(--cc) 50%, transparent); transition: color .5s; }
 .hb__kicker.is-in b { animation: hbKick .7s cubic-bezier(.2,.8,.2,1) both; }
 @keyframes hbKick { from { opacity: 0; transform: translateY(14px); } }
@@ -2103,9 +2103,8 @@ main:focus { outline: none; }
 .hb__cta .btn--primary { background: var(--cc); color: #05070f; box-shadow: 0 14px 34px -12px var(--cc); transition: background .5s, box-shadow .5s; }
 .hb__cta .btn--ghost { color: #fff; border-color: rgba(255,255,255,.25); }
 .hb__trust { font-size: .86rem; color: rgba(255,255,255,.75); font-weight: 600; }
-.hb__copy .hero__install { max-width: none; color: #fff; }
 
-.hb__thumbs { position: absolute; z-index: 3; left: 4%; bottom: 22px; display: flex; gap: 8px; }
+.hb__thumbs { position: absolute; z-index: 3; left: 30%; translate: -50% 0; bottom: 20px; display: flex; gap: 8px; }
 .hb__thumb { width: 50px; height: 50px; padding: 6px; border-radius: 14px; cursor: pointer; flex: none; overflow: hidden;
   background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14); transition: transform .2s, border-color .2s, box-shadow .2s; }
 .hb__thumb img { width: 100%; height: 100%; object-fit: contain; }
@@ -2132,8 +2131,7 @@ main:focus { outline: none; }
   .hb__cta { justify-content: center; flex-wrap: nowrap; }
   .hb__cta .btn { flex: 1; padding-inline: 12px; }
   .hb__trust { font-size: .8rem; }
-  .hb__copy .hero__install { display: none; }
-  .hb__thumbs { position: relative; left: auto; bottom: auto; justify-content: center; margin-top: 14px; }
+  .hb__thumbs { position: relative; left: auto; bottom: auto; translate: none; justify-content: center; margin-top: 14px; }
   .hb__thumb { width: 44px; height: 44px; }
 }
 @media (prefers-reduced-motion: reduce) {
