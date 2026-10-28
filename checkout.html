@@ -20,7 +20,7 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="GTECH MASR" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <link rel="stylesheet" href="styles.css?v=87" />
+  <link rel="stylesheet" href="styles.css?v=88" />
   <link rel="icon" href="favicon.ico" sizes="48x48" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
 </head>
@@ -116,6 +116,13 @@
                 <label class="field"><span>المدينة / المنطقة *</span><input name="city" required placeholder="مثال: مدينة نصر" /><em></em></label>
                 <label class="field field--full"><span>العنوان بالتفصيل *</span><input name="address" required minlength="8" autocomplete="street-address" placeholder="الشارع، رقم العمارة، الدور، الشقة" /><em></em></label>
                 <label class="field field--full"><span>ملاحظات للمندوب (اختياري)</span><textarea name="notes" rows="2" placeholder="مثال: علامة مميزة جنب العنوان"></textarea></label>
+                <label class="field field--full"><span>عرفتنا منين؟ (اختياري)</span>
+                  <select name="heardFrom">
+                    <option value="">اختار</option>
+                    <option>تيك توك</option><option>فيسبوك</option><option>إنستجرام</option><option>جوجل</option>
+                    <option>واتساب</option><option>صاحب رشّحلنا</option><option>فيسبوك ماركت بليس</option><option>حاجة تانية</option>
+                  </select>
+                </label>
               </div>
             </fieldset>
 

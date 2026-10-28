@@ -104,7 +104,6 @@ function renderDetail(p) {
           const b = typeof BUNDLES !== "undefined" && BUNDLES.find((x) => x.items.includes(p.id) && bundleAvailable(x));
           return b ? `<a class="pd__bundle" href="./#bundles">🎁 موجود في <b>${b.name}</b> — اشتريه مع السيت أب ووفّر ${fmt(bundleFull(b) - bundlePrice(b))}</a>` : "";
         })()}
-        <p class="pd__install">💳 <b>التقسيط هيبقى متاح قريباً</b> على GTECH MASR — تابعنا</p>
 
         <ul class="pd__highlights">
           ${p.highlights.map((h) => `<li>${esc(h)}</li>`).join("")}

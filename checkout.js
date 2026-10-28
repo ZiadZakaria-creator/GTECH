@@ -177,6 +177,7 @@ form.addEventListener("click", (e) => {
 document.addEventListener("userchange", renderSummary);
 
 // ============ إرسال الطلب ============
+const HEARD_FROM = [...form.elements.heardFrom.options].map((o) => o.value).filter(Boolean);
 // شكل الطلب ده هو اللي الداشبورد هيقراه بعدين
 function buildOrder(d, t) {
   return {
@@ -193,6 +194,8 @@ function buildOrder(d, t) {
     payment: isTransfer(d.pay) ? { method: d.pay, label: payLabels[d.pay], status: "pending", to: transferTarget(d.pay) } : { method: d.pay, label: payLabels[d.pay] },
     promo: t.app ? APP_FIRST.code : promo,
     source: typeof orderSource === "function" ? orderSource() : "direct",
+    // إجابة العميل نفسه (المصدر الأوتوماتيك مش بيعرف الترشيح من صاحب أو ماركت بليس)
+    heardFrom: HEARD_FROM.includes(d.heardFrom) ? d.heardFrom : "",
     // الخصم = الباكدج + (أول أوردر أو الكود)، عشان المجموع − الخصم + الشحن = الإجمالي في اللوحة والإيميل
     totals: { subtotal: t.sub, shipping: t.ship, discount: t.disc + t.bundle, total: t.total },
     bundles: bundleDiscounts().map((d) => ({ id: d.id, name: d.name, sets: d.sets, amount: d.amount })),

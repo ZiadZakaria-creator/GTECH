@@ -508,7 +508,9 @@ button.mini-offer { width: 100%; text-align: start; font: inherit; color: inheri
 /* ============ Product page ============ */
 .breadcrumb { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 26px 0 8px; font-size: .92rem; color: var(--muted); }
 .breadcrumb a:hover { color: var(--primary-2); }
-.breadcrumb b { color: var(--text); font-weight: 600; }
+.breadcrumb b { color: var(--text); font-weight: 600; max-width: 46ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* على الموبايل اسم المنتج كان بيظهر مرتين ورا بعض (هنا وفي العنوان الكبير) — المسار يكفيه القسم */
+@media (max-width: 700px) { #breadcrumb b, #breadcrumb span:last-of-type { display: none; } }
 
 .pd { padding: 20px 0 60px; }
 .pd__grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: 56px; align-items: start; }
@@ -556,8 +558,6 @@ button.mini-offer { width: 100%; text-align: start; font: inherit; color: inheri
 .pd__price b { font-size: 2.2rem; font-weight: 900; }
 .pd__price del { color: var(--muted); font-size: 1.1rem; }
 .save { padding: 3px 12px; border-radius: 999px; background: rgba(255,77,109,.14); color: var(--danger); font-weight: 700; font-size: .88rem; }
-.pd__install { color: var(--muted); padding: 12px 16px; border-radius: 12px; background: rgba(10,132,255,.08); border: 1px dashed rgba(10,132,255,.35); }
-.pd__install b { color: var(--text); }
 
 .pd__highlights { display: grid; gap: 8px; margin: 22px 0; }
 .pd__highlights li { position: relative; padding-inline-start: 28px; color: var(--text-2); }

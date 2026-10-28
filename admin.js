@@ -369,6 +369,7 @@ function openOrder(id, show = true) {
       <p>${escapeHtml(a.gov)} — ${escapeHtml(a.city)}</p>
       <p>${escapeHtml(a.street)}</p>
       ${a.notes ? `<p class="od-note">📝 ${escapeHtml(a.notes)}</p>` : ""}
+      ${o.heardFrom ? `<p class="muted">🔎 عرفنا من: <b>${escapeHtml(o.heardFrom)}</b></p>` : ""}
     </section>
 
     ${shipmentSection(o)}
@@ -522,12 +523,12 @@ const promoLabel = (p) => /^REF-/.test(p) ? "🤝 من لينك صاحب" : /^RE
 $("#exportBtn").addEventListener("click", () => {
   const list = visibleOrders();
   if (!list.length) return toast("مفيش طلبات للتصدير");
-  const head = ["رقم الطلب", "التاريخ", "الحالة", "العميل", "الموبايل", "الإيميل", "المحافظة", "المدينة", "العنوان", "ملاحظات", "المنتجات", "عدد القطع", "المجموع الفرعي", "الشحن", "الخصم", "الإجمالي", "الدفع", "طريقة الشحن"];
+  const head = ["رقم الطلب", "التاريخ", "الحالة", "العميل", "الموبايل", "الإيميل", "المحافظة", "المدينة", "العنوان", "ملاحظات", "المنتجات", "عدد القطع", "المجموع الفرعي", "الشحن", "الخصم", "الإجمالي", "الدفع", "طريقة الشحن", "عرفنا منين"];
   const rows = list.map((o) => [
     o.id, new Date(o.createdAt).toLocaleString("en-GB"), ORDER_STATUSES[o.status], o.customer.name, o.customer.phone, o.customer.email,
     o.address.gov, o.address.city, o.address.street, o.address.notes,
     o.items.map((i) => `${i.name}${i.options ? ` (${i.options})` : ""} x${i.qty}`).join(" | "), itemsCount(o),
-    o.totals.subtotal, o.totals.shipping, o.totals.discount, o.totals.total, o.payment.label, o.shipping.label,
+    o.totals.subtotal, o.totals.shipping, o.totals.discount, o.totals.total, o.payment.label, o.shipping.label, o.heardFrom || "",
   ]);
   const csv = [head, ...rows].map((r) => r.map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",")).join("\r\n");
   const a = document.createElement("a");
