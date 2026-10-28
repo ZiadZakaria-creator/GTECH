@@ -599,7 +599,8 @@ startOrderStrip();
 // ============ زوار إعلان تيك توك ============
 // الإعلان بيقول "سيت أب الجيمنج اللاسلكي كامل، اختار اللي يناسبك" ولينكه على الرئيسية،
 // فاللي جاي منه بيلاقي منتجات الإعلان نفسها أول حاجة بدل ما يدوّر عليها
-const TIKTOK_PICKS = [18, 19, 49]; // G309 · Pulsefire Fuse · Cloud II Core
+// G305 أول واحد: فيديو "رأيي بصراحة" عليه هو اللي بيجيب أغلب مشاهدات الحساب
+const TIKTOK_PICKS = [27, 18, 19, 49]; // G305 · G309 · Pulsefire Fuse · Cloud II Core
 const fromTikTok = (() => {
   try {
     if (detectSource() === "tiktok") sessionStorage.setItem("gtech-tt-land", "1");

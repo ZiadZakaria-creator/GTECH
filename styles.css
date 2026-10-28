@@ -2021,7 +2021,7 @@ main:focus { outline: none; }
 .tt-land__eyebrow { display: inline-block; font-weight: 800; font-size: .82rem; padding: 6px 14px; border-radius: 999px; background: rgba(255,0,80,.12); color: #ff3b7a; border: 1px solid rgba(255,0,80,.3); }
 .tt-land__head h2 { font-family: "Alexandria", "Cairo", system-ui, sans-serif; font-size: clamp(1.5rem, 4vw, 2.1rem); margin: 10px 0 4px; }
 .tt-land__head p { color: var(--muted); font-size: .92rem; }
-.tt-land__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.tt-land__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
 .tt-card { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 16px; border-radius: 22px; background: var(--card, rgba(255,255,255,.04)); border: 1px solid color-mix(in oklab, var(--cc) 35%, var(--border)); }
 .tt-card__img { position: relative; display: grid; place-items: center; height: 190px; border-radius: 16px; margin-bottom: 6px;
   background: radial-gradient(closest-side, color-mix(in oklab, var(--cc) 28%, transparent), transparent); }
