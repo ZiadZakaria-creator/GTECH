@@ -35,7 +35,7 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="GTECH MASR" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <link rel="stylesheet" href="styles.css?v=85" />
+  <link rel="stylesheet" href="styles.css?v=86" />
   <link rel="icon" href="favicon.ico" sizes="48x48" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
 </head>
@@ -101,34 +101,31 @@
     <section class="tt-land" id="ttLand" hidden aria-labelledby="ttLandTitle"></section>
 
     <!-- الهيرو -->
-    <section class="hero" id="home">
-      <div class="hero__glow"></div>
-      <div class="container hero__inner">
-        <div class="hero__content">
-          <span class="pill">💵 الدفع عند الاستلام · توصيل القاهرة والجيزة</span>
-          <h1>إكسسوارات جيمنج<br /><span class="gradient-text">بأسعار واضحة</span></h1>
-          <p>كل اللي جهازك محتاجه في مكان واحد: ماوسات وكيبوردات وسماعات جيمنج، إيربودز لموبايلك، وهاردات SSD وخارجية — أصلية من لوجيتك وريدراجون وهايبر إكس وأنكر، بأسعار تنافسية وتوصيل للقاهرة والجيزة.</p>
-          <div class="hero__cta">
-            <a href="#products" class="btn btn--primary">تسوق الآن</a>
-            <a href="#offers" class="btn btn--ghost">شوف العروض</a>
+    <!-- البانر الرئيسي: منتج من كل قسم بيتعرض كبير بدخلة وتأثير خاص بقسمه (home.js ← renderStage / heroFx) -->
+    <section class="hb" id="home" aria-labelledby="hbTitle">
+      <div class="container">
+        <div class="hb__card" id="heroStage" style="--cc:#a78bfa">
+          <canvas class="hb__fx" id="hbFx" aria-hidden="true"></canvas>
+          <span class="hb__word" id="hbWord" aria-hidden="true" style="--wlen:6">HYPERX</span>
+          <span class="hb__floor" aria-hidden="true"></span>
+          <div class="hb__stage" id="hbItems">
+            <img class="hb__img is-active" data-cat="audio" src="images/float/49.webp" alt="" width="520" height="499" fetchpriority="high" />
+          </div>
+          <div class="hb__copy">
+            <h1 class="hb__h1" id="hbTitle">إكسسوارات جيمنج أصلية بأسعار واضحة</h1>
+            <p class="hb__kicker" id="hbKicker">اكتشف عالم <b id="hbBrand">HyperX</b></p>
+            <a class="hb__product" id="hbProduct" href="#products" hidden></a>
+            <div class="hb__cta">
+              <a class="btn btn--primary" id="hbBuy" href="#products">اطلبه دلوقتي</a>
+              <a class="btn btn--ghost" href="#products">كل المنتجات</a>
+            </div>
+            <span class="hb__trust">💵 الدفع عند الاستلام · 🚚 توصيل القاهرة والجيزة</span>
             <button type="button" class="btn hero__install" data-install hidden>
               <img src="icons/icon-192.png" alt="" width="26" height="26" /> نزّل تطبيق GTECH MASR على موبايلك
             </button>
           </div>
-        </div>
-
-        <!-- مسرح المنتجات: منتج حقيقي من كل قسم بيتبدّل (home.js ← renderStage) -->
-        <div class="hero__visual stage" id="heroStage" style="--cc:#a78bfa">
-          <span class="stage__word" id="stageWord" aria-hidden="true" style="--wlen:6">HYPERX</span>
-          <span class="stage__ring" aria-hidden="true"></span>
-          <span class="stage__floor" aria-hidden="true"></span>
-          <canvas class="stage__waves" id="stageWaves" aria-hidden="true"></canvas>
-          <i class="stage__spark" aria-hidden="true"></i><i class="stage__spark" aria-hidden="true"></i><i class="stage__spark" aria-hidden="true"></i>
-          <div class="stage__items" id="stageItems">
-            <img class="stage__img is-active" src="images/float/49.webp" alt="" width="520" height="499" fetchpriority="high" />
-          </div>
-          <a class="stage__tag" id="stageTag" hidden></a>
-          <div class="stage__thumbs" id="stageThumbs" role="group" aria-label="اختار منتج"></div>
+          <div class="hb__thumbs" id="hbThumbs" role="group" aria-label="اختار منتج"></div>
+          <div class="hb__bar" aria-hidden="true"><i id="hbBarFill"></i></div>
         </div>
       </div>
     </section>

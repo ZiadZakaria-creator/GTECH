@@ -633,57 +633,65 @@ document.addEventListener("productschange", renderTikTokLanding);
 document.addEventListener("catalogloaded", renderTikTokLanding);
 renderTikTokLanding();
 
-// ============ مسرح المنتجات في الواجهة ============
-// منتج متاح من كل قسم (من اللي ليهم صورة مقصوصة) بيلف وهو داخل على المنصة واحد ورا التاني،
-// ووراه اسم الماركة بخط ضخم وموجات صوت بلون القسم، وكارت بسعره الحقيقي. السماعة أول واحدة.
+// ============ البانر الرئيسي ============
+// منتج متاح من كل قسم (من اللي ليهم صورة مقصوصة) بيتعرض كبير واحد ورا التاني، والسماعة أول واحدة.
+// كل قسم ليه دخلة (CSS) وتأثير خلفية (heroFx) خاص بيه، ووراه اسم الماركة بخط ضخم و"اكتشف عالم <الماركة>"
 const STAGE_PICKS = ["audio", "mice", "controllers", "keyboards", "earphones", "speakers"];
-const STAGE_MS = 4200;
-let stageItems = [], stageIndex = 0, stageTimer = null, stagePaused = false, stageSig = "", stageColor = "#a78bfa";
+const STAGE_MS = 5200;
+const BRAND_NAMES = { HYPERX: "HyperX", LOGITECH: "Logitech", RAZER: "Razer", GAMESIR: "GameSir", ANKER: "Anker", REDRAGON: "Redragon",
+  ONIKUMA: "Onikuma", ORAIMO: "Oraimo", SONY: "Sony", JBL: "JBL", AULA: "AULA", "ATTACK SHARK": "Attack Shark", SAMSUNG: "Samsung", SEAGATE: "Seagate", WD: "WD" };
+const brandName = (b) => BRAND_NAMES[b] || b.charAt(0) + b.slice(1).toLowerCase();
+let stageItems = [], stageIndex = 0, stageTimer = null, stagePaused = false, stageSig = "", stageColor = "#a78bfa", stageCat = "audio";
 
 function renderStage() {
   const box = $("#heroStage");
   if (!box) return;
   const live = shopProducts().filter((p) => inStock(p) && floatsFor(p));
-  const items = STAGE_PICKS.map((cat) => {
-    const p = live.filter((x) => x.cat === cat).sort((a, b) => discount(b) - discount(a) || a.price - b.price)[0];
-    return p && { p, word: String(p.brand || "").toUpperCase() };
-  }).filter(Boolean);
-  const sig = items.map(({ p }) => `${p.id}:${p.price}:${p.old}`).join("|");
+  const items = STAGE_PICKS.map((cat) => live.filter((x) => x.cat === cat).sort((a, b) => discount(b) - discount(a) || a.price - b.price)[0]).filter(Boolean);
+  const sig = items.map((p) => `${p.id}:${p.price}:${p.old}`).join("|");
   if (!items.length || sig === stageSig) return;
   stageSig = sig;
   stageItems = items;
-  $("#stageItems").innerHTML = items.map(({ p }, i) =>
-    `<img class="stage__img stage__img--${p.cat}" src="images/float/${p.id}.webp" alt="" ${i ? 'loading="lazy"' : 'fetchpriority="high"'}>`).join("");
-  $("#stageThumbs").innerHTML = items.map(({ p }, i) =>
-    `<button type="button" class="stage__thumb" data-stage="${i}" aria-label="${escapeHtml(p.name)}" style="--cc:${CATEGORY_COLORS[p.cat] || "#0a84ff"}"><img src="images/float/${p.id}.webp" alt="" loading="lazy"></button>`).join("");
+  $("#hbItems").innerHTML = items.map((p, i) =>
+    `<img class="hb__img" data-cat="${p.cat}" src="images/float/${p.id}.webp" alt="" ${i ? 'loading="lazy"' : 'fetchpriority="high"'}>`).join("");
+  $("#hbThumbs").innerHTML = items.map((p, i) =>
+    `<button type="button" class="hb__thumb" data-stage="${i}" aria-label="${escapeHtml(p.name)}" style="--tc:${CATEGORY_COLORS[p.cat] || "#0a84ff"}"><img src="images/float/${p.id}.webp" alt="" loading="lazy"></button>`).join("");
   showStage(Math.min(stageIndex, items.length - 1));
 }
 
+const replay = (el) => { el.classList.remove("is-in"); void el.offsetWidth; el.classList.add("is-in"); };
 function showStage(i) {
   const box = $("#heroStage");
   if (!box || !stageItems.length) return;
   stageIndex = (i + stageItems.length) % stageItems.length;
-  const { p, word } = stageItems[stageIndex];
+  const p = stageItems[stageIndex];
   stageColor = CATEGORY_COLORS[p.cat] || "#0a84ff";
+  stageCat = p.cat;
   box.style.setProperty("--cc", stageColor);
-  box.querySelectorAll(".stage__img").forEach((img, n) => img.classList.toggle("is-active", n === stageIndex));
-  box.querySelectorAll(".stage__thumb").forEach((b, n) => b.setAttribute("aria-pressed", n === stageIndex));
-  const w = $("#stageWord");
-  w.textContent = word;
-  w.style.setProperty("--wlen", Math.max(word.length, 5));
-  w.classList.remove("is-in"); void w.offsetWidth; w.classList.add("is-in");
+  box.querySelectorAll(".hb__img").forEach((img, n) => img.classList.toggle("is-active", n === stageIndex));
+  box.querySelectorAll(".hb__thumb").forEach((b, n) => b.setAttribute("aria-pressed", n === stageIndex));
+  const brand = String(p.brand || "").toUpperCase();
+  const w = $("#hbWord");
+  w.textContent = brand;
+  w.style.setProperty("--wlen", Math.max(brand.length, 5));
+  replay(w);
+  $("#hbBrand").textContent = brandName(brand);
+  replay($("#hbKicker"));
   const off = discount(p);
-  const tag = $("#stageTag");
-  tag.href = productUrl(p.id);
-  tag.hidden = false;
-  tag.innerHTML = `
-    <small>${escapeHtml(p.brand)}</small>
-    <b>${escapeHtml(p.name)}</b>
-    <span class="stage__price">${fmt(p.price)}${p.old ? ` <s>${fmt(p.old)}</s>` : ""}${off ? ` <em dir="ltr">-${num(off)}%</em>` : ""}</span>
-    <span class="stage__cta">اطلبه ←</span>`;
-  tag.classList.remove("is-in"); void tag.offsetWidth; tag.classList.add("is-in");
+  const card = $("#hbProduct");
+  card.href = productUrl(p.id);
+  card.hidden = false;
+  card.innerHTML = `<b>${escapeHtml(p.name)}</b>
+    <span class="hb__price">${fmt(p.price)}${p.old ? ` <s>${fmt(p.old)}</s>` : ""}${off ? ` <em dir="ltr">-${num(off)}%</em>` : ""}</span>`;
+  replay(card);
+  $("#hbBuy").href = productUrl(p.id);
+  heroFx.reset();
+  const bar = $("#hbBarFill");
+  bar.style.setProperty("--ms", STAGE_MS + "ms");
+  bar.classList.remove("is-run");
   clearTimeout(stageTimer);
   if (!stagePaused && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    void bar.offsetWidth; bar.classList.add("is-run");
     stageTimer = setTimeout(() => showStage(stageIndex + 1), STAGE_MS);
   }
 }
@@ -693,59 +701,138 @@ document.addEventListener("click", (e) => {
   if (t) showStage(+t.dataset.stage);
 });
 const stageBox = $("#heroStage");
-stageBox?.addEventListener("pointerenter", () => { stagePaused = true; clearTimeout(stageTimer); });
-stageBox?.addEventListener("pointerleave", () => { stagePaused = false; showStage(stageIndex); });
-document.addEventListener("productschange", renderStage);
-document.addEventListener("catalogloaded", renderStage);
-renderStage();
+stageBox?.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") { stagePaused = true; clearTimeout(stageTimer); $("#hbBarFill")?.classList.remove("is-run"); } });
+stageBox?.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") { stagePaused = false; showStage(stageIndex); } });
 
-// موجات الصوت ورا المنتج: خطوط جيبية بلون القسم، عالية في النص وبتتلاشى عند الأطراف.
-// بتترسم بس والمسرح ظاهر على الشاشة، ومش بتشتغل خالص مع "تقليل الحركة"
-(function stageWaves() {
-  const cv = $("#stageWaves");
-  if (!cv || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+// ============ تأثيرات خلفية البانر (canvas واحد، والرسمة بتتغير حسب قسم المنتج) ============
+// بترسم بس والبانر ظاهر على الشاشة، ومش بتشتغل خالص مع "تقليل الحركة"
+const heroFx = (() => {
+  const cv = $("#hbFx");
+  const off = { reset() {} };
+  if (!cv || matchMedia("(prefers-reduced-motion: reduce)").matches) return off;
   const ctx = cv.getContext("2d");
-  let w = 0, h = 0, raf = 0, onScreen = true, t = 0;
+  let w = 0, h = 0, cx = 0, cy = 0, sw = 0, raf = 0, onScreen = true, t = 0, born = 0, parts = [];
+  const rnd = (a, b) => a + Math.random() * (b - a);
   const size = () => {
     const r = cv.getBoundingClientRect(), d = Math.min(devicePixelRatio || 1, 2);
     w = r.width; h = r.height;
     cv.width = Math.round(w * d); cv.height = Math.round(h * d);
     ctx.setTransform(d, 0, 0, d, 0, 0);
+    const s = $("#hbItems").getBoundingClientRect();
+    cx = s.left - r.left + s.width / 2; cy = s.top - r.top + s.height / 2; sw = s.width;
   };
-  const LINES = 9;
-  const draw = () => {
-    t += 0.018;
-    ctx.clearRect(0, 0, w, h);
-    ctx.globalCompositeOperation = "lighter";
-    const g = ctx.createLinearGradient(0, 0, w, 0);
-    g.addColorStop(0, "rgba(0,0,0,0)");
-    g.addColorStop(0.25, stageColor);
-    g.addColorStop(0.5, "#22e4ff");
-    g.addColorStop(0.75, "#8a5cff");
-    g.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.strokeStyle = g;
-    ctx.shadowColor = stageColor;
-    ctx.shadowBlur = 8;
-    for (let k = 0; k < LINES; k++) {
-      const amp = h * (0.3 + 0.08 * Math.sin(t * 0.7 + k)), freq = 0.011 + k * 0.0011, ph = t * (1.4 + k * 0.12) + k * 0.9;
-      ctx.globalAlpha = 0.55 + 0.12 * (k % 3);
-      ctx.lineWidth = k % 3 ? 1.3 : 2.2;
-      ctx.beginPath();
-      for (let x = 0; x <= w; x += 4) {
-        const env = Math.sin(Math.PI * x / w) ** 2;
-        const y = h / 2 + env * amp * Math.sin(x * freq + ph);
-        x ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+  const GLYPHS = [["tri", "#4fd1c5"], ["circ", "#ff5c7a"], ["cross", "#6ea8ff"], ["sq", "#ff7ad9"]];
+  const seed = () => {
+    born = t;
+    parts = stageCat === "mice" ? Array.from({ length: 40 }, () => ({ x: rnd(0, cx + sw), y: cy + rnd(-.3, .3) * h, len: rnd(80, 260), v: rnd(7, 18), a: rnd(.45, 1) }))
+      : stageCat === "controllers" ? Array.from({ length: 18 }, (_, i) => ({ x: rnd(0, w), y: rnd(0, h), s: rnd(12, 30), v: rnd(.25, .8), r: rnd(0, 6), vr: rnd(-.02, .02), g: GLYPHS[i % 4], a: rnd(.3, .7) }))
+      : Array.from({ length: 26 }, () => ({ x: rnd(0, w), y: rnd(0, h), r: rnd(1, 2.6), v: rnd(.15, .5), a: rnd(.2, .7) }));
+  };
+  const grad = (a = 0, b = w) => {
+    const g = ctx.createLinearGradient(a, 0, b, 0);
+    g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(.25, stageColor); g.addColorStop(.5, "#22e4ff"); g.addColorStop(.75, "#8a5cff"); g.addColorStop(1, "rgba(0,0,0,0)");
+    return g;
+  };
+  const FX = {
+    // موجات صوت بتعدّي ورا السماعة: عالية في النص وبتتلاشى عند الأطراف
+    audio() {
+      const x0 = Math.max(0, cx - sw * .95), x1 = Math.min(w, cx + sw * .95), span = x1 - x0;
+      ctx.strokeStyle = grad(x0, x1); ctx.shadowColor = stageColor; ctx.shadowBlur = 8;
+      for (let k = 0; k < 9; k++) {
+        const amp = h * (.1 + .035 * Math.sin(t * .7 + k)), freq = (9 + k * .8) / span, ph = t * (1.4 + k * .12) + k * .9;
+        ctx.globalAlpha = .5 + .12 * (k % 3); ctx.lineWidth = k % 3 ? 1.3 : 2.2;
+        ctx.beginPath();
+        for (let x = x0; x <= x1; x += 4) { const y = cy + Math.sin(Math.PI * (x - x0) / span) ** 2 * amp * Math.sin((x - x0) * freq + ph); x > x0 ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+        ctx.stroke();
       }
-      ctx.stroke();
-    }
+    },
+    // خطوط سرعة ضوئية: الماوس سريع
+    mice() {
+      ctx.lineCap = "round";
+      for (const p of parts) {
+        p.x -= p.v; if (p.x + p.len < 0) { p.x = cx + sw * rnd(.4, 1); p.y = cy + rnd(-.3, .3) * h; }
+        const g = ctx.createLinearGradient(p.x, 0, p.x + p.len, 0);
+        g.addColorStop(0, stageColor); g.addColorStop(1, "rgba(0,0,0,0)");
+        ctx.strokeStyle = g; ctx.shadowColor = stageColor; ctx.shadowBlur = 10; ctx.globalAlpha = p.a; ctx.lineWidth = p.a > .75 ? 3 : 1.6;
+        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x + p.len, p.y); ctx.stroke();
+      }
+    },
+    // رموز أزرار الدراع طايرة لفوق
+    controllers() {
+      ctx.lineWidth = 2.2;
+      for (const p of parts) {
+        p.y -= p.v; p.r += p.vr; if (p.y < -40) { p.y = h + 40; p.x = rnd(0, w); }
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.globalAlpha = p.a; ctx.strokeStyle = p.g[1]; ctx.shadowColor = p.g[1]; ctx.shadowBlur = 10;
+        const s = p.s / 2; ctx.beginPath();
+        if (p.g[0] === "tri") { ctx.moveTo(0, -s); ctx.lineTo(s * .9, s * .7); ctx.lineTo(-s * .9, s * .7); ctx.closePath(); }
+        else if (p.g[0] === "circ") ctx.arc(0, 0, s * .8, 0, Math.PI * 2);
+        else if (p.g[0] === "sq") ctx.rect(-s * .7, -s * .7, s * 1.4, s * 1.4);
+        else { ctx.moveTo(-s * .7, -s * .7); ctx.lineTo(s * .7, s * .7); ctx.moveTo(s * .7, -s * .7); ctx.lineTo(-s * .7, s * .7); }
+        ctx.stroke(); ctx.restore();
+      }
+    },
+    // زراير كيبورد بتنوّر بموجة ألوان RGB
+    keyboards() {
+      const k = 30, gap = 6, cols = Math.ceil(w / (k + gap)) + 1, rows = 6, top = cy - rows * (k + gap) / 2;
+      for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+        const x = c * (k + gap) - ((r % 2) * k) / 2, y = top + r * (k + gap);
+        const fade = Math.max(0, 1 - Math.hypot((x - cx) / (w * .55), (y - cy) / (h * .45)));
+        const lit = .5 + .5 * Math.sin(c * .45 - t * 3 + r * .6);
+        ctx.globalAlpha = fade * (.12 + .5 * lit);
+        ctx.strokeStyle = ctx.fillStyle = `hsl(${(c * 12 + r * 20 + t * 70) % 360} 90% 62%)`;
+        ctx.lineWidth = 1.2; ctx.beginPath(); ctx.roundRect(x, y, k, k, 6); ctx.stroke();
+        ctx.globalAlpha *= .25; ctx.fill();
+      }
+    },
+    // دواير صوت بتتسع من الإيربودز (زي عزل الضوضاء)
+    earphones() {
+      ctx.strokeStyle = stageColor; ctx.shadowColor = stageColor; ctx.shadowBlur = 12;
+      for (let k = 0; k < 6; k++) {
+        const ph = ((t * .35 + k / 6) % 1), r = sw * .25 + ph * Math.max(w, h) * .6;
+        ctx.globalAlpha = (1 - ph) * .6; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
+      }
+    },
+    // نبض بيز وأعمدة إيكولايزر
+    speakers() {
+      const beat = (t * 1.8) % 1, pulse = Math.exp(-beat * 6);
+      ctx.strokeStyle = stageColor; ctx.shadowColor = stageColor; ctx.shadowBlur = 16;
+      for (let k = 0; k < 3; k++) { ctx.globalAlpha = pulse * (.7 - k * .2); ctx.lineWidth = 3 - k; ctx.beginPath(); ctx.arc(cx, cy, sw * (.32 + k * .12) * (1 + pulse * .12), 0, Math.PI * 2); ctx.stroke(); }
+      const n = 24, x0 = cx - sw * .6, bw = sw * 1.2 / n, base = cy + sw * .55;
+      ctx.shadowBlur = 0; ctx.fillStyle = grad(x0, x0 + sw * 1.2);
+      for (let i = 0; i < n; i++) {
+        const v = .5 + .5 * Math.sin(i * .7 + t * 4) * Math.sin(i * .23 - t * 2.3), bh = (h * .05 + h * .14 * v) * (.6 + .4 * pulse);
+        ctx.globalAlpha = .5 * Math.sin(Math.PI * (i + .5) / n); ctx.fillRect(x0 + i * bw + 2, base - bh, bw - 4, bh);
+      }
+    },
+    // أي قسم تاني: نقط نور طايرة
+    other() {
+      ctx.fillStyle = stageColor; ctx.shadowColor = stageColor; ctx.shadowBlur = 10;
+      for (const p of parts) { p.y -= p.v; if (p.y < -10) { p.y = h + 10; p.x = rnd(0, w); } ctx.globalAlpha = p.a; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill(); }
+    },
+  };
+  const draw = () => {
+    t += 1 / 60;
+    ctx.save(); ctx.clearRect(0, 0, w, h);
+    ctx.globalCompositeOperation = "lighter";
+    ctx.globalAlpha = 1;
+    const fadeIn = Math.min(1, (t - born) / .6);
+    ctx.globalAlpha = fadeIn;
+    (FX[stageCat] || FX.other)();
+    ctx.restore();
     raf = onScreen && !document.hidden ? requestAnimationFrame(draw) : 0;
   };
   const run = () => { if (!raf && onScreen && !document.hidden) raf = requestAnimationFrame(draw); };
-  size();
-  addEventListener("resize", size);
+  size(); seed();
+  addEventListener("resize", () => { size(); seed(); });
   document.addEventListener("visibilitychange", run);
   new IntersectionObserver(([e]) => { onScreen = e.isIntersecting; run(); }).observe(cv);
+  return { reset() { size(); seed(); run(); } };
 })();
+
+document.addEventListener("productschange", renderStage);
+document.addEventListener("catalogloaded", renderStage);
+renderStage();
 
 // لو تحميل المنتجات فشل (من غير ما تتغير) نحدّث الرسالة بدل "جاري التحميل"
 document.addEventListener("catalogloaded", () => { renderProducts(); renderCategories(); renderMiniOffers(); });
