@@ -720,10 +720,15 @@ const heroFx = (() => {
   const off = { reset() {} };
   if (!cv || matchMedia("(prefers-reduced-motion: reduce)").matches) return off;
   const ctx = cv.getContext("2d");
+  // الموبايل: الـ shadowBlur على شاشة كثافتها 2x كل فريم هو اللي كان مقيّل السكرول —
+  // فبنرسم بكثافة 1x ومن غير توهج وبنص عدد الفريمات
+  const lite = matchMedia("(max-width: 900px), (pointer: coarse)").matches;
+  if (lite) Object.defineProperty(ctx, "shadowBlur", { set() {}, get() { return 0; } });
+  let last = 0, lastW = 0;
   let w = 0, h = 0, cx = 0, cy = 0, sw = 0, sh = 0, raf = 0, onScreen = true, t = 0, born = 0, parts = [];
   const rnd = (a, b) => a + Math.random() * (b - a);
   const size = () => {
-    const r = cv.getBoundingClientRect(), d = Math.min(devicePixelRatio || 1, 2);
+    const r = cv.getBoundingClientRect(), d = lite ? 1 : Math.min(devicePixelRatio || 1, 2);
     w = r.width; h = r.height;
     cv.width = Math.round(w * d); cv.height = Math.round(h * d);
     ctx.setTransform(d, 0, 0, d, 0, 0);
@@ -820,8 +825,10 @@ const heroFx = (() => {
       for (const p of parts) { p.y -= p.v; if (p.y < cy - sh * .62) { p.y = cy + sh * .6; p.x = cx + rnd(-.6, .6) * sw; } ctx.globalAlpha = p.a; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill(); }
     },
   };
-  const draw = () => {
-    t += 1 / 60;
+  const draw = (ts = 0) => {
+    if (lite && ts - last < 30) { raf = onScreen && !document.hidden ? requestAnimationFrame(draw) : 0; return; }
+    last = ts;
+    t += lite ? 1 / 30 : 1 / 60;
     ctx.save(); ctx.clearRect(0, 0, w, h);
     ctx.globalCompositeOperation = "lighter";
     ctx.globalAlpha = 1;
@@ -833,7 +840,9 @@ const heroFx = (() => {
   };
   const run = () => { if (!raf && onScreen && !document.hidden) raf = requestAnimationFrame(draw); };
   size(); seed();
-  addEventListener("resize", () => { size(); seed(); });
+  // شريط العنوان في متصفح الموبايل بيظهر ويختفي مع السكرول وبيبعت resize — نعيد الحساب بس لو العرض اتغير
+  addEventListener("resize", () => { if (innerWidth === lastW) return; lastW = innerWidth; size(); seed(); });
+  lastW = innerWidth;
   document.addEventListener("visibilitychange", run);
   new IntersectionObserver(([e]) => { onScreen = e.isIntersecting; run(); }).observe(cv);
   return { reset() { size(); seed(); run(); } };
