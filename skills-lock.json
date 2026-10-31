@@ -457,6 +457,12 @@
       "skillPath": "skills/slideshow/SKILL.md",
       "computedHash": "2cce5d13b634a742a25e62a1d78366ee97d0bf51a708eb4746e44a0579a3b6a7"
     },
+    "social": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "skillPath": "skills/social/SKILL.md",
+      "computedHash": "24f96b1f5cdc0645f11342abd115daf81b80698a3a4eaca8862b15cdb22aab98"
+    },
     "supabase-postgres-best-practices": {
       "source": "supabase/agent-skills",
       "sourceType": "github",
