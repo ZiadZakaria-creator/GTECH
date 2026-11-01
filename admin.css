@@ -85,6 +85,9 @@
 .od-contact { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 .od-item { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 10px 0; border-bottom: 1px dashed var(--border); }
 .od-item:last-child { border-bottom: 0; }
+.od-item__link { color: inherit; text-decoration: none; }
+.od-item__link b { text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 4px; }
+.od-item__link:hover b, .od-item__link:focus-visible b { color: var(--accent, #00d4ff); text-decoration-style: solid; }
 .od-item small { display: block; color: var(--muted); font-size: .8rem; }
 .od-item span { color: var(--muted); font-size: .85rem; }
 .od-item strong { grid-column: 2; grid-row: 1 / span 2; align-self: center; }

@@ -378,7 +378,9 @@ function openOrder(id, show = true) {
       <h4>📦 المنتجات (${num(itemsCount(o))})</h4>
       ${o.items.map((i) => `
         <div class="od-item">
-          <div><b>${escapeHtml(i.name)}</b>${i.options ? `<small>${escapeHtml(i.options)}</small>` : ""}</div>
+          <div>${Number.isInteger(+i.id) && +i.id > 0
+            ? `<a class="od-item__link" href="product.html?id=${+i.id}" target="_blank" rel="noopener" title="افتح صفحة المنتج في المتجر"><b>${escapeHtml(i.name)}</b> ↗</a>`
+            : `<b>${escapeHtml(i.name)}</b>`}${i.options ? `<small>${escapeHtml(i.options)}</small>` : ""}</div>
           <span>${num(i.qty)} × ${fmt(i.price)}</span>
           <strong>${fmt(i.qty * i.price)}</strong>
         </div>`).join("")}
