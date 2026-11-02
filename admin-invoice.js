@@ -54,7 +54,6 @@ function invoiceHtml(o) {
       .replace(/^12\s*(شهر|شهور)$/, "سنة").replace(/^24\s*(شهر|شهور)$/, "سنتين");
     return w ? `ضمان ${w}` : "";
   };
-  const sealDate = created.toLocaleDateString("en-GB").replace(/\//g, ".");
   const sh = o.shipment;
   const carrier = sh?.trackingNumber ? (typeof carrierName === "function" ? carrierName(sh) : sh.carrier || "") : "";
   const orderStatus = cancelled ? "ملغي" : (typeof ORDER_STATUSES !== "undefined" && ORDER_STATUSES[o.status]) || o.status || "";
@@ -161,7 +160,7 @@ function invoiceHtml(o) {
         <span class="inv__line"></span>
         <small>اسم وتوقيع العميل</small>
       </div>
-      ${cancelled ? "" : `<figure class="inv__seal" aria-label="ختم GTECH MASR">${invoiceSealSvg(sealDate)}</figure>`}
+      ${cancelled ? "" : `<figure class="inv__seal" aria-label="ختم GTECH MASR">${invoiceSealSvg()}</figure>`}
     </section>
 
     <footer class="inv__foot">
@@ -171,9 +170,9 @@ function invoiceHtml(o) {
   </article>`;
 }
 
-// ختم دائري للمتجر (SVG) بلون حبر الأختام: اسم المتجر والشركة حوالين الدايرة، واللوجو والتاريخ في النص.
+// ختم دائري للمتجر (SVG) بلون حبر الأختام: اسم المتجر والموقع حوالين الدايرة، واللوجو في النص.
 // فلتر خفيف بيدّي ملمس الحبر الحقيقي (أطراف مش ناعمة ١٠٠٪).
-function invoiceSealSvg(date) {
+function invoiceSealSvg() {
   return `<svg viewBox="0 0 200 200" width="140" height="140" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <path id="sealTop" d="M 30 100 A 70 70 0 0 1 170 100"/>
@@ -192,10 +191,9 @@ function invoiceSealSvg(date) {
       <text font-size="17" letter-spacing="3.2"><textPath href="#sealTop" startOffset="50%" text-anchor="middle">GTECH MASR</textPath></text>
       <text font-size="12.5" letter-spacing="2.4" dominant-baseline="hanging"><textPath href="#sealBot" startOffset="50%" text-anchor="middle">GTECHMASR.COM</textPath></text>
       <text x="22" y="105" font-size="12">★</text><text x="168" y="105" font-size="12">★</text>
-      <rect x="80" y="60" width="40" height="40" rx="11"/>
-      <text x="100" y="91" font-size="30" text-anchor="middle" fill="#fff">G</text>
-      <text x="100" y="118" font-size="12.5" text-anchor="middle" letter-spacing="1.5">OFFICIAL</text>
-      <text x="100" y="135" font-size="11" text-anchor="middle" letter-spacing=".5" font-family="ui-monospace, Menlo, Consolas, monospace" font-weight="700">${escapeHtml(date)}</text>
+      <rect x="78" y="66" width="44" height="44" rx="12"/>
+      <text x="100" y="100" font-size="33" text-anchor="middle" fill="#fff">G</text>
+      <text x="100" y="130" font-size="13" text-anchor="middle" letter-spacing="1.5">OFFICIAL</text>
     </g>
   </g>
 </svg>`;
