@@ -17,12 +17,18 @@ function invoiceHtml(o) {
   const paid = o.payment?.status === "paid";
   const isCod = o.payment?.method === "cod" || /الاستلام/.test(o.payment?.label || "");
   const cancelled = o.status === "cancelled";
+  // الضمان من بيانات المنتج: منتجات اللوحة (Firestore) الأول، وبعدها الكتالوج المحلي.
+  // (findProduct مش محمّلة في لوحة التحكم، فكان الضمان بيطلع فاضي)
   const warrantyOf = (id) => {
-    const p = typeof findProduct === "function" ? findProduct(id) : null;
+    const list = typeof adminProducts !== "undefined" && adminProducts.length ? adminProducts : products;
+    const p = list.find((x) => x.id === Number(id));
     if (!p) return "";
-    const w = typeof warrantyText === "function" ? warrantyText(p) : String(p.warranty || "");
-    return typeof hasWarranty === "function" && !hasWarranty(p) ? "بدون ضمان" : w ? `ضمان ${w}` : "";
+    if (typeof hasWarranty === "function" && !hasWarranty(p)) return "بدون ضمان";
+    const w = (typeof warrantyText === "function" ? warrantyText(p) : String(p.warranty || "")).trim()
+      .replace(/^12\s*(شهر|شهور)$/, "سنة").replace(/^24\s*(شهر|شهور)$/, "سنتين");
+    return w ? `ضمان ${w}` : "";
   };
+  const sealDate = new Date(o.createdAt).toLocaleDateString("en-GB").replace(/\//g, ".");
   const sh = o.shipment;
   const carrier = sh?.trackingNumber ? (typeof carrierName === "function" ? carrierName(sh) : sh.carrier || "") : "";
   const statusLabel = cancelled ? "ملغي" : paid ? "مدفوع" : isCod ? "الدفع عند الاستلام" : "في انتظار الدفع";
@@ -67,16 +73,20 @@ function invoiceHtml(o) {
     </section>
 
     <table class="inv__table">
-      <thead><tr><th class="n">#</th><th>المنتج</th><th class="q">الكمية</th><th class="m">سعر الوحدة</th><th class="m">الإجمالي</th></tr></thead>
+      <thead><tr><th class="n">#</th><th>المنتج</th><th class="w">الضمان</th><th class="q">الكمية</th><th class="m">سعر الوحدة</th><th class="m">الإجمالي</th></tr></thead>
       <tbody>
-        ${(o.items || []).map((i, k) => `
+        ${(o.items || []).map((i, k) => {
+          const war = warrantyOf(i.id);
+          return `
         <tr>
           <td class="n">${k + 1}</td>
-          <td><b>${escapeHtml(i.name)}</b>${i.options ? `<small>${escapeHtml(i.options)}</small>` : ""}${warrantyOf(i.id) ? `<small class="inv__war">${escapeHtml(warrantyOf(i.id))}</small>` : ""}</td>
+          <td><b>${escapeHtml(i.name)}</b>${i.options ? `<small>${escapeHtml(i.options)}</small>` : ""}</td>
+          <td class="w">${war ? `<span class="inv__war ${war === "بدون ضمان" ? "is-none" : ""}">${war === "بدون ضمان" ? "" : "🛡 "}${escapeHtml(war)}</span>` : "—"}</td>
           <td class="q">${i.qty}</td>
           <td class="m">${egp(i.price)}</td>
           <td class="m"><b>${egp(i.price * i.qty)}</b></td>
-        </tr>`).join("")}
+        </tr>`;
+        }).join("")}
       </tbody>
     </table>
 
@@ -96,11 +106,46 @@ function invoiceHtml(o) {
       </dl>
     </section>
 
+    <section class="inv__sealrow">
+      <p class="inv__warnote">🛡 الضمان مكتوب قدام كل منتج، واحتفظ بالفاتورة دي عشان تستخدمها في الضمان أو الاسترجاع.</p>
+      ${cancelled ? "" : `<figure class="inv__seal" aria-label="ختم GTECH MASR">${invoiceSealSvg(sealDate)}<figcaption>ختم المتجر</figcaption></figure>`}
+    </section>
+
     <footer class="inv__foot">
       <p class="inv__thanks">شكراً إنك اخترت GTECH MASR 💙</p>
       <p>الاسترجاع خلال 14 يوم من الاستلام حسب سياسة الاسترجاع · الضمان حسب المكتوب جنب كل منتج · محتاج حاجة؟ كلمنا واتساب <span dir="ltr">${INVOICE_STORE.phone}</span></p>
     </footer>
   </div>`;
+}
+
+// ختم دائري للمتجر (SVG) بلون حبر الأختام: اسم المتجر والشركة حوالين الدايرة، واللوجو والتاريخ في النص.
+// فلتر خفيف بيدّي ملمس الحبر الحقيقي (أطراف مش ناعمة ١٠٠٪).
+function invoiceSealSvg(date) {
+  return `<svg viewBox="0 0 200 200" width="140" height="140" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <path id="sealTop" d="M 30 100 A 70 70 0 0 1 170 100"/>
+    <path id="sealBot" d="M 36 100 A 64 64 0 0 0 164 100"/>
+    <filter id="sealInk" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="2" seed="7" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.3 1.75" result="m"/>
+      <feComposite in="SourceGraphic" in2="m" operator="in"/>
+    </filter>
+  </defs>
+  <g filter="url(#sealInk)" fill="none" stroke="currentColor">
+    <circle cx="100" cy="100" r="94" stroke-width="5"/>
+    <circle cx="100" cy="100" r="86" stroke-width="1.6"/>
+    <circle cx="100" cy="100" r="52" stroke-width="1.6"/>
+    <g fill="currentColor" stroke="none" font-family="Arial, Helvetica, sans-serif" font-weight="900">
+      <text font-size="17" letter-spacing="3.2"><textPath href="#sealTop" startOffset="50%" text-anchor="middle">GTECH MASR</textPath></text>
+      <text font-size="12.5" letter-spacing="2.4" dominant-baseline="hanging"><textPath href="#sealBot" startOffset="50%" text-anchor="middle">GTECHMASR.COM</textPath></text>
+      <text x="22" y="105" font-size="12">★</text><text x="168" y="105" font-size="12">★</text>
+      <rect x="80" y="60" width="40" height="40" rx="11"/>
+      <text x="100" y="91" font-size="30" text-anchor="middle" fill="#fff">G</text>
+      <text x="100" y="118" font-size="12.5" text-anchor="middle" letter-spacing="1.5">OFFICIAL</text>
+      <text x="100" y="135" font-size="11" text-anchor="middle" letter-spacing=".5" font-family="ui-monospace, Menlo, Consolas, monospace" font-weight="700">${escapeHtml(date)}</text>
+    </g>
+  </g>
+</svg>`;
 }
 
 function printInvoice(o) {
