@@ -8,12 +8,38 @@ const INVOICE_STORE = {
   area: "القاهرة والجيزة",
 };
 
+// المبلغ بالحروف زي الفواتير التجارية في مصر: "فقط ألفان وخمسمائة وتسعون جنيه مصري لا غير"
+function amountInWords(n) {
+  n = Math.round(Number(n) || 0);
+  if (!n) return "صفر";
+  const ones = ["", "واحد", "اثنان", "ثلاثة", "أربعة", "خمسة", "ستة", "سبعة", "ثمانية", "تسعة", "عشرة",
+    "أحد عشر", "اثنا عشر", "ثلاثة عشر", "أربعة عشر", "خمسة عشر", "ستة عشر", "سبعة عشر", "ثمانية عشر", "تسعة عشر"];
+  const tens = ["", "", "عشرون", "ثلاثون", "أربعون", "خمسون", "ستون", "سبعون", "ثمانون", "تسعون"];
+  const hundreds = ["", "مائة", "مائتان", "ثلاثمائة", "أربعمائة", "خمسمائة", "ستمائة", "سبعمائة", "ثمانمائة", "تسعمائة"];
+  const below1000 = (x) => {
+    const parts = [];
+    if (x >= 100) parts.push(hundreds[Math.floor(x / 100)]);
+    const r = x % 100;
+    if (r && r < 20) parts.push(ones[r]);
+    else if (r) parts.push(r % 10 ? `${ones[r % 10]} و${tens[Math.floor(r / 10)]}` : tens[Math.floor(r / 10)]);
+    return parts.join(" و");
+  };
+  const th = Math.floor(n / 1000), rest = n % 1000;
+  let thWord = "";
+  if (th === 1) thWord = "ألف";
+  else if (th === 2) thWord = "ألفان";
+  else if (th >= 3 && th <= 10) thWord = `${below1000(th)} آلاف`;
+  else if (th > 10) thWord = `${below1000(th)} ألف`;
+  return [thWord, rest ? below1000(rest) : ""].filter(Boolean).join(" و");
+}
+
 function invoiceHtml(o) {
   const c = o.customer || {};
   const a = o.address || {};
   const t = o.totals || {};
-  const egp = (n) => `${Number(n || 0).toLocaleString("en-US")} <span class="inv__cur">ج.م</span>`;
-  const date = new Date(o.createdAt).toLocaleDateString("ar-EG", { day: "numeric", month: "long", year: "numeric" });
+  const egp = (n) => `${Number(n || 0).toLocaleString("en-US")}<span class="inv__cur"> ج.م</span>`;
+  const created = new Date(o.createdAt);
+  const date = created.toLocaleDateString("ar-EG-u-nu-latn", { day: "numeric", month: "long", year: "numeric" });
   const paid = o.payment?.status === "paid";
   const isCod = o.payment?.method === "cod" || /الاستلام/.test(o.payment?.label || "");
   const cancelled = o.status === "cancelled";
@@ -28,60 +54,69 @@ function invoiceHtml(o) {
       .replace(/^12\s*(شهر|شهور)$/, "سنة").replace(/^24\s*(شهر|شهور)$/, "سنتين");
     return w ? `ضمان ${w}` : "";
   };
-  const sealDate = new Date(o.createdAt).toLocaleDateString("en-GB").replace(/\//g, ".");
+  const sealDate = created.toLocaleDateString("en-GB").replace(/\//g, ".");
   const sh = o.shipment;
   const carrier = sh?.trackingNumber ? (typeof carrierName === "function" ? carrierName(sh) : sh.carrier || "") : "";
-  const statusLabel = cancelled ? "ملغي" : paid ? "مدفوع" : isCod ? "الدفع عند الاستلام" : "في انتظار الدفع";
+  const orderStatus = cancelled ? "ملغي" : (typeof ORDER_STATUSES !== "undefined" && ORDER_STATUSES[o.status]) || o.status || "";
+  const site = siteUrl("").replace(/^https?:\/\//, "").replace(/\/$/, "");
+  const dueLabel = cancelled ? "الطلب ده اتلغى" : paid ? "اتدفع بالكامل" : isCod ? "المطلوب دفعه عند الاستلام" : "المطلوب تحويله";
+  const payNote = cancelled ? "مفيش أي مبلغ مطلوب."
+    : paid ? `اتدفع بـ${escapeHtml(o.payment?.label || "")}${o.payment?.paidAt ? ` يوم ${new Date(o.payment.paidAt).toLocaleDateString("ar-EG", { day: "numeric", month: "long" })}` : ""}، والمندوب مش هيحصّل أي فلوس.`
+    : isCod ? "تقدر تفتح الشحنة وتتأكد منها قبل ما تدفع."
+    : "طلبك بيتأكد أول ما التحويل يوصلنا.";
 
   return `
-  <div class="inv" dir="rtl">
+  <article class="inv ${cancelled ? "is-cancelled" : ""}" dir="rtl">
     <header class="inv__head">
       <div class="inv__brand">
         <span class="inv__logo" aria-hidden="true">G</span>
-        <div><b class="inv__name">GTECH <span>MASR</span></b><small>${INVOICE_STORE.company} · إكسسوارات جيمنج وكمبيوتر</small></div>
+        <div>
+          <b class="inv__name" dir="ltr">GTECH <span>MASR</span></b>
+          <p>إكسسوارات جيمنج وكمبيوتر أصلية</p>
+          <p class="inv__sub">${INVOICE_STORE.company} — القاهرة والجيزة</p>
+        </div>
       </div>
       <div class="inv__title">
-        <h1>فاتورة</h1>
-        <p class="inv__no" dir="ltr">${escapeHtml(o.id)}</p>
-        <p class="inv__date">${date}</p>
+        <h1>فاتورة بيع</h1>
+        <dl class="inv__ids">
+          <div><dt>رقم الفاتورة</dt><dd dir="ltr">${escapeHtml(o.id)}</dd></div>
+          <div><dt>التاريخ</dt><dd>${date}</dd></div>
+          <div><dt>حالة الطلب</dt><dd>${escapeHtml(orderStatus)}</dd></div>
+        </dl>
       </div>
     </header>
 
     <section class="inv__parties">
-      <div>
-        <h2>من</h2>
-        <p><b>${INVOICE_STORE.name}</b></p>
-        <p>واتساب: <span dir="ltr">${INVOICE_STORE.phone}</span></p>
-        <p dir="ltr" class="inv__url">${escapeHtml(siteUrl("").replace(/^https?:\/\//, "").replace(/\/$/, ""))}</p>
-        <p>التوصيل: ${INVOICE_STORE.area}</p>
-      </div>
-      <div>
-        <h2>إلى</h2>
-        <p><b>${escapeHtml(c.name || "")}</b></p>
+      <div class="inv__party">
+        <h2>العميل</h2>
+        <p class="inv__big">${escapeHtml(c.name || "")}</p>
         <p dir="ltr" class="inv__right">${escapeHtml(c.phone || "")}</p>
-        ${c.email ? `<p dir="ltr" class="inv__right">${escapeHtml(c.email)}</p>` : ""}
-        <p>${escapeHtml([a.street, a.city, a.gov].filter(Boolean).join("، "))}</p>
-        ${a.notes ? `<p class="inv__muted">ملاحظات: ${escapeHtml(a.notes)}</p>` : ""}
+        ${c.email ? `<p dir="ltr" class="inv__right inv__muted">${escapeHtml(c.email)}</p>` : ""}
       </div>
-      <div class="inv__meta">
-        <h2>الطلب</h2>
-        <p>الحالة: <b>${escapeHtml(cancelled ? "ملغي" : (typeof ORDER_STATUSES !== "undefined" && ORDER_STATUSES[o.status]) || o.status)}</b></p>
-        <p>الدفع: <b>${escapeHtml(o.payment?.label || "")}</b></p>
-        <p>الشحن: ${escapeHtml(o.shipping?.label || "")}</p>
-        ${sh?.trackingNumber ? `<p>التتبع: ${escapeHtml(carrier)} <span dir="ltr">${escapeHtml(sh.trackingNumber)}</span></p>` : ""}
+      <div class="inv__party">
+        <h2>عنوان التوصيل</h2>
+        <p>${escapeHtml([a.street, a.city, a.gov].filter(Boolean).join("، "))}</p>
+        ${a.notes ? `<p class="inv__muted">علامة مميزة: ${escapeHtml(a.notes)}</p>` : ""}
+      </div>
+      <div class="inv__party">
+        <h2>الشحن والدفع</h2>
+        <p>${escapeHtml(o.shipping?.label || "")}</p>
+        <p>${escapeHtml(o.payment?.label || "")}</p>
+        ${sh?.trackingNumber ? `<p class="inv__muted">التتبع: ${escapeHtml(carrier)} <span dir="ltr">${escapeHtml(sh.trackingNumber)}</span></p>` : ""}
       </div>
     </section>
 
     <table class="inv__table">
-      <thead><tr><th class="n">#</th><th>المنتج</th><th class="w">الضمان</th><th class="q">الكمية</th><th class="m">سعر الوحدة</th><th class="m">الإجمالي</th></tr></thead>
+      <thead><tr><th class="n">م</th><th>المنتج</th><th class="w">الضمان</th><th class="q">الكمية</th><th class="m">سعر القطعة</th><th class="m">الإجمالي</th></tr></thead>
       <tbody>
         ${(o.items || []).map((i, k) => {
           const war = warrantyOf(i.id);
+          const none = war === "بدون ضمان";
           return `
         <tr>
           <td class="n">${k + 1}</td>
-          <td><b>${escapeHtml(i.name)}</b>${i.options ? `<small>${escapeHtml(i.options)}</small>` : ""}</td>
-          <td class="w">${war ? `<span class="inv__war ${war === "بدون ضمان" ? "is-none" : ""}">${war === "بدون ضمان" ? "" : "🛡 "}${escapeHtml(war)}</span>` : "—"}</td>
+          <td><b>${escapeHtml(i.name)}</b>${i.options ? `<small>${escapeHtml(i.options)}</small>` : ""}${Number(i.id) > 0 ? `<small>كود المنتج ${Number(i.id)}</small>` : ""}</td>
+          <td class="w">${war ? `<span class="inv__war ${none ? "is-none" : ""}">${escapeHtml(war)}</span>` : "—"}</td>
           <td class="q">${i.qty}</td>
           <td class="m">${egp(i.price)}</td>
           <td class="m"><b>${egp(i.price * i.qty)}</b></td>
@@ -90,32 +125,50 @@ function invoiceHtml(o) {
       </tbody>
     </table>
 
-    <section class="inv__bottom">
-      <div class="inv__pay ${paid ? "is-paid" : ""} ${cancelled ? "is-cancelled" : ""}">
-        <span class="inv__stamp">${statusLabel}</span>
-        ${cancelled ? "<p>الطلب ده اتلغى.</p>"
-          : paid ? `<p>اتدفع بـ${escapeHtml(o.payment?.label || "")}${o.payment?.paidAt ? ` يوم ${new Date(o.payment.paidAt).toLocaleDateString("ar-EG", { day: "numeric", month: "long" })}` : ""}. المندوب مش هيحصّل أي فلوس.</p>`
-          : isCod ? `<p>المطلوب تحصيله عند الاستلام: <b>${egp(t.total)}</b></p>`
-          : `<p>في انتظار تحويل <b>${egp(t.total)}</b></p>`}
+    <section class="inv__sum">
+      <div class="inv__due">
+        <p class="inv__due-label">${dueLabel}</p>
+        <p class="inv__due-amount">${cancelled ? "—" : egp(t.total)}</p>
+        ${cancelled ? "" : `<p class="inv__words">فقط ${amountInWords(t.total)} جنيه مصري لا غير</p>`}
+        <p class="inv__due-note">${payNote}</p>
       </div>
       <dl class="inv__totals">
-        <div><dt>المجموع الفرعي</dt><dd>${egp(t.subtotal)}</dd></div>
+        <div><dt>إجمالي المنتجات</dt><dd>${egp(t.subtotal)}</dd></div>
         ${t.discount ? `<div><dt>الخصم</dt><dd>− ${egp(t.discount)}</dd></div>` : ""}
-        <div><dt>الشحن</dt><dd>${t.shipping ? egp(t.shipping) : "—"}</dd></div>
+        <div><dt>مصاريف الشحن</dt><dd>${t.shipping ? egp(t.shipping) : "—"}</dd></div>
         <div class="inv__grand"><dt>الإجمالي</dt><dd>${egp(t.total)}</dd></div>
       </dl>
     </section>
 
-    <section class="inv__sealrow">
-      <p class="inv__warnote">🛡 الضمان مكتوب قدام كل منتج، واحتفظ بالفاتورة دي عشان تستخدمها في الضمان أو الاسترجاع.</p>
-      ${cancelled ? "" : `<figure class="inv__seal" aria-label="ختم GTECH MASR">${invoiceSealSvg(sealDate)}<figcaption>ختم المتجر</figcaption></figure>`}
+    <section class="inv__terms">
+      <div>
+        <h3>الضمان</h3>
+        <p>مدته مكتوبة قدام كل منتج، وبيغطي عيوب الصناعة. مايغطيش الكسر أو المية أو فتح المنتج وتصليحه برّه.</p>
+      </div>
+      <div>
+        <h3>الاسترجاع والاستبدال</h3>
+        <p>خلال 14 يوم من الاستلام، والمنتج بحالته في علبته بكل مشتملاته. لو فيه عيب صناعة الاسترجاع مجاني.</p>
+      </div>
+      <div>
+        <h3>محتاج مساعدة؟</h3>
+        <p>ابعت رقم الفاتورة على واتساب <span dir="ltr">${INVOICE_STORE.phone}</span>، وتابع طلبك من صفحة طلباتي على <span dir="ltr">${escapeHtml(site)}</span></p>
+      </div>
+    </section>
+
+    <section class="inv__sign">
+      <div class="inv__sigline">
+        <p>استلمت الطلب سليم ومطابق للفاتورة</p>
+        <span class="inv__line"></span>
+        <small>اسم وتوقيع العميل</small>
+      </div>
+      ${cancelled ? "" : `<figure class="inv__seal" aria-label="ختم GTECH MASR">${invoiceSealSvg(sealDate)}</figure>`}
     </section>
 
     <footer class="inv__foot">
-      <p class="inv__thanks">شكراً إنك اخترت GTECH MASR 💙</p>
-      <p>الاسترجاع خلال 14 يوم من الاستلام حسب سياسة الاسترجاع · الضمان حسب المكتوب جنب كل منتج · محتاج حاجة؟ كلمنا واتساب <span dir="ltr">${INVOICE_STORE.phone}</span></p>
+      <p><b>شكراً إنك اشتريت من GTECH MASR.</b> احتفظ بالفاتورة دي، هتحتاجها في الضمان أو الاسترجاع.</p>
+      <p class="inv__contact"><span dir="ltr">${escapeHtml(site)}</span><span>واتساب <span dir="ltr">${INVOICE_STORE.phone}</span></span><span>${INVOICE_STORE.area}</span></p>
     </footer>
-  </div>`;
+  </article>`;
 }
 
 // ختم دائري للمتجر (SVG) بلون حبر الأختام: اسم المتجر والشركة حوالين الدايرة، واللوجو والتاريخ في النص.
@@ -166,5 +219,7 @@ function printInvoice(o) {
     removeEventListener("afterprint", done);
   };
   addEventListener("afterprint", done);
-  window.print();
+  // الخط بيتحمّل أول ما يتستخدم، والفاتورة مخفية لحد الطباعة، فنستنى الخط (بحد أقصى ثانية ونص)
+  const ready = document.fonts?.load ? Promise.all(["400 13px \"IBM Plex Sans Arabic\"", "700 13px \"IBM Plex Sans Arabic\""].map((f) => document.fonts.load(f))) : Promise.resolve();
+  Promise.race([ready, new Promise((r) => setTimeout(r, 1500))]).catch(() => {}).then(() => window.print());
 }

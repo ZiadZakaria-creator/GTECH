@@ -607,60 +607,85 @@
   body.printing-invoice #invoice { display: block; }
 }
 .inv {
-  --ink: #0b1220; --sub: #5b6577; --line: #dfe4ec; --soft: #f4f7fb; --accent: #0a84ff;
-  font-family: Cairo, Tahoma, sans-serif; color: var(--ink); background: #fff; font-size: 12.5px; line-height: 1.6;
-  font-variant-numeric: tabular-nums; -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  --ink: #14213d; --sub: #56617a; --line: #d5dbe5; --soft: #f2f5fa; --accent: #0a6cff; --stamp: #1f4fd1;
+  font-family: "IBM Plex Sans Arabic", Cairo, Tahoma, sans-serif; color: var(--ink); background: #fff;
+  font-size: 12px; line-height: 1.65; font-variant-numeric: tabular-nums;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
 }
-.inv small { font-size: .82em; color: var(--sub); font-weight: 600; }
-.inv__cur { font-size: .78em; font-weight: 700; opacity: .75; }
-#invoice { box-sizing: border-box; width: 100%; padding: 0 3mm; }
-.inv__head { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 16px; border-bottom: 3px solid var(--ink); }
-.inv__brand { display: flex; align-items: center; gap: 12px; }
-.inv__logo { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 13px; background: linear-gradient(135deg, #00d4ff, #0a84ff); color: #fff; font-weight: 900; font-size: 30px; line-height: 1; }
-.inv__name { display: block; direction: ltr; font-size: 22px; font-weight: 900; letter-spacing: 1px; line-height: 1.1; }
-.inv__name span { color: var(--accent); font-size: .55em; letter-spacing: 4px; }
-.inv__brand small { display: block; margin-top: 2px; }
-.inv__title { text-align: left; }
-.inv__title h1 { font-size: 30px; font-weight: 900; line-height: 1; letter-spacing: -.5px; }
-.inv__no { margin-top: 6px; font-family: ui-monospace, Menlo, Consolas, monospace; font-weight: 700; font-size: 13px; }
-.inv__date { color: var(--sub); font-weight: 600; }
-.inv__parties { display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 18px; padding: 16px 0; border-bottom: 1px solid var(--line); }
-.inv__parties h2 { font-size: 10.5px; font-weight: 800; color: var(--accent); letter-spacing: 1px; margin-bottom: 4px; }
-.inv__parties p { margin: 0; }
-.inv__right { text-align: right; }
-.inv__url { text-align: right; color: var(--sub); }
+#invoice { box-sizing: border-box; width: 100%; padding: 0 2mm; }
+.inv p { margin: 0; }
+.inv small { display: block; font-size: 10.5px; color: var(--sub); font-weight: 500; }
+.inv__cur { font-size: .8em; font-weight: 500; }
 .inv__muted { color: var(--sub); }
-.inv__table { width: 100%; border-collapse: collapse; margin-top: 16px; }
-.inv__table th { background: var(--soft); color: var(--sub); font-size: 10.5px; font-weight: 800; text-align: right; padding: 8px 10px; border-bottom: 1px solid var(--line); }
-.inv__table td { padding: 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
-.inv__table td b { font-weight: 800; }
-.inv__table td small { display: block; }
-.inv__table .n { width: 28px; color: var(--sub); text-align: center; }
-.inv__table .q { width: 60px; text-align: center; }
-.inv__table .m { width: 110px; text-align: left; white-space: nowrap; }
-.inv__table .w { width: 96px; text-align: center; white-space: nowrap; }
-.inv__war { display: inline-block; padding: 2px 9px; border-radius: 999px; border: 1.5px solid var(--accent); color: var(--accent); font-weight: 800; font-size: 11.5px; }
-.inv__war.is-none { border-color: var(--line); color: var(--sub); font-weight: 700; }
-.inv__sealrow { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-top: 14px; break-inside: avoid; }
-.inv__warnote { margin: 0; max-width: 60%; color: var(--sub); font-weight: 600; font-size: 11.5px; }
-.inv__seal { margin: 0; display: flex; flex-direction: column; align-items: center; color: #1f4fd1; }
-.inv__seal svg { transform: rotate(-9deg); opacity: .95; mix-blend-mode: multiply; }
-.inv__seal figcaption { margin-top: -2px; font-size: 10px; font-weight: 700; color: var(--sub); }
+.inv__right { text-align: right; }
+
+/* الهيدر: اللوجو يمين، وعنوان الفاتورة وأرقامها شمال */
+.inv__head { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; padding-bottom: 18px; border-bottom: 2.5px solid var(--ink); }
+.inv__brand { display: flex; gap: 14px; align-items: flex-start; }
+.inv__logo { flex: none; display: grid; place-items: center; width: 56px; height: 56px; border-radius: 15px; background: var(--accent); color: #fff; font-weight: 700; font-size: 34px; line-height: 1; }
+.inv__name { display: block; font-size: 24px; font-weight: 700; letter-spacing: .5px; line-height: 1.1; }
+.inv__name span { color: var(--accent); font-size: .52em; letter-spacing: 3px; font-weight: 700; }
+.inv__brand p { font-weight: 500; margin-top: 3px; }
+.inv__sub { color: var(--sub); font-size: 11px; }
+.inv__title { min-width: 230px; }
+.inv__title h1 { font-size: 30px; font-weight: 700; line-height: 1; margin: 0 0 10px; }
+.inv__ids { margin: 0; }
+.inv__ids div { display: flex; justify-content: space-between; gap: 18px; padding: 2px 0; }
+.inv__ids dt { color: var(--sub); }
+.inv__ids dd { margin: 0; font-weight: 700; }
+
+/* العميل والعنوان والشحن */
+.inv__parties { display: grid; grid-template-columns: 1fr 1.35fr 1fr; gap: 0; margin: 16px 0 0; border: 1px solid var(--line); border-radius: 10px; }
+.inv__party { padding: 12px 14px; }
+.inv__party + .inv__party { border-right: 1px solid var(--line); }
+.inv__party h2 { font-size: 11px; font-weight: 700; color: var(--accent); margin: 0 0 4px; }
+.inv__big { font-size: 14px; font-weight: 700; }
+
+/* جدول المنتجات */
+.inv__table { width: 100%; border-collapse: collapse; margin-top: 18px; }
+.inv__table th { color: var(--sub); font-size: 11px; font-weight: 700; text-align: right; padding: 8px 10px; border-bottom: 1.5px solid var(--ink); }
+.inv__table td { padding: 11px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.inv__table td b { font-weight: 700; font-size: 12.5px; }
 .inv__table tr { break-inside: avoid; }
-.inv__bottom { display: grid; grid-template-columns: 1fr 260px; gap: 20px; align-items: start; margin-top: 16px; break-inside: avoid; }
-.inv__pay { padding: 12px 14px; border: 1px dashed var(--line); border-radius: 10px; }
-.inv__pay p { margin: 6px 0 0; }
-.inv__stamp { display: inline-block; padding: 3px 12px; border: 2px solid var(--ink); border-radius: 6px; font-weight: 900; font-size: 13px; letter-spacing: .5px; transform: rotate(-2deg); }
-.inv__pay.is-paid .inv__stamp { border-color: #16a34a; color: #16a34a; }
-.inv__pay.is-cancelled .inv__stamp { border-color: #dc2626; color: #dc2626; }
-.inv__totals { margin: 0; }
-.inv__totals div { display: flex; justify-content: space-between; padding: 5px 0; }
-.inv__totals dt { color: var(--sub); font-weight: 700; }
-.inv__totals dd { margin: 0; font-weight: 800; }
-.inv__grand { margin-top: 6px; padding: 10px 12px !important; border-radius: 10px; background: var(--ink); color: #fff; }
-.inv__grand dt, .inv__grand dd, .inv__grand .inv__cur { color: #fff !important; font-size: 15px; font-weight: 900; }
-.inv__foot { margin-top: 26px; padding-top: 12px; border-top: 1px solid var(--line); text-align: center; color: var(--sub); font-size: 10.5px; break-inside: avoid; }
-.inv__thanks { color: var(--ink); font-weight: 800; font-size: 13px; margin-bottom: 4px; }
+.inv__table .n { width: 26px; text-align: center; color: var(--sub); }
+.inv__table .w { width: 100px; text-align: center; white-space: nowrap; }
+.inv__table .q { width: 52px; text-align: center; }
+.inv__table .m { width: 104px; text-align: left; white-space: nowrap; }
+.inv__war { display: inline-block; padding: 2px 10px; border-radius: 999px; border: 1.5px solid var(--accent); color: var(--accent); font-weight: 700; font-size: 11px; }
+.inv__war.is-none { border-color: var(--line); color: var(--sub); font-weight: 500; }
+
+/* المبلغ المطلوب (العنصر الأقوى في الفاتورة) + الإجماليات */
+.inv__sum { display: grid; grid-template-columns: 1fr 250px; gap: 18px; margin-top: 18px; break-inside: avoid; }
+.inv__due { padding: 14px 18px; border: 2px solid var(--ink); border-radius: 12px; }
+.inv__due-label { font-weight: 700; color: var(--sub); }
+.inv__due-amount { font-size: 34px; font-weight: 700; line-height: 1.15; margin: 2px 0 4px !important; direction: rtl; }
+.inv__due-amount .inv__cur { font-size: 15px; }
+.inv__words { font-weight: 700; font-size: 12.5px; padding: 6px 0; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); }
+.inv__due-note { margin-top: 6px !important; color: var(--sub); font-size: 11px; }
+.inv__totals { margin: 0; align-self: start; }
+.inv__totals div { display: flex; justify-content: space-between; padding: 6px 2px; border-bottom: 1px solid var(--line); }
+.inv__totals dt { color: var(--sub); }
+.inv__totals dd { margin: 0; font-weight: 700; }
+.inv__totals .inv__grand { border-bottom: 2px solid var(--ink); padding: 9px 2px; }
+.inv__grand dt, .inv__grand dd { color: var(--ink); font-size: 15px; font-weight: 700; }
+.inv.is-cancelled .inv__due { border-color: #b91c1c; color: #b91c1c; }
+
+/* الشروط باختصار */
+.inv__terms { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--line); break-inside: avoid; }
+.inv__terms h3 { font-size: 12px; font-weight: 700; margin: 0 0 3px; }
+.inv__terms p { color: var(--sub); font-size: 10.5px; line-height: 1.7; }
+
+/* توقيع العميل + ختم المتجر */
+.inv__sign { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-top: 14px; break-inside: avoid; }
+.inv__sigline { flex: 0 1 300px; }
+.inv__sigline p { font-weight: 500; }
+.inv__line { display: block; height: 34px; border-bottom: 1.5px solid var(--ink); }
+.inv__sigline small { margin-top: 4px; }
+.inv__seal { margin: 0; color: var(--stamp); }
+.inv__seal svg { display: block; transform: rotate(-9deg); opacity: .95; mix-blend-mode: multiply; }
+
+.inv__foot { margin-top: 18px; padding-top: 12px; border-top: 2.5px solid var(--ink); font-size: 11px; break-inside: avoid; }
+.inv__contact { display: flex; gap: 22px; margin-top: 4px !important; color: var(--sub); }
 
 
 /* ============================================================
