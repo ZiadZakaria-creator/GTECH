@@ -966,3 +966,6 @@ body.admin .btn:focus-visible, body.admin .icon-btn:focus-visible, body.admin .o
 .sendnew__preview { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
 .sendnew__preview img { width: 100%; border-radius: 10px; display: block; }
 .sendnew__preview p { grid-column: 1 / -1; font-size: .85rem; }
+.sendnew__alt { display: grid; gap: 8px; margin-top: 10px; padding-top: 12px; border-top: 1px dashed var(--border); }
+.sendnew__alt .btn { width: 100%; justify-content: center; }
+.sendnew__or { justify-self: center; font-size: .8rem; font-weight: 800; color: var(--muted); }
