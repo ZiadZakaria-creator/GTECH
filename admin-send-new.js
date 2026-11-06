@@ -390,3 +390,30 @@ $("#snCollage").addEventListener("click", async () => {
   btn.textContent = "📋 صورة مجمّعة: انسخ وافتح الشات";
   snCollageReady = null;
 });
+
+// ===== SMS من شريحة الموبايل: نص بس (أسماء وأسعار ولينكات)، لأن الـ SMS مابيشيلش صور =====
+const SN_SMS_MAX = 5;
+const snShort = (s, n) => (s.length > n ? s.slice(0, n - 1).trim() + "…" : s);
+function snSmsText(list) {
+  const lines = list.map((p) => `- ${snShort(p.name, 40)}: ${fmtNum(p.price)} ج\ngtechmasr.com/p/${p.id}.html`);
+  return `وصل جديد في GTECH MASR\n${lines.join("\n")}\nالدفع عند الاستلام - توصيل القاهرة والجيزة`;
+}
+// الرسالة العربي: 70 حرف لو رسالة واحدة، و67 لكل جزء لو اتقسمت
+const snSmsParts = (t) => (t.length <= 70 ? 1 : Math.ceil(t.length / 67));
+
+$("#snSms").addEventListener("click", () => {
+  const phone = normalizePhone($("#snPhone").value);
+  if (!snValidPhone(phone)) return toast("📱 اكتب رقم موبايل مصري صح (01xxxxxxxxx)");
+  const sel = snProducts().filter((p) => snSelected.has(p.id));
+  if (!sel.length) return toast("اختار منتج واحد على الأقل");
+  const list = sel.slice(0, SN_SMS_MAX);
+  const text = snSmsText(list);
+  const parts = snSmsParts(text);
+  const extra = sel.length > SN_SMS_MAX ? `\n(أول ${num(SN_SMS_MAX)} منتجات بس عشان الرسالة ماتطولش)` : "";
+  if (parts > 6 && !confirm(`الرسالة هتتحسب ${num(parts)} رسايل من رصيدك.${extra}\nتكمّل؟`)) return;
+  if (parts <= 6) toast(`💬 الرسالة = ${num(parts)} ${parts === 1 ? "رسالة" : "رسايل"} من رصيدك${extra ? " · " + extra.trim() : ""}`);
+  snRemember(phone);
+  // أندرويد بيقرا ?body= والآيفون بيقرا &body=
+  const sep = /iPhone|iPad|iPod/.test(navigator.userAgent) ? "&" : "?";
+  location.href = `sms:+20${phone.slice(1)}${sep}body=${encodeURIComponent(text)}`;
+});
