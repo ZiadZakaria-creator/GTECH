@@ -164,7 +164,7 @@ $("#dashSections").addEventListener("click", (e) => {
 // القائمة الجانبية على الموبايل
 $("#dashBurger").addEventListener("click", () => document.body.classList.toggle("dash-menu-open"));
 $("#dashScrim").addEventListener("click", () => document.body.classList.remove("dash-menu-open"));
-if (["#orders", "#products", "#carts", "#leads", "#visits", "#shipping", "#reviews"].includes(location.hash)) {
+if (["#orders", "#products", "#carts", "#leads", "#visits", "#shipping", "#reviews", "#sendnew"].includes(location.hash)) {
   // نستنى لحد ما الأدمن يدخل
   const section = location.hash.slice(1);
   const wait = setInterval(() => {

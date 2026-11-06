@@ -24,7 +24,7 @@
   <meta name="apple-mobile-web-app-title" content="GTECH MASR Admin" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="admin.css?v=18" />
+  <link rel="stylesheet" href="admin.css?v=19" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a84ff'/><text x='32' y='44' font-size='36' font-family='Arial' font-weight='900' fill='white' text-anchor='middle'>G</text></svg>" />
 </head>
 <body class="admin">
@@ -45,6 +45,7 @@
       <button class="dash-sec" data-section="carts"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 2-1.5L21 8H6.2"/><circle cx="10" cy="20" r="1"/><circle cx="17" cy="20" r="1"/></svg><span>سلات متروكة</span><span class="tab__count" id="cartsBadge" hidden></span></button>
       <button class="dash-sec" data-section="visits"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>الزوار والتقارير</span></button>
       <button class="dash-sec" data-section="shipping"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg><span>الشحن والدفع</span></button>
+      <button class="dash-sec" data-section="sendnew"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3 3 10.5l7 2.5 2.5 7L21 3z"/><path d="m10 13 4-4"/></svg><span>ابعت الجديد</span></button>
       <button class="dash-sec" data-section="reviews"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.8-4.4 4.3 1 6.1L12 17l-5.4 2.8 1-6.1-4.4-4.3 6.1-.8L12 3z"/></svg><span>التقييمات</span></button>
     </nav>
     <div class="dash-side__foot">
@@ -356,6 +357,34 @@
       </section>
     </div>
 
+    <div id="sendnewSection" class="dash-section" hidden>
+      <section class="card-box dash-panel sendnew">
+        <p class="muted carts-hint">ابعت صور أحدث المنتجات لأي رقم واتساب من موبايلك: اكتب الرقم، اختار المنتجات، وبعدين خطوتين. الصور بتتبعت من رقمك العادي، ومفيش أي رسالة بتتبعت لوحدها.</p>
+        <div class="sendnew__grid">
+          <div class="sendnew__form">
+            <label class="sendnew__label" for="snPhone">رقم الواتساب</label>
+            <input id="snPhone" type="tel" inputmode="tel" dir="ltr" placeholder="01xxxxxxxxx" autocomplete="off" />
+            <div class="sendnew__recent" id="snRecent"></div>
+            <label class="sendnew__label">المنتجات</label>
+            <div class="sendnew__quick">
+              <button class="btn btn--ghost btn--sm" data-sn-last="3">آخر 3</button>
+              <button class="btn btn--ghost btn--sm" data-sn-last="5">آخر 5</button>
+              <button class="btn btn--ghost btn--sm" data-sn-last="10">آخر 10</button>
+              <button class="btn btn--ghost btn--sm" data-sn-last="0">إلغاء الكل</button>
+            </div>
+            <label class="sendnew__check"><input type="checkbox" id="snAllImgs" /> كل صور المنتج (مش أول صورة بس)</label>
+            <div class="sendnew__steps">
+              <button class="btn btn--ghost" id="snOpen">1️⃣ افتح شات الرقم</button>
+              <button class="btn btn--primary" id="snShare">2️⃣ ابعت الصور <span id="snCount"></span></button>
+              <button class="btn btn--ghost btn--sm" id="snDownload">⬇ نزّل الصور بدل كده</button>
+            </div>
+            <p class="muted sendnew__note" id="snNote">الخطوة 2 بتفتح قايمة المشاركة: اختار واتساب، والشات هتلاقيه أول واحد فوق لأنك لسه فاتحه.</p>
+          </div>
+          <div class="sendnew__list" id="snList"></div>
+        </div>
+      </section>
+    </div>
+
     <div id="leadsSection" class="dash-section" hidden>
       <section class="card-box dash-panel">
         <div class="dash-toolbar">
@@ -563,6 +592,7 @@
   <script src="admin-visits.js"></script>
   <script src="admin-promo-card.js"></script>
   <script src="admin-leads.js"></script>
+  <script src="admin-send-new.js"></script>
   <script src="admin-shipping.js"></script>
   <script src="admin-reviews.js"></script>
   <script src="admin-overview.js"></script>
