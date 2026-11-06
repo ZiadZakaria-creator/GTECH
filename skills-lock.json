@@ -403,6 +403,12 @@
       "skillPath": "skills/product-shots-detail-page/SKILL.md",
       "computedHash": "ee00aacabb795982efc66e5026d59b04a9f3d6cd0d6e3ac8501f324aafc6e955"
     },
+    "reddit-automation": {
+      "source": "flowkit-labs/skills",
+      "sourceType": "github",
+      "skillPath": "reddit-automation/SKILL.md",
+      "computedHash": "b9541be8aa1d4b0fa2e91730bc93e810c02bfb639aa951ad9a1a7612e4666c02"
+    },
     "redesign-existing-projects": {
       "source": "leonxlnx/taste-skill",
       "sourceType": "github",
