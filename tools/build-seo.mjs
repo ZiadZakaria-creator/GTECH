@@ -381,7 +381,7 @@ function categoryPages(indexTemplate, list) {
       .replace(/<meta property="og:title" content="[^"]*" \/>/, `<meta property="og:title" content="${esc(name)} | GTECH MASR" />`)
       .replace(/<meta property="og:description" content="[^"]*" \/>/, `<meta property="og:description" content="${esc(intro)}" />`)
       .replace(/<meta property="og:url" content="[^"]*" \/>/, `<meta property="og:url" content="${url}" />`)
-      .replace(/<h1>[\s\S]*?<\/h1>/, `<h1>${esc(name)}<br /><span class="gradient-text">بأسعار واضحة</span></h1>`)
+      .replace(/<h1 class="hb__h1" id="hbTitle">[\s\S]*?<\/h1>/, `<h1 class="hb__h1" id="hbTitle">${esc(name)} <span class="gradient-text">بأسعار واضحة</span></h1>`)
       .replace("<!--SEO-PRODUCT-LINKS-->", listHtml);
     writeFileSync(join(OUT, `c/${c}.html`), html);
     entries.push({ url, lastmod: items.map((p) => p.updatedAt || "").sort().pop() || undefined });

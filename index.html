@@ -35,11 +35,11 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="GTECH MASR" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <link rel="stylesheet" href="styles.css?v=90" />
+  <link rel="stylesheet" href="styles.css?v=91" />
   <link rel="icon" href="favicon.ico" sizes="48x48" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
 </head>
-<body>
+<body class="home-v2">
   <a class="skip-link" href="#main">تخطّى للمحتوى</a>
 
   <!-- شريط علوي -->
@@ -127,27 +127,15 @@
       </div>
     </section>
 
-    <!-- جهّز سيتك بميزانيتك (setup.html) -->
-    <section class="setup-promo" aria-labelledby="setupPromoTitle">
+    <!-- ليه تطلب مننا: 4 حاجات بتطمّن قبل الشراء (مكان "اطلب في 3 خطوات") -->
+    <section class="trust-row" aria-label="ليه تطلب من GTECH MASR">
       <div class="container">
-        <div class="setup-promo__card">
-          <div class="setup-promo__text">
-            <span class="setup-promo__icon" aria-hidden="true">🧮</span>
-            <div>
-              <h2 id="setupPromoTitle">جهّز سيتك بميزانيتك</h2>
-              <p>قولنا معاك كام، وإحنا نختارلك ماوس وكيبورد وسماعة (ودراع لو عايز) من المتاح بأسعار الموقع<span id="setupPromoFrom"></span>.</p>
-            </div>
-          </div>
-          <div class="setup-promo__actions">
-            <div class="setup-promo__chips" role="group" aria-label="اختار ميزانيتك">
-              <a class="chip" href="setup.html?b=1000">1,000 ج.م</a>
-              <a class="chip" href="setup.html?b=1500">1,500 ج.م</a>
-              <a class="chip" href="setup.html?b=2000">2,000 ج.م</a>
-              <a class="chip" href="setup.html?b=3000">3,000 ج.م</a>
-            </div>
-            <a class="btn btn--primary" href="setup.html">ابدأ جهّز سيتك ←</a>
-          </div>
-        </div>
+        <ul class="trust-row__list">
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v5M18 9.5v5"/></svg><div><b>الدفع عند الاستلام</b><small>ادفع لما الطلب يوصلك</small></div></li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg><div><b>القاهرة والجيزة</b><small>توصيل خلال 2–4 أيام</small></div></li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 13.7-5.6L20 8.7M20 4v4.7h-4.7M20 12a8 8 0 0 1-13.7 5.6L4 15.3M4 20v-4.7h4.7"/></svg><div><b>استرجاع خلال 14 يوم</b><small>لو المنتج مش مناسبك</small></div></li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7.5 3v5.5c0 4.6-3.2 8.3-7.5 9.5-4.3-1.2-7.5-4.9-7.5-9.5V6z"/><path d="m8.8 12 2.2 2.2 4.3-4.4"/></svg><div><b>منتجات أصلية</b><small>والضمان مكتوب في كل منتج</small></div></li>
+        </ul>
       </div>
     </section>
 
@@ -155,29 +143,10 @@
     <section class="section" id="categories">
       <div class="container">
         <div class="section__head">
-          <div>
-            <span class="eyebrow">تسوق حسب القسم</span>
-            <h2>الأقسام الرئيسية</h2>
-          </div>
-          <a href="#products" class="link-more">عرض الكل ←</a>
+          <h2>تسوّق حسب القسم</h2>
         </div>
 
-        <div class="categories" id="categoryCards"></div>
-      </div>
-    </section>
-
-    <!-- اطلب في 3 خطوات: بيشيل خوف الدفع عند الاستلام -->
-    <section class="how-order" aria-labelledby="stepsTitle">
-      <div class="container">
-        <div class="how__card">
-          <h2 id="stepsTitle">اطلب في <span class="gradient-text">3 خطوات</span></h2>
-          <ol class="how__list">
-            <li><span class="how__n">1</span><div><b>اختار واطلب</b><p>من الموقع أو على واتساب، من غير ما تدفع حاجة</p></div></li>
-            <li><span class="how__n">2</span><div><b>هنكلمك نأكد</b><p>بنتواصل معاك نأكد الطلب والعنوان قبل الشحن</p></div></li>
-            <li><span class="how__n">3</span><div><b>استلم وادفع</b><p>كاش أو فيزا للمندوب لما توصلك، في القاهرة والجيزة</p></div></li>
-          </ol>
-          <p class="how__more">🛡️ ضمان على أغلب المنتجات (مدته في صفحة كل منتج) · 🔄 استرجاع خلال 14 يوم · 🚚 عادي 2-4 أيام أو سريع خلال 24 ساعة</p>
-        </div>
+        <div class="cat-tiles" id="categoryCards"></div>
       </div>
     </section>
 
@@ -185,10 +154,7 @@
     <section class="section section--alt" id="products">
       <div class="container">
         <div class="section__head">
-          <div>
-            <span class="eyebrow">مختارات GTECH</span>
-            <h2>منتجات مميزة</h2>
-          </div>
+          <h2>منتجاتنا</h2>
         </div>
 
         <!-- شريط الأقسام: بيفضل ثابت تحت الهيدر وإنت بتتصفح المنتجات -->
@@ -225,41 +191,26 @@
       </div>
     </section>
 
-    <!-- العروض -->
-    <section class="section" id="offers">
+    <!-- جهّز سيتك بميزانيتك (setup.html) -->
+    <section class="setup-promo" aria-labelledby="setupPromoTitle">
       <div class="container">
-        <div class="offer">
-          <div class="offer__content">
-            <span class="pill pill--light" id="offerPill">🖱️ ماوسات جيمنج</span>
-            <h2 id="offerTitle">ماوسات <span class="gradient-text">جيمنج</span><br />لكل ميزانية</h2>
-            <p id="offerText">ماوسات سلكي ولاسلكي أصلية من لوجيتك وريدراجون وأولا وأونيكوما — للجيمنج والشغل والمذاكرة، وبإضاءة RGB.</p>
-            <p class="offer__price" id="offerPrice" hidden></p>
-            <a href="#products" class="btn btn--primary" id="offerBtn" data-jump="mice">تسوّق الماوسات</a>
-          </div>
-          <a class="offer__visual" id="offerVisual" href="#products" data-jump="mice" aria-label="ماوسات جيمنج أصلية">
-            <img class="offer__img offer__img--card" src="images/offer-mice.webp" alt="ماوسات لوجيتك G102 وريدراجون BM-2638 وميشن M371" width="360" height="360" />
-            <div class="offer__tag" id="offerTag" hidden></div>
-          </a>
-        </div>
-
-        <div class="mini-offers">
-          <div class="mini-offer mini-offer--purple" id="appPromo">
+        <div class="setup-promo__card">
+          <div class="setup-promo__text">
+            <span class="setup-promo__icon" aria-hidden="true">🧮</span>
             <div>
-              <small>تطبيق GTECH MASR</small>
-              <h3>اطلب أسرع من موبايلك</h3>
-              <p id="appPromoText">نزّل التطبيق وتابع طلباتك وأحدث المنتجات بدوسة</p>
-              <button type="button" class="btn btn--primary btn--sm mini-offer__btn" id="appPromoBtn" data-install-btn>📲 نزّل التطبيق</button>
+              <h2 id="setupPromoTitle">جهّز سيتك بميزانيتك</h2>
+              <p>قولنا معاك كام، وإحنا نختارلك ماوس وكيبورد وسماعة (ودراع لو عايز) من المتاح بأسعار الموقع<span id="setupPromoFrom"></span>.</p>
             </div>
-            <span>📲</span>
           </div>
-          <button type="button" class="mini-offer mini-offer--blue" id="setupPromo">
-            <div>
-              <small>ماوسات وكيبوردات</small>
-              <h3>كمّل سيت أب الجيمنج بتاعك</h3>
-              <p id="setupPromoText">ماوسات وكيبوردات جيمنج أصلية</p>
+          <div class="setup-promo__actions">
+            <div class="setup-promo__chips" role="group" aria-label="اختار ميزانيتك">
+              <a class="chip" href="setup.html?b=1000">1,000 ج.م</a>
+              <a class="chip" href="setup.html?b=1500">1,500 ج.م</a>
+              <a class="chip" href="setup.html?b=2000">2,000 ج.م</a>
+              <a class="chip" href="setup.html?b=3000">3,000 ج.م</a>
             </div>
-            <span>🎮</span>
-          </button>
+            <a class="btn btn--primary" href="setup.html">ابدأ جهّز سيتك ←</a>
+          </div>
         </div>
       </div>
     </section>
@@ -274,14 +225,6 @@
           </div>
         </div>
         <div class="bundles" id="bundleCards"></div>
-      </div>
-    </section>
-
-    <!-- الماركات: الماركات اللي في المتجر فعلاً (home.js بيحدّثها من المنتجات) -->
-    <section class="brands" aria-label="الماركات">
-      <div class="brands__track" id="brandsTrack">
-        <span>LOGITECH</span><span>REDRAGON</span><span>HYPERX</span><span>RAZER</span><span>ANKER</span><span>GAMESIR</span><span>SAMSUNG</span><span>WESTERN DIGITAL</span>
-        <span aria-hidden="true">LOGITECH</span><span aria-hidden="true">REDRAGON</span><span aria-hidden="true">HYPERX</span><span aria-hidden="true">RAZER</span><span aria-hidden="true">ANKER</span><span aria-hidden="true">GAMESIR</span><span aria-hidden="true">SAMSUNG</span><span aria-hidden="true">WESTERN DIGITAL</span>
       </div>
     </section>
 
@@ -325,21 +268,6 @@
       </div>
     </section>
 
-    <!-- النشرة البريدية -->
-    <section class="section section--tight">
-      <div class="container">
-        <div class="newsletter">
-          <div>
-            <h2>اشترك وخلّيك أول واحد يعرف 📩</h2>
-            <p>أحدث العروض والمنتجات مباشرة على بريدك.</p>
-          </div>
-          <form class="newsletter__form" id="newsletterForm">
-            <input type="email" placeholder="بريدك الإلكتروني" required aria-label="البريد الإلكتروني" />
-            <button class="btn btn--primary" type="submit">اشترك</button>
-          </form>
-        </div>
-      </div>
-    </section>
   </main>
 
   <!-- الفوتر -->

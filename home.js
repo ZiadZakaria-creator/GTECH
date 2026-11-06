@@ -115,7 +115,6 @@ let showAll = params.has("cat") || params.has("q") || params.has("max");
 // لينك مباشر لصفحة "تحت سعر معين": ./?max=500#products
 const BUDGET = 500;
 if (params.has("max")) { filters.max = String(Number(toLatinDigits(params.get("max"))) || BUDGET); filters.sort = "price-asc"; }
-const SHELF_MAX = 10;
 const SHELVES = [
   { key: "deals", icon: "🔥", title: "أقوى الخصومات", sub: "أكبر نسبة خصم حقيقية دلوقتي",
     pick: (all) => all.filter((p) => discount(p) > 0).sort((a, b) => discount(b) - discount(a)) },
@@ -126,103 +125,49 @@ const SHELVES = [
   { key: "storage", icon: "💾", title: "تخزين", sub: "هاردات SSD وخارجية", pick: (all) => all.filter((p) => p.cat === "storage") },
 ];
 const shelfMode = () => !showAll && filter === "all" && !query.trim() && !activeFilterCount() && !filters.sort;
-// المتوفر الأول، وبعدين الأحدث
-const shelfOrder = (a, b) => (inStock(b) - inStock(a)) || b.id - a.id;
 
-// الشرايط: "أقوى الخصومات" عرض كبير (منتج بطل + 4 جنبه)، والباقي شريط واحد بتابات بدل 4 شرايط شبه بعض
-let shelfTab = "budget";
+// الصفحة الرئيسية: قسمين شبكة (وصل جديد، وعليها خصم) وبينهم أزرار "تسوّق حسب احتياجك" — من غير شرايط بتتسحب
 const floatsFor = (p) => typeof FLOAT_IMAGES !== "undefined" && p.images?.[0] === `fs:${FLOAT_IMAGES[p.id]}`;
-function shelfLists() {
-  const all = shopProducts();
-  return SHELVES.map((sh) => {
-    let list = sh.pick(all);
-    if (sh.key === "deals") list = [...list].sort((a, b) => (inStock(b) - inStock(a)) || discount(b) - discount(a));
-    else if (sh.key !== "budget") list = [...list].sort(shelfOrder); // budget مترتبة بالسعر في pick
-    return { ...sh, list };
-  }).filter((sh) => sh.list.length >= 2);
-}
-function spotlightHtml(sh) {
-  const live = sh.list.filter(inStock);
-  const hero = [...live].sort((a, b) => floatsFor(b) - floatsFor(a) || discount(b) - discount(a))[0] || sh.list[0];
-  const side = sh.list.filter((p) => p !== hero).slice(0, 4);
-  const save = hero.old ? hero.old - hero.price : 0;
+const GRID_MAX = 8;
+function gridShelf(key, title, sub, list, count = false) {
+  if (list.length < 2) return "";
   return `
-    <div class="spot" style="--cc:${CATEGORY_COLORS[hero.cat] || "#0a84ff"}">
-      <div class="shelf__head">
-        <div><h3>${sh.icon} ${sh.title}</h3><small class="muted">${sh.sub}</small></div>
-        <div class="shelf__nav"><button type="button" class="shelf__all" data-shelf-all="deals"><span>عرض الكل</span><span class="shelf__count">${num(sh.list.length)}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button></div>
+    <section class="hs"${key === "deals" ? ' id="offers"' : ""} aria-labelledby="hs-${key}">
+      <div class="hs__head">
+        <div><h3 id="hs-${key}">${title}</h3><small class="muted">${sub}</small></div>
+        <button type="button" class="hs__all" data-shelf-all="${key}">عرض الكل${count ? ` <span>${num(list.length)}</span>` : ""}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
       </div>
-      <div class="spot__grid">
-        <article class="spot__hero">
-          <a class="spot__img ${floatsFor(hero) ? "is-float" : ""}" href="${productUrl(hero.id)}" aria-label="${escapeHtml(hero.name)}">
-            ${floatsFor(hero) ? `<img src="images/float/${hero.id}.webp" alt="${escapeHtml(hero.name)}" loading="lazy">` : productVisual(hero)}
-          </a>
-          ${discount(hero) ? `<span class="spot__off"><b>-${num(discount(hero))}%</b>خصم</span>` : ""}
-          <div class="spot__info">
-            <small>${escapeHtml(hero.brand)}</small>
-            <h4><a href="${productUrl(hero.id)}">${escapeHtml(hero.name)}</a></h4>
-            <div class="spot__price"><b>${fmt(hero.price)}</b>${hero.old ? `<del>${fmt(hero.old)}</del>` : ""}</div>
-            ${save ? `<span class="spot__save">وفّر ${fmt(save)}</span>` : ""}
-            <div class="spot__cta">${inStock(hero) ? `<button type="button" class="btn btn--primary" data-add="${hero.id}">🛒 أضف للسلة</button>` : ""}<a class="btn btn--ghost" href="${productUrl(hero.id)}">التفاصيل</a></div>
-          </div>
-        </article>
-        <div class="spot__side">${side.map((p) => `
-          <a class="spot__mini ${inStock(p) ? "" : "is-out"}" href="${productUrl(p.id)}">
-            <span class="spot__thumb">${productVisual(p)}</span>
-            <span class="spot__mtxt"><b>${escapeHtml(p.name)}</b><span><strong>${fmt(p.price)}</strong>${p.old ? ` <del>${fmt(p.old)}</del>` : ""}</span></span>
-            ${discount(p) ? `<em>-${num(discount(p))}%</em>` : ""}
-          </a>`).join("")}</div>
-      </div>
-    </div>`;
-}
-function tabbedShelfHtml(list) {
-  if (!list.some((sh) => sh.key === shelfTab)) shelfTab = list[0].key;
-  const cur = list.find((sh) => sh.key === shelfTab);
-  return `
-    <div class="shelf shelf--tabs">
-      <div class="shelf__head">
-        <div><h3>🧭 اختار على حسب احتياجك</h3>
-          <div class="shelf__tabs" role="tablist">${list.map((sh) => `<button type="button" role="tab" class="shelf__tab ${sh.key === shelfTab ? "active" : ""}" aria-selected="${sh.key === shelfTab}" data-shelf-tab="${sh.key}">${sh.icon} ${sh.title}</button>`).join("")}</div>
-        </div>
-        <div class="shelf__nav">
-          <button type="button" class="shelf__arrow" data-shelf-dir="-1" aria-label="السابق">‹</button>
-          <button type="button" class="shelf__arrow" data-shelf-dir="1" aria-label="التالي">›</button>
-          <button type="button" class="shelf__all" data-shelf-all="${cur.key}"><span>عرض الكل</span><span class="shelf__count">${num(cur.list.length)}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
-        </div>
-      </div>
-      <p class="muted shelf__sub">${cur.sub}</p>
-      <div class="shelf__track">${cur.list.slice(0, SHELF_MAX).map(productCard).join("")}</div>
-    </div>`;
+      <div class="products hs__grid">${list.slice(0, GRID_MAX).map(productCard).join("")}</div>
+    </section>`;
 }
 function renderShelves() {
-  const lists = shelfLists();
-  const deals = lists.find((sh) => sh.key === "deals");
-  const rest = lists.filter((sh) => sh.key !== "deals");
-  $("#shelves").innerHTML = (deals ? spotlightHtml(deals) : "") + (rest.length ? tabbedShelfHtml(rest) : "");
-  $("#showAllCount").textContent = `(${num(shopProducts().length)})`;
+  const all = shopProducts();
+  const live = all.filter(inStock);
+  const fresh = [...live].sort((a, b) => b.id - a.id);
+  const deals = live.filter((p) => discount(p) > 0).sort((a, b) => discount(b) - discount(a));
+  const needs = SHELVES.filter((sh) => sh.key !== "deals" && sh.pick(all).length >= 2);
+  $("#shelves").innerHTML = gridShelf("new", "وصل جديد", "آخر المنتجات اللي نزلت عندنا", fresh)
+    + (needs.length ? `
+    <div class="needs" role="group" aria-label="تسوّق حسب احتياجك">
+      <span class="needs__label">تسوّق حسب احتياجك</span>
+      <div class="needs__chips">${needs.map((sh) => `<button type="button" class="needs__chip" data-shelf-all="${sh.key}">${sh.icon} ${sh.title}</button>`).join("")}</div>
+    </div>` : "")
+    + gridShelf("deals", "عليها خصم دلوقتي", "مترتبة من الخصم الأكبر", deals, true);
+  $("#showAllCount").textContent = `(${num(all.length)})`;
 }
 
+// لينك "العروض" في الهيدر (./#offers) بيوصل لقسم "عليها خصم" بعد ما يترسم
+document.addEventListener("catalogloaded", () => {
+  if (location.hash === "#offers") requestAnimationFrame(() => $("#offers")?.scrollIntoView());
+});
+
 $("#shelves").addEventListener("click", (e) => {
-  const tab = e.target.closest("[data-shelf-tab]");
-  if (tab) {
-    shelfTab = tab.dataset.shelfTab;
-    const old = $("#shelves .shelf--tabs");
-    old.outerHTML = tabbedShelfHtml(shelfLists().filter((sh) => sh.key !== "deals"));
-    return;
-  }
-  const arrow = e.target.closest("[data-shelf-dir]");
-  if (arrow) {
-    const track = arrow.closest(".shelf").querySelector(".shelf__track");
-    // "التالي" في العربي ناحية الشمال
-    const dir = Number(arrow.dataset.shelfDir) * (getComputedStyle(track).direction === "rtl" ? -1 : 1);
-    track.scrollBy({ left: dir * track.clientWidth * 0.85, behavior: "smooth" });
-    return;
-  }
   const allBtn = e.target.closest("[data-shelf-all]");
   if (!allBtn) return;
   const key = allBtn.dataset.shelfAll;
   showAll = true;
   if (key === "deals") { filters.sort = "discount"; $("#sortSel").value = "discount"; setFilter("all"); }
+  else if (key === "new") { filters.sort = "newest"; $("#sortSel").value = "newest"; setFilter("all"); }
   else if (key === "budget") { filters.max = String(BUDGET); filters.sort = "price-asc"; $("#sortSel").value = "price-asc"; setFilter("all"); }
   else setFilter(key);
   $("#products").scrollIntoView({ behavior: "smooth" });
@@ -238,6 +183,7 @@ function renderProducts() {
   const list = applyFilters(base);
   const shelves = shelfMode() && products.length > 0;
   $("#shelves").hidden = !shelves;
+  $("#products").classList.toggle("is-shelves", shelves);
   $("#showAllWrap").hidden = !shelves;
   grid.hidden = shelves;
   if (shelves) renderShelves();
@@ -323,33 +269,22 @@ const categoryIconHtml = (k) => CATEGORY_SVG[k]
 function renderCategories() {
   const counts = {};
   shopProducts().forEach((p) => { counts[p.cat] = (counts[p.cat] || 0) + 1; });
-  // بينتو: القسم الأكبر بياخد مربع أكبر، وكل مربع فيه صورة منتج حقيقي من القسم وأقل سعر فيه.
-  // الأقسام الفاضية مش بتظهر هنا. المربع = رابط حقيقي لصفحة القسم (c/<قسم>.html) عشان جوجل يزحف منها،
-  // والـ JS بيعمل preventDefault وبيفلتر على الصفحة فوراً (نفس تجربة المستخدم).
+  // مربع صغير لكل قسم فيه منتجات: صورة منتج حقيقي من القسم + الاسم + أقل سعر. المربع = رابط حقيقي لصفحة القسم
+  // (c/<قسم>.html) عشان جوجل يزحف منها، والـ JS بيعمل preventDefault وبيفلتر على الصفحة فوراً.
   const tiles = Object.entries(categories).filter(([k]) => counts[k]).sort((a, b) => counts[b[0]] - counts[a[0]]);
-  const rest = (tiles.length - 4) % 4; // الصف الأخير بيتملي: أول مربعات فيه بتتمد
-  $("#categoryCards").innerHTML = tiles.map(([k, label], i) => {
+  $("#categoryCards").innerHTML = tiles.map(([k, label]) => {
     const list = shopProducts().filter((p) => p.cat === k);
     const live = list.filter(inStock);
     const from = Math.min(...(live.length ? live : list).map((p) => p.price));
-    // أشيك منتج في القسم، ويفضّل اللي ليه صورة عايمة (من غير خلفية — tools/float.py) لو صورته لسه هي نفسها
-    const floats = (p) => typeof FLOAT_IMAGES !== "undefined" && p.images?.[0] === `fs:${FLOAT_IMAGES[p.id]}`;
+    // أشيك منتج في القسم، ويفضّل اللي ليه صورة عايمة (من غير خلفية — tools/float.py)
     const rep = [...(live.length ? live : list)].filter((p) => p.images?.length)
-      .sort((a, b) => floats(b) - floats(a) || b.price - a.price)[0];
-    const float = rep && floats(rep);
-    const size = i === 0 ? "xl" : i === 1 ? "wide" : i >= 4 && rest && i - 4 >= tiles.length - 4 - rest
-      ? (rest === 1 ? "full" : rest === 2 || i === tiles.length - rest ? "wide" : "") : "";
+      .sort((a, b) => floatsFor(b) - floatsFor(a) || b.price - a.price)[0];
     return `
-    <a class="category bento__tile ${size ? `bento__tile--${size}` : ""} ${float ? "bento__tile--float" : ""}" data-filter="${k}" href="c/${k}.html#products" style="--cc:${CATEGORY_SVG[k]?.[0] || "#0a84ff"}">
-      <span class="bento__img">${float
-        ? `<img src="images/float/${rep.id}.webp" alt="${escapeHtml(rep.name)}" loading="lazy">`
+    <a class="category cat-tile" data-filter="${k}" href="c/${k}.html#products" style="--cc:${CATEGORY_SVG[k]?.[0] || "#0a84ff"}">
+      <span class="cat-tile__img">${rep && floatsFor(rep)
+        ? `<img src="images/float/${rep.id}.webp" alt="" loading="lazy">`
         : rep ? productVisual(rep) : categoryIconHtml(k)}</span>
-      <span class="bento__txt">
-        <small class="bento__count">${categoryIconHtml(k)}${num(counts[k])} منتج</small>
-        <h3>${label}</h3>
-        <span class="bento__from">يبدأ من <b>${fmt(from)}</b></span>
-      </span>
-      <span class="bento__go" aria-hidden="true">←</span>
+      <span class="cat-tile__txt"><b>${label}</b><small>من ${fmt(from)}</small></span>
     </a>`;
   }).join("");
   const total = shopProducts().length;
@@ -454,6 +389,7 @@ nav.addEventListener("click", (e) => {
 const OFFER_CAT = "mice";
 
 function renderOffer() {
+  if (!$("#offerTag")) return; // بانر العرض اتشال من الرئيسية v2
   const pct = categorySale(OFFER_CAT);
   const list = shopProducts().filter((p) => p.cat === OFFER_CAT && inStock(p));
   // لو فيه خصم على القسم (CATEGORY_SALES) البانر بيعلن عنه، ولو مفيش بيفضل بانر عادي للإيربودز
@@ -508,6 +444,7 @@ document.addEventListener("catalogloaded", renderBundles);
 // ============ المربعين اللي تحت العرض ============
 // 1) عرض التطبيق (حقيقي: بيتحسب في صفحة الدفع) — 2) أرخص سعر في الماوسات والكيبوردات من المنتجات نفسها
 function renderMiniOffers() {
+  if (!$("#appPromo")) return;
   if (isStandalone()) {
     $("#appPromoText").textContent = "إنت فاتح من التطبيق ✅";
     $("#appPromoBtn").hidden = true;
@@ -858,6 +795,7 @@ document.addEventListener("catalogloaded", () => { renderProducts(); renderCateg
 // ============ شريط الماركات: الماركات اللي في المتجر فعلاً ============
 // بالترتيب حسب عدد المنتجات، والضغط على أي ماركة بيفلتر المنتجات بيها
 function renderBrands() {
+  if (!$("#brandsTrack")) return;
   const counts = {};
   shopProducts().forEach((p) => { const b = String(p.brand || "").trim().toUpperCase(); if (b) counts[b] = (counts[b] || 0) + 1; });
   const list = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
@@ -870,7 +808,7 @@ renderBrands();
 document.addEventListener("productschange", renderBrands);
 document.addEventListener("catalogloaded", renderBrands);
 
-$("#brandsTrack").addEventListener("click", (e) => {
+$("#brandsTrack")?.addEventListener("click", (e) => {
   const b = e.target.closest("[data-brand]");
   if (!b) return;
   filters.brands.clear();
