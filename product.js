@@ -143,7 +143,7 @@ function renderDetail(p) {
         <div class="pd__perks">
           <div><span>💵</span><p>الدفع <b>عند الاستلام</b> — ادفع لما يوصلك</p></div>
           <div><span>🚚</span><p><b>${shipText}</b> للقاهرة والجيزة · متوقع ${delivery}</p></div>
-          <div><span>🛡️</span><p>${hasWarranty(p) ? `ضمان رسمي لمدة <b>${esc(warrantyText(p))}</b>` : "المنتج ده <b>من غير ضمان</b>"}</p></div>
+          <div><span>🛡️</span><p>${hasWarranty(p) ? `ضمان لمدة <b>${esc(warrantyText(p))}</b>` : "المنتج ده <b>من غير ضمان</b>"}</p></div>
           <div><span>🔄</span><p><a href="policies.html#returns">استرجاع أو استبدال خلال <b>14 يوم</b></a></p></div>
         </div>
       </div>
@@ -171,7 +171,7 @@ function renderDetail(p) {
         <tr><th>الماركة</th><td>${esc(p.brand)}</td></tr>
         <tr><th>القسم</th><td>${categoryLabel(p.cat)}</td></tr>
         ${Object.entries(p.specs).map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join("")}
-        <tr><th>الضمان</th><td>${hasWarranty(p) ? `${esc(warrantyText(p))} ضمان رسمي` : "من غير ضمان"}</td></tr>
+        <tr><th>الضمان</th><td>${hasWarranty(p) ? `ضمان ${esc(warrantyText(p))}` : "من غير ضمان"}</td></tr>
       </tbody>
     </table>`;
 

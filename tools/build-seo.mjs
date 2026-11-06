@@ -415,6 +415,7 @@ function contentPages(pageTemplate, list, imagesById) {
   // "وR50i" بتتعرض مقلوبة جنب الكلام الإنجليزي ← مسافة بعد واو العطف قبل أي حرف لاتيني أو رقم
   const fill = (html) => html.replace(/(^|[\s>(])و(?=[A-Za-z0-9])/g, "$1و ")
     .replace(/\{\{price:(\d+)\}\}/g, (_, id) => (live(+id) ? `${price(salePrice(live(+id)))} ج.م` : "—"))
+    .replace(/\{\{warranty:(\d+)\}\}/g, (_, id) => (live(+id) ? esc(warranty(live(+id))) : "—"))
     .replace(/\{\{link:(\d+)\}\}/g, (_, id) => (live(+id) ? `<a href="p/${id}.html">${esc(live(+id).name)}</a>` : ""))
     .replace(/\{\{cat:(\w+)\}\}/g, (_, c) => `<a href="c/${c}.html">${esc(CATEGORIES[c] || "المنتجات")}</a>`)
     .replace(/\{\{min:(\w+)\}\}/g, (_, c) => {

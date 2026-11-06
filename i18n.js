@@ -80,7 +80,7 @@ const I18N_EN = {
 "باكدج ريدراجون RGB": "Redragon RGB bundle",
 "باكدج لاسلكي بالكامل": "All-wireless bundle",
 "🟢 أوفر سيت أب": "🟢 Best value setup",
-"🔴 الأكثر طلباً": "🔴 Most popular",
+"🔴 RGB متناسق": "🔴 Matching RGB",
 "🟣 للمحترفين": "🟣 For pros",
 "ماوس لاسلكي + كيبورد ميكانيكال + هيدسيت RGB — كل اللي تحتاجه تبدأ بيه": "Wireless mouse + mechanical keyboard + RGB headset — everything you need to start",
 "سيت أب ريدراجون كامل بإضاءة RGB متناسقة": "A complete Redragon setup with matching RGB lighting",
@@ -343,7 +343,7 @@ const I18N_EN = {
 "— القاهرة والجيزة": "— Cairo & Giza",
 "توصيل القاهرة والجيزة": "Cairo & Giza delivery",
 "سريع خلال 24 ساعة أو عادي 2-4 أيام": "Express in 24 hours or standard in 2-4 days",
-"ضمان رسمي لمدة": "Official warranty for",
+"ضمان لمدة": "Warranty for",
 "المنتج ده": "this product",
 "من غير ضمان": "No warranty",
 "💳 أو قسّطها على 12 شهر بـ": "💳 Or pay in 12 monthly installments of",
@@ -551,7 +551,7 @@ const I18N_EN = {
 "اشترك وخلّيك أول واحد يعرف 📩": "Subscribe and be the first to know 📩",
 "احصل على خصم 10% على أول طلب + أحدث العروض والمنتجات مباشرة على بريدك.": "Get 10% off your first order + the latest offers and products straight to your inbox.",
 "اشترك": "Subscribe",
-"GTECH MASR متجرك الموثوق للإلكترونيات الأصلية. بنوفرلك أحدث التكنولوجيا بأفضل سعر وأعلى جودة خدمة.": "GTECH MASR is your trusted store for original electronics. We bring you the latest tech at the best price with top-quality service.",
+"GTECH MASR متجر إكسسوارات جيمنج وإلكترونيات أصلية في القاهرة والجيزة. أسعار واضحة، والدفع عند الاستلام، وبنرد عليك على واتساب.": "GTECH MASR is a store for original gaming accessories and electronics in Cairo and Giza. Clear prices, cash on delivery, and we answer you on WhatsApp.",
 "خدمة العملاء": "Customer service",
 "تتبع الطلب": "Track order",
 "سياسة الاسترجاع": "Return policy",
@@ -812,8 +812,8 @@ const I18N_PATTERNS = [
 "{1} Add to cart"
 ],
 [
-"^(.+?) ضمان رسمي$",
-"{1} official warranty"
+"^ضمان (.+?)$",
+"{1} warranty"
 ],
 [
 "^\\((.+?) تقييم\\)$",

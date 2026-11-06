@@ -255,11 +255,25 @@ function imageAttrs(src) {
   return src?.startsWith("fs:") ? `src="${TRANSPARENT}" data-fs="${escapeHtml(src.slice(3))}"` : `src="${escapeHtml(src)}"`;
 }
 
+// صور المنتجات المرفوعة مع الريبو (images/<منتج>/<اسم>) ليها نسخة صغيرة وقت النشر: images/<منتج>/t/<اسم>.webp
+// (tools/thumbs.py). الكروت والسلة بتاخدها، وصورة المنتج الكبيرة (gallery__main) بتاخد الأصلية.
+const REPO_IMG_RE = /^images\/([^/]+)\/([^/]+)\.(?:jpe?g|png|webp)$/i;
+
 // صورة المنتج: أول صورة، ولو مفيش (أو الصورة مفتحتش) بيظهر الإيموجي
 function productVisual(p, src = p.images?.[0], attrs = "") {
-  return src
-    ? `<img ${imageAttrs(src)} alt="${escapeHtml(p.name)}" loading="lazy" data-icon="${p.icon}" onerror="imgFallback(this)" ${attrs}>`
-    : `<span ${attrs}>${p.icon}</span>`;
+  if (!src) return `<span ${attrs}>${p.icon}</span>`;
+  const m = !attrs.includes("gallery__main") && REPO_IMG_RE.exec(src);
+  if (m && m[1] !== "float") {
+    return `<img src="${escapeHtml(`images/${m[1]}/t/${m[2]}.webp`)}" data-full="${escapeHtml(src)}" alt="${escapeHtml(p.name)}" loading="lazy" data-icon="${p.icon}" onerror="thumbFallback(this)" ${attrs}>`;
+  }
+  return `<img ${imageAttrs(src)} alt="${escapeHtml(p.name)}" loading="lazy" data-icon="${p.icon}" onerror="imgFallback(this)" ${attrs}>`;
+}
+// المصغرة مش موجودة (صورة لسه جديدة أو تشغيل محلي) ← الأصلية، ولو هي كمان مفتحتش ← الإيموجي
+function thumbFallback(img) {
+  const full = img.dataset.full;
+  if (!full) return imgFallback(img);
+  delete img.dataset.full;
+  img.src = full;
 }
 function imgFallback(img) {
   const span = document.createElement("span");
@@ -272,6 +286,7 @@ function imgFallback(img) {
 document.addEventListener("DOMContentLoaded", () => hydrateAll());
 refreshCatalog();
 
-// مدة الضمان: اللي صاحب المتجر كتبه للمنتج، ولو فاضي: سنة للإكسسوارات وسنتين لباقي الأقسام
-const warrantyText = (p) => String(p.warranty || "").trim() || (p.cat === "accessories" ? "سنة" : "سنتين");
-const hasWarranty = (p) => !/^(لا|بدون|مفيش|no|none|0)/i.test(warrantyText(p));
+// مدة الضمان: اللي صاحب المتجر كتبه للمنتج بس. لو الخانة فاضية مانوعدش بضمان من عندنا
+// (زي صفحات جوجل في build-seo.mjs) — املاها من اللوحة
+const warrantyText = (p) => String(p.warranty || "").trim();
+const hasWarranty = (p) => !!warrantyText(p) && !/^(لا|بدون|مفيش|no|none|0)/i.test(warrantyText(p));
