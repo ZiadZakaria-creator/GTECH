@@ -956,3 +956,13 @@ body.admin .btn:focus-visible, body.admin .icon-btn:focus-visible, body.admin .o
   .sendnew__grid { grid-template-columns: 1fr; }
   .sendnew__form { position: static; }
 }
+.sendnew__modes { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.sendnew__mode { position: relative; cursor: pointer; }
+.sendnew__mode input { position: absolute; opacity: 0; }
+.sendnew__mode span { display: block; text-align: center; font-weight: 700; font-size: .86rem; padding: 10px 8px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--bg-2); }
+.sendnew__mode input:checked + span { border-color: var(--primary); background: color-mix(in srgb, var(--primary) 14%, var(--bg-2)); }
+.sendnew__mode input:focus-visible + span { outline: 2px solid var(--primary); outline-offset: 2px; }
+.sendnew__check[hidden], .sendnew__preview[hidden], #snPreviewBtn[hidden] { display: none; }
+.sendnew__preview { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.sendnew__preview img { width: 100%; border-radius: 10px; display: block; }
+.sendnew__preview p { grid-column: 1 / -1; font-size: .85rem; }

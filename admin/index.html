@@ -24,7 +24,7 @@
   <meta name="apple-mobile-web-app-title" content="GTECH MASR Admin" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="admin.css?v=19" />
+  <link rel="stylesheet" href="admin.css?v=20" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a84ff'/><text x='32' y='44' font-size='36' font-family='Arial' font-weight='900' fill='white' text-anchor='middle'>G</text></svg>" />
 </head>
 <body class="admin">
@@ -359,7 +359,7 @@
 
     <div id="sendnewSection" class="dash-section" hidden>
       <section class="card-box dash-panel sendnew">
-        <p class="muted carts-hint">ابعت صور أحدث المنتجات لأي رقم واتساب من موبايلك: اكتب الرقم، اختار المنتجات، وبعدين خطوتين. الصور بتتبعت من رقمك العادي، ومفيش أي رسالة بتتبعت لوحدها.</p>
+        <p class="muted carts-hint">ابعت أحدث المنتجات لأي رقم واتساب من موبايلك: كل منتج في صورة متصممة فيها صورته ومميزاته وسعره (أو صور المنتج بس). اكتب الرقم، اختار المنتجات، وبعدين خطوتين. الصور بتتبعت من رقمك العادي، ومفيش أي رسالة بتتبعت لوحدها.</p>
         <div class="sendnew__grid">
           <div class="sendnew__form">
             <label class="sendnew__label" for="snPhone">رقم الواتساب</label>
@@ -372,7 +372,14 @@
               <button class="btn btn--ghost btn--sm" data-sn-last="10">آخر 10</button>
               <button class="btn btn--ghost btn--sm" data-sn-last="0">إلغاء الكل</button>
             </div>
-            <label class="sendnew__check"><input type="checkbox" id="snAllImgs" /> كل صور المنتج (مش أول صورة بس)</label>
+            <label class="sendnew__label">شكل الصور</label>
+            <div class="sendnew__modes">
+              <label class="sendnew__mode"><input type="radio" name="snMode" value="card" checked /><span>🎨 تصميم بالشرح والسعر</span></label>
+              <label class="sendnew__mode"><input type="radio" name="snMode" value="raw" /><span>📷 صور المنتج بس</span></label>
+            </div>
+            <label class="sendnew__check" id="snAllWrap" hidden><input type="checkbox" id="snAllImgs" /> كل صور المنتج (مش أول صورة بس)</label>
+            <button class="btn btn--ghost btn--sm" id="snPreviewBtn">👁 معاينة التصميم</button>
+            <div class="sendnew__preview" id="snPreview" hidden></div>
             <div class="sendnew__steps">
               <button class="btn btn--ghost" id="snOpen">1️⃣ افتح شات الرقم</button>
               <button class="btn btn--primary" id="snShare">2️⃣ ابعت الصور <span id="snCount"></span></button>

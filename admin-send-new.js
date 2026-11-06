@@ -61,10 +61,25 @@ function snRenderList() {
   snUpdateCount();
 }
 
+const snMode = () => ($("input[name=snMode]:checked") || {}).value || "card";
+
 function snPicked() {
+  const sel = snProducts().filter((p) => snSelected.has(p.id));
+  if (snMode() === "card") return sel.map((p) => ({ p, card: true }));
   const all = $("#snAllImgs").checked;
-  return snProducts().filter((p) => snSelected.has(p.id))
-    .flatMap((p) => (all ? p.images || [] : (p.images || []).slice(0, 1)).map((src, i) => ({ p, src, i })));
+  return sel.flatMap((p) => (all ? p.images || [] : (p.images || []).slice(0, 1)).map((src, i) => ({ p, src, i })));
+}
+
+// تصميم المنتج (renderPromoCard في admin-promo-card.js) بيتعمل مرة واحدة لكل نسخة من المنتج
+const snCardCache = new Map();
+function snCard(p) {
+  const key = JSON.stringify([p.id, p.name, p.price, p.old, p.warranty, (p.images || [])[0], p.highlights]);
+  if (!snCardCache.has(key)) {
+    const job = renderPromoCard(p);
+    snCardCache.set(key, job);
+    job.catch(() => snCardCache.delete(key));
+  }
+  return snCardCache.get(key);
 }
 
 function snUpdateCount() {
@@ -77,8 +92,13 @@ function snUpdateCount() {
 // بيحوّل الصور لملفات JPG عشان قايمة المشاركة وواتساب يقبلوها
 async function snFiles() {
   const out = [];
-  for (const { p, src, i } of snPicked()) {
+  for (const { p, src, i, card } of snPicked()) {
     try {
+      if (card) {
+        const blob = await snCard(p);
+        if (blob) out.push(new File([blob], `GTECH-MASR-${p.id}.jpg`, { type: "image/jpeg" }));
+        continue;
+      }
       const url = await snImageUrl(src, true);
       if (!url) continue;
       const blob = await (await fetch(url)).blob();
@@ -162,6 +182,27 @@ $("#snList").addEventListener("change", (e) => {
 });
 
 $("#snAllImgs").addEventListener("change", snUpdateCount);
+$$("input[name=snMode]").forEach((r) => r.addEventListener("change", () => {
+  const card = snMode() === "card";
+  $("#snAllWrap").hidden = card;
+  $("#snPreviewBtn").hidden = !card;
+  if (!card) $("#snPreview").hidden = true;
+  snUpdateCount();
+}));
+
+$("#snPreviewBtn").addEventListener("click", async () => {
+  const sel = snProducts().filter((p) => snSelected.has(p.id));
+  if (!sel.length) return toast("اختار منتج واحد على الأقل");
+  const box = $("#snPreview");
+  box.hidden = false;
+  box.innerHTML = `<p class="muted">⏳ بجهّز التصميمات...</p>`;
+  const urls = [];
+  for (const p of sel) {
+    try { const b = await snCard(p); if (b) urls.push([p, URL.createObjectURL(b)]); } catch {}
+  }
+  box.innerHTML = urls.map(([p, u]) => `<a href="${u}" target="_blank" rel="noopener" title="${escapeHtml(p.name)}"><img src="${u}" alt="${escapeHtml(p.name)}" /></a>`).join("")
+    || `<p class="muted">مقدرتش أجهّز التصميم</p>`;
+});
 
 document.addEventListener("sectionchange", (e) => {
   if (e.detail !== "sendnew") return;

@@ -5,11 +5,19 @@
 const CARD_W = 1080;
 const CARD_H = 1350;
 
-function cardImageSrc(p) {
+// الصورة من الملفات الثابتة المنشورة (p/img/map.json) الأول عشان مانصرفش قراءات Firestore،
+// ولو الصورة لسه ماتنشرتش بس بنجيبها من Firestore
+let cardMapJob = null;
+const cardStaticMap = () => (cardMapJob ||= fetch("p/img/map.json", { cache: "no-cache" })
+  .then((r) => (r.ok ? r.json() : {})).catch(() => ({})));
+async function cardImageSrc(p) {
   const src = (p.images || [])[0];
-  if (!src) return Promise.resolve("");
-  if (src.startsWith("fs:")) return fetchStoredImage(src.slice(3)).catch(() => "");
-  return Promise.resolve(/^(https?:|data:)/.test(src) ? src : siteUrl(src));
+  if (!src) return "";
+  if (src.startsWith("fs:")) {
+    const file = (await cardStaticMap())[src.slice(3)];
+    return file ? siteUrl("p/img/" + file) : fetchStoredImage(src.slice(3)).catch(() => "");
+  }
+  return /^(https?:|data:)/.test(src) ? src : siteUrl(src);
 }
 
 function loadImg(src) {
@@ -217,15 +225,17 @@ async function renderPromoCard(p) {
   ctx.fillStyle = "#e8eefc";
   ctx.font = "800 30px Cairo";
   ctx.textAlign = "right";
-  ctx.fillText("🛒 اطلب من: tinyurl.com/gtech-store", 1040, CARD_H - 36);
+  ctx.fillText("🛒 اطلبه من: gtechmasr.com", 1040, CARD_H - 36);
   ctx.textAlign = "left";
   ctx.direction = "ltr";
   ctx.fillText(`💬 ${WHATSAPP.replace(/^20/, "0")}`, 40, CARD_H - 36);
   ctx.direction = "rtl";
   ctx.textAlign = "center";
+  // الضمان بيتكتب بس لو المنتج عليه ضمان فعلاً
+  const war = typeof hasWarranty === "function" && hasWarranty(p) ? `🛡 ضمان ${warrantyText(p)}  ·  ` : "";
   ctx.fillStyle = "#7dffb8";
   ctx.font = "700 26px Cairo";
-  ctx.fillText("💵 الدفع عند الاستلام  ·  🚚 توصيل القاهرة والجيزة", 540, CARD_H - 128);
+  ctx.fillText(`${war}💵 الدفع عند الاستلام  ·  🚚 القاهرة والجيزة`, 540, CARD_H - 128);
 
   return new Promise((resolve) => c.toBlob(resolve, "image/jpeg", 0.92));
 }
