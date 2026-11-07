@@ -2217,3 +2217,6 @@ main:focus { outline: none; }
 .home-v2 .setup-promo__icon { box-shadow: none; }
 /* الموبايل: 6 منتجات (3 صفوف) في كل قسم بدل 8 عشان الصفحة ماتطولش */
 @media (max-width: 600px) { .hs__grid > .product:nth-child(n+7) { display: none; } }
+/* لينك إعلان لمنتج واحد (?ad=99): كارت واحد في النص */
+.tt-land__grid--one { grid-template-columns: minmax(0, 440px); justify-content: center; }
+@media (max-width: 900px) { .tt-land__grid--one { grid-auto-flow: row; grid-auto-columns: auto; grid-template-columns: minmax(0, 420px); overflow: visible; } }

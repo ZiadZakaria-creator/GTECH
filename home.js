@@ -538,6 +538,14 @@ startOrderStrip();
 // فاللي جاي منه بيلاقي منتجات الإعلان نفسها أول حاجة بدل ما يدوّر عليها
 // G309 أول واحد عشان الإعلان الممول عليه هو، وبعده G305 بتاع فيديو "رأيي بصراحة"
 const TIKTOK_PICKS = [18, 27, 19, 49]; // G309 · G305 · Pulsefire Fuse · Cloud II Core
+// لينك إعلان بيحدد منتجه: gtechmasr.com/?ad=99&utm_source=tiktok ← المنتج ده فوق، وتحته الرئيسية كلها
+const AD_PICKS = (() => {
+  try {
+    const q = params.get("ad");
+    if (q) sessionStorage.setItem("gtech-tt-ad", q);
+    return (sessionStorage.getItem("gtech-tt-ad") || "").split(",").map((x) => Number(toLatinDigits(x))).filter(Boolean);
+  } catch { return []; }
+})();
 const fromTikTok = (() => {
   try {
     if (detectSource() === "tiktok") sessionStorage.setItem("gtech-tt-land", "1");
@@ -548,17 +556,17 @@ const fromTikTok = (() => {
 function renderTikTokLanding() {
   const box = $("#ttLand");
   if (!box || !fromTikTok) return;
-  const items = TIKTOK_PICKS.map((id) => shopProducts().find((p) => p.id === id)).filter((p) => p && inStock(p));
+  const items = (AD_PICKS.length ? AD_PICKS : TIKTOK_PICKS).map((id) => shopProducts().find((p) => p.id === id)).filter((p) => p && inStock(p));
   box.hidden = !items.length;
   if (!items.length) return;
   box.innerHTML = `
     <div class="container">
       <div class="tt-land__head">
-        <span class="tt-land__eyebrow">🎬 من إعلان تيك توك</span>
-        <h2 id="ttLandTitle">السيت أب اللاسلكي اللي شفته 👇</h2>
-        <p>اختار اللي يناسبك · الدفع عند الاستلام · توصيل القاهرة والجيزة</p>
+        <span class="tt-land__eyebrow">🎬 من تيك توك</span>
+        <h2 id="ttLandTitle">${AD_PICKS.length ? "اللي شفته في الفيديو 👇" : "من فيديوهاتنا على تيك توك 👇"}</h2>
+        <p>${AD_PICKS.length ? "وتحت هتلاقي كل منتجاتنا" : "اختار اللي يناسبك"} · الدفع عند الاستلام · توصيل القاهرة والجيزة</p>
       </div>
-      <div class="tt-land__grid">${items.map((p) => {
+      <div class="tt-land__grid ${items.length === 1 ? "tt-land__grid--one" : ""}">${items.map((p) => {
         const off = discount(p);
         return `
         <article class="tt-card" style="--cc:${CATEGORY_COLORS[p.cat] || "#0a84ff"}">
