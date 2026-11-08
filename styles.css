@@ -2143,6 +2143,27 @@ main:focus { outline: none; }
   .hb__img.is-active, .hb__word.is-in, .hb__kicker.is-in b, .hb__product.is-in { animation: none; }
   .hb__bar { display: none; }
 }
+/* الموبايل: هيرو مضغوط (الصورة شمال والكلام يمين) عشان المنتجات تبان من أول شاشة.
+   80% من الزوار كانوا بيمشوا من غير ما يفتحوا منتج، والهيرو كان واخد الشاشة كلها */
+@media (max-width: 600px) {
+  .hb { padding: 8px 0 14px; }
+  .hb__card { display: grid; grid-template-columns: 1fr 44%; grid-template-areas: "copy stage" "thumbs thumbs"; column-gap: 8px; align-items: center; padding: 12px 14px 12px; border-radius: 22px; }
+  .hb__stage { grid-area: stage; height: 178px; }
+  .hb__word { left: 23%; top: 100px; font-size: min(3.4rem, calc(42cqi / var(--wlen, 6))); }
+  .hb__floor { left: 23%; top: 172px; width: 34%; height: 18px; }
+  .hb__copy { grid-area: copy; text-align: right; gap: 8px; }
+  .hb__h1 { font-size: .7rem; line-height: 1.5; }
+  .hb__kicker { font-size: clamp(1.15rem, 6cqi, 1.45rem); line-height: 1.25; }
+  .hb__kicker b { text-align: right; }
+  .hb__product { padding: 8px 10px; border-radius: 14px; gap: 2px; }
+  .hb__product b { font-size: .78rem; }
+  .hb__price { font-size: 1rem; }
+  .hb__price s, .hb__price em { display: none; }
+  .hb__cta .btn--ghost, .hb__trust { display: none; }
+  .hb__cta .btn { padding: 10px 12px; font-size: .9rem; }
+  .hb__thumbs { grid-area: thumbs; margin-top: 10px; gap: 6px; }
+  .hb__thumb { width: 38px; height: 38px; padding: 5px; border-radius: 11px; }
+}
 
 /* ============ الرئيسية v2: أهدى وأوضح، والمنتجات قدّام ============
    body.home-v2 (index.html وصفحات الأقسام c/*.html المبنية منها). الألوان من التوكنز فبتشتغل في الفاتح والغامق */
