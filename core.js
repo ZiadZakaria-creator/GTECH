@@ -141,7 +141,10 @@ if ("serviceWorker" in navigator && (location.protocol === "https:" || location.
   addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch((err) => console.warn("sw", err)));
 }
 
-const isStandalone = () => matchMedia("(display-mode: standalone)").matches || navigator.standalone === true || /GTECHAdminApp/.test(navigator.userAgent);
+// تطبيق Google Play (TWA): أول صفحة بتفتح بـ referrer من التطبيق، فبنفتكره طول الزيارة
+try { if (/^android-app:\/\/com\.gtechmasr\.app/.test(document.referrer)) sessionStorage.setItem("gtech-twa", "1"); } catch {}
+const isTWA = () => { try { return sessionStorage.getItem("gtech-twa") === "1"; } catch { return false; } };
+const isStandalone = () => matchMedia("(display-mode: standalone)").matches || navigator.standalone === true || /GTECHAdminApp/.test(navigator.userAgent) || isTWA();
 const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 let installPrompt = null;
 

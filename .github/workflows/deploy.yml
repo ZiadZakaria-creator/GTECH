@@ -35,6 +35,8 @@ jobs:
           mkdir _site
           cp *.html *.css *.js *.webmanifest favicon.ico _site/
           cp -r icons admin _site/
+          # بيربط تطبيق المتجر على Google Play بالدومين (من غيره يظهر شريط كروم فوق)
+          cp -r .well-known _site/
           [ -d images ] && cp -r images _site/ || true
           [ -d videos ] && cp -r videos _site/ || true
 

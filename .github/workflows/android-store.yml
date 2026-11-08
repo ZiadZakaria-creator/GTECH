@@ -1,0 +1,72 @@
+name: Build store Android app (Google Play)
+
+# بيبني تطبيق المتجر (ملف .aab للرفع على Play Console، و.apk للتجربة) لما فولدر android-store يتغير.
+# التوقيع بمفتاح رفع ثابت محفوظ في GitHub Secrets:
+#   STORE_UPLOAD_KEYSTORE  = ملف upload.jks متحوّل base64
+#   STORE_UPLOAD_PASS      = الباسورد بتاعه
+# من غيرهم الـ build بيتخطّى ومابيطلعش ملفات (عشان مايطلعش تطبيق بمفتاح غلط).
+on:
+  push:
+    paths:
+      - "android-store/**"
+      - ".github/workflows/android-store.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.14.3"
+
+      - name: Upload key
+        id: key
+        env:
+          STORE_UPLOAD_KEYSTORE: ${{ secrets.STORE_UPLOAD_KEYSTORE }}
+          STORE_UPLOAD_PASS: ${{ secrets.STORE_UPLOAD_PASS }}
+        run: |
+          if [ -z "$STORE_UPLOAD_KEYSTORE" ] || [ -z "$STORE_UPLOAD_PASS" ]; then
+            echo "::warning::STORE_UPLOAD_KEYSTORE / STORE_UPLOAD_PASS secrets are missing (Settings > Secrets and variables > Actions). Skipping the build."
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          printf '%s' "$STORE_UPLOAD_KEYSTORE" | base64 -d > "$RUNNER_TEMP/upload.jks"
+          echo "ok=true" >> "$GITHUB_OUTPUT"
+
+      - name: Build signed AAB + APK
+        if: steps.key.outputs.ok == 'true'
+        env:
+          KEY_PASS: ${{ secrets.STORE_UPLOAD_PASS }}
+        run: |
+          export KEYSTORE="$RUNNER_TEMP/upload.jks"
+          # رقم الإصدار لازم يزيد مع كل رفع على Play
+          export VERSION_CODE="$(( ${{ github.run_number }} + 1 ))"
+          gradle -p android-store bundleRelease assembleRelease --no-daemon
+          cp android-store/app/build/outputs/bundle/release/app-release.aab gtechmasr.aab
+          cp android-store/app/build/outputs/apk/release/app-release.apk gtechmasr.apk
+
+      - uses: softprops/action-gh-release@v2
+        if: steps.key.outputs.ok == 'true'
+        with:
+          tag_name: store-app-v${{ github.run_number }}
+          name: "GTECH MASR (تطبيق المتجر) v${{ github.run_number }}"
+          body: |
+            تطبيق المتجر لـ Google Play.
+            - gtechmasr.aab: الملف اللي بيترفع على Play Console.
+            - gtechmasr.apk: للتجربة على الموبايل قبل الرفع.
+          files: |
+            gtechmasr.aab
+            gtechmasr.apk
+          make_latest: false

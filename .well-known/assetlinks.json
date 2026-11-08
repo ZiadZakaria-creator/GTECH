@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.gtechmasr.app",
+      "sha256_cert_fingerprints": [
+        "99:67:67:F1:02:48:5C:81:11:E3:49:A6:D5:E8:44:74:8E:4E:FB:CD:E6:DC:D6:F3:8C:66:0E:8C:21:54:43:8E"
+      ]
+    }
+  }
+]

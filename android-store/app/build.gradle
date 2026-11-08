@@ -1,0 +1,49 @@
+// تطبيق المتجر على Google Play: بيفتح https://gtechmasr.com ملء الشاشة (Trusted Web Activity).
+// أي تعديل في الموقع بيظهر في التطبيق على طول، فالتطبيق مش محتاج تحديث غير لو الأيقونة أو الاسم اتغيروا.
+// بيتبني على GitHub (.github/workflows/android-store.yml) ويطلع ملف .aab للرفع على Play Console.
+plugins {
+    id "com.android.application"
+}
+
+def buildNumber = (System.getenv("VERSION_CODE") ?: "1") as int
+
+android {
+    namespace "com.gtechmasr.app"
+    compileSdk 36
+
+    defaultConfig {
+        // اسم الباكدج ده مابيتغيرش بعد أول نشر على Play
+        applicationId "com.gtechmasr.app"
+        minSdk 24
+        targetSdk 36
+        versionCode buildNumber
+        versionName "1.0.${buildNumber}"
+    }
+
+    signingConfigs {
+        release {
+            // مفتاح الرفع (upload key) ثابت: محفوظ في GitHub Secrets، ونسخة منه مع صاحب المتجر.
+            // لازم نفس المفتاح في كل تحديث، فماينفعش يتعمل جديد في كل build زي تطبيق اللوحة.
+            storeFile file(System.getenv("KEYSTORE") ?: "upload.jks")
+            storePassword System.getenv("KEY_PASS")
+            keyAlias "upload"
+            keyPassword System.getenv("KEY_PASS")
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation "com.google.androidbrowserhelper:androidbrowserhelper:2.7.4"
+}
