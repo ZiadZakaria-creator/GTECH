@@ -138,6 +138,9 @@ async function loadLatestCatalog() {
         const res = await fetch("catalog.json", { cache: "no-cache" });
         if (!res.ok) throw new Error("catalog.json " + res.status);
         list = (await res.json()).items;
+        // بنحفظها كنسخة قديمة (at: 0): الصفحة الجاية تبدأ بيها فالسلة ماتتمسحش وهي بتتنقل بين الصفحات،
+        // وفي نفس الوقت تحاول Firestore تاني أول ما يرجع
+        if (list?.length) store.set(CATALOG_CACHE, { at: 0, items: list });
       } catch (err2) {
         console.warn("catalog fallback", err2);
         catalogFailed = true;
