@@ -19,9 +19,22 @@ public class StoreLauncherActivity extends LauncherActivity {
         return getSharedPreferences("diag", MODE_PRIVATE).getString("crash", null);
     }
 
+    private boolean launchPending;
+
+    // بنفتح كروم بعد ما شاشة التطبيق تظهر فعلاً مش من onCreate: على أندرويد 15 (اتجرب على vivo)
+    // الفتح من onCreate كان بيقفل التطبيق بعد ثانية من غير ما المتجر يظهر.
     @Override
     protected boolean shouldLaunchImmediately() {
-        return !BuildConfig.DIAG;
+        return false;
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus && launchPending && !isFinishing()) {
+            launchPending = false;
+            launchTwa();
+        }
     }
 
     @Override
@@ -33,7 +46,11 @@ public class StoreLauncherActivity extends LauncherActivity {
             if (!BuildConfig.DIAG) throw t;
             startError = t;
         }
-        if (startError == null && (isFinishing() || shouldLaunchImmediately())) return;
+        if (startError == null && isFinishing()) return;
+        if (!BuildConfig.DIAG) {
+            launchPending = true;
+            return;
+        }
 
         StringBuilder msg = new StringBuilder();
         msg.append("Device: ").append(Build.MANUFACTURER).append(' ').append(Build.MODEL)
