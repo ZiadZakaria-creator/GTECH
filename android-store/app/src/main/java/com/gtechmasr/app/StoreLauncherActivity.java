@@ -62,25 +62,15 @@ public class StoreLauncherActivity extends LauncherActivity {
     @Override
     protected void onDestroy() { logEvent("destroy finishing=" + isFinishing()); super.onDestroy(); }
 
-    private boolean launchPending;
-
-    // بنفتح كروم بعد ما شاشة التطبيق تظهر فعلاً مش من onCreate: على أندرويد 15 (اتجرب على vivo)
-    // الفتح من onCreate كان بيقفل التطبيق بعد ثانية من غير ما المتجر يظهر.
-    @Override
-    protected boolean shouldLaunchImmediately() {
-        return false;
+    private boolean hasReport() {
+        android.content.SharedPreferences p = getSharedPreferences("diag", MODE_PRIVATE);
+        return p.contains("crash") || p.contains("events");
     }
 
+    // النسخة العادية بتفتح المتجر على طول. نسخة الاختبار بتعرض تقرير آخر فتحة لو فيه.
     @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        logEvent("focus " + hasFocus);
-        if (hasFocus && launchPending && !isFinishing()) {
-            launchPending = false;
-            logEvent("launchTwa");
-            launchTwa();
-            logEvent("launchTwa returned");
-        }
+    protected boolean shouldLaunchImmediately() {
+        return !(BuildConfig.DIAG && hasReport());
     }
 
     @Override
@@ -92,14 +82,11 @@ public class StoreLauncherActivity extends LauncherActivity {
             if (!BuildConfig.DIAG) throw t;
             startError = t;
         }
-        if (startError == null && isFinishing()) { logEvent("create: finishing early"); return; }
-        android.content.SharedPreferences diag = getSharedPreferences("diag", MODE_PRIVATE);
-        boolean hasReport = startError != null || diag.contains("crash") || diag.contains("events");
-        if (!BuildConfig.DIAG || !hasReport) {
-            logEvent("create " + getIntent());
-            launchPending = true;
+        if (startError == null && (isFinishing() || shouldLaunchImmediately())) {
+            logEvent("create, launched=" + !isFinishing());
             return;
         }
+        android.content.SharedPreferences diag = getSharedPreferences("diag", MODE_PRIVATE);
 
         StringBuilder msg = new StringBuilder();
         msg.append("Device: ").append(Build.MANUFACTURER).append(' ').append(Build.MODEL)
