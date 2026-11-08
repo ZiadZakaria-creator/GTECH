@@ -18,6 +18,12 @@ android {
         targetSdk 36
         versionCode buildNumber
         versionName "1.0.${buildNumber}"
+        // نسخة اختبار بتعرض معلومات المتصفح وسبب القفلة (DIAG=1)، والنسخة العادية بتفتح المتجر على طول
+        buildConfigField "boolean", "DIAG", System.getenv("DIAG") == "1" ? "true" : "false"
+    }
+
+    buildFeatures {
+        buildConfig true
     }
 
     signingConfigs {
