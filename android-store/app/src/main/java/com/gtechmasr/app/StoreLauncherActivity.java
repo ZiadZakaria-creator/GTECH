@@ -19,6 +19,49 @@ public class StoreLauncherActivity extends LauncherActivity {
         return getSharedPreferences("diag", MODE_PRIVATE).getString("crash", null);
     }
 
+    // سجل بسيط لنسخة الاختبار: إيه اللي حصل في آخر فتحة (بيتعرض في الرسالة)
+    void logEvent(String event) {
+        if (!BuildConfig.DIAG) return;
+        android.content.SharedPreferences p = getSharedPreferences("diag", MODE_PRIVATE);
+        String old = p.getString("events", "");
+        if (old.length() > 1500) old = old.substring(old.length() - 1500);
+        long t = android.os.SystemClock.uptimeMillis() % 100000;
+        p.edit().putString("events", old + t + " " + event + "\n").commit();
+    }
+
+    @Override
+    protected androidx.browser.customtabs.CustomTabsCallback getCustomTabsCallback() {
+        final androidx.browser.customtabs.CustomTabsCallback quality = super.getCustomTabsCallback();
+        return new androidx.browser.customtabs.CustomTabsCallback() {
+            @Override
+            public void onNavigationEvent(int navigationEvent, Bundle extras) {
+                logEvent("nav " + navigationEvent);
+                quality.onNavigationEvent(navigationEvent, extras);
+            }
+
+            @Override
+            public void extraCallback(String callbackName, Bundle args) {
+                logEvent("extra " + callbackName + " " + args);
+                quality.extraCallback(callbackName, args);
+            }
+
+            @Override
+            public Bundle extraCallbackWithResult(String callbackName, Bundle args) {
+                logEvent("extraR " + callbackName + " " + args);
+                return quality.extraCallbackWithResult(callbackName, args);
+            }
+        };
+    }
+
+    @Override
+    protected void onPause() { super.onPause(); logEvent("pause"); }
+
+    @Override
+    protected void onStop() { super.onStop(); logEvent("stop"); }
+
+    @Override
+    protected void onDestroy() { logEvent("destroy finishing=" + isFinishing()); super.onDestroy(); }
+
     private boolean launchPending;
 
     // بنفتح كروم بعد ما شاشة التطبيق تظهر فعلاً مش من onCreate: على أندرويد 15 (اتجرب على vivo)
@@ -31,9 +74,12 @@ public class StoreLauncherActivity extends LauncherActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
+        logEvent("focus " + hasFocus);
         if (hasFocus && launchPending && !isFinishing()) {
             launchPending = false;
+            logEvent("launchTwa");
             launchTwa();
+            logEvent("launchTwa returned");
         }
     }
 
@@ -46,8 +92,11 @@ public class StoreLauncherActivity extends LauncherActivity {
             if (!BuildConfig.DIAG) throw t;
             startError = t;
         }
-        if (startError == null && isFinishing()) return;
-        if (!BuildConfig.DIAG) {
+        if (startError == null && isFinishing()) { logEvent("create: finishing early"); return; }
+        android.content.SharedPreferences diag = getSharedPreferences("diag", MODE_PRIVATE);
+        boolean hasReport = startError != null || diag.contains("crash") || diag.contains("events");
+        if (!BuildConfig.DIAG || !hasReport) {
+            logEvent("create " + getIntent());
             launchPending = true;
             return;
         }
@@ -76,13 +125,15 @@ public class StoreLauncherActivity extends LauncherActivity {
         if (startError != null) msg.append("\n\nStart error: ").append(android.util.Log.getStackTraceString(startError));
         String crash = lastCrash();
         msg.append("\n\nLast crash: ").append(crash == null ? "none" : crash.length() > 1800 ? crash.substring(0, 1800) : crash);
+        msg.append("\n\nEvents:\n").append(diag.getString("events", "none"));
 
         new AlertDialog.Builder(this)
                 .setTitle("GTECH test")
                 .setMessage(msg.toString())
                 .setCancelable(false)
                 .setPositiveButton("Open store", (d, w) -> {
-                    getSharedPreferences("diag", MODE_PRIVATE).edit().remove("crash").commit();
+                    getSharedPreferences("diag", MODE_PRIVATE).edit().remove("crash").remove("events").commit();
+                    logEvent("open tapped");
                     try {
                         launchTwa();
                     } catch (Throwable t) {
@@ -91,7 +142,10 @@ public class StoreLauncherActivity extends LauncherActivity {
                                 .setPositiveButton("Close", (d2, w2) -> finish()).show();
                     }
                 })
-                .setNegativeButton("Close", (d, w) -> finish())
+                .setNegativeButton("Clear", (d, w) -> {
+                    getSharedPreferences("diag", MODE_PRIVATE).edit().remove("crash").remove("events").commit();
+                    finish();
+                })
                 .show();
     }
 }
