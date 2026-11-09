@@ -4,7 +4,7 @@
 const INVOICE_STORE = {
   name: "GTECH MASR",
   company: "ZIRATECH",
-  phone: "01100053123",
+  phone: "01555541018",
   area: "القاهرة والجيزة",
 };
 

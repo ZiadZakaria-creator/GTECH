@@ -449,7 +449,7 @@ function contentPages(pageTemplate, list, imagesById) {
       <article class="container cp" data-no-i18n>
         <h1>${esc(h1)}</h1>
         ${body}
-        <div class="cp-cta"><a class="btn btn--primary" href="setup.html">🧮 جهّز سيتك بميزانيتك</a><a class="btn btn--ghost" href="https://wa.me/201100053123" target="_blank" rel="noopener">💬 اسألنا على واتساب</a></div>
+        <div class="cp-cta"><a class="btn btn--primary" href="setup.html">🧮 جهّز سيتك بميزانيتك</a><a class="btn btn--ghost" href="https://wa.me/201555541018" target="_blank" rel="noopener">💬 اسألنا على واتساب</a></div>
         <p class="cp-note">💵 الدفع عند الاستلام · 🚚 توصيل القاهرة والجيزة · الأسعار من الموقع وبتتحدث تلقائي</p>
       </article>
     </section>
