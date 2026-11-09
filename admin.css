@@ -932,6 +932,8 @@ body.admin .btn:focus-visible, body.admin .icon-btn:focus-visible, body.admin .o
 .sendnew__label { font-weight: 800; font-size: .92rem; }
 .sendnew__form input[type=tel] { font-size: 1.15rem; font-weight: 700; padding: 12px 14px; border-radius: 14px; background: var(--bg-2); border: 1px solid var(--border); color: inherit; outline: 0; text-align: left; }
 .sendnew__form input[type=tel]:focus { border-color: var(--primary); }
+.sendnew__search { font: inherit; padding: 10px 14px; border-radius: 14px; background: var(--bg-2); border: 1px solid var(--border); color: inherit; outline: 0; }
+.sendnew__search:focus { border-color: var(--primary); }
 .sendnew__recent { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: .85rem; }
 .sendnew__recent:empty { display: none; }
 .sendnew__chip { font: inherit; font-weight: 700; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg-2); color: inherit; cursor: pointer; }

@@ -44,9 +44,25 @@ function snSetLast(n) {
   snSelected = new Set(snProducts().slice(0, n).map((p) => p.id));
 }
 
+// البحث بالاسم أو رقم المنتج (عشان تلاقي منتج معين بسرعة لعميل سأل عليه)
+const snQuery = () => ($("#snSearch")?.value || "").trim().toLowerCase().replace(/^#/, "");
+function snMatches(p, q) {
+  if (!q) return true;
+  if (String(p.id) === q) return true;
+  const hay = `${p.name || ""} ${p.brand || ""}`.toLowerCase();
+  return q.split(/\s+/).every((w) => hay.includes(w));
+}
+
 function snRenderList() {
-  const list = snProducts();
+  const all = snProducts();
   if (!snTouched && !snSelected.size) snSetLast(3);
+  const q = snQuery();
+  const list = all.filter((p) => snMatches(p, q));
+  if (q && !list.length) {
+    $("#snList").innerHTML = `<div class="dash-empty"><span>🔎</span><p>مفيش منتج بالاسم ده</p></div>`;
+    snUpdateCount();
+    return;
+  }
   $("#snList").innerHTML = list.length ? list.map((p) => `
     <label class="sendnew__item ${snSelected.has(p.id) ? "is-on" : ""}">
       <input type="checkbox" data-sn-id="${p.id}" ${snSelected.has(p.id) ? "checked" : ""} />
@@ -121,12 +137,37 @@ function snRemember(phone) {
   snRenderRecent();
 }
 
+// رسالة بتفاصيل المنتجات المختارة: الاسم والسعر والمميزات (DPI، الأوضاع…) والضمان واللينك
+const SN_TEXT_MAX = 3;
+const snPriceTxt = (n) => `${Number(n).toLocaleString("en-US")} ج.م`;
+function snDetailsText(list) {
+  const one = (p) => {
+    const lines = [`*${p.name}*`];
+    lines.push(`💰 ${snPriceTxt(p.price)}${p.old > p.price ? ` بدل ${snPriceTxt(p.old)}` : ""}`);
+    (p.highlights || []).slice(0, 5).forEach((h) => lines.push(`• ${h}`));
+    if (hasWarranty(p)) lines.push(`🛡 ضمان ${warrantyText(p)}`);
+    lines.push(`🔗 ${siteUrl(`p/${p.id}.html`)}`);
+    return lines.join("\n");
+  };
+  return `أهلاً 👋 معاك GTECH MASR\n\n${list.map(one).join("\n\n")}\n\n💵 الدفع عند الاستلام · 🚚 التوصيل القاهرة والجيزة`;
+}
+
 $("#snOpen").addEventListener("click", () => {
   const phone = normalizePhone($("#snPhone").value);
   if (!snValidPhone(phone)) return toast("📱 اكتب رقم موبايل مصري صح (01xxxxxxxxx)");
   snRemember(phone);
-  // من غير أي نص: الصور بس هي اللي هتتبعت
-  window.open(`https://wa.me/20${phone.slice(1)}`, "_blank", "noopener");
+  const sel = snProducts().filter((p) => snSelected.has(p.id));
+  const withText = $("#snWithText").checked && sel.length;
+  if (withText && sel.length > SN_TEXT_MAX) toast(`💬 الرسالة فيها تفاصيل أول ${num(SN_TEXT_MAX)} منتجات بس عشان ماتطولش`);
+  // مع رسالة التفاصيل (لو متعلّم عليها) أو من غير نص خالص والصور بس هي اللي هتتبعت
+  const text = withText ? `?text=${encodeURIComponent(snDetailsText(sel.slice(0, SN_TEXT_MAX)))}` : "";
+  window.open(`https://wa.me/20${phone.slice(1)}${text}`, "_blank", "noopener");
+});
+
+$("#snSearch").addEventListener("input", () => {
+  // أول ما تدوّر على منتج معين: نلغي الاختيار الافتراضي (آخر 3) عشان مايتبعتش معاه منتجات تانية
+  if (!snTouched) { snTouched = true; snSelected = new Set(); }
+  snRenderList();
 });
 
 $("#snShare").addEventListener("click", async () => {

@@ -24,7 +24,7 @@
   <meta name="apple-mobile-web-app-title" content="GTECH MASR Admin" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="admin.css?v=21" />
+  <link rel="stylesheet" href="admin.css?v=22" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a84ff'/><text x='32' y='44' font-size='36' font-family='Arial' font-weight='900' fill='white' text-anchor='middle'>G</text></svg>" />
 </head>
 <body class="admin">
@@ -45,7 +45,7 @@
       <button class="dash-sec" data-section="carts"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 2-1.5L21 8H6.2"/><circle cx="10" cy="20" r="1"/><circle cx="17" cy="20" r="1"/></svg><span>سلات متروكة</span><span class="tab__count" id="cartsBadge" hidden></span></button>
       <button class="dash-sec" data-section="visits"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>الزوار والتقارير</span></button>
       <button class="dash-sec" data-section="shipping"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg><span>الشحن والدفع</span></button>
-      <button class="dash-sec" data-section="sendnew"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3 3 10.5l7 2.5 2.5 7L21 3z"/><path d="m10 13 4-4"/></svg><span>ابعت الجديد</span></button>
+      <button class="dash-sec" data-section="sendnew"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3 3 10.5l7 2.5 2.5 7L21 3z"/><path d="m10 13 4-4"/></svg><span>ابعت لعميل</span></button>
       <button class="dash-sec" data-section="reviews"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.8-4.4 4.3 1 6.1L12 17l-5.4 2.8 1-6.1-4.4-4.3 6.1-.8L12 3z"/></svg><span>التقييمات</span></button>
     </nav>
     <div class="dash-side__foot">
@@ -359,13 +359,14 @@
 
     <div id="sendnewSection" class="dash-section" hidden>
       <section class="card-box dash-panel sendnew">
-        <p class="muted carts-hint">ابعت أحدث المنتجات لأي رقم واتساب من موبايلك: كل منتج في صورة متصممة فيها صورته ومميزاته وسعره (أو صور المنتج بس). اكتب الرقم، اختار المنتجات، وبعدين خطوتين. الصور بتتبعت من رقمك العادي، ومفيش أي رسالة بتتبعت لوحدها.</p>
+        <p class="muted carts-hint">ابعت أي منتج لأي رقم واتساب من موبايلك: دوّر على المنتج أو اختار أحدث المنتجات، وكل منتج بيتبعت في صورة متصممة فيها صورته ومميزاته وسعره، ومعاها رسالة بالتفاصيل واللينك. الصور والرسالة بتتبعت من رقمك، ومفيش أي حاجة بتتبعت لوحدها.</p>
         <div class="sendnew__grid">
           <div class="sendnew__form">
             <label class="sendnew__label" for="snPhone">رقم الموبايل (واتساب أو SMS)</label>
             <input id="snPhone" type="tel" inputmode="tel" dir="ltr" placeholder="01xxxxxxxxx" autocomplete="off" />
             <div class="sendnew__recent" id="snRecent"></div>
-            <label class="sendnew__label">المنتجات</label>
+            <label class="sendnew__label" for="snSearch">المنتجات</label>
+            <input id="snSearch" class="sendnew__search" type="search" placeholder="🔎 دوّر على منتج بالاسم أو الرقم (مثلاً G305)" autocomplete="off" />
             <div class="sendnew__quick">
               <button class="btn btn--ghost btn--sm" data-sn-last="3">آخر 3</button>
               <button class="btn btn--ghost btn--sm" data-sn-last="5">آخر 5</button>
@@ -377,6 +378,7 @@
               <label class="sendnew__mode"><input type="radio" name="snMode" value="card" checked /><span>🎨 تصميم بالشرح والسعر</span></label>
               <label class="sendnew__mode"><input type="radio" name="snMode" value="raw" /><span>📷 صور المنتج بس</span></label>
             </div>
+            <label class="sendnew__check"><input type="checkbox" id="snWithText" checked /> 💬 افتح الشات برسالة فيها تفاصيل المنتج (السعر، المميزات، الضمان، اللينك)</label>
             <label class="sendnew__check" id="snAllWrap" hidden><input type="checkbox" id="snAllImgs" /> كل صور المنتج (مش أول صورة بس)</label>
             <button class="btn btn--ghost btn--sm" id="snPreviewBtn">👁 معاينة التصميم</button>
             <div class="sendnew__preview" id="snPreview" hidden></div>
