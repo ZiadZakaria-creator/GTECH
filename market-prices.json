@@ -1,0 +1,51 @@
+{
+  "updated": "2026-11-11",
+  "note": "أسعار جديد (مش مستعمل) من نتايج البحث، مش من قراءة مباشرة للمواقع. افتح اللينك واتأكد قبل ما تطبّق.",
+  "trusted": ["Games2Egypt", "Amazon.eg"],
+  "items": {
+    "81": [
+      { "store": "Games2Egypt", "price": 4590, "url": "https://www.games2egypt.com/Product/24887/dualsense-ps5-controller-white" },
+      { "store": "Games2Egypt", "price": 4499, "note": "بضمان IBS سنتين", "url": "https://www.games2egypt.com/Product/25027/dualsense-ps5-controller-white-ibs-2y-warranty" },
+      { "store": "Noon", "price": 4267, "url": "https://www.noon.com/egypt-en/sony-dualsense-wireless-controller-for-ps5-white/N53414690A/p/" }
+    ],
+    "94": [
+      { "store": "Games2Egypt", "price": 4590, "url": "https://www.games2egypt.com/Product/32191/dualsense-ps5-controller-midnight-black-used", "note": "سعر الجديد من صفحة المستعمل" },
+      { "store": "Noon", "price": 4334, "note": "نسخة رسمية", "url": "https://www.noon.com/egypt-en/dualsense-wireless-ps5-controller-midnight-black-official-version/N53410810A/p/" }
+    ],
+    "98": [
+      { "store": "Games2Egypt", "price": 4690, "note": "من نتايج البحث، مفيش لينك مباشر" },
+      { "store": "Jumia", "price": 4499, "url": "https://www.jumia.com.eg/playstation-5-dualsense-wireless-controller-grey-camouflage-37778267.html" },
+      { "store": "Noon", "price": 4419, "url": "https://www.noon.com/egypt-en/dualsense-wireless-ps5-controller-grey-camouflage-official-version/N53358520A/p/" }
+    ],
+    "44": [
+      { "store": "Amazon.eg", "price": 8099, "note": "أغلب العروض من 8,099 (فيه عرض واحد بـ 6,500)", "url": "https://www.amazon.eg/-/en/WD-My-Passport-4TB-Worldwide/dp/B097BY24ZW" },
+      { "store": "2B", "price": 8999, "url": "https://qarenly.com/en/2b/western-digital-my-passport-4tb-black-13833" }
+    ],
+    "100": [
+      { "store": "Amazon.eg", "price": 6500, "url": "https://amazon.eg/-/en/WD-Elements-Portable-2TB-portable/dp/B06W55K9N6" },
+      { "store": "Dream2000", "price": 6999, "url": "https://dream2000.com/en/collections/external-hard" }
+    ],
+    "27": [
+      { "store": "Games2Egypt", "price": 2099, "url": "https://www.games2egypt.com/Product/24559/logitech-g305-lightspeed-wireless-gaming-mouse-black" },
+      { "store": "Amazon.eg", "price": 2099, "url": "https://www.amazon.eg/-/en/Logitech-Lightspeed-Wireless-Gaming-Mouse/dp/B07CGPZ3ZQ" }
+    ],
+    "68": [
+      { "store": "Games2Egypt", "price": 2249, "url": "https://www.games2egypt.com/Product/24787/logitech-g502-hero-high-performance-wired-gaming-mouse-black" },
+      { "store": "Amazon.eg", "price": 2222, "url": "https://www.amazon.eg/-/en/Logitech-G502-Hero-Gaming-Mouse/dp/B076HSH2D9" },
+      { "store": "Vodafone", "price": 1799, "note": "عرض", "url": "https://eshop.vodafone.com.eg/en/prod/logitech-g502-hero-high-performance-gaming-mouse-black" }
+    ],
+    "14": [
+      { "store": "Amazon.eg", "price": 990, "url": "https://www.amazon.eg/-/en/Logitech-LightSync-Gaming-Grade-Sensor-Computer/dp/B092ZP78R5" },
+      { "store": "Pricena", "price": 999, "note": "نون وجوميا", "url": "https://eg.pricena.com/en/product/logitech-g102-price-in-egypt" }
+    ],
+    "35": [
+      { "store": "Amazon.eg", "price": 3599, "note": "اللون الأبيض", "url": "https://www.amazon.eg/%D9%84%D8%A7%D8%B3%D9%84%D9%83%D9%8A%D8%A9-%D9%84%D9%84%D8%A7%D9%84%D8%B9%D8%A7%D8%A8-%D9%84%D9%88%D8%AC%D9%8A%D8%AA%D9%83-%D9%88%D8%A8%D9%84%D9%88%D8%AA%D9%88%D8%AB-%D9%85%D9%8A%D9%83%D8%B1%D9%88%D9%81%D9%88%D9%86/dp/B08R8DQDRK" },
+      { "store": "Noon", "price": 3742, "note": "الأسود", "url": "https://www.noon.com/egypt-en/g435-lightspeed-wireless-gaming-headset-black/N52549991A/p/" }
+    ],
+    "95": [
+      { "store": "Amazon.eg", "price": 7838, "url": "https://www.amazon.eg/-/en/HyperX-Cloud-III-Multi-Platform-Detachable/dp/B0F6NYQTJP" },
+      { "store": "Noon", "price": 7499, "url": "https://www.noon.com/egypt-en/cloud-iii-s-wireless-gaming-headset/N70177259V/p/" },
+      { "store": "Games World", "price": 8559, "url": "https://www.gamesworldegypt.com/hyperx-cloud-iii-s-wireless-gaming-headset-black-red" }
+    ]
+  }
+}

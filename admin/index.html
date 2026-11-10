@@ -24,7 +24,7 @@
   <meta name="apple-mobile-web-app-title" content="GTECH MASR Admin" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="admin.css?v=23" />
+  <link rel="stylesheet" href="admin.css?v=24" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a84ff'/><text x='32' y='44' font-size='36' font-family='Arial' font-weight='900' fill='white' text-anchor='middle'>G</text></svg>" />
 </head>
 <body class="admin">
@@ -45,6 +45,7 @@
       <button class="dash-sec" data-section="carts"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 2-1.5L21 8H6.2"/><circle cx="10" cy="20" r="1"/><circle cx="17" cy="20" r="1"/></svg><span>سلات متروكة</span><span class="tab__count" id="cartsBadge" hidden></span></button>
       <button class="dash-sec" data-section="visits"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>الزوار والتقارير</span></button>
       <button class="dash-sec" data-section="shipping"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg><span>الشحن والدفع</span></button>
+      <button class="dash-sec" data-section="market"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg><span>أسعار السوق</span></button>
       <button class="dash-sec" data-section="sendnew"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3 3 10.5l7 2.5 2.5 7L21 3z"/><path d="m10 13 4-4"/></svg><span>ابعت لعميل</span></button>
       <button class="dash-sec" data-section="reviews"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.8-4.4 4.3 1 6.1L12 17l-5.4 2.8 1-6.1-4.4-4.3 6.1-.8L12 3z"/></svg><span>التقييمات</span></button>
     </nav>
@@ -357,6 +358,17 @@
       </section>
     </div>
 
+    <div id="marketSection" class="dash-section" hidden>
+      <section class="card-box dash-panel market">
+        <p class="muted carts-hint">جنب كل منتج سعرك وأسعار المنافسين (جيمز تو إيجيبت وأمازون، والباقي للمقارنة) والسعر المقترح: أرخص من أرخص منافس بحاجة بسيطة. اكتب «أقل سعر» تقبله لكل منتج عشان الاقتراح مايقعش تحته (بيتحفظ على الجهاز ده بس). عدّل الجديد لو حابب، اختار المنتجات، ودوس «طبّق». <b>أسعار السوق من نتايج البحث: افتح اللينك واتأكد قبل ما تطبّق.</b></p>
+        <div class="mk-bar">
+          <span class="muted">آخر تحديث لأسعار السوق: <b id="mkUpdated">—</b></span>
+          <span class="mk-bar__btns"><button class="btn btn--ghost btn--sm" id="mkAll">تحديد / إلغاء الكل</button><button class="btn btn--primary" id="mkApply" disabled>✅ طبّق</button></span>
+        </div>
+        <div class="mk-list" id="mkList"><p class="muted">بنحمّل...</p></div>
+      </section>
+    </div>
+
     <div id="sendnewSection" class="dash-section" hidden>
       <section class="card-box dash-panel sendnew">
         <p class="muted carts-hint">ابعت أي منتج لأي رقم واتساب من موبايلك: دوّر على المنتج أو اختار أحدث المنتجات، وكل منتج بيتبعت في صورة متصممة فيها صورته ومميزاته وسعره، ومعاها رسالة بالتفاصيل واللينك. الصور والرسالة بتتبعت من رقمك، ومفيش أي حاجة بتتبعت لوحدها.</p>
@@ -612,6 +624,7 @@
   <script src="admin-promo-card.js"></script>
   <script src="admin-leads.js"></script>
   <script src="admin-send-new.js"></script>
+  <script src="admin-market.js"></script>
   <script src="admin-shipping.js"></script>
   <script src="admin-reviews.js"></script>
   <script src="admin-overview.js"></script>

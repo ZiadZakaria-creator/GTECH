@@ -18,6 +18,7 @@ const productsStore = USE_FIREBASE
       async save(p) { await (await this.db()).collection("products").doc(String(p.id)).set(p); },
       async remove(id) { await (await this.db()).collection("products").doc(String(id)).delete(); },
       async setActive(id, active) { await (await this.db()).collection("products").doc(String(id)).update({ active, updatedAt: new Date().toISOString() }); },
+      async update(id, changes) { await (await this.db()).collection("products").doc(String(id)).update({ ...changes, updatedAt: new Date().toISOString() }); },
       async saveImage(data, bg = null) {
         const col = (await this.db()).collection("productImages");
         const id = col.doc().id;
@@ -57,6 +58,7 @@ const productsStore = USE_FIREBASE
       async save(p) { this.write([...this.read().filter((x) => x.id !== p.id), p]); },
       async remove(id) { this.write(this.read().filter((x) => x.id !== id)); },
       async setActive(id, active) { this.write(this.read().map((x) => (x.id === id ? { ...x, active } : x))); },
+      async update(id, changes) { this.write(this.read().map((x) => (x.id === id ? { ...x, ...changes } : x))); },
       async saveImage(data, bg = null) {
         const key = (bg ? `cfit-${bg}-` : "") + "img" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
         const imgs = store.get(LOCAL_IMAGES, {});
@@ -112,7 +114,7 @@ function showSection(name) {
   if (label) $("#dashTitle").textContent = label.textContent;
   document.body.classList.remove("dash-menu-open");
   scrollTo({ top: 0 });
-  if (name === "products") watchProducts();
+  if (name === "products" || name === "market") watchProducts();
   document.dispatchEvent(new CustomEvent("sectionchange", { detail: name }));
 }
 function watchProducts() {
@@ -164,7 +166,7 @@ $("#dashSections").addEventListener("click", (e) => {
 // القائمة الجانبية على الموبايل
 $("#dashBurger").addEventListener("click", () => document.body.classList.toggle("dash-menu-open"));
 $("#dashScrim").addEventListener("click", () => document.body.classList.remove("dash-menu-open"));
-if (["#orders", "#products", "#carts", "#leads", "#visits", "#shipping", "#reviews", "#sendnew"].includes(location.hash)) {
+if (["#orders", "#products", "#carts", "#leads", "#visits", "#shipping", "#reviews", "#sendnew", "#market"].includes(location.hash)) {
   // نستنى لحد ما الأدمن يدخل
   const section = location.hash.slice(1);
   const wait = setInterval(() => {
