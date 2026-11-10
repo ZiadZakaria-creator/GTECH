@@ -44,6 +44,12 @@ jobs:
         with:
           node-version: 20
 
+      # أسعار سيجما الحالية (السعر والتوفر) لقسم «أسعار السوق» في اللوحة. لو فشل، الأسعار القديمة بتفضل والنشر يكمّل.
+      - name: Refresh Sigma market prices
+        continue-on-error: true
+        timeout-minutes: 5
+        run: node tools/sigma-prices.mjs _site/market-prices.json
+
       - name: Build product pages for Google (SEO)
         run: node tools/build-seo.mjs _site "${{ steps.pages.outputs.base_url }}"
 
