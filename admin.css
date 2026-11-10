@@ -355,6 +355,14 @@
 .pill--warn { background: rgba(245,158,11,.15); color: #f59e0b; }
 .btn--warn { background: rgba(245,158,11,.14); color: #f59e0b; border: 1px solid rgba(245,158,11,.45); }
 .btn--warn:hover { background: rgba(245,158,11,.24); }
+.btn--danger { background: rgba(232,91,117,.14); color: #E85B75; border: 1px solid rgba(232,91,117,.5); }
+.btn--danger:hover { background: rgba(232,91,117,.26); }
+/* متابعة تأكيد الطلب مع العميل */
+.od-confirm { margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: rgba(73,186,237,.08); border: 1px solid rgba(73,186,237,.35); }
+.od-confirm.is-last { background: rgba(232,91,117,.07); border-color: rgba(232,91,117,.4); }
+.od-confirm p { margin: 0; }
+.od-confirm small { display: block; margin-top: 4px; opacity: .75; }
+.od-confirm .od-contact { margin-top: 8px; }
 
 /* ============ الهيكل الجديد: قائمة جانبية + محتوى ============ */
 .dash-shell { display: flex; min-height: 100vh; }

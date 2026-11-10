@@ -276,6 +276,33 @@ async function removeOrder(id, btn) {
   }
 }
 
+// ============ رسايل تأكيد الطلب اللي اتبعتت ============
+// بتتسجل في الطلب (confirmSent) عشان تبان من أي جهاز، ونسخة في المتصفح لو قواعد الأمان لسه قديمة
+const CONFIRM_LOCAL = "gtech-confirm-sent";
+function confirmSends(o) {
+  const local = store.get(CONFIRM_LOCAL, {})[o.id] || [];
+  return [...new Set([...(Array.isArray(o.confirmSent) ? o.confirmSent : []), ...local])].sort();
+}
+function agoTxt(iso) {
+  const m = Math.max(0, Math.round((Date.now() - new Date(iso)) / 60000));
+  if (m < 60) return m <= 1 ? "من دقيقة" : `من ${num(m)} دقيقة`;
+  const h = Math.round(m / 60);
+  if (h < 24) return h === 1 ? "من ساعة" : `من ${num(h)} ساعات`;
+  const d = Math.round(h / 24);
+  return d === 1 ? "من يوم" : `من ${num(d)} أيام`;
+}
+async function markConfirmSent(o) {
+  const list = [...confirmSends(o), new Date().toISOString()].slice(-5);
+  const all = store.get(CONFIRM_LOCAL, {});
+  all[o.id] = list;
+  // نشيل طلبات قديمة من المتصفح عشان مايتملاش
+  for (const [k, v] of Object.entries(all)) if (!v.length || Date.now() - new Date(v[v.length - 1]) > 30 * 864e5) delete all[k];
+  store.set(CONFIRM_LOCAL, all);
+  try { await updateOrder(o.id, { confirmSent: list }); }
+  catch (err) { console.warn("confirmSent", err); } // قواعد قديمة: متسجلة في المتصفح ده بس
+  if (openId === o.id) openOrder(o.id, false);
+}
+
 function openOrder(id, show = true) {
   const o = orders.find((x) => x.id === id);
   if (!o) return closeOrder();
@@ -298,8 +325,36 @@ function openOrder(id, show = true) {
     ``,
     `📦 طلبك هيتم إرساله خلال 4 أيام عمل.`,
     `🔎 تابع حالة طلبك من هنا: ${siteUrl("myorders.html")}`,
-    `لو في أي تعديل في الطلب أو العنوان رد علينا هنا 🙏`,
+    o.status === "new"
+      ? `📲 ردّ علينا بكلمة «تمام» عشان نأكد الطلب ونجهّزه، ولو في أي تعديل في الطلب أو العنوان قولنا 🙏`
+      : `لو في أي تعديل في الطلب أو العنوان رد علينا هنا 🙏`,
   ].filter((l) => l !== null).join("\n");
+  // تأكيد الطلب: بنبعت مرتين بالكتير، ولو العميل مارّدش الطلب يتلغي بدل ما يتشحن على الفاضي
+  const sends = confirmSends(o);
+  const waiting = o.status === "new" && sends.length > 0;
+  const remindMsg = [
+    `أهلاً ${c.name} 👋`,
+    `معاك GTECH MASR تاني بخصوص طلبك رقم ${o.id}`,
+    ``,
+    ...o.items.map((i) => `• ${i.name}${i.qty > 1 ? ` × ${i.qty}` : ""}`),
+    `💰 الإجمالي: ${egpTxt(t.total)}${o.payment?.label ? ` — ${o.payment.label}` : ""}`,
+    ``,
+    `بعتنالك رسالة تأكيد قبل كده ولسه ماوصلناش ردك.`,
+    `محتاجين نتأكد إنك لسه عايز الطلب قبل ما نجهّزه ونبعته 📦`,
+    ``,
+    `ردّ بـ «تمام» عشان نكمّل، أو «إلغاء» لو مش محتاجه، ومن غير أي مشكلة 🙏`,
+  ].join("\n");
+  const confirmBox = waiting ? `
+      <div class="od-confirm ${sends.length >= 2 ? "is-last" : ""}">
+        <p>📨 اتبعت تأكيد الطلب ${sends.length >= 2 ? "<b>مرتين</b>" : "<b>مرة</b>"} — آخر مرة ${agoTxt(sends[sends.length - 1])}، ومستنيين رد العميل</p>
+        ${sends.length >= 2 ? `<small>لو مارّدش، الغي الطلب عشان مايتشحنش على الفاضي.</small>` : `<small>لو مارّدش خلال يوم، ابعتله التأكيد تاني.</small>`}
+        <div class="od-contact">
+          <button class="btn btn--primary btn--sm" data-set-status="confirmed" title="العميل رد ووافق ← الطلب يبقى متأكد">✅ العميل أكّد</button>
+          ${sends.length < 2
+            ? `<a class="btn btn--warn btn--sm" href="${waLink(remindMsg, intlPhone)}" target="_blank" rel="noopener" data-confirm-send title="رسالة تانية للعميل يأكد أو يلغي">🔁 إعادة إرسال التأكيد</a>`
+            : `<button class="btn btn--danger btn--sm" data-set-status="cancelled" title="العميل مارّدش على التأكيد مرتين">✖ إلغاء — العميل مارّدش</button>`}
+        </div>
+      </div>` : "";
   // رسالة "طلبك اتشحن" برقم التتبع (بتظهر بعد ما تحط رقم التتبع)
   const sh = o.shipment;
   const shipMsg = sh?.trackingNumber ? [
@@ -357,11 +412,12 @@ function openOrder(id, show = true) {
       ${c.email ? `<p class="mono" dir="ltr">${escapeHtml(c.email)}</p>` : ""}
       <div class="od-contact">
         <a class="btn btn--ghost btn--sm" href="tel:${escapeHtml(c.phone)}">📞 اتصال</a>
-        <a class="btn btn--primary btn--sm" href="${waLink(greet, intlPhone)}" target="_blank" rel="noopener" title="رسالة جاهزة فيها المنتجات والإجمالي والعنوان ولينك التتبع">✅ ابعت تأكيد الطلب</a>
+        <a class="btn ${waiting ? "btn--ghost" : "btn--primary"} btn--sm" href="${waLink(greet, intlPhone)}" target="_blank" rel="noopener" ${o.status === "new" ? "data-confirm-send" : ""} title="رسالة جاهزة فيها المنتجات والإجمالي والعنوان ولينك التتبع">✅ ${waiting ? "تأكيد الطلب (الرسالة الأولى)" : "ابعت تأكيد الطلب"}</a>
         ${shipMsg ? `<a class="btn btn--ghost btn--sm" href="${waLink(shipMsg, intlPhone)}" target="_blank" rel="noopener">🚚 ابعت إنه اتشحن</a>` : ""}
         ${rateMsg ? `<a class="btn btn--ghost btn--sm" href="${waLink(rateMsg, intlPhone)}" target="_blank" rel="noopener" title="رسالة للعميل فيها لينك يقيّم المنتج بالنجوم">⭐ اطلب رأيه</a>` : ""}
         <a class="btn btn--sm btn--warn" href="${waLink(zoneMsg, intlPhone)}" target="_blank" rel="noopener" title="ابعت للعميل إن منطقته خارج نطاق التوصيل">⚠️ مشكلة توصيل</a>
       </div>
+      ${confirmBox}
     </section>
 
     <section class="od-sec">
@@ -444,6 +500,13 @@ async function loadProof(orderId) {
 $("#drawerBody").addEventListener("click", async (e) => {
   const z = e.target.closest("[data-zoom]");
   if (z) return z.classList.toggle("is-zoomed");
+  // اللينك بيفتح واتساب عادي، وإحنا بنسجل إن رسالة التأكيد اتبعتت (بعد ما الضغطة تكمّل)
+  const cs = e.target.closest("[data-confirm-send]");
+  if (cs && openId) {
+    const o = orders.find((x) => x.id === openId);
+    if (o) setTimeout(() => markConfirmSent(o), 400);
+    return;
+  }
   const b = e.target.closest("[data-pay]");
   if (!b || !openId) return;
   const o = orders.find((x) => x.id === openId);
@@ -485,7 +548,7 @@ $("#drawerBody").addEventListener("click", async (e) => {
         .catch((err) => { console.warn("status email", err); toast("⚠️ الحالة اتغيرت بس الإيميل ماتبعتش"); });
     }
     toast(`${STATUS_ICONS[status]} الطلب ${o.id} بقى "${ORDER_STATUSES[status]}"`);
-    if (status === "confirmed") setTimeout(() => toast("💬 متنساش: دوس \"✅ ابعت تأكيد الطلب\" عشان العميل يطمّن"), 1800);
+    if (status === "confirmed" && !confirmSends(o).length) setTimeout(() => toast("💬 متنساش: دوس \"✅ ابعت تأكيد الطلب\" عشان العميل يطمّن"), 1800);
   } catch {
     toast("❌ مقدرناش نحدّث الطلب، جرّب تاني");
   }
