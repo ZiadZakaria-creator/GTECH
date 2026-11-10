@@ -1,51 +1,236 @@
 {
-  "updated": "2026-11-11",
-  "note": "أسعار جديد (مش مستعمل) من نتايج البحث، مش من قراءة مباشرة للمواقع. افتح اللينك واتأكد قبل ما تطبّق.",
-  "trusted": ["Games2Egypt", "Amazon.eg"],
-  "items": {
-    "81": [
-      { "store": "Games2Egypt", "price": 4590, "url": "https://www.games2egypt.com/Product/24887/dualsense-ps5-controller-white" },
-      { "store": "Games2Egypt", "price": 4499, "note": "بضمان IBS سنتين", "url": "https://www.games2egypt.com/Product/25027/dualsense-ps5-controller-white-ibs-2y-warranty" },
-      { "store": "Noon", "price": 4267, "url": "https://www.noon.com/egypt-en/sony-dualsense-wireless-controller-for-ps5-white/N53414690A/p/" }
-    ],
-    "94": [
-      { "store": "Games2Egypt", "price": 4590, "url": "https://www.games2egypt.com/Product/32191/dualsense-ps5-controller-midnight-black-used", "note": "سعر الجديد من صفحة المستعمل" },
-      { "store": "Noon", "price": 4334, "note": "نسخة رسمية", "url": "https://www.noon.com/egypt-en/dualsense-wireless-ps5-controller-midnight-black-official-version/N53410810A/p/" }
-    ],
-    "98": [
-      { "store": "Games2Egypt", "price": 4690, "note": "من نتايج البحث، مفيش لينك مباشر" },
-      { "store": "Jumia", "price": 4499, "url": "https://www.jumia.com.eg/playstation-5-dualsense-wireless-controller-grey-camouflage-37778267.html" },
-      { "store": "Noon", "price": 4419, "url": "https://www.noon.com/egypt-en/dualsense-wireless-ps5-controller-grey-camouflage-official-version/N53358520A/p/" }
-    ],
-    "44": [
-      { "store": "Amazon.eg", "price": 8099, "note": "أغلب العروض من 8,099 (فيه عرض واحد بـ 6,500)", "url": "https://www.amazon.eg/-/en/WD-My-Passport-4TB-Worldwide/dp/B097BY24ZW" },
-      { "store": "2B", "price": 8999, "url": "https://qarenly.com/en/2b/western-digital-my-passport-4tb-black-13833" }
-    ],
-    "100": [
-      { "store": "Amazon.eg", "price": 6500, "url": "https://amazon.eg/-/en/WD-Elements-Portable-2TB-portable/dp/B06W55K9N6" },
-      { "store": "Dream2000", "price": 6999, "url": "https://dream2000.com/en/collections/external-hard" }
-    ],
-    "27": [
-      { "store": "Games2Egypt", "price": 2099, "url": "https://www.games2egypt.com/Product/24559/logitech-g305-lightspeed-wireless-gaming-mouse-black" },
-      { "store": "Amazon.eg", "price": 2099, "url": "https://www.amazon.eg/-/en/Logitech-Lightspeed-Wireless-Gaming-Mouse/dp/B07CGPZ3ZQ" }
-    ],
-    "68": [
-      { "store": "Games2Egypt", "price": 2249, "url": "https://www.games2egypt.com/Product/24787/logitech-g502-hero-high-performance-wired-gaming-mouse-black" },
-      { "store": "Amazon.eg", "price": 2222, "url": "https://www.amazon.eg/-/en/Logitech-G502-Hero-Gaming-Mouse/dp/B076HSH2D9" },
-      { "store": "Vodafone", "price": 1799, "note": "عرض", "url": "https://eshop.vodafone.com.eg/en/prod/logitech-g502-hero-high-performance-gaming-mouse-black" }
-    ],
-    "14": [
-      { "store": "Amazon.eg", "price": 990, "url": "https://www.amazon.eg/-/en/Logitech-LightSync-Gaming-Grade-Sensor-Computer/dp/B092ZP78R5" },
-      { "store": "Pricena", "price": 999, "note": "نون وجوميا", "url": "https://eg.pricena.com/en/product/logitech-g102-price-in-egypt" }
-    ],
-    "35": [
-      { "store": "Amazon.eg", "price": 3599, "note": "اللون الأبيض", "url": "https://www.amazon.eg/%D9%84%D8%A7%D8%B3%D9%84%D9%83%D9%8A%D8%A9-%D9%84%D9%84%D8%A7%D9%84%D8%B9%D8%A7%D8%A8-%D9%84%D9%88%D8%AC%D9%8A%D8%AA%D9%83-%D9%88%D8%A8%D9%84%D9%88%D8%AA%D9%88%D8%AB-%D9%85%D9%8A%D9%83%D8%B1%D9%88%D9%81%D9%88%D9%86/dp/B08R8DQDRK" },
-      { "store": "Noon", "price": 3742, "note": "الأسود", "url": "https://www.noon.com/egypt-en/g435-lightspeed-wireless-gaming-headset-black/N52549991A/p/" }
-    ],
-    "95": [
-      { "store": "Amazon.eg", "price": 7838, "url": "https://www.amazon.eg/-/en/HyperX-Cloud-III-Multi-Platform-Detachable/dp/B0F6NYQTJP" },
-      { "store": "Noon", "price": 7499, "url": "https://www.noon.com/egypt-en/cloud-iii-s-wireless-gaming-headset/N70177259V/p/" },
-      { "store": "Games World", "price": 8559, "url": "https://www.gamesworldegypt.com/hyperx-cloud-iii-s-wireless-gaming-headset-black-red" }
-    ]
-  }
+ "updated": "2026-11-11",
+ "note": "سيجما: مقروء مباشرة من موقعهم (السعر والتوفر). الباقي من نتايج البحث. افتح اللينك واتأكد قبل ما تطبّق.",
+ "trusted": [
+  "Games2Egypt",
+  "Amazon.eg",
+  "Sigma",
+  "Games World"
+ ],
+ "items": {
+  "81": [
+   {
+    "store": "Games2Egypt",
+    "price": 4590,
+    "url": "https://www.games2egypt.com/Product/24887/dualsense-ps5-controller-white"
+   },
+   {
+    "store": "Games2Egypt",
+    "price": 4499,
+    "note": "بضمان IBS سنتين",
+    "url": "https://www.games2egypt.com/Product/25027/dualsense-ps5-controller-white-ibs-2y-warranty"
+   },
+   {
+    "store": "Noon",
+    "price": 4267,
+    "url": "https://www.noon.com/egypt-en/sony-dualsense-wireless-controller-for-ps5-white/N53414690A/p/"
+   },
+   {
+    "store": "Sigma",
+    "price": 3999,
+    "url": "https://sigma-computer.com/en/item?id=playstation-dualsense-ps5-controller-white-s1cmsoqiwgjl",
+    "stock": "out"
+   },
+   {
+    "store": "Games World",
+    "price": 4299,
+    "url": "https://www.gamesworldegypt.com/devices-accessories/ps/playstation-controllers"
+   }
+  ],
+  "94": [
+   {
+    "store": "Games2Egypt",
+    "price": 4590,
+    "url": "https://www.games2egypt.com/Product/32191/dualsense-ps5-controller-midnight-black-used",
+    "note": "سعر الجديد من صفحة المستعمل"
+   },
+   {
+    "store": "Noon",
+    "price": 4334,
+    "note": "نسخة رسمية",
+    "url": "https://www.noon.com/egypt-en/dualsense-wireless-ps5-controller-midnight-black-official-version/N53410810A/p/"
+   },
+   {
+    "store": "Sigma",
+    "price": 4999,
+    "url": "https://sigma-computer.com/en/item?id=playstation-dualsense-ps5-controller-midnight-black-5pr4s0wsznr0",
+    "stock": "out"
+   }
+  ],
+  "98": [
+   {
+    "store": "Games2Egypt",
+    "price": 4690,
+    "note": "من نتايج البحث، مفيش لينك مباشر"
+   },
+   {
+    "store": "Jumia",
+    "price": 4499,
+    "url": "https://www.jumia.com.eg/playstation-5-dualsense-wireless-controller-grey-camouflage-37778267.html"
+   },
+   {
+    "store": "Noon",
+    "price": 4419,
+    "url": "https://www.noon.com/egypt-en/dualsense-wireless-ps5-controller-grey-camouflage-official-version/N53358520A/p/"
+   }
+  ],
+  "44": [
+   {
+    "store": "Amazon.eg",
+    "price": 8099,
+    "note": "أغلب العروض من 8,099 (فيه عرض واحد بـ 6,500)",
+    "url": "https://www.amazon.eg/-/en/WD-My-Passport-4TB-Worldwide/dp/B097BY24ZW"
+   },
+   {
+    "store": "2B",
+    "price": 8999,
+    "url": "https://qarenly.com/en/2b/western-digital-my-passport-4tb-black-13833"
+   },
+   {
+    "store": "Sigma",
+    "price": 8999,
+    "url": "https://sigma-computer.com/en/item?id=western-digital-4tb-my-passport-portable-hard-drive-usb-32-model-wdbpkj0040bbk-wesn-k74vk0a6axhp",
+    "note": "ضمان سنة"
+   }
+  ],
+  "100": [
+   {
+    "store": "Amazon.eg",
+    "price": 6500,
+    "url": "https://amazon.eg/-/en/WD-Elements-Portable-2TB-portable/dp/B06W55K9N6"
+   },
+   {
+    "store": "Dream2000",
+    "price": 6999,
+    "url": "https://dream2000.com/en/collections/external-hard"
+   },
+   {
+    "store": "Sigma",
+    "price": 850,
+    "url": "https://sigma-computer.com/en/item?id=wd-2tb-elements-portable-external-hard-drive-usb-30-black-3f6x5jw7t71u",
+    "stock": "out"
+   }
+  ],
+  "27": [
+   {
+    "store": "Games2Egypt",
+    "price": 2099,
+    "url": "https://www.games2egypt.com/Product/24559/logitech-g305-lightspeed-wireless-gaming-mouse-black"
+   },
+   {
+    "store": "Amazon.eg",
+    "price": 2099,
+    "url": "https://www.amazon.eg/-/en/Logitech-Lightspeed-Wireless-Gaming-Mouse/dp/B07CGPZ3ZQ"
+   },
+   {
+    "store": "Sigma",
+    "price": 1799,
+    "url": "https://sigma-computer.com/en/item?id=logitech-g305-black-lightspeed-wireless-gaming-mouse-features-a-hero-sensor-200-12000-dpi-1000hz-wireless-report-rate-250-hour-battery-life-99g-weight-and-1-onboard-profile-with-a-2-year-warranty-910-005283-8erm5owt8p5m",
+    "note": "ضمان سنتين"
+   },
+   {
+    "store": "Games World",
+    "price": 2099,
+    "url": "https://www.gamesworldegypt.com/logitech-g305-lightspeed-wireless-gaming-mouse-black"
+   }
+  ],
+  "68": [
+   {
+    "store": "Games2Egypt",
+    "price": 2249,
+    "url": "https://www.games2egypt.com/Product/24787/logitech-g502-hero-high-performance-wired-gaming-mouse-black"
+   },
+   {
+    "store": "Amazon.eg",
+    "price": 2222,
+    "url": "https://www.amazon.eg/-/en/Logitech-G502-Hero-Gaming-Mouse/dp/B076HSH2D9"
+   },
+   {
+    "store": "Vodafone",
+    "price": 1799,
+    "note": "عرض",
+    "url": "https://eshop.vodafone.com.eg/en/prod/logitech-g502-hero-high-performance-gaming-mouse-black"
+   },
+   {
+    "store": "Sigma",
+    "price": 1799,
+    "url": "https://sigma-computer.com/en/item?id=logitech-g502-hero-high-performance-wired-gaming-mouse-hero-25k-sensor-25600-dpi-rgb-adjustable-weights-11-programmable-buttons-on-board-memory-pc-mac-910-005471-kc6g7rio1s8y",
+    "note": "ضمان سنتين"
+   },
+   {
+    "store": "Games World",
+    "price": 2250,
+    "url": "https://www.gamesworldegypt.com/Logitech-G502-Performance-Gaming-Mouse"
+   }
+  ],
+  "14": [
+   {
+    "store": "Amazon.eg",
+    "price": 990,
+    "url": "https://www.amazon.eg/-/en/Logitech-LightSync-Gaming-Grade-Sensor-Computer/dp/B092ZP78R5"
+   },
+   {
+    "store": "Pricena",
+    "price": 999,
+    "note": "نون وجوميا",
+    "url": "https://eg.pricena.com/en/product/logitech-g102-price-in-egypt"
+   },
+   {
+    "store": "Sigma",
+    "price": 749,
+    "url": "https://sigma-computer.com/en/item?id=logitech-g102-lightsync-gaming-mouse-features-8000-dpi-6-programmable-buttons-lightsync-rgb-lighting-1000hz-report-rate-and-a-21m-cable-910-005824-5vqic6nlth9w",
+    "note": "ضمان سنتين"
+   }
+  ],
+  "35": [
+   {
+    "store": "Amazon.eg",
+    "price": 3599,
+    "note": "اللون الأبيض",
+    "url": "https://www.amazon.eg/%D9%84%D8%A7%D8%B3%D9%84%D9%83%D9%8A%D8%A9-%D9%84%D9%84%D8%A7%D9%84%D8%B9%D8%A7%D8%A8-%D9%84%D9%88%D8%AC%D9%8A%D8%AA%D9%83-%D9%88%D8%A8%D9%84%D9%88%D8%AA%D9%88%D8%AB-%D9%85%D9%8A%D9%83%D8%B1%D9%88%D9%81%D9%88%D9%86/dp/B08R8DQDRK"
+   },
+   {
+    "store": "Noon",
+    "price": 3742,
+    "note": "الأسود",
+    "url": "https://www.noon.com/egypt-en/g435-lightspeed-wireless-gaming-headset-black/N52549991A/p/"
+   },
+   {
+    "store": "Sigma",
+    "price": 3499,
+    "url": "https://sigma-computer.com/en/item?id=logitech-g435-lightspeed-wireless-gaming-headset-black-981-001050-46bz6h7nz62q",
+    "stock": "out",
+    "note": "ضمان سنتين"
+   },
+   {
+    "store": "Games World",
+    "price": 3499,
+    "url": "https://www.gamesworldegypt.com/logitech-g435-lightspeed-wireless-gaming-headset-white-2-4ghz",
+    "note": "الأبيض"
+   }
+  ],
+  "95": [
+   {
+    "store": "Amazon.eg",
+    "price": 7838,
+    "url": "https://www.amazon.eg/-/en/HyperX-Cloud-III-Multi-Platform-Detachable/dp/B0F6NYQTJP"
+   },
+   {
+    "store": "Noon",
+    "price": 7499,
+    "url": "https://www.noon.com/egypt-en/cloud-iii-s-wireless-gaming-headset/N70177259V/p/"
+   },
+   {
+    "store": "Games World",
+    "price": 8559,
+    "url": "https://www.gamesworldegypt.com/hyperx-cloud-iii-s-wireless-gaming-headset-black-red"
+   },
+   {
+    "store": "Sigma",
+    "price": 7499,
+    "url": "https://sigma-computer.com/en/item?id=hyperx-cloud-iii-s-wireless-gaming-headset-53mm-drivers-bluetooth-53-up-to-120h-battery-life-a59yzaa-fjlobrvhz12n",
+    "note": "ضمان سنة"
+   }
+  ]
+ }
 }

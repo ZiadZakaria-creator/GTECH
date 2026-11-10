@@ -24,7 +24,7 @@
   <meta name="apple-mobile-web-app-title" content="GTECH MASR Admin" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="admin.css?v=24" />
+  <link rel="stylesheet" href="admin.css?v=25" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a84ff'/><text x='32' y='44' font-size='36' font-family='Arial' font-weight='900' fill='white' text-anchor='middle'>G</text></svg>" />
 </head>
 <body class="admin">
@@ -360,11 +360,12 @@
 
     <div id="marketSection" class="dash-section" hidden>
       <section class="card-box dash-panel market">
-        <p class="muted carts-hint">جنب كل منتج سعرك وأسعار المنافسين (جيمز تو إيجيبت وأمازون، والباقي للمقارنة) والسعر المقترح: أرخص من أرخص منافس بحاجة بسيطة. اكتب «أقل سعر» تقبله لكل منتج عشان الاقتراح مايقعش تحته (بيتحفظ على الجهاز ده بس). عدّل الجديد لو حابب، اختار المنتجات، ودوس «طبّق». <b>أسعار السوق من نتايج البحث: افتح اللينك واتأكد قبل ما تطبّق.</b></p>
+        <p class="muted carts-hint">جنب كل منتج سعرك وأسعار المنافسين والسعر المقترح: أرخص من أرخص منافس (من اللي إنت مختارهم تحت، واللي المنتج متوفر عنده) بحاجة بسيطة. اكتب «أقل سعر» تقبله لكل منتج عشان الاقتراح مايقعش تحته (بيتحفظ على الجهاز ده بس). عدّل الجديد لو حابب، اختار المنتجات، ودوس «طبّق». <b>سيجما مقروء من موقعهم مباشرة، والباقي من نتايج البحث: افتح اللينك واتأكد قبل ما تطبّق.</b></p>
         <div class="mk-bar">
           <span class="muted">آخر تحديث لأسعار السوق: <b id="mkUpdated">—</b></span>
           <span class="mk-bar__btns"><button class="btn btn--ghost btn--sm" id="mkAll">تحديد / إلغاء الكل</button><button class="btn btn--primary" id="mkApply" disabled>✅ طبّق</button></span>
         </div>
+        <div class="mk-trust" id="mkTrust"></div>
         <div class="mk-list" id="mkList"><p class="muted">بنحمّل...</p></div>
       </section>
     </div>

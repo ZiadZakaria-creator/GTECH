@@ -1011,3 +1011,9 @@ label.mk-old { display: block; margin-top: 8px; font-size: .85rem; }
   .mk-prices { grid-column: 1 / -1; grid-template-columns: repeat(2, 1fr); }
   .mk-prices input { width: 100%; }
 }
+.mk-trust { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 12px; font-size: .85rem; }
+.mk-chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; border: 1px solid var(--border); cursor: pointer; font-weight: 700; color: var(--muted); }
+.mk-chip input { accent-color: var(--primary); }
+.mk-chip.is-on { border-color: var(--primary); color: inherit; background: rgba(10,132,255,.1); }
+.mk-src--out { opacity: .55; text-decoration: line-through; text-decoration-thickness: 1px; }
+.mk-src--out small { text-decoration: none; }

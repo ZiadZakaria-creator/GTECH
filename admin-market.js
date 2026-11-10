@@ -2,6 +2,7 @@
 // بيقرا market-prices.json (ملف ثابت في الموقع، مش Firestore) وبيقترح سعر لكل منتج على أساس أرخص منافس موثوق.
 // مفيش حاجة بتتغير لوحدها: الأدمن بيراجع ويختار ويدوس "طبّق".
 const MK_FLOOR_KEY = "gtech-market-floor"; // أقل سعر يقبله لكل منتج (على الجهاز ده بس، عشان التكلفة ماتبقاش في ملف عام)
+const MK_TRUST_KEY = "gtech-market-trust"; // المنافسين اللي الاقتراح بيتحسب عليهم (الأدمن بيختارهم)
 const MK_KEEP_PCT = 0.02; // الفرق أقل من 2% ← سيبه زي ما هو
 let mkData = null;
 let mkRows = []; // { p, ref, sugg, floor, on, newPrice, clearOld }
@@ -10,10 +11,14 @@ let mkRows = []; // { p, ref, sugg, floor, on, newPrice, clearOld }
 const mkRound = (v) => Math.max(49, Math.floor((v + 1) / 50) * 50 - 1);
 const mkFloors = () => store.get(MK_FLOOR_KEY, {});
 
+const mkTrusted = () => store.get(MK_TRUST_KEY, null) || mkData.trusted || [];
+// المنافس اللي المنتج خلص عنده مابيتحسبش في الاقتراح (سعر قديم غالباً)
+const mkUsable = (s) => s.price > 0 && s.stock !== "out";
+
 function mkSuggest(p, sources) {
-  const trusted = mkData.trusted || [];
-  const tr = sources.filter((s) => trusted.includes(s.store) && s.price > 0);
-  const pool = tr.length ? tr : sources.filter((s) => s.price > 0);
+  const trusted = mkTrusted();
+  const tr = sources.filter((s) => trusted.includes(s.store) && mkUsable(s));
+  const pool = tr.length ? tr : sources.filter(mkUsable);
   if (!pool.length) return null;
   const ref = Math.min(...pool.map((s) => s.price));
   let sugg = mkRound(ref - Math.max(20, ref * 0.01)); // أرخص من أرخص منافس بحاجة بسيطة
@@ -44,12 +49,14 @@ function mkRender() {
     const s = mkSuggest(p, sources);
     if (!s) return null;
     const old = prev.get(p.id);
-    const maxMarket = Math.max(...sources.map((x) => x.price || 0));
+    const maxMarket = Math.max(...sources.filter(mkUsable).map((x) => x.price), 0) || Math.max(...sources.map((x) => x.price || 0));
     // السعر قبل الخصم بيتمسح لو: السعر هيزيد (يبقى الخصم خلص)، أو بقى أقل من الجديد، أو أعلى من السوق كله بكتير
     const oldBad = (np) => !!p.old && (np > p.price || p.old <= np || p.old > maxMarket * 1.15);
     const newPrice = old?.edited ? old.newPrice : s.sugg;
     return { p, sources, ...s, maxMarket, oldBad, newPrice, edited: !!old?.edited,
-      on: old ? old.on : !s.keep, clearOld: old ? old.clearOld : oldBad(newPrice) };
+      // فرق أكبر من 10% مش متعلّم من الأول: غالباً سعر عرض أو منتج مختلف، فلازم تتأكد بنفسك
+      big: Math.abs(newPrice - p.price) / p.price > 0.10,
+      on: old ? old.on : !s.keep && Math.abs(newPrice - p.price) / p.price <= 0.10, clearOld: old ? old.clearOld : oldBad(newPrice) };
   }).filter(Boolean).sort((a, b) => Math.abs(b.newPrice - b.p.price) / b.p.price - Math.abs(a.newPrice - a.p.price) / a.p.price);
 
   if (!productsLoaded) { box.innerHTML = `<p class="muted">بنحمّل المنتجات...</p>`; return; }
@@ -60,8 +67,9 @@ function mkRender() {
       : d > 0 ? `<span class="mk-tag mk-tag--up">⬆ +${num(d)} (${pct}%)</span>`
       : d < 0 ? `<span class="mk-tag mk-tag--down">⬇ ${num(d)} (${pct}%)</span>` : `<span class="mk-tag">⚪ زي ما هو</span>`;
     const src = r.sources.map((s) => {
-      const t = `${escapeHtml(s.store)} <b>${num(s.price)}</b>${s.note ? ` <small>${escapeHtml(s.note)}</small>` : ""}`;
-      const cls = (mkData.trusted || []).includes(s.store) ? "mk-src mk-src--trusted" : "mk-src";
+      const out = s.stock === "out";
+      const t = `${escapeHtml(s.store)} <b>${num(s.price)}</b>${out ? ` <small>مش متوفر عندهم</small>` : ""}${s.note ? ` <small>${escapeHtml(s.note)}</small>` : ""}`;
+      const cls = "mk-src" + (mkTrusted().includes(s.store) ? " mk-src--trusted" : "") + (out ? " mk-src--out" : "");
       return s.url ? `<a class="${cls}" href="${escapeHtml(s.url)}" target="_blank" rel="noopener">${t} ↗</a>` : `<span class="${cls}">${t}</span>`;
     }).join("");
     return `
@@ -70,8 +78,9 @@ function mkRender() {
         <div class="mk-main">
           <div class="mk-name"><b>${escapeHtml(r.p.name)}</b><small>#${r.p.id} · الضمان: ${escapeHtml(r.p.warranty || "—")} · المخزون: ${num(r.p.stock ?? 0)}</small></div>
           <div class="mk-srcs">${src}</div>
+          ${r.big ? `<small class="mk-warn">⚠️ فرق كبير (أكتر من 10%): افتح لينك المنافس واتأكد إنه نفس المنتج ومش عرض مؤقت قبل ما تعلّم عليه</small>` : ""}
           ${r.floored ? `<small class="mk-warn">السعر المقترح كان أقل من «أقل سعر» بتاعك، فوقفناه عنده</small>` : ""}
-          ${!r.refTrusted ? `<small class="mk-warn">مفيش سعر من جيمز تو إيجيبت أو أمازون، فالاقتراح من باقي المحلات</small>` : ""}
+          ${!r.refTrusted ? `<small class="mk-warn">مفيش سعر متوفر من المنافسين اللي اخترتهم، فالاقتراح من باقي المحلات</small>` : ""}
           ${r.p.old ? `<label class="mk-old"><input type="checkbox" data-mk-clear ${r.clearOld ? "checked" : ""} /> امسح «السعر قبل الخصم» (${num(r.p.old)})${r.p.old > r.maxMarket * 1.15 ? ` <small class="mk-warn">أعلى من السوق كله</small>` : ""}</label>` : ""}
         </div>
         <div class="mk-prices">
@@ -85,6 +94,21 @@ function mkRender() {
   }).join("");
   mkCount();
 }
+
+function mkRenderTrust() {
+  const stores = [...new Set(Object.values(mkData.items || {}).flat().map((s) => s.store))];
+  const on = mkTrusted();
+  $("#mkTrust").innerHTML = `<span class="muted">الاقتراح على أساس:</span> ` + stores.map((st) =>
+    `<label class="mk-chip ${on.includes(st) ? "is-on" : ""}"><input type="checkbox" value="${escapeHtml(st)}" ${on.includes(st) ? "checked" : ""} />${escapeHtml(st)}</label>`).join("");
+}
+$("#mkTrust").addEventListener("change", (e) => {
+  if (!e.target.matches("input")) return;
+  const on = [...$$("#mkTrust input:checked")].map((i) => i.value);
+  store.set(MK_TRUST_KEY, on);
+  mkRows.forEach((r) => { r.edited = false; });
+  mkRenderTrust();
+  mkRender();
+});
 
 function mkCount() {
   const n = mkRows.filter((r) => r.on && (r.newPrice !== r.p.price || (r.clearOld && r.p.old))).length;
@@ -151,7 +175,7 @@ $("#mkApply").addEventListener("click", async () => {
 
 document.addEventListener("sectionchange", async (e) => {
   if (e.detail !== "market") return;
-  try { await mkLoad(); mkRender(); }
+  try { await mkLoad(); mkRenderTrust(); mkRender(); }
   catch (err) { console.warn("market", err); $("#mkList").innerHTML = `<p class="muted">مقدرناش نجيب ملف أسعار السوق، جرّب تاني.</p>`; }
 });
 document.addEventListener("adminproducts", () => { if (!$("#marketSection").hidden && mkData) mkRender(); });
