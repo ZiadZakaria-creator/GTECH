@@ -20,6 +20,7 @@ const payLabels = { cod: "الدفع عند الاستلام", instapay: "إنس
 const form = $("#checkoutForm");
 let promo = null;
 let placed = false;
+let addrFilled = false; // آخر عنوان اتملى في الفورم مرة واحدة
 let checkoutTracked = false; // بدء الدفع بيتحسب مرة واحدة
 
 function totals() {
@@ -51,10 +52,14 @@ function renderSummary() {
     if (!form.elements.name.value) form.elements.name.value = user.name || "";
     if (user.phone && !form.elements.phone.value) form.elements.phone.value = user.phone;
     if (!form.elements.email.value && user.email) form.elements.email.value = user.email;
+
     $("#accountNote").innerHTML = `✔ داخل باسم <b>${escapeHtml(user.name)}</b> — <button type="button" class="link-btn" id="switchUser">مش إنت؟ غيّر الحساب</button>`;
   } else {
     $("#accountNote").innerHTML = `طلبت من قبل؟ <button type="button" class="link-btn" id="loginPrefill">سجّل دخول</button> ونملّالك بياناتك`;
   }
+
+  // آخر عنوان طلب عليه (على الجهاز ده، أو من حساب Google على أي جهاز)
+  prefillAddress();
 
   const count = cart.reduce((s, i) => s + i.qty, 0);
   $("#sumCount").textContent = `(${num(count)} منتج)`;
@@ -175,6 +180,7 @@ form.addEventListener("click", (e) => {
   gate();
 });
 document.addEventListener("userchange", renderSummary);
+document.addEventListener("addrchange", renderSummary); // العنوان وصل من حساب Google
 
 // ============ إرسال الطلب ============
 const HEARD_FROM = [...form.elements.heardFrom.options].map((o) => o.value).filter(Boolean);
@@ -219,6 +225,8 @@ async function placeOrder() {
     await submitOrder(order);
     if (typeof track === "function") track("purchase", { items: order.items, value: order.totals.total, orderId: order.id });
     store.set(HAS_ORDERS_KEY, true);
+    store.set(ADDR_KEY, { gov: order.address.gov, city: order.address.city.slice(0, 80), street: order.address.street.slice(0, 200) });
+    document.dispatchEvent(new Event("addrchange"));
     sendOrderEmail(order, "new")
       .then((sent) => sent && showEmailStatus(`📧 بعتنالك تأكيد الطلب على ${order.customer.email}`))
       .catch((err) => {
@@ -285,6 +293,23 @@ function showEmailStatus(text) {
   $("#okEmail").textContent = text;
 }
 
+// آخر عنوان (على الجهاز ده، أو من حساب Google): بيتملى بس في الخانات الفاضية
+function prefillAddress() {
+  const addr = store.get(ADDR_KEY, null);
+  if (!addr || placed) return;
+  if (!addrFilled && !form.elements.city.value && !form.elements.address.value) {
+    form.elements.city.value = addr.city || "";
+    form.elements.address.value = addr.street || "";
+    addrFilled = true;
+  }
+  const gov = form.elements.gov;
+  if (!gov.value && addr.gov && [...gov.options].some((o) => o.value === addr.gov && !o.disabled)) {
+    gov.value = addr.gov;
+    gov.dispatchEvent(new Event("input", { bubbles: true }));
+    gov.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+}
+
 // ============ المحافظات وأسعار الشحن ============
 function renderGovOptions() {
   const cur = form.gov.value;
@@ -293,6 +318,7 @@ function renderGovOptions() {
     (soon.length ? `<optgroup label="قريباً">${soon.map((g) => `<option value="${g.name}" disabled>${g.name} — قريباً</option>`).join("")}</optgroup>` : "");
   form.gov.value = open.some((g) => g.name === cur) ? cur : "";
   $("#govNote").hidden = !soon.length;
+  if (typeof prefillAddress === "function") prefillAddress();
 }
 renderGovOptions();
 document.addEventListener("shippingchange", renderGovOptions);

@@ -163,6 +163,18 @@ function renderCart() {
     note.innerHTML = "💵 الدفع عند الاستلام · 🚚 الشحن يتحسب حسب محافظتك<br>توصيل القاهرة والجيزة بس";
     cartFoot.insertBefore(note, document.getElementById("checkoutBtn"));
   }
+  // تلميح: ادخل بجوجل عشان السلة تبقى معاك على أي جهاز
+  if (cartFoot && FIREBASE_CONFIG && SOCIAL_PROVIDERS.includes("google")) {
+    let hint = document.getElementById("cartSyncHint");
+    if (!hint) {
+      hint = document.createElement("button");
+      hint.type = "button"; hint.id = "cartSyncHint"; hint.className = "cart-sync-hint";
+      hint.innerHTML = "🔄 ادخل بحساب Google عشان تلاقي سلتك على أي موبايل أو متصفح";
+      hint.addEventListener("click", () => openLogin("ادخل بحساب Google عشان سلتك ومفضلتك وطلباتك تبقى معاك على أي جهاز"));
+      cartFoot.appendChild(hint);
+    }
+    hint.hidden = !count || !!user?.provider;
+  }
 
   $("#cartItems").innerHTML = cart.length
     ? cart.map((i, idx) => {
@@ -337,6 +349,7 @@ document.body.insertAdjacentHTML("beforeend", `
       <div class="social" id="socialBox">
         <button type="button" class="social__btn social__btn--google" data-social="google"><svg viewBox="0 0 48 48" class="brand-ico"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg><span>المتابعة بحساب Google</span></button>
         <button type="button" class="social__btn social__btn--facebook" data-social="facebook"><svg viewBox="0 0 24 24" class="brand-ico"><path fill="#fff" d="M13.5 21v-7.5h2.5l.4-3h-2.9V8.6c0-.9.3-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.2H8v3h2.4V21h3.1z"/></svg><span>المتابعة بحساب Facebook</span></button>
+        <small class="social__hint" id="socialHint">💡 بحساب Google هتلاقي سلتك ومفضلتك وطلباتك على أي موبايل أو متصفح</small>
         <div class="divider"><span>أو ادخل بياناتك</span></div>
       </div>
       <p class="social-linked" id="socialLinked" hidden></p>
@@ -670,29 +683,47 @@ async function socialLogin(kind) {
   try {
     await loadFirebase(["auth"]);
     const provider = kind === "google" ? new firebase.auth.GoogleAuthProvider() : new firebase.auth.FacebookAuthProvider();
-    const { user: fbUser } = await firebase.auth().signInWithPopup(provider);
-    socialInfo = { provider: kind, uid: fbUser.uid, email: fbUser.email || "" };
+    const auth = firebase.auth();
+    const cur = await new Promise((res) => { const stop = auth.onAuthStateChanged((u) => { stop(); res(u); }); });
+    let fbUser;
+    if (cur?.isAnonymous) {
+      // الجهاز ده عمل طلبات قبل كده كضيف: نربطها بحساب جوجل. ولو الحساب ده مستخدم على جهاز تاني ندخل عليه هو
+      try { fbUser = (await cur.linkWithPopup(provider)).user; }
+      catch (err) {
+        if (err?.credential && ["auth/credential-already-in-use", "auth/email-already-in-use"].includes(err.code)) fbUser = (await auth.signInWithCredential(err.credential)).user;
+        else throw err;
+      }
+    } else fbUser = (await auth.signInWithPopup(provider)).user;
+    const prof = (fbUser.providerData || []).find((x) => /google|facebook/.test(x.providerId)) || {};
+    const displayName = fbUser.displayName || prof.displayName || "";
+    socialInfo = { provider: kind, uid: fbUser.uid, email: fbUser.email || prof.email || "" };
 
     // من غير كود SMS: الدخول بيخلص على طول، ورقم الموبايل بيتطلب في صفحة الدفع
     if (!SMS_ON) {
-      const name = (fbUser.displayName || (fbUser.email || "").split("@")[0] || "عميل").trim();
+      const name = (displayName || (socialInfo.email || "").split("@")[0] || "عميل").trim();
       return finishLogin({ name, phone: "", ...socialInfo });
     }
 
     const f = $("#loginForm");
-    if (fbUser.displayName) f.name.value = fbUser.displayName;
+    if (displayName) f.name.value = displayName;
     $("#socialBox").hidden = true;
     $("#socialLinked").hidden = false;
-    $("#socialLinked").innerHTML = `✔ تم الربط بحساب ${providerNames[kind]}${fbUser.email ? ` <small dir="ltr">(${escapeHtml(fbUser.email)})</small>` : ""}<br>فاضل تكتب رقم موبايلك عشان نتواصل معاك بخصوص الطلب`;
+    $("#socialLinked").innerHTML = `✔ تم الربط بحساب ${providerNames[kind]}${socialInfo.email ? ` <small dir="ltr">(${escapeHtml(socialInfo.email)})</small>` : ""}<br>فاضل تكتب رقم موبايلك عشان نتواصل معاك بخصوص الطلب`;
     (f.name.value ? f.phone : f.name).focus();
   } catch (err) {
-    if (!["auth/popup-closed-by-user", "auth/cancelled-popup-request"].includes(err?.code)) {
+    if (err?.code === "auth/disallowed-useragent" || (IN_APP && /popup|operation-not-supported|web-storage/.test(err?.code || ""))) {
+      toast(`📱 ${providerNames[kind]} مش بيسمح بالدخول من جوه التطبيق ده. افتح الموقع في Chrome أو Safari وادخل من هناك`);
+    } else if (!["auth/popup-closed-by-user", "auth/cancelled-popup-request"].includes(err?.code)) {
       toast(`❌ مقدرناش ندخل بـ ${providerNames[kind]}، جرّب تاني (${err?.code || "unknown"})`);
     }
   } finally {
     btn.disabled = false;
   }
 }
+
+// جوه تيك توك وإنستجرام وفيسبوك: جوجل بيرفض الدخول من المتصفح الداخلي، فبنقول للعميل يفتح Chrome
+const IN_APP = /FBAN|FBAV|Instagram|TikTok|musical_ly|Bytedance|trill_|Snapchat|Line\//i.test(navigator.userAgent);
+if (IN_APP) $("#socialHint").textContent = "📱 الدخول بـ Google مش بيشتغل من جوه تيك توك أو إنستجرام. افتح الموقع في Chrome أو Safari (⋮ ← فتح في المتصفح)";
 
 // اخفي الأزرار اللي مش متفعّلة (ولو مفيش ولا واحد اخفي الجزء كله)
 $$("[data-social]").forEach((b) => (b.hidden = !!FIREBASE_CONFIG && !SOCIAL_PROVIDERS.includes(b.dataset.social)));
@@ -945,9 +976,11 @@ document.addEventListener("productschange", () => {
 
 renderCompareTray();
 
-// ============ السلة المتروكة ============
+// ============ السلة المتروكة + مزامنة حساب Google ============
 // لو العميل داخل بحساب فيه إيميل (Google)، سلته بتتحفظ في carts/{uid}
-// عشان صاحب المتجر يقدر يبعتله تذكير من لوحة التحكم لو ساب السلة من غير ما يطلب
+// عشان صاحب المتجر يقدر يبعتله تذكير من لوحة التحكم لو ساب السلة من غير ما يطلب.
+// ولحساب Google كمان: المفضلة والعنوان بيتحفظوا في نفس المستند، ولما يدخل من أي موبايل أو متصفح
+// بنجيبهم مرة واحدة في الجلسة (قراءة واحدة) وندمجهم مع اللي على الجهاز.
 const CARTS_LOCAL = "gtech-carts-local"; // الوضع التجريبي
 const CART_SYNCED = "gtech-cart-synced";
 let cartSyncTimer = null;
@@ -959,12 +992,60 @@ function cartSnapshot() {
   });
 }
 
+const ADDR_KEY = "gtech-addr";           // آخر عنوان اتطلب عليه (عشان صفحة الدفع تتملّى لوحدها)
+const ACCOUNT_PULLED = "gtech-account-pulled";
+const isCloudAccount = () => !!(FIREBASE_CONFIG && user?.uid && user.provider);
+const pulledThisSession = () => { try { return sessionStorage.getItem(ACCOUNT_PULLED) === user?.uid; } catch { return false; } };
+
+// بنجيب بيانات الحساب من Firebase وندمجها: السلة (الأكبر في الكمية)، والمفضلة (الاتنين)، والعنوان لو مش موجود
+async function pullAccount() {
+  // المنتجات لازم تكون اتحملت الأول، وإلا كل اللي في الحساب هيبان "منتج مش موجود" ويضيع
+  if (!isCloudAccount() || pulledThisSession() || !products.length) return;
+  try {
+    await loadFirebase(["auth", "firestore"]);
+    const fbUser = await new Promise((res) => { const stop = firebase.auth().onAuthStateChanged((u) => { stop(); res(u); }); });
+    if (!fbUser || fbUser.isAnonymous || fbUser.uid !== user.uid) return;
+    const snap = await firebase.firestore().collection("carts").doc(user.uid).get();
+    try { sessionStorage.setItem(ACCOUNT_PULLED, user.uid); } catch {}
+    const d = snap.exists ? snap.data() : {};
+    let added = 0;
+    for (const it of d.items || []) {
+      if (!findProduct(it.id) || !(it.qty > 0)) continue;
+      const opts = it.opts || "";
+      const line = cart.find((i) => i.id === it.id && (i.opts || "") === opts);
+      if (line) line.qty = Math.max(line.qty, Math.min(it.qty, 20));
+      else { cart.push({ id: it.id, qty: Math.min(it.qty, 20), opts }); added++; }
+    }
+    if (added) { pruneCart(); renderCart(); }
+    const wish = (d.wish || []).filter((id) => findProduct(id) && !wishlist.includes(id));
+    if (wish.length) {
+      wishlist = [...wishlist, ...wish];
+      store.set("gtech-wish", wishlist);
+      $$("[data-wish]").forEach((b) => { const on = wishlist.includes(Number(b.dataset.wish)); b.classList.toggle("active", on); b.setAttribute("aria-pressed", String(on)); });
+      bump($("#wishCount"), wishlist.length);
+      document.dispatchEvent(new Event("wishchange"));
+    }
+    if (d.addr?.gov && !store.get(ADDR_KEY, null)) { store.set(ADDR_KEY, d.addr); document.dispatchEvent(new Event("addrchange")); }
+    if (d.phone && !user.phone) { user = { ...user, phone: d.phone }; store.set("gtech-user", user); renderAccount(); document.dispatchEvent(new Event("userchange")); }
+    if (added || wish.length) toast(`🔄 رجّعنالك ${added ? `${num(added)} منتج في السلة` : ""}${added && wish.length ? " و" : ""}${wish.length ? `${num(wish.length)} في المفضلة` : ""} من حسابك`);
+  } catch (err) {
+    console.warn("account pull", err);
+    return;
+  }
+  syncCart();
+}
+
 async function syncCart() {
-  if (!user?.uid || !(user.email || user.phone)) return;
+  if (!user?.uid || !(user.email || user.phone) || !products.length) return;
+  // حساب Google على جهاز جديد: نجيب اللي محفوظ الأول، عشان مانمسحش سلته بسلة الجهاز ده الفاضية
+  if (isCloudAccount() && !pulledThisSession()) return pullAccount();
   const items = cartSnapshot();
-  const sig = JSON.stringify([user.uid, items.map((i) => [i.id, i.qty, i.opts])]);
+  const cloud = isCloudAccount();
+  const wish = cloud ? wishlist.filter((id) => findProduct(id)).slice(0, 100) : [];
+  const addr = cloud ? store.get(ADDR_KEY, null) : null;
+  const sig = JSON.stringify([user.uid, items.map((i) => [i.id, i.qty, i.opts]), wish, addr]);
   if (store.get(CART_SYNCED, "") === sig) return; // مفيش تغيير (فتح صفحة بس)
-  const doc = items.length && {
+  const doc = (items.length || wish.length || addr) && {
     uid: user.uid,
     email: String(user.email || ""),
     phone: String(user.phone || "").slice(0, 14),
@@ -972,6 +1053,7 @@ async function syncCart() {
     items: items.slice(0, 50),
     total: items.reduce((s, i) => s + i.price * i.qty, 0),
     updatedAt: new Date().toISOString(),
+    ...(cloud ? { wish, ...(addr ? { addr } : {}) } : {}),
   };
   try {
     if (!FIREBASE_CONFIG) {
@@ -996,6 +1078,16 @@ document.addEventListener("cartchange", () => {
   cartSyncTimer = setTimeout(syncCart, 2500);
 });
 document.addEventListener("userchange", () => setTimeout(syncCart, 500));
+document.addEventListener("wishchange", () => {
+  if (!isCloudAccount()) return;
+  clearTimeout(cartSyncTimer);
+  cartSyncTimer = setTimeout(syncCart, 2500);
+});
+document.addEventListener("addrchange", () => isCloudAccount() && setTimeout(syncCart, 300));
+// أول ما الصفحة تفتح وهو داخل بجوجل: نجيب سلته من حسابه (مرة واحدة في الجلسة)
+if (isCloudAccount()) setTimeout(pullAccount, 1200);
+// جهاز جديد من غير كتالوج محفوظ: نستنى المنتجات تتحمل وبعدين نجيب الحساب
+["productschange", "catalogloaded"].forEach((ev) => document.addEventListener(ev, () => isCloudAccount() && !pulledThisSession() && setTimeout(pullAccount, 300)));
 
 // صفحات المنتجات الثابتة (p/) فيها <base href="../">، فأي لينك "#قسم" كان بيروح للرئيسية.
 // لو القسم موجود في نفس الصفحة بننزل له هنا بدل ما نسيب الصفحة
