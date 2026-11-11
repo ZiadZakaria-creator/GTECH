@@ -1,6 +1,6 @@
 {
  "updated": "2026-11-11",
- "note": "سيجما: مقروء مباشرة من موقعهم (السعر والتوفر). الباقي من نتايج البحث. افتح اللينك واتأكد قبل ما تطبّق.",
+ "note": "سيجما: بيتحدّث أوتوماتيك من موقعهم (السعر والتوفر) مع كل نشر. الباقي من نتايج البحث. افتح اللينك واتأكد قبل ما تطبّق.",
  "trusted": [
   "Games2Egypt",
   "Amazon.eg",
@@ -8,70 +8,295 @@
   "Games World"
  ],
  "items": {
-  "81": [
+  "14": [
    {
-    "store": "Games2Egypt",
-    "price": 4590,
-    "url": "https://www.games2egypt.com/Product/24887/dualsense-ps5-controller-white"
+    "store": "Amazon.eg",
+    "price": 990,
+    "url": "https://www.amazon.eg/-/en/Logitech-LightSync-Gaming-Grade-Sensor-Computer/dp/B092ZP78R5"
    },
    {
-    "store": "Games2Egypt",
-    "price": 4499,
-    "note": "بضمان IBS سنتين",
-    "url": "https://www.games2egypt.com/Product/25027/dualsense-ps5-controller-white-ibs-2y-warranty"
-   },
-   {
-    "store": "Noon",
-    "price": 4267,
-    "url": "https://www.noon.com/egypt-en/sony-dualsense-wireless-controller-for-ps5-white/N53414690A/p/"
+    "store": "Pricena",
+    "price": 999,
+    "note": "نون وجوميا",
+    "url": "https://eg.pricena.com/en/product/logitech-g102-price-in-egypt"
    },
    {
     "store": "Sigma",
-    "price": 3999,
-    "url": "https://sigma-computer.com/en/item?id=playstation-dualsense-ps5-controller-white-s1cmsoqiwgjl",
-    "stock": "out"
+    "price": 749,
+    "url": "https://sigma-computer.com/en/item?id=logitech-g102-lightsync-gaming-mouse-features-8000-dpi-6-programmable-buttons-lightsync-rgb-lighting-1000hz-report-rate-and-a-21m-cable-910-005824-5vqic6nlth9w",
+    "note": "ضمان سنتين",
+    "checked": "2026-11-11T00:06:21.947Z"
+   }
+  ],
+  "15": [
+   {
+    "store": "Sigma",
+    "price": 475,
+    "url": "https://sigma-computer.com/en/item?id=aula-sc101-wireless-gaming-mouse-kbxidpe2f9lb",
+    "checked": "2026-11-11T00:06:23.442Z"
+   }
+  ],
+  "16": [
+   {
+    "store": "Sigma",
+    "price": 399,
+    "url": "https://sigma-computer.com/en/item?id=redragon-bm-2638-wireless-mouse-2400-dpi-blue-prcq2u4yilbp",
+    "checked": "2026-11-11T00:06:24.853Z"
+   }
+  ],
+  "17": [
+   {
+    "store": "Sigma",
+    "price": 875,
+    "url": "https://sigma-computer.com/en/item?id=meetion-g3325-programmable-gaming-mouse-bwcemh9lmyml",
+    "checked": "2026-11-11T00:06:26.258Z"
+   }
+  ],
+  "18": [
+   {
+    "store": "Sigma",
+    "price": 2749,
+    "url": "https://sigma-computer.com/en/item?id=logitech-g309-lightspeed-wireless-gaming-mouse-black-nbjwrtxrtzla",
+    "checked": "2026-11-11T00:06:27.665Z"
+   }
+  ],
+  "19": [
+   {
+    "store": "Sigma",
+    "price": 2499,
+    "url": "https://sigma-computer.com/en/item?id=hyperx-pulsefire-fuse-wireless-mouse-6-buttons-up-to-12000-dpi-pixart-paw3311-sensor-85h-battery-usb-a-bluetooth-compatible-with-pc-ps5-xbox-tpw5kjnvlont",
+    "checked": "2026-11-11T00:06:28.988Z"
+   }
+  ],
+  "20": [
+   {
+    "store": "Sigma",
+    "price": 900,
+    "url": "https://sigma-computer.com/en/item?id=onikuma-dm01-12800dpi-24ghz-bt-wired-tri-mode-gaming-mouse-white-197twdiqrj4g",
+    "checked": "2026-11-11T00:06:30.707Z"
+   }
+  ],
+  "21": [
+   {
+    "store": "Sigma",
+    "price": 500,
+    "url": "https://sigma-computer.com/en/item?id=onikuma-cw929-wired-gaming-mouse-white-qe3qicicvdwn",
+    "checked": "2026-11-11T00:06:32.440Z"
+   }
+  ],
+  "22": [
+   {
+    "store": "Sigma",
+    "price": 225,
+    "url": "https://sigma-computer.com/en/item?id=aula-s50-7-button-gaming-mouse-2400-dpi-optical-usb-wired-0vkt1yxlupih",
+    "checked": "2026-11-11T00:06:33.965Z"
+   }
+  ],
+  "23": [
+   {
+    "store": "Sigma",
+    "price": 1499,
+    "url": "https://sigma-computer.com/en/item?id=redragon-m690-pro-wireless-gaming-mouse-8000-dpi-wiredwireless-gamer-mouse-w-rapid-fire-key-8-macro-buttons-ergonomic-design-for-pcmaclaptop-8cx45bhpksmg",
+    "checked": "2026-11-11T00:06:35.414Z"
+   }
+  ],
+  "24": [
+   {
+    "store": "Sigma",
+    "price": 999,
+    "url": "https://sigma-computer.com/en/item?id=redragon-m806-bullseye-gaming-mouse-7-programmable-buttons-wired-rgb-gamer-mouse-wergonomic-natural-grip-build-software-supports-diy-keybinds-backlit-xpvijcvxr6nf",
+    "stock": "out",
+    "checked": "2026-11-11T00:06:37.190Z"
+   }
+  ],
+  "25": [
+   {
+    "store": "Sigma",
+    "price": 175,
+    "url": "https://sigma-computer.com/en/item?id=meetion-m371-usb-wired-backlit-mouse-bqnexc8she2j",
+    "checked": "2026-11-11T00:06:38.600Z"
+   }
+  ],
+  "26": [
+   {
+    "store": "Sigma",
+    "price": 299,
+    "url": "https://sigma-computer.com/en/item?id=aula-am210-dual-mode-rechargeable-bluetooth-wireless-gaming-mouse-black-46akq5ti5mp4",
+    "checked": "2026-11-11T00:06:40.024Z"
+   }
+  ],
+  "27": [
+   {
+    "store": "Games2Egypt",
+    "price": 2099,
+    "url": "https://www.games2egypt.com/Product/24559/logitech-g305-lightspeed-wireless-gaming-mouse-black"
+   },
+   {
+    "store": "Amazon.eg",
+    "price": 2099,
+    "url": "https://www.amazon.eg/-/en/Logitech-Lightspeed-Wireless-Gaming-Mouse/dp/B07CGPZ3ZQ"
+   },
+   {
+    "store": "Sigma",
+    "price": 1799,
+    "url": "https://sigma-computer.com/en/item?id=logitech-g305-black-lightspeed-wireless-gaming-mouse-features-a-hero-sensor-200-12000-dpi-1000hz-wireless-report-rate-250-hour-battery-life-99g-weight-and-1-onboard-profile-with-a-2-year-warranty-910-005283-8erm5owt8p5m",
+    "note": "ضمان سنتين",
+    "checked": "2026-11-11T00:06:41.754Z"
    },
    {
     "store": "Games World",
-    "price": 4299,
-    "url": "https://www.gamesworldegypt.com/devices-accessories/ps/playstation-controllers"
+    "price": 2099,
+    "url": "https://www.gamesworldegypt.com/logitech-g305-lightspeed-wireless-gaming-mouse-black"
    }
   ],
-  "94": [
+  "28": [
    {
-    "store": "Games2Egypt",
-    "price": 4590,
-    "url": "https://www.games2egypt.com/Product/32191/dualsense-ps5-controller-midnight-black-used",
-    "note": "سعر الجديد من صفحة المستعمل"
+    "store": "Sigma",
+    "price": 1599,
+    "url": "https://sigma-computer.com/en/item?id=redragon-k608-elite-valheim-mechanical-gaming-keyboard-rainbow-backlight-blue-switch-104-keys-wired-full-rollover-qmlg4quxvwr7",
+    "checked": "2026-11-11T00:06:43.525Z"
+   }
+  ],
+  "29": [
+   {
+    "store": "Sigma",
+    "price": 2500,
+    "url": "https://sigma-computer.com/en/item?id=attack-shark-m86-mechanical-keyboard-bluetoothwirelesswired-3d-connectivity-rgb-lighting-4000-mah-battery-arabicenglish-keycaps-blackberry-vrsrfkthyzev",
+    "checked": "2026-11-11T00:06:44.948Z"
+   }
+  ],
+  "30": [
+   {
+    "store": "Sigma",
+    "price": 1325,
+    "url": "https://sigma-computer.com/en/item?id=fantech-atom96-mk890v2-blue-switch-95-layout-3-color-double-injection-keycaps-hot-swappable-3-pin-10-lighting-modes-full-key-rollover-pwtdtuqz6ijj",
+    "checked": "2026-11-11T00:06:47.194Z"
+   }
+  ],
+  "31": [
+   {
+    "store": "Sigma",
+    "price": 1199,
+    "url": "https://sigma-computer.com/en/item?id=havit-kb922l-wired-black-jiuzi-red-switch-rgb-backlit-mechanical-gaming-keyboard-kb922l-bk-gt8dsm3j6spw",
+    "checked": "2026-11-11T00:06:48.616Z"
+   }
+  ],
+  "32": [
+   {
+    "store": "Sigma",
+    "price": 1150,
+    "url": "https://sigma-computer.com/en/item?id=onikuma-g52-75-rgb-blue-switches-gaming-mechanical-keyboard-ux2y9btlz1vw",
+    "checked": "2026-11-11T00:06:50.070Z"
+   }
+  ],
+  "33": [
+   {
+    "store": "Sigma",
+    "price": 699,
+    "url": "https://sigma-computer.com/en/item?id=t-dagger-bora-t-tgk313-blue-switch-rainbow-led-mechanical-gaming-keyboard-nubuy6tlbjgq",
+    "checked": "2026-11-11T00:06:51.474Z"
+   }
+  ],
+  "34": [
+   {
+    "store": "Sigma",
+    "price": 1649,
+    "url": "https://sigma-computer.com/en/item?id=redragon-kumara-k552-rgb-blue-switches-mechanical-gaming-keyboard-lyrzpxpb5ltf",
+    "checked": "2026-11-11T00:06:52.756Z"
+   }
+  ],
+  "35": [
+   {
+    "store": "Amazon.eg",
+    "price": 3599,
+    "note": "اللون الأبيض",
+    "url": "https://www.amazon.eg/%D9%84%D8%A7%D8%B3%D9%84%D9%83%D9%8A%D8%A9-%D9%84%D9%84%D8%A7%D9%84%D8%B9%D8%A7%D8%A8-%D9%84%D9%88%D8%AC%D9%8A%D8%AA%D9%83-%D9%88%D8%A8%D9%84%D9%88%D8%AA%D9%88%D8%AB-%D9%85%D9%8A%D9%83%D8%B1%D9%88%D9%81%D9%88%D9%86/dp/B08R8DQDRK"
    },
    {
     "store": "Noon",
-    "price": 4334,
-    "note": "نسخة رسمية",
-    "url": "https://www.noon.com/egypt-en/dualsense-wireless-ps5-controller-midnight-black-official-version/N53410810A/p/"
+    "price": 3742,
+    "note": "الأسود",
+    "url": "https://www.noon.com/egypt-en/g435-lightspeed-wireless-gaming-headset-black/N52549991A/p/"
    },
    {
     "store": "Sigma",
-    "price": 4999,
-    "url": "https://sigma-computer.com/en/item?id=playstation-dualsense-ps5-controller-midnight-black-5pr4s0wsznr0",
-    "stock": "out"
+    "price": 3499,
+    "url": "https://sigma-computer.com/en/item?id=logitech-g435-lightspeed-wireless-gaming-headset-black-981-001050-46bz6h7nz62q",
+    "stock": "out",
+    "note": "ضمان سنتين",
+    "checked": "2026-11-11T00:06:54.123Z"
+   },
+   {
+    "store": "Games World",
+    "price": 3499,
+    "url": "https://www.gamesworldegypt.com/logitech-g435-lightspeed-wireless-gaming-headset-white-2-4ghz",
+    "note": "الأبيض"
    }
   ],
-  "98": [
+  "36": [
    {
-    "store": "Games2Egypt",
-    "price": 4690,
-    "note": "من نتايج البحث، مفيش لينك مباشر"
-   },
+    "store": "Sigma",
+    "price": 4899,
+    "url": "https://sigma-computer.com/en/item?id=crucial-bx500-500gb-ssd-sata-6gbs-25-7mm-550mbs-read-500mbs-write-120tbw-1mfz1g8zu89w",
+    "checked": "2026-11-11T00:06:55.528Z"
+   }
+  ],
+  "37": [
    {
-    "store": "Jumia",
-    "price": 4499,
-    "url": "https://www.jumia.com.eg/playstation-5-dualsense-wireless-controller-grey-camouflage-37778267.html"
-   },
+    "store": "Sigma",
+    "price": 11500,
+    "url": "https://sigma-computer.com/en/item?id=samsung-870-qvo-sata-iii-25-1tb-qlc-dram-up-to-530560-mbs-te0jtan1nfvo",
+    "checked": "2026-11-11T00:06:57.118Z"
+   }
+  ],
+  "38": [
    {
-    "store": "Noon",
-    "price": 4419,
-    "url": "https://www.noon.com/egypt-en/dualsense-wireless-ps5-controller-grey-camouflage-official-version/N53358520A/p/"
+    "store": "Sigma",
+    "price": 6750,
+    "url": "https://sigma-computer.com/en/item?id=gigabayt-gstfs31-1tb-up-to-550500mbs-fyjjwylux3br",
+    "stock": "out",
+    "checked": "2026-11-11T00:06:58.492Z"
+   }
+  ],
+  "39": [
+   {
+    "store": "Sigma",
+    "price": 7900,
+    "url": "https://sigma-computer.com/en/item?id=wd-blue-sn5100-nvme-ssd-1tb-kjxxganaoc9z",
+    "checked": "2026-11-11T00:06:59.910Z"
+   }
+  ],
+  "40": [
+   {
+    "store": "Sigma",
+    "price": 3675,
+    "url": "https://sigma-computer.com/en/item?id=hiksemi-wave-512gb-pcie-gen-3-nvme-m2-qgqoz4pylto7",
+    "checked": "2026-11-11T00:07:01.712Z"
+   }
+  ],
+  "41": [
+   {
+    "store": "Sigma",
+    "price": 4400,
+    "url": "https://sigma-computer.com/en/item?id=seagate-expansion-stkm1000400-1tb-usb-30-portable-drive-plug-and-play-compact-design-windowsmacoschromeos-compatible-fcahnob5vcjn",
+    "checked": "2026-11-11T00:07:03.013Z"
+   }
+  ],
+  "42": [
+   {
+    "store": "Sigma",
+    "price": 5555,
+    "url": "https://sigma-computer.com/en/item?id=western-digital-1tb-my-passport-portable-hard-drive-usb-32-model-wdbyvg0010bbk-wesn-vbq1rzfmgndx",
+    "checked": "2026-11-11T00:07:04.361Z"
+   }
+  ],
+  "43": [
+   {
+    "store": "Sigma",
+    "price": 8150,
+    "url": "https://sigma-computer.com/en/item?id=seagate-expansion-4tb-portable-hard-drive-model-stkm4000400-usb-30-compatible-with-windowsmacoschrome-os-fr5ntmagrhjc",
+    "stock": "out",
+    "checked": "2026-11-11T00:07:05.630Z"
    }
   ],
   "44": [
@@ -90,48 +315,98 @@
     "store": "Sigma",
     "price": 8999,
     "url": "https://sigma-computer.com/en/item?id=western-digital-4tb-my-passport-portable-hard-drive-usb-32-model-wdbpkj0040bbk-wesn-k74vk0a6axhp",
-    "note": "ضمان سنة"
+    "note": "ضمان سنة",
+    "checked": "2026-11-11T00:07:07.101Z"
    }
   ],
-  "100": [
-   {
-    "store": "Amazon.eg",
-    "price": 6500,
-    "url": "https://amazon.eg/-/en/WD-Elements-Portable-2TB-portable/dp/B06W55K9N6"
-   },
-   {
-    "store": "Dream2000",
-    "price": 6999,
-    "url": "https://dream2000.com/en/collections/external-hard"
-   },
+  "45": [
    {
     "store": "Sigma",
-    "price": 850,
-    "url": "https://sigma-computer.com/en/item?id=wd-2tb-elements-portable-external-hard-drive-usb-30-black-3f6x5jw7t71u",
-    "stock": "out"
+    "price": 9749,
+    "url": "https://sigma-computer.com/en/item?id=western-digital-5tb-my-passport-portable-hard-drive-usb-32-model-wdbpkj0050bbk-wesn-cqtboj3caulg",
+    "checked": "2026-11-11T00:07:08.477Z"
    }
   ],
-  "27": [
-   {
-    "store": "Games2Egypt",
-    "price": 2099,
-    "url": "https://www.games2egypt.com/Product/24559/logitech-g305-lightspeed-wireless-gaming-mouse-black"
-   },
-   {
-    "store": "Amazon.eg",
-    "price": 2099,
-    "url": "https://www.amazon.eg/-/en/Logitech-Lightspeed-Wireless-Gaming-Mouse/dp/B07CGPZ3ZQ"
-   },
+  "46": [
    {
     "store": "Sigma",
-    "price": 1799,
-    "url": "https://sigma-computer.com/en/item?id=logitech-g305-black-lightspeed-wireless-gaming-mouse-features-a-hero-sensor-200-12000-dpi-1000hz-wireless-report-rate-250-hour-battery-life-99g-weight-and-1-onboard-profile-with-a-2-year-warranty-910-005283-8erm5owt8p5m",
-    "note": "ضمان سنتين"
-   },
+    "price": 888,
+    "url": "https://sigma-computer.com/en/item?id=fantech-alto-mh91-features-50mm-drivers-detachable-noise-cancelling-mic-trrs-connector-2m-cable-and-durable-abs-aluminium-build-ggyy8ohjt2ce",
+    "checked": "2026-11-11T00:07:10.742Z"
+   }
+  ],
+  "47": [
    {
-    "store": "Games World",
-    "price": 2099,
-    "url": "https://www.gamesworldegypt.com/logitech-g305-lightspeed-wireless-gaming-mouse-black"
+    "store": "Sigma",
+    "price": 1999,
+    "url": "https://sigma-computer.com/en/item?id=hyperx-cloud-stinger-gaming-headset-2-core-42ivq9brtz5r",
+    "stock": "out",
+    "checked": "2026-11-11T00:07:12.115Z"
+   }
+  ],
+  "48": [
+   {
+    "store": "Sigma",
+    "price": 899,
+    "url": "https://sigma-computer.com/en/item?id=redragon-h260-rgb-gaming-headset-with-microphone-wired-compatible-with-xbox-one-nintendo-switch-ps4-ps5-pcs-laptops-hyrras5xrycv",
+    "checked": "2026-11-11T00:07:13.561Z"
+   }
+  ],
+  "49": [
+   {
+    "store": "Sigma",
+    "price": 5500,
+    "url": "https://sigma-computer.com/en/item?id=hyperx-cloud-ii-core-wireless-gaming-headset-for-pc-6y2g8aa-ruvlioo6rctp",
+    "checked": "2026-11-11T00:07:14.931Z"
+   }
+  ],
+  "50": [
+   {
+    "store": "Sigma",
+    "price": 499,
+    "url": "https://sigma-computer.com/en/item?id=kotion-each-g5000-gaming-headset-with-mic-71-surround-sound-rgb-led-oyuu1xpxyuyv",
+    "checked": "2026-11-11T00:07:16.622Z"
+   }
+  ],
+  "51": [
+   {
+    "store": "Sigma",
+    "price": 5000,
+    "url": "https://sigma-computer.com/en/item?id=razer-kraken-kitty-v2-quartz-2cneqrpvqsqy",
+    "checked": "2026-11-11T00:07:18.011Z"
+   }
+  ],
+  "52": [
+   {
+    "store": "Sigma",
+    "price": 849,
+    "url": "https://sigma-computer.com/en/item?id=havit-h2230u-usb-rgb-gaming-headset-with-mic-black-jsnkxsgrbhdt",
+    "checked": "2026-11-11T00:07:19.424Z"
+   }
+  ],
+  "53": [
+   {
+    "store": "Sigma",
+    "price": 949,
+    "url": "https://sigma-computer.com/en/item?id=redragon-mento-h270-rgb-gaming-headphone-with-2-jacks-35mm-for-pc-ssvxncgslhwh",
+    "note": "اللون مش مكتوب عندهم",
+    "checked": "2026-11-11T00:07:20.810Z"
+   }
+  ],
+  "54": [
+   {
+    "store": "Sigma",
+    "price": 2749,
+    "url": "https://sigma-computer.com/en/item?id=logitech-g335-wired-gaming-headset-features-40mm-drivers-20hz-20khz-frequency-response-36-ohms-impedance-cardioid-mic-35mm-jack-compatibility-and-a-2-year-warranty-8hdthchtzql7",
+    "checked": "2026-11-11T00:07:22.236Z"
+   }
+  ],
+  "55": [
+   {
+    "store": "Sigma",
+    "price": 649,
+    "url": "https://sigma-computer.com/en/item?id=onikuma-k19-gaming-headset-camouflage-color-with-mic-and-led-light-for-computer-soeleu48oldp",
+    "checked": "2026-11-11T00:07:23.679Z"
    }
   ],
   "68": [
@@ -155,7 +430,8 @@
     "store": "Sigma",
     "price": 1799,
     "url": "https://sigma-computer.com/en/item?id=logitech-g502-hero-high-performance-wired-gaming-mouse-hero-25k-sensor-25600-dpi-rgb-adjustable-weights-11-programmable-buttons-on-board-memory-pc-mac-910-005471-kc6g7rio1s8y",
-    "note": "ضمان سنتين"
+    "note": "ضمان سنتين",
+    "checked": "2026-11-11T00:07:25.168Z"
    },
    {
     "store": "Games World",
@@ -163,50 +439,126 @@
     "url": "https://www.gamesworldegypt.com/Logitech-G502-Performance-Gaming-Mouse"
    }
   ],
-  "14": [
-   {
-    "store": "Amazon.eg",
-    "price": 990,
-    "url": "https://www.amazon.eg/-/en/Logitech-LightSync-Gaming-Grade-Sensor-Computer/dp/B092ZP78R5"
-   },
-   {
-    "store": "Pricena",
-    "price": 999,
-    "note": "نون وجوميا",
-    "url": "https://eg.pricena.com/en/product/logitech-g102-price-in-egypt"
-   },
+  "78": [
    {
     "store": "Sigma",
-    "price": 749,
-    "url": "https://sigma-computer.com/en/item?id=logitech-g102-lightsync-gaming-mouse-features-8000-dpi-6-programmable-buttons-lightsync-rgb-lighting-1000hz-report-rate-and-a-21m-cable-910-005824-5vqic6nlth9w",
-    "note": "ضمان سنتين"
+    "price": 599,
+    "url": "https://sigma-computer.com/en/item?id=t-dagger-arena-tgk321-wired-gaming-keyboard-blue-switch-fabpatw0ahjl",
+    "checked": "2026-11-11T00:07:26.864Z"
    }
   ],
-  "35": [
+  "81": [
    {
-    "store": "Amazon.eg",
-    "price": 3599,
-    "note": "اللون الأبيض",
-    "url": "https://www.amazon.eg/%D9%84%D8%A7%D8%B3%D9%84%D9%83%D9%8A%D8%A9-%D9%84%D9%84%D8%A7%D9%84%D8%B9%D8%A7%D8%A8-%D9%84%D9%88%D8%AC%D9%8A%D8%AA%D9%83-%D9%88%D8%A8%D9%84%D9%88%D8%AA%D9%88%D8%AB-%D9%85%D9%8A%D9%83%D8%B1%D9%88%D9%81%D9%88%D9%86/dp/B08R8DQDRK"
+    "store": "Games2Egypt",
+    "price": 4590,
+    "url": "https://www.games2egypt.com/Product/24887/dualsense-ps5-controller-white"
+   },
+   {
+    "store": "Games2Egypt",
+    "price": 4499,
+    "note": "بضمان IBS سنتين",
+    "url": "https://www.games2egypt.com/Product/25027/dualsense-ps5-controller-white-ibs-2y-warranty"
    },
    {
     "store": "Noon",
-    "price": 3742,
-    "note": "الأسود",
-    "url": "https://www.noon.com/egypt-en/g435-lightspeed-wireless-gaming-headset-black/N52549991A/p/"
+    "price": 4267,
+    "url": "https://www.noon.com/egypt-en/sony-dualsense-wireless-controller-for-ps5-white/N53414690A/p/"
    },
    {
     "store": "Sigma",
-    "price": 3499,
-    "url": "https://sigma-computer.com/en/item?id=logitech-g435-lightspeed-wireless-gaming-headset-black-981-001050-46bz6h7nz62q",
+    "price": 3999,
+    "url": "https://sigma-computer.com/en/item?id=playstation-dualsense-ps5-controller-white-s1cmsoqiwgjl",
     "stock": "out",
-    "note": "ضمان سنتين"
+    "checked": "2026-11-11T00:07:28.519Z"
    },
    {
     "store": "Games World",
-    "price": 3499,
-    "url": "https://www.gamesworldegypt.com/logitech-g435-lightspeed-wireless-gaming-headset-white-2-4ghz",
-    "note": "الأبيض"
+    "price": 4299,
+    "url": "https://www.gamesworldegypt.com/devices-accessories/ps/playstation-controllers"
+   }
+  ],
+  "82": [
+   {
+    "store": "Sigma",
+    "price": 1099,
+    "url": "https://sigma-computer.com/en/item?id=cougar-egy-k22-wireless-gaming-controller-black-3tifzcoxrdmr",
+    "checked": "2026-11-11T00:07:29.848Z"
+   }
+  ],
+  "86": [
+   {
+    "store": "Sigma",
+    "price": 1300,
+    "url": "https://sigma-computer.com/en/item?id=attack-shark-r1-gaming-mouse-tri-mode-24ghz-bluetooth-usb-c-wired-optical-sensor-up-to-18000-dpi-6-programmable-buttons-black-5mgxzfwedpmc",
+    "note": "الأسود",
+    "stock": "out",
+    "checked": "2026-11-11T00:07:31.273Z"
+   }
+  ],
+  "87": [
+   {
+    "store": "Sigma",
+    "price": 1300,
+    "url": "https://sigma-computer.com/en/item?id=attack-shark-r1-gaming-mouse-tri-mode-24ghz-bluetooth-usb-c-wired-optical-sensor-up-to-18000-dpi-6-programmable-buttons-white-hqiv66ybj8qs",
+    "note": "الأبيض",
+    "stock": "out",
+    "checked": "2026-11-11T00:07:32.639Z"
+   }
+  ],
+  "89": [
+   {
+    "store": "Sigma",
+    "price": 110,
+    "url": "https://sigma-computer.com/en/item?id=aula-s20-usb-wired-gaming-mouse-programmable-optical-ergonomic-mouse-with-breathing-led-lights-for-pc-laptop-nwhemkjbiblt",
+    "stock": "out",
+    "checked": "2026-11-11T00:07:34.037Z"
+   }
+  ],
+  "90": [
+   {
+    "store": "Sigma",
+    "price": 2599,
+    "url": "https://sigma-computer.com/en/item?id=aula-f75-mechanical-reaper-switch-rgb-backlight-tri-mode-bt24gusb-c-hot-swappable-gradient-grey-9913-kpyyo4osn5qg",
+    "checked": "2026-11-11T00:07:35.451Z"
+   }
+  ],
+  "92": [
+   {
+    "store": "Sigma",
+    "price": 499,
+    "url": "https://sigma-computer.com/en/item?id=redragon-p018-taurus-gaming-mouse-pad-size-930-x-300-x-3mm-lqx13j3onc8a",
+    "stock": "out",
+    "checked": "2026-11-11T00:07:36.847Z"
+   }
+  ],
+  "93": [
+   {
+    "store": "Sigma",
+    "price": 350,
+    "url": "https://sigma-computer.com/en/item?id=havit-mp845-bk-gaming-mousepad-700mm-x-300mm-x-3mm-black-rvgxz5t95lix",
+    "stock": "out",
+    "checked": "2026-11-11T00:07:38.179Z"
+   }
+  ],
+  "94": [
+   {
+    "store": "Games2Egypt",
+    "price": 4590,
+    "url": "https://www.games2egypt.com/Product/32191/dualsense-ps5-controller-midnight-black-used",
+    "note": "سعر الجديد من صفحة المستعمل"
+   },
+   {
+    "store": "Noon",
+    "price": 4334,
+    "note": "نسخة رسمية",
+    "url": "https://www.noon.com/egypt-en/dualsense-wireless-ps5-controller-midnight-black-official-version/N53410810A/p/"
+   },
+   {
+    "store": "Sigma",
+    "price": 4999,
+    "url": "https://sigma-computer.com/en/item?id=playstation-dualsense-ps5-controller-midnight-black-5pr4s0wsznr0",
+    "stock": "out",
+    "checked": "2026-11-11T00:07:39.895Z"
    }
   ],
   "95": [
@@ -229,8 +581,82 @@
     "store": "Sigma",
     "price": 7499,
     "url": "https://sigma-computer.com/en/item?id=hyperx-cloud-iii-s-wireless-gaming-headset-53mm-drivers-bluetooth-53-up-to-120h-battery-life-a59yzaa-fjlobrvhz12n",
-    "note": "ضمان سنة"
+    "note": "ضمان سنة",
+    "checked": "2026-11-11T00:07:41.298Z"
+   }
+  ],
+  "96": [
+   {
+    "store": "Sigma",
+    "price": 7999,
+    "url": "https://sigma-computer.com/en/item?id=razer-blackshark-v2-hyperspeed-rz04-04960100-r3m1-alzygr14h0as",
+    "note": "النسخة السودا (إحنا الأبيض)",
+    "stock": "out",
+    "checked": "2026-11-11T00:07:42.582Z"
+   }
+  ],
+  "97": [
+   {
+    "store": "Sigma",
+    "price": 749,
+    "url": "https://sigma-computer.com/en/item?id=redragon-m607-griffin-7200-dpi-rgb-gaming-mouse-g1qtia1yqnyz",
+    "checked": "2026-11-11T00:07:43.943Z"
+   }
+  ],
+  "98": [
+   {
+    "store": "Games2Egypt",
+    "price": 4690,
+    "note": "من نتايج البحث، مفيش لينك مباشر"
+   },
+   {
+    "store": "Jumia",
+    "price": 4499,
+    "url": "https://www.jumia.com.eg/playstation-5-dualsense-wireless-controller-grey-camouflage-37778267.html"
+   },
+   {
+    "store": "Noon",
+    "price": 4419,
+    "url": "https://www.noon.com/egypt-en/dualsense-wireless-ps5-controller-grey-camouflage-official-version/N53358520A/p/"
+   }
+  ],
+  "100": [
+   {
+    "store": "Amazon.eg",
+    "price": 6500,
+    "url": "https://amazon.eg/-/en/WD-Elements-Portable-2TB-portable/dp/B06W55K9N6"
+   },
+   {
+    "store": "Dream2000",
+    "price": 6999,
+    "url": "https://dream2000.com/en/collections/external-hard"
+   },
+   {
+    "store": "Sigma",
+    "price": 850,
+    "url": "https://sigma-computer.com/en/item?id=wd-2tb-elements-portable-external-hard-drive-usb-30-black-3f6x5jw7t71u",
+    "stock": "out",
+    "checked": "2026-11-11T00:07:45.534Z"
+   }
+  ],
+  "103": [
+   {
+    "store": "Sigma",
+    "price": 1799,
+    "url": "https://sigma-computer.com/en/item?id=redragon-k636glr-r-94-key-red-sw-backlight-mechanical-keyboard-iuefukpqbewn",
+    "checked": "2026-11-11T00:07:46.949Z"
+   }
+  ],
+  "108": [
+   {
+    "store": "Sigma",
+    "price": 1300,
+    "url": "https://sigma-computer.com/en/item?id=attack-shark-r1-gaming-mouse-tri-mode-24ghz-bluetooth-usb-c-wired-optical-sensor-up-to-18000-dpi-6-programmable-buttons-white-hqiv66ybj8qs",
+    "note": "الأبيض",
+    "stock": "out",
+    "checked": "2026-11-11T00:07:48.391Z"
    }
   ]
- }
+ },
+ "sigmaUpdated": "2026-11-11T00:07:49.192Z"
 }

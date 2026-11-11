@@ -44,12 +44,17 @@ function mkRender() {
     + (mkData.sigmaUpdated ? ` · سيجما: ${dateFmt(mkData.sigmaUpdated, { day: "numeric", month: "long", hour: "numeric", minute: "2-digit" })}` : "");
   const byId = new Map(adminProducts.map((p) => [p.id, p]));
   const prev = new Map(mkRows.map((r) => [r.p.id, r]));
-  mkRows = Object.entries(mkData.items || {}).map(([id, sources]) => {
-    const p = byId.get(Number(id));
-    if (!p) return null;
-    const s = mkSuggest(p, sources);
-    if (!s) return null;
+  mkRows = adminProducts.filter((p) => p.active !== false).map((p) => {
+    const sources = (mkData.items || {})[p.id] || [];
     const old = prev.get(p.id);
+    const s = sources.length ? mkSuggest(p, sources) : null;
+    if (!s) {
+      // منتج لسه مالقيناش له سعر في السوق: بيظهر عشان تقدر تعدّل سعره بإيدك من نفس الصفحة
+      const floor = Number(mkFloors()[p.id]) || 0;
+      const newPrice = old?.edited ? old.newPrice : p.price;
+      return { p, sources, nodata: true, keep: true, floor, newPrice, edited: !!old?.edited, on: old ? old.on : false,
+        oldBad: (np) => !!p.old && (np > p.price || p.old <= np), clearOld: old ? old.clearOld : false };
+    }
     const maxMarket = Math.max(...sources.filter(mkUsable).map((x) => x.price), 0) || Math.max(...sources.map((x) => x.price || 0));
     // السعر قبل الخصم بيتمسح لو: السعر هيزيد (يبقى الخصم خلص)، أو بقى أقل من الجديد، أو أعلى من السوق كله بكتير
     const oldBad = (np) => !!p.old && (np > p.price || p.old <= np || p.old > maxMarket * 1.15);
@@ -57,12 +62,43 @@ function mkRender() {
     return { p, sources, ...s, maxMarket, oldBad, newPrice, edited: !!old?.edited,
       // فرق أكبر من 10% مش متعلّم من الأول: غالباً سعر عرض أو منتج مختلف، فلازم تتأكد بنفسك
       big: Math.abs(newPrice - p.price) / p.price > 0.10,
-      on: old ? old.on : !s.keep && Math.abs(newPrice - p.price) / p.price <= 0.10, clearOld: old ? old.clearOld : oldBad(newPrice) };
-  }).filter(Boolean).sort((a, b) => Math.abs(b.newPrice - b.p.price) / b.p.price - Math.abs(a.newPrice - a.p.price) / a.p.price);
+      // مفيش حاجة متعلّم عليها من الأول: إنت بتختار بنفسك اللي هيتطبّق
+      on: old ? old.on : false, clearOld: old ? old.clearOld : oldBad(newPrice) };
+  }).sort((a, b) => (a.nodata - b.nodata)
+    || Math.abs(b.newPrice - b.p.price) / b.p.price - Math.abs(a.newPrice - a.p.price) / a.p.price
+    || a.p.id - b.p.id);
 
   if (!productsLoaded) { box.innerHTML = `<p class="muted">بنحمّل المنتجات...</p>`; return; }
-  if (!mkRows.length) { box.innerHTML = `<p class="muted">مفيش منتجات عليها أسعار سوق لسه.</p>`; return; }
-  box.innerHTML = mkRows.map((r) => {
+  const cnt = { all: mkRows.length, diff: 0, ok: 0, none: 0 };
+  mkRows.forEach((r) => { cnt[mkKind(r)]++; });
+  $$("#mkTabs [data-mk-tab]").forEach((b) => {
+    b.classList.toggle("active", b.dataset.mkTab === mkTab);
+    b.querySelector("b").textContent = num(cnt[b.dataset.mkTab]);
+  });
+  const q = toLatinDigits(($("#mkSearch").value || "").trim().toLowerCase());
+  const shown = mkRows.filter((r) => (mkTab === "all" || mkKind(r) === mkTab)
+    && (!q || r.p.name.toLowerCase().includes(q) || (r.p.brand || "").toLowerCase().includes(q) || String(r.p.id) === q));
+  if (!shown.length) { box.innerHTML = `<p class="muted">مفيش منتجات هنا.</p>`; mkCount(); return; }
+  box.innerHTML = shown.map((r) => {
+    if (r.nodata) return `
+      <div class="mk-row mk-row--none ${r.on ? "is-on" : ""}" data-mk="${r.p.id}">
+        <label class="mk-pick"><input type="checkbox" data-mk-on ${r.on ? "checked" : ""} /></label>
+        <div class="mk-main">
+          <div class="mk-name"><b>${escapeHtml(r.p.name)}</b><small>#${r.p.id} · الضمان: ${escapeHtml(r.p.warranty || "—")} · المخزون: ${num(r.p.stock ?? 0)}</small></div>
+          ${r.sources.length
+            ? `<div class="mk-srcs">${r.sources.map((x) => `${x.url ? `<a class="mk-src mk-src--out" href="${escapeHtml(x.url)}" target="_blank" rel="noopener">` : `<span class="mk-src mk-src--out">`}${escapeHtml(x.store)} <b>${num(x.price)}</b> <small>مش متوفر عندهم</small>${x.url ? " ↗</a>" : "</span>"}`).join("")}</div>
+               <small class="muted">المنافسين عندهم خلصان، فمفيش اقتراح. تقدر تعدّل سعره بإيدك من هنا.</small>`
+            : `<small class="muted">لسه مالقيناش سعره عند المنافسين. تقدر تعدّل سعره بإيدك من هنا.</small>`}
+          ${r.p.old ? `<label class="mk-old"><input type="checkbox" data-mk-clear ${r.clearOld ? "checked" : ""} /> امسح «السعر قبل الخصم» (${num(r.p.old)})</label>` : ""}
+        </div>
+        <div class="mk-prices">
+          <div><small>سعرك</small><b>${num(r.p.price)}</b></div>
+          <div><small>أرخص منافس</small><b>—</b></div>
+          <div class="mk-new"><small>الجديد</small><input type="number" inputmode="numeric" min="1" step="1" value="${r.newPrice}" data-mk-price /></div>
+          <div class="mk-floor"><small>أقل سعر ليك</small><input type="number" inputmode="numeric" min="0" step="1" value="${r.floor || ""}" placeholder="اختياري" data-mk-floor /></div>
+          ${r.newPrice !== r.p.price ? `<span class="mk-tag ${r.newPrice > r.p.price ? "mk-tag--up" : "mk-tag--down"}">${r.newPrice > r.p.price ? "⬆ +" : "⬇ "}${num(r.newPrice - r.p.price)}</span>` : ""}
+        </div>
+      </div>`;
     const d = r.newPrice - r.p.price, pct = Math.round((d / r.p.price) * 100);
     const tag = r.keep && !r.edited ? `<span class="mk-tag">⚪ مظبوط</span>`
       : d > 0 ? `<span class="mk-tag mk-tag--up">⬆ +${num(d)} (${pct}%)</span>`
@@ -95,6 +131,17 @@ function mkRender() {
   }).join("");
   mkCount();
 }
+
+// تبويب القايمة: كله / محتاج تعديل / مظبوط / من غير أسعار سوق
+let mkTab = "all";
+const mkKind = (r) => (r.nodata ? "none" : r.keep && !r.edited ? "ok" : "diff");
+$("#mkTabs").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-mk-tab]");
+  if (!b) return;
+  mkTab = b.dataset.mkTab;
+  mkRender();
+});
+$("#mkSearch").addEventListener("input", () => mkRender());
 
 function mkRenderTrust() {
   const stores = [...new Set(Object.values(mkData.items || {}).flat().map((s) => s.store))];

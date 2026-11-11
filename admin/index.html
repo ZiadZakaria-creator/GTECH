@@ -24,7 +24,7 @@
   <meta name="apple-mobile-web-app-title" content="GTECH MASR Admin" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="admin.css?v=25" />
+  <link rel="stylesheet" href="admin.css?v=26" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a84ff'/><text x='32' y='44' font-size='36' font-family='Arial' font-weight='900' fill='white' text-anchor='middle'>G</text></svg>" />
 </head>
 <body class="admin">
@@ -366,6 +366,15 @@
           <span class="mk-bar__btns"><button class="btn btn--ghost btn--sm" id="mkAll">تحديد / إلغاء الكل</button><button class="btn btn--primary" id="mkApply" disabled>✅ طبّق</button></span>
         </div>
         <div class="mk-trust" id="mkTrust"></div>
+        <div class="mk-filter">
+          <div class="mk-tabs" id="mkTabs">
+            <button class="mk-tabbtn active" data-mk-tab="all">الكل <b></b></button>
+            <button class="mk-tabbtn" data-mk-tab="diff">محتاج مراجعة <b></b></button>
+            <button class="mk-tabbtn" data-mk-tab="ok">مظبوط <b></b></button>
+            <button class="mk-tabbtn" data-mk-tab="none">من غير أسعار سوق <b></b></button>
+          </div>
+          <input id="mkSearch" class="sendnew__search" type="search" placeholder="🔎 دوّر بالاسم أو الماركة أو الرقم" autocomplete="off" />
+        </div>
         <div class="mk-list" id="mkList"><p class="muted">بنحمّل...</p></div>
       </section>
     </div>

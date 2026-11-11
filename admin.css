@@ -1017,3 +1017,10 @@ label.mk-old { display: block; margin-top: 8px; font-size: .85rem; }
 .mk-chip.is-on { border-color: var(--primary); color: inherit; background: rgba(10,132,255,.1); }
 .mk-src--out { opacity: .55; text-decoration: line-through; text-decoration-thickness: 1px; }
 .mk-src--out small { text-decoration: none; }
+.mk-filter { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.mk-filter .sendnew__search { flex: 1 1 240px; max-width: 360px; }
+.mk-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+.mk-tabbtn { padding: 7px 12px; border-radius: 999px; border: 1px solid var(--border); background: transparent; color: var(--muted); font: inherit; font-weight: 700; font-size: .85rem; cursor: pointer; }
+.mk-tabbtn b { margin-inline-start: 4px; color: inherit; }
+.mk-tabbtn.active { border-color: var(--primary); color: inherit; background: rgba(10,132,255,.12); }
+.mk-row--none { opacity: .85; }
