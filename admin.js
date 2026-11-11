@@ -394,6 +394,15 @@ function openOrder(id, show = true) {
     paid ? null : `💵 المبلغ المطلوب عند الاستلام: ${egpTxt(t.total)}.`,
     `رد علينا هنا برقم الاختيار، وشكراً لتفهّم حضرتك 🙏`,
   ].filter((l) => l !== null).join("\n");
+  // العميل اختار يلغي (بعد رسالة "مابيردش" أو في أي وقت قبل التسليم)
+  const cancelMsg = [
+    `أهلاً ${c.name} 👋`,
+    `معاك GTECH MASR. تم إلغاء طلبك رقم ${o.id} بناءً على طلب حضرتك ✅`,
+    paid ? `وهنرجّعلك المبلغ كامل خلال 3 لـ 7 أيام عمل.` : `ومفيش أي مصاريف على حضرتك.`,
+    ``,
+    `لو حبيت تطلب تاني في أي وقت، كل المنتجات على ${siteUrl("")}`,
+    `شكراً لحضرتك، ونتمنى نخدمك قريب 🙏`,
+  ].join("\n");
   const zoneMsg = [
     `أهلاً ${c.name} 👋`,
     `معاك GTECH MASR بخصوص طلبك رقم ${o.id} ⚠️`,
@@ -430,7 +439,8 @@ function openOrder(id, show = true) {
         ${shipMsg ? `<a class="btn btn--ghost btn--sm" href="${waLink(shipMsg, intlPhone)}" target="_blank" rel="noopener">🚚 ابعت إنه اتشحن</a>` : ""}
         ${rateMsg ? `<a class="btn btn--ghost btn--sm" href="${waLink(rateMsg, intlPhone)}" target="_blank" rel="noopener" title="رسالة للعميل فيها لينك يقيّم المنتج بالنجوم">⭐ اطلب رأيه</a>` : ""}
         <a class="btn btn--sm btn--warn" href="${waLink(zoneMsg, intlPhone)}" target="_blank" rel="noopener" title="ابعت للعميل إن منطقته خارج نطاق التوصيل">⚠️ مشكلة توصيل</a>
-        ${["confirmed", "shipped"].includes(o.status) ? `<a class="btn btn--sm btn--warn" href="${waLink(noAnswerMsg, intlPhone)}" target="_blank" rel="noopener" title="المندوب كلّم العميل أكتر من مرة ومحدش رد: يختار يعيد التوصيل خلال 4 أيام عمل أو يلغي">📵 العميل مابيردش</a>` : ""}
+        ${["confirmed", "shipped"].includes(o.status) ? `<a class="btn btn--sm btn--warn" href="${waLink(noAnswerMsg, intlPhone)}" target="_blank" rel="noopener" title="المندوب كلّم العميل أكتر من مرة ومحدش رد: يختار يعيد التوصيل خلال 4 أيام عمل أو يلغي">📵 العميل مابيردش</a>
+          <a class="btn btn--sm btn--danger" href="${waLink(cancelMsg, intlPhone)}" target="_blank" rel="noopener" data-cancel-notify title="بيلغي الطلب (والمخزون يرجع) ويفتح واتساب برسالة الإلغاء للعميل">✖ العميل اختار الإلغاء</a>` : ""}
       </div>
       ${confirmBox}
     </section>
@@ -516,6 +526,14 @@ $("#drawerBody").addEventListener("click", async (e) => {
   const z = e.target.closest("[data-zoom]");
   if (z) return z.classList.toggle("is-zoomed");
   // اللينك بيفتح واتساب عادي، وإحنا بنسجل إن رسالة التأكيد اتبعتت (بعد ما الضغطة تكمّل)
+  const cn = e.target.closest("[data-cancel-notify]");
+  if (cn && openId) {
+    const o = orders.find((x) => x.id === openId);
+    const tracked = o?.shipment?.trackingNumber;
+    if (!o || !confirm(`هنلغي الطلب ${o.id} ونفتح واتساب برسالة الإلغاء للعميل.${tracked ? `\n\n⚠️ الطلب عليه رقم تتبع (${tracked}): الغي الشحنة عند شركة الشحن كمان.` : ""}\n\nمتأكد؟`)) { e.preventDefault(); return; }
+    setTimeout(() => setOrderStatus(o, "cancelled"), 400);
+    return;
+  }
   const cs = e.target.closest("[data-confirm-send]");
   if (cs && openId) {
     const o = orders.find((x) => x.id === openId);
@@ -548,13 +566,18 @@ $("#drawerBody").addEventListener("click", async (e) => {
   if (e.target.id === "printBtn") return printInvoice(orders.find((x) => x.id === openId));
   const b = e.target.closest("[data-set-status]");
   if (!b || !openId) return;
-  const status = b.dataset.setStatus;
   const o = orders.find((x) => x.id === openId);
+  const status = b.dataset.setStatus;
   if (o.status === status) return;
   if (status === "cancelled" && !confirm(`متأكد إنك عايز تلغي الطلب ${o.id}؟`)) return;
+  await setOrderStatus(o, status);
+});
+
+// تغيير حالة الطلب: المخزون، ومكافآت "صاحبك عليا"، وإيميل العميل
+async function setOrderStatus(o, status) {
   try {
     const from = o.status;
-    await updateOrder(openId, { status });
+    await updateOrder(o.id, { status });
     await syncStockForStatus(o, from, status);
     handleReferral(o, status).catch((err) => console.warn("referral", err));
     if (o.customer.email && EMAIL_ON) {
@@ -564,10 +587,12 @@ $("#drawerBody").addEventListener("click", async (e) => {
     }
     toast(`${STATUS_ICONS[status]} الطلب ${o.id} بقى "${ORDER_STATUSES[status]}"`);
     if (status === "confirmed" && !confirmSends(o).length) setTimeout(() => toast("💬 متنساش: دوس \"✅ ابعت تأكيد الطلب\" عشان العميل يطمّن"), 1800);
+    return true;
   } catch {
     toast("❌ مقدرناش نحدّث الطلب، جرّب تاني");
+    return false;
   }
-});
+}
 
 // ============ صاحبك عليا: المكافآت ============
 // أوردر جه من لينك صاحب (promo = REF-الكود) واتسلّم ← صاحب اللينك ياخد مكافأة (rewards/الكود: credits + 1)
