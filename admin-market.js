@@ -106,6 +106,7 @@ function mkRender() {
           <div><small>أرخص منافس</small><b>—</b></div>
           <div class="mk-new"><small>الجديد</small><input type="number" inputmode="numeric" min="1" step="1" value="${r.newPrice}" data-mk-price /></div>
           <div class="mk-floor"><small>أقل سعر ليك</small><input type="number" inputmode="numeric" min="0" step="1" value="${r.floor || ""}" placeholder="اختياري" data-mk-floor /></div>
+          ${mkCostTag(r)}
           ${r.newPrice !== r.p.price ? `<span class="mk-tag ${r.newPrice > r.p.price ? "mk-tag--up" : "mk-tag--down"}">${r.newPrice > r.p.price ? "⬆ +" : "⬇ "}${num(r.newPrice - r.p.price)}</span>` : ""}
         </div>
       </div>`;
@@ -135,12 +136,17 @@ function mkRender() {
           <div><small>أرخص منافس</small><b>${num(r.ref)}</b></div>
           <div class="mk-new"><small>الجديد</small><input type="number" inputmode="numeric" min="1" step="1" value="${r.newPrice}" data-mk-price /></div>
           <div class="mk-floor"><small>أقل سعر ليك</small><input type="number" inputmode="numeric" min="0" step="1" value="${r.floor || ""}" placeholder="اختياري" data-mk-floor /></div>
+          ${mkCostTag(r)}
           ${tag}
         </div>
       </div>`;
   }).join("");
   mkCount();
 }
+
+// المكسب على السعر الجديد (لو سعر الشراء مكتوب في "المكسب")
+const mkCost = (r) => (typeof costOf === "function" ? costOf(r.p.id) : 0);
+const mkCostTag = (r) => (mkCost(r) ? pfMarginTag(r.newPrice, mkCost(r)) : "");
 
 const mkNorm = (t) => String(t).toLowerCase().replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه").replace(/[–—\-_/]+/g, " ");
 const mkHay = (p) => mkNorm([p.name, p.brand, p.specs?.["الموديل"], p.id].filter(Boolean).join(" "));
@@ -216,8 +222,9 @@ $("#mkApply").addEventListener("click", async () => {
   const list = mkRows.filter((r) => r.on && (r.newPrice !== r.p.price || (r.clearOld && r.p.old)));
   if (!list.length) return;
   const below = list.filter((r) => r.floor && r.newPrice < r.floor);
+  const loss = list.filter((r) => mkCost(r) && r.newPrice < mkCost(r));
   const lines = list.map((r) => `• ${r.p.name.slice(0, 40)}: ${num(r.p.price)} ← ${num(r.newPrice)}${r.clearOld && r.p.old ? " (والسعر قبل الخصم يتمسح)" : ""}`);
-  if (!confirm(`هتتغير أسعار ${num(list.length)} منتج في المتجر:\n\n${lines.join("\n")}${below.length ? `\n\n⚠️ ${num(below.length)} منهم أقل من «أقل سعر» بتاعك.` : ""}\n\nمتأكد؟`)) return;
+  if (!confirm(`هتتغير أسعار ${num(list.length)} منتج في المتجر:\n\n${lines.join("\n")}${below.length ? `\n\n⚠️ ${num(below.length)} منهم أقل من «أقل سعر» بتاعك.` : ""}${loss.length ? `\n\n⛔ ${num(loss.length)} منهم هيتباعوا بخسارة (أقل من سعر الشراء): ${loss.map((r) => r.p.name.slice(0, 25)).join("، ")}` : ""}\n\nمتأكد؟`)) return;
   const btn = $("#mkApply");
   btn.disabled = true;
   let ok = 0;
@@ -237,7 +244,7 @@ $("#mkApply").addEventListener("click", async () => {
 
 document.addEventListener("sectionchange", async (e) => {
   if (e.detail !== "market") return;
-  try { await mkLoad(); mkRenderTrust(); mkRender(); }
+  try { await Promise.all([mkLoad(), privLoad("costs")]); mkRenderTrust(); mkRender(); }
   catch (err) { console.warn("market", err); $("#mkList").innerHTML = `<p class="muted">مقدرناش نجيب ملف أسعار السوق، جرّب تاني.</p>`; }
 });
 document.addEventListener("adminproducts", () => { if (!$("#marketSection").hidden && mkData) mkRender(); });

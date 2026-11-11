@@ -24,7 +24,7 @@
   <meta name="apple-mobile-web-app-title" content="GTECH MASR Admin" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="admin.css?v=26" />
+  <link rel="stylesheet" href="admin.css?v=27" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a84ff'/><text x='32' y='44' font-size='36' font-family='Arial' font-weight='900' fill='white' text-anchor='middle'>G</text></svg>" />
 </head>
 <body class="admin">
@@ -46,7 +46,11 @@
       <button class="dash-sec" data-section="visits"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>الزوار والتقارير</span></button>
       <button class="dash-sec" data-section="shipping"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg><span>الشحن والدفع</span></button>
       <button class="dash-sec" data-section="market"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg><span>أسعار السوق</span></button>
+      <button class="dash-sec" data-section="profit"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15 9.5c-.5-1.2-1.7-1.8-3-1.8-1.7 0-3 .9-3 2.2 0 3 6 1.6 6 4.4 0 1.3-1.3 2.2-3 2.2-1.4 0-2.6-.7-3-1.9M12 6v1.7M12 16.3V18"/></svg><span>المكسب</span></button>
+      <button class="dash-sec" data-section="health"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6v4H9z"/><path d="M7 5H5v16h14V5h-2"/><path d="m9 14 2 2 4-4"/></svg><span>فحص المنتجات</span><span class="tab__count tab__count--warn" id="healthBadge" hidden></span></button>
       <button class="dash-sec" data-section="sendnew"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3 3 10.5l7 2.5 2.5 7L21 3z"/><path d="m10 13 4-4"/></svg><span>ابعت لعميل</span></button>
+      <button class="dash-sec" data-section="followups"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a9 9 0 1 0-8-4.9L3 21l4.9-1A9 9 0 0 0 12 21z"/><path d="M12 8v4l2.5 2"/></svg><span>متابعات</span><span class="tab__count" id="followBadge" hidden></span></button>
+      <button class="dash-sec" data-section="replies"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg><span>ردود جاهزة</span></button>
       <button class="dash-sec" data-section="reviews"><svg class="dash-sec__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.8-4.4 4.3 1 6.1L12 17l-5.4 2.8 1-6.1-4.4-4.3 6.1-.8L12 3z"/></svg><span>التقييمات</span></button>
     </nav>
     <div class="dash-side__foot">
@@ -379,6 +383,80 @@
       </section>
     </div>
 
+    <div id="profitSection" class="dash-section" hidden>
+      <section class="card-box dash-panel profit">
+        <p class="muted carts-hint">اكتب <b>سعر الشراء</b> لكل منتج، واللوحة تحسب مكسبك في كل أوردر وكل فترة. المكسب = المنتجات بعد الخصم − تكلفتها (+ صافي الشحن لو كتبت تكلفته). بنحسب الأوردرات المتأكدة والمشحونة واللي اتسلمت بس. التكلفة مابتظهرش لأي حد غيرك.</p>
+        <div id="pfNote"></div>
+        <div class="mk-bar">
+          <label class="pf-field">الفترة
+            <select id="pfRange"><option value="today">النهارده</option><option value="7">آخر 7 أيام</option><option value="30" selected>آخر 30 يوم</option><option value="month">الشهر ده</option><option value="all">من الأول</option></select></label>
+          <label class="pf-field">شركة الشحن بتاخد منك على الأوردر
+            <input id="pfShip" type="number" inputmode="numeric" min="0" step="1" placeholder="اختياري" /></label>
+        </div>
+        <section class="stats" id="pfStats"></section>
+        <h4 class="pf-h">🏆 أكتر منتجات بتكسّبك في الفترة دي</h4>
+        <div id="pfTop" class="pf-tops"></div>
+        <h4 class="pf-h">📦 سعر الشراء لكل منتج</h4>
+        <div class="mk-filter">
+          <div class="mk-tabs" id="pfTabs">
+            <button class="mk-tabbtn active" data-pf-tab="all">الكل <b></b></button>
+            <button class="mk-tabbtn" data-pf-tab="missing">من غير تكلفة <b></b></button>
+            <button class="mk-tabbtn" data-pf-tab="loss">بخسارة <b></b></button>
+            <button class="mk-tabbtn" data-pf-tab="low">مكسب قليل <b></b></button>
+          </div>
+          <input id="pfSearch" class="sendnew__search" type="search" placeholder="🔎 دوّر بالاسم أو الماركة أو الرقم" autocomplete="off" />
+        </div>
+        <div class="mk-list" id="pfList"></div>
+      </section>
+    </div>
+
+    <div id="healthSection" class="dash-section" hidden>
+      <section class="card-box dash-panel health">
+        <p class="muted carts-hint">فحص لكل المنتجات الظاهرة في المتجر: خسارة، سعر قبل الخصم مش منطقي، كلمة «ضمان» على منتج بدون ضمان، كلام ممنوع (الكمية محدودة، الأكثر مبيعاً، توصيل لكل مصر)، خلصان وظاهر، أغلى من السوق، من غير صور أو وصف. جنب كل مشكلة زرار يصلحها.</p>
+        <p class="hl-summary" id="hlSummary"></p>
+        <div class="mk-tabs" id="hlTabs">
+          <button class="mk-tabbtn active" data-hl-tab="all">الكل <b></b></button>
+          <button class="mk-tabbtn" data-hl-tab="red">🔴 مهم <b></b></button>
+          <button class="mk-tabbtn" data-hl-tab="orange">🟠 راجعه <b></b></button>
+          <button class="mk-tabbtn" data-hl-tab="gray">⚪ تحسين <b></b></button>
+        </div>
+        <div class="mk-list" id="hlList"></div>
+      </section>
+    </div>
+
+    <div id="followupsSection" class="dash-section" hidden>
+      <section class="card-box dash-panel followups">
+        <p class="muted carts-hint">رسايل واتساب جاهزة للعملاء اللي مستنيين منك حاجة. كل رسالة بتتبعت من رقمك بضغطة، واللي اتبعت بيختفي من هنا.</p>
+        <div id="fuNote"></div>
+        <h4 class="pf-h">🔔 مستنيين منتج يرجع</h4>
+        <p class="muted fu-hint">العملاء اللي سابوا رقم الواتساب في «نبّهني لما يرجع» أو «نبّهني لو السعر قلّ» في صفحة المنتج (اللي ساب إيميل بيوصله إيميل لوحده).</p>
+        <div id="fuAlerts"></div>
+        <h4 class="pf-h">⭐ اسألهم عن المنتج</h4>
+        <p class="muted fu-hint">أوردرات اتسلمت من 3 أيام أو أكتر: الرسالة بتسأل العميل عن المنتج وفيها لينك يقيّمه بالنجوم.</p>
+        <div id="fuRates"></div>
+      </section>
+    </div>
+
+    <div id="repliesSection" class="dash-section" hidden>
+      <section class="card-box dash-panel replies">
+        <p class="muted carts-hint">الردود اللي بتتكرر: دوس «انسخ الرد» والصقه في واتساب أو تيك توك أو إنستجرام. «نسخة تعليق قصيرة» للرد على التعليقات. تقدر تعدّل أي رد أو تضيف ردودك.</p>
+        <div id="rpNote"></div>
+        <div class="mk-filter">
+          <input id="rpSearch" class="sendnew__search" type="search" placeholder="🔎 دوّر في الردود (تقسيط، توصيل، ضمان...)" autocomplete="off" />
+          <span class="mk-bar__btns"><button class="btn btn--ghost btn--sm" id="rpRestore" hidden></button><button class="btn btn--primary btn--sm" id="rpNew">➕ رد جديد</button></span>
+        </div>
+        <form class="rp-form card-box" id="rpForm" hidden>
+          <b id="rpFormHead">رد جديد</b>
+          <label class="field"><span>العنوان (عشان تلاقيه)</span><input name="rtitle" maxlength="80" required /></label>
+          <label class="field"><span>القسم</span><select name="cat"></select></label>
+          <label class="field"><span>الرد</span><textarea name="text" rows="5" maxlength="2000" required></textarea></label>
+          <label class="field"><span>نسخة قصيرة للتعليقات (اختياري)</span><textarea name="short" rows="2" maxlength="300"></textarea></label>
+          <div class="mk-bar__btns"><button class="btn btn--primary btn--sm" type="submit">💾 احفظ</button><button class="btn btn--ghost btn--sm" type="button" id="rpCancel">إلغاء</button></div>
+        </form>
+        <div id="rpList"></div>
+      </section>
+    </div>
+
     <div id="sendnewSection" class="dash-section" hidden>
       <section class="card-box dash-panel sendnew">
         <p class="muted carts-hint">ابعت أي منتج لأي رقم واتساب من موبايلك: دوّر على المنتج أو اختار أحدث المنتجات، وكل منتج بيتبعت في صورة متصممة فيها صورته ومميزاته وسعره، ومعاها رسالة بالتفاصيل واللينك. الصور والرسالة بتتبعت من رقمك، ومفيش أي حاجة بتتبعت لوحدها.</p>
@@ -623,6 +701,7 @@
   <script src="payment.js"></script>
   <script src="api.js"></script>
   <script src="email.js"></script>
+  <script src="admin-private.js"></script>
   <script src="admin.js"></script>
   <script src="admin-invoice.js"></script>
   <script src="admin-products.js"></script>
@@ -635,6 +714,11 @@
   <script src="admin-leads.js"></script>
   <script src="admin-send-new.js"></script>
   <script src="admin-market.js"></script>
+  <script src="admin-profit.js"></script>
+  <script src="admin-risk.js"></script>
+  <script src="admin-health.js"></script>
+  <script src="admin-followups.js"></script>
+  <script src="admin-replies.js"></script>
   <script src="admin-shipping.js"></script>
   <script src="admin-reviews.js"></script>
   <script src="admin-overview.js"></script>

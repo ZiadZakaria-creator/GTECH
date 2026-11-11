@@ -216,6 +216,11 @@ service cloud.firestore {
       allow read, write: if isAdmin();
     }
 
+    // بيانات الأدمن الخاصة (تكلفة المنتجات، الردود الجاهزة، المتابعات، علامات العملاء): الأدمن بس
+    match /adminData/{docId} {
+      allow read, write: if isAdmin();
+    }
+
     match /admins/{uid} {
       allow read: if request.auth != null && request.auth.uid == uid;
       allow write: if false; // بيتضاف من Firebase Console بس

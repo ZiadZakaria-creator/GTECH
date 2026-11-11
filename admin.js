@@ -195,7 +195,7 @@ function render() {
     <tr data-id="${escapeHtml(o.id)}" class="${o.status === "new" ? "is-new" : ""}">
       <td data-label="رقم الطلب"><b class="mono">${escapeHtml(o.id)}</b></td>
       <td data-label="التاريخ">${shortDate(o.createdAt)}</td>
-      <td data-label="العميل"><b>${escapeHtml(o.customer.name)}</b><small class="mono" dir="ltr">${escapeHtml(o.customer.phone)}</small></td>
+      <td data-label="العميل"><b>${escapeHtml(o.customer.name)}</b><small class="mono" dir="ltr">${escapeHtml(o.customer.phone)}</small>${["new", "confirmed", "shipped"].includes(o.status) && typeof riskChip === "function" ? riskChip(o) : ""}</td>
       <td data-label="المحافظة">${escapeHtml(o.address.gov)}</td>
       <td data-label="المنتجات">${num(itemsCount(o))} منتج</td>
       <td data-label="الإجمالي"><b>${fmt(o.totals.total)}</b></td>
@@ -368,16 +368,7 @@ function openOrder(id, show = true) {
     o.payment?.status === "paid" ? `✅ الطلب مدفوع، مش هتدفع حاجة للمندوب.` : `💵 جهّز ${egpTxt(t.total)} للمندوب عند الاستلام.`,
     `المندوب هيكلمك قبل ما يوصل، ولو في أي حاجة كلمنا هنا 🙏`,
   ].filter((l) => l !== null).join("\n") : "";
-  // بعد التسليم: نطلب رأي العميل الحقيقي (اللينك بيفتح نافذة "شاركنا رأيك" في طلباتي على الطلب ده)
-  const rateMsg = o.status === "delivered" ? [
-    `أهلاً ${c.name} 👋`,
-    `معاك GTECH MASR، طلبك رقم ${o.id} وصلك؟ نتمنى يكون عجبك 💙`,
-    ``,
-    `لو عندك دقيقة، قولنا رأيك في المنتج بالنجوم من هنا:`,
-    siteUrl(`myorders.html?rate=${encodeURIComponent(o.id)}`),
-    ``,
-    `رأيك بيساعد غيرك يختار، ولو في أي مشكلة في الطلب رد علينا هنا وهنحلها 🙏`,
-  ].join("\n") : "";
+  const rateMsg = o.status === "delivered" ? rateMessage(o) : "";
   // تنبيه مشكلة توصيل: منطقة العميل خارج نطاق شركة الشحن + اختيارات يرد بيها
   const paid = o.payment?.status === "paid";
   // المندوب كلّم العميل كذا مرة ومحدش رد: يا نعيد التوصيل خلال 4 أيام عمل، يا نلغي
@@ -439,10 +430,11 @@ function openOrder(id, show = true) {
         ${shipMsg ? `<a class="btn btn--ghost btn--sm" href="${waLink(shipMsg, intlPhone)}" target="_blank" rel="noopener">🚚 ابعت إنه اتشحن</a>` : ""}
         ${rateMsg ? `<a class="btn btn--ghost btn--sm" href="${waLink(rateMsg, intlPhone)}" target="_blank" rel="noopener" title="رسالة للعميل فيها لينك يقيّم المنتج بالنجوم">⭐ اطلب رأيه</a>` : ""}
         <a class="btn btn--sm btn--warn" href="${waLink(zoneMsg, intlPhone)}" target="_blank" rel="noopener" title="ابعت للعميل إن منطقته خارج نطاق التوصيل">⚠️ مشكلة توصيل</a>
-        ${["confirmed", "shipped"].includes(o.status) ? `<a class="btn btn--sm btn--warn" href="${waLink(noAnswerMsg, intlPhone)}" target="_blank" rel="noopener" title="المندوب كلّم العميل أكتر من مرة ومحدش رد: يختار يعيد التوصيل خلال 4 أيام عمل أو يلغي">📵 العميل مابيردش</a>
+        ${["confirmed", "shipped"].includes(o.status) ? `<a class="btn btn--sm btn--warn" href="${waLink(noAnswerMsg, intlPhone)}" target="_blank" rel="noopener" data-no-answer title="المندوب كلّم العميل أكتر من مرة ومحدش رد: يختار يعيد التوصيل خلال 4 أيام عمل أو يلغي">📵 العميل مابيردش</a>
           <a class="btn btn--sm btn--danger" href="${waLink(cancelMsg, intlPhone)}" target="_blank" rel="noopener" data-cancel-notify title="بيلغي الطلب (والمخزون يرجع) ويفتح واتساب برسالة الإلغاء للعميل">✖ العميل اختار الإلغاء</a>` : ""}
       </div>
       ${confirmBox}
+      ${typeof riskBox === "function" && ["new", "confirmed", "shipped"].includes(o.status) ? riskBox(o) : ""}
     </section>
 
     <section class="od-sec">
@@ -474,6 +466,7 @@ function openOrder(id, show = true) {
         ${t.discount ? `<div class="totals__discount"><dt>الخصم ${o.promo ? `(${escapeHtml(promoLabel(o.promo))})` : ""}</dt><dd>− ${fmt(t.discount)}</dd></div>` : ""}
         <div class="totals__grand"><dt>الإجمالي</dt><dd>${fmt(t.total)}</dd></div>
       </dl>
+      ${profitLine(o)}
       ${paymentBlock(o)}
     </section>
 
@@ -485,6 +478,28 @@ function openOrder(id, show = true) {
     $("#drawer").classList.add("open");
     $("#overlay").classList.add("show");
   }
+}
+
+// بعد التسليم: نطلب رأي العميل الحقيقي (اللينك بيفتح نافذة "شاركنا رأيك" في طلباتي على الطلب ده)
+// (بتتبعت من تفاصيل الطلب، أو من قسم "متابعات" بعد التسليم بكام يوم)
+function rateMessage(o) {
+  return [
+    `أهلاً ${o.customer.name} 👋`,
+    `معاك GTECH MASR، طلبك رقم ${o.id} وصلك؟ نتمنى يكون عجبك 💙`,
+    ``,
+    `لو عندك دقيقة، قولنا رأيك في المنتج بالنجوم من هنا:`,
+    siteUrl(`myorders.html?rate=${encodeURIComponent(o.id)}`),
+    ``,
+    `رأيك بيساعد غيرك يختار، ولو في أي مشكلة في الطلب رد علينا هنا وهنحلها 🙏`,
+  ].join("\n");
+}
+
+// مكسبك في الأوردر (من صفحة "المكسب")
+function profitLine(o) {
+  if (typeof orderProfit !== "function") return "";
+  const r = orderProfit(o);
+  if (!r.cost && r.missing.length) return `<p class="od-profit muted">💰 اكتب تكلفة المنتجات في «المكسب» عشان تشوف مكسبك في الأوردر ده</p>`;
+  return `<p class="od-profit ${r.profit < 0 ? "is-loss" : ""}">💰 مكسبك: <b>${fmt(Math.round(r.profit))}</b>${r.missing.length ? ` <small>(من غير ${escapeHtml(r.missing.join("، "))} — تكلفته مش مكتوبة)</small>` : ""}</p>`;
 }
 
 // ============ الدفع بالتحويل في تفاصيل الطلب ============

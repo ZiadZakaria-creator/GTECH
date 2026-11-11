@@ -73,7 +73,7 @@ function alertEmailHtml(g) {
   const img = (p.images || []).find((src) => /^https?:/.test(src)) || (p.images?.[0] && !String(p.images[0]).startsWith("fs:") ? siteUrl(p.images[0]) : "");
   const headline = g.type === "stock" ? "🎉 المنتج رجع تاني!" : "📉 السعر نزل!";
   const line = g.type === "stock"
-    ? `المنتج اللي كنت مستنيه رجع المخزون. الكمية محدودة، الحق اطلبه قبل ما يخلص.`
+    ? `المنتج اللي كنت مستنيه رجع المخزون، وتقدر تطلبه دلوقتي.`
     : `سعر المنتج اللي بتتابعه نزل من <s style="color:#9aa5b8">${egp(g.oldPrice)}</s> لـ <b style="color:#16a34a">${egp(p.price)}</b> — يعني هتوفّر ${egp(g.oldPrice - p.price)}.`;
   return `
 <div dir="rtl" style="margin:0;padding:24px 12px;background:#f2f5fa;font-family:Tahoma,Arial,sans-serif;color:#1d2433">

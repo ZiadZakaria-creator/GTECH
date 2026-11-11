@@ -1024,3 +1024,87 @@ label.mk-old { display: block; margin-top: 8px; font-size: .85rem; }
 .mk-tabbtn b { margin-inline-start: 4px; color: inherit; }
 .mk-tabbtn.active { border-color: var(--primary); color: inherit; background: rgba(10,132,255,.12); }
 .mk-row--none { opacity: .85; }
+
+/* ===== بيانات الأدمن الخاصة ===== */
+.priv-note { margin: 0 0 12px; padding: 10px 14px; border-radius: 12px; border: 1px solid rgba(255,159,10,.45); background: rgba(255,159,10,.1); font-size: .85rem; line-height: 1.7; }
+
+/* ===== المكسب ===== */
+.pf-field { display: inline-flex; align-items: center; gap: 8px; font-size: .85rem; color: var(--muted); font-weight: 700; }
+.pf-field select, .pf-field input { padding: 7px 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--text, inherit); font: inherit; font-weight: 700; }
+.pf-field input { width: 110px; text-align: center; }
+.pf-h { margin: 18px 0 10px; font-size: 1rem; }
+.pf-tops { display: grid; gap: 6px; }
+.pf-top { display: grid; grid-template-columns: 1fr auto auto; gap: 12px; align-items: center; padding: 9px 12px; border-radius: 12px; background: var(--bg-2); border: 1px solid var(--border); }
+.pf-top small { color: var(--muted); }
+.pf-top b { color: var(--success); }
+.pf-top b.pf-neg { color: var(--danger); }
+.pf-row { display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center; padding: 12px 14px; border: 1px solid var(--border); border-radius: 14px; background: var(--bg-2); }
+.pf-row--loss { border-color: rgba(232,91,117,.6); }
+.pf-row--low { border-color: rgba(255,159,10,.55); }
+.pf-nums { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; justify-content: flex-end; text-align: center; }
+.pf-nums small { display: block; color: var(--muted); font-size: .75rem; }
+.pf-nums input { width: 104px; padding: 7px 8px; border-radius: 10px; border: 1px solid var(--primary); background: var(--surface); color: inherit; font-weight: 800; text-align: center; }
+.pf-tag { font-size: .8rem; font-weight: 800; padding: 4px 10px; border-radius: 999px; background: rgba(148,163,184,.14); color: var(--muted); white-space: nowrap; }
+.pf-tag--ok { background: rgba(34,197,94,.14); color: var(--success); }
+.pf-tag--low { background: rgba(255,159,10,.15); color: var(--warn); }
+.pf-tag--loss { background: rgba(232,91,117,.15); color: var(--danger); }
+.mk-prices .pf-tag { grid-column: 1 / -1; justify-self: center; }
+.od-profit { margin: 10px 0 0; padding: 8px 12px; border-radius: 10px; background: rgba(34,197,94,.1); font-size: .9rem; }
+.od-profit b { color: var(--success); }
+.od-profit.is-loss { background: rgba(232,91,117,.12); }
+.od-profit.is-loss b { color: var(--danger); }
+.od-profit.muted { background: transparent; padding: 0; }
+
+/* ===== تقييم العميل ===== */
+.risk-chip { display: inline-block; margin-top: 4px; font-size: .72rem; font-weight: 800; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+td .risk-chip { display: table; }
+.risk-chip--green { background: rgba(34,197,94,.14); color: var(--success); }
+.risk-chip--yellow { background: rgba(255,159,10,.14); color: var(--warn); }
+.risk-chip--red { background: rgba(232,91,117,.16); color: var(--danger); }
+.risk-box { margin-top: 12px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-2); }
+.risk-box p { margin: 0 0 6px; line-height: 1.6; }
+.risk-box small { color: var(--muted); }
+.risk-box--red { border-color: rgba(232,91,117,.55); background: rgba(232,91,117,.07); }
+.risk-box--yellow { border-color: rgba(255,159,10,.4); }
+.risk-box--green { border-color: rgba(34,197,94,.4); }
+.risk-advice { font-weight: 700; font-size: .88rem; }
+.risk-box .btn.is-on { border-color: var(--primary); background: rgba(10,132,255,.12); }
+
+/* ===== فحص المنتجات ===== */
+.hl-summary { margin: 0 0 10px; font-weight: 700; }
+.health .mk-tabs { margin-bottom: 12px; }
+.hl-row { padding: 12px 14px; border: 1px solid var(--border); border-radius: 14px; background: var(--bg-2); }
+.hl-issues { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 6px; }
+.hl-issue { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: center; padding: 8px 10px; border-radius: 10px; background: var(--surface); font-size: .88rem; line-height: 1.6; border-inline-start: 3px solid var(--border); }
+.hl-issue em { font-style: normal; font-weight: 800; margin-inline-end: 4px; }
+.hl-issue--red { border-inline-start-color: var(--danger); }
+.hl-issue--orange { border-inline-start-color: var(--warn); }
+.hl-fixes { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* ===== متابعات ===== */
+.fu-hint { margin: -4px 0 10px; font-size: .82rem; }
+.fu-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; padding: 10px 12px; margin-bottom: 8px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg-2); }
+.fu-row small { display: block; color: var(--muted); margin-top: 2px; }
+.fu-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+.fu-sub { margin: 12px 0 8px; font-weight: 700; font-size: .88rem; color: var(--muted); }
+.fu-wait { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+.fu-chip { font-size: .82rem; padding: 5px 11px; border-radius: 999px; border: 1px solid var(--border); }
+.fu-chip b { color: var(--primary); margin-inline-start: 4px; }
+
+/* ===== ردود جاهزة ===== */
+.rp-cat { margin: 16px 0 8px; font-size: .95rem; }
+#rpList { display: grid; gap: 8px; }
+.rp-card { padding: 12px 14px; border: 1px solid var(--border); border-radius: 14px; background: var(--bg-2); }
+.rp-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.rp-tools { display: flex; gap: 2px; }
+.rp-tools .icon-btn { width: 32px; height: 32px; font-size: .85rem; }
+.rp-text { margin: 8px 0 10px; white-space: pre-line; line-height: 1.8; font-size: .9rem; color: var(--muted); }
+.rp-btns { display: flex; flex-wrap: wrap; gap: 6px; }
+.rp-form { display: grid; gap: 10px; margin-bottom: 14px; padding: 14px; }
+.rp-form textarea, .rp-form input, .rp-form select { width: 100%; }
+
+@media (max-width: 640px) {
+  .pf-row { grid-template-columns: 1fr; }
+  .pf-nums { justify-content: flex-start; }
+  .fu-row { flex-direction: column; align-items: stretch; }
+}

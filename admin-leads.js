@@ -85,6 +85,7 @@ function buildCustomers() {
     const c = get(l.phone);
     if (!c) continue;
     c.leadIds.push(l.id);
+    if (/^(stock|price):/.test(l.page || "")) c.waiting = true; // ساب رقمه عشان نبلّغه لما منتج يرجع أو سعره يقل
     c.source ||= l.source && l.source !== "direct" ? l.source : "";
     seen(c, l.createdAt);
   }
@@ -119,7 +120,7 @@ function statusDetail(c) {
   const ref = c.referred ? ` · 🤝 جاب ${num(c.referred)} ${c.referred === 1 ? "أوردر" : "أوردرات"}` : "";
   if (c.status === "buyer") return `${num(c.orders)} ${c.orders === 1 ? "أوردر" : "أوردرات"} · ${fmt(c.spent)}${c.cart ? " · وعنده سلة مفتوحة" : ""}${ref}`;
   if (c.status === "cart") return `سلة بـ ${fmt(c.cart.total)}`;
-  return c.cancelled ? `${num(c.cancelled)} أوردر اتلغى` : "من نافذة الخصم";
+  return c.cancelled ? `${num(c.cancelled)} أوردر اتلغى` : c.waiting ? "🔔 مستني منتج (شوف «متابعات»)" : "من نافذة الخصم";
 }
 
 function renderLeads() {
@@ -204,7 +205,7 @@ function startLeads() {
   if (leadsStarted) return;
   leadsStarted = true;
   let retried = false;
-  const watch = () => leadsStore.watch((list) => { allLeads = list.filter((l) => l.phone && l.createdAt); renderLeads(); }, (err) => {
+  const watch = () => leadsStore.watch((list) => { allLeads = list.filter((l) => l.phone && l.createdAt); renderLeads(); document.dispatchEvent(new Event("adminleads")); }, (err) => {
     console.warn("leads", err);
     // أول مرة ممكن يكون تسجيل الدخول لسه بيخلص — نجرّب تاني بعد ثواني قبل ما نبيّن رسالة
     if (err?.code === "permission-denied" && !retried) { retried = true; return setTimeout(watch, 4000); }
