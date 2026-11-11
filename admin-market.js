@@ -84,9 +84,10 @@ function mkRender() {
     b.classList.toggle("active", b.dataset.mkTab === mkTab);
     b.querySelector("b").textContent = num(cnt[b.dataset.mkTab]);
   });
-  const q = toLatinDigits(($("#mkSearch").value || "").trim().toLowerCase());
+  // البحث بالكلمات: كل كلمة لازم تبقى في الاسم أو الماركة أو الموديل (Anker Liberty / انكر ليبرتي / 56)
+  const words = mkNorm(toLatinDigits($("#mkSearch").value || "")).split(/\s+/).filter(Boolean);
   const shown = mkRows.filter((r) => (mkTab === "all" || mkKind(r) === mkTab)
-    && (!q || r.p.name.toLowerCase().includes(q) || (r.p.brand || "").toLowerCase().includes(q) || String(r.p.id) === q));
+    && (!words.length || words.every((w) => mkHay(r.p).includes(w) || String(r.p.id) === w)));
   if (!shown.length) { box.innerHTML = `<p class="muted">مفيش منتجات هنا.</p>`; mkCount(); return; }
   box.innerHTML = shown.map((r) => {
     if (r.nodata) return `
@@ -140,6 +141,9 @@ function mkRender() {
   }).join("");
   mkCount();
 }
+
+const mkNorm = (t) => String(t).toLowerCase().replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه").replace(/[–—\-_/]+/g, " ");
+const mkHay = (p) => mkNorm([p.name, p.brand, p.specs?.["الموديل"], p.id].filter(Boolean).join(" "));
 
 // تبويب القايمة: كله / محتاج تعديل / مظبوط / من غير أسعار سوق
 let mkTab = "all";
