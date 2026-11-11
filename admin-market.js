@@ -11,7 +11,16 @@ let mkRows = []; // { p, ref, sugg, floor, on, newPrice, clearOld }
 const mkRound = (v) => Math.max(49, Math.floor((v + 1) / 50) * 50 - 1);
 const mkFloors = () => store.get(MK_FLOOR_KEY, {});
 
-const mkTrusted = () => store.get(MK_TRUST_KEY, null) || mkData.trusted || [];
+// اختيار الأدمن محفوظ على الجهاز { on, known }. أي منافس جديد بيتضاف للقايمة الافتراضية بيتعلّم عليه لوحده،
+// وأي منافس الأدمن شال علامته بيفضل مشال.
+function mkTrusted() {
+  const def = mkData.trusted || [];
+  let saved = store.get(MK_TRUST_KEY, null);
+  if (!saved) return def;
+  if (Array.isArray(saved)) saved = { on: saved, known: saved }; // الشكل القديم
+  const fresh = def.filter((st) => !saved.known.includes(st));
+  return [...new Set([...saved.on, ...fresh])];
+}
 // المنافس اللي المنتج خلص عنده مابيتحسبش في الاقتراح (سعر قديم غالباً)
 const mkUsable = (s) => s.price > 0 && s.stock !== "out";
 
@@ -152,7 +161,8 @@ function mkRenderTrust() {
 $("#mkTrust").addEventListener("change", (e) => {
   if (!e.target.matches("input")) return;
   const on = [...$$("#mkTrust input:checked")].map((i) => i.value);
-  store.set(MK_TRUST_KEY, on);
+  const known = [...new Set([...(mkData.trusted || []), ...[...$$("#mkTrust input")].map((i) => i.value)])];
+  store.set(MK_TRUST_KEY, { on, known });
   mkRows.forEach((r) => { r.edited = false; });
   mkRenderTrust();
   mkRender();
