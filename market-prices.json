@@ -679,7 +679,67 @@
     "stock": "out",
     "checked": "2026-11-11T00:07:48.391Z"
    }
+  ],
+  "56": [
+   {
+    "store": "Noon",
+    "price": 2399,
+    "note": "الأسود · من Pricena",
+    "url": "https://eg.pricena.com/en/product/liberty-4-nc-earbuds-98-5-percent-noise-reduction-adaptive-cancelling-to-ears-and-environment-hi-res-sound-50h-battery-wireless-charging-bluetooth-5-3-black-price-in-Egypt-25668962",
+    "checked": "2026-11-11"
+   }
+  ],
+  "57": [
+   {
+    "store": "2B",
+    "price": 1449,
+    "url": "https://2b.com.eg/en/anker-soundcore-r50i-nc-earphone-tws-a3959h31-blue.html",
+    "checked": "2026-11-11"
+   }
+  ],
+  "58": [
+   {
+    "store": "2B",
+    "price": 1449,
+    "url": "https://2b.com.eg/en/anker-soundcore-r50i-earphone-tws-a3959h11-black.html",
+    "checked": "2026-11-11"
+   }
+  ],
+  "59": [
+   {
+    "store": "Noon",
+    "price": 4250,
+    "note": "الأسود · من Pricena",
+    "url": "https://eg.pricena.com/en/product/liberty-4-pro-by-anker-noise-cancelling-wireless-earbuds-7-sensor-and-real-time-adaptive-noise-cancelling-2-faster-charging-studio-level-hi-fi-music-clear-calls-with-9-mics-and-ai-black-price-in-Egypt-30265611",
+    "checked": "2026-11-11"
+   }
+  ],
+  "65": [
+   {
+    "store": "Noon",
+    "price": 1199,
+    "note": "من Pricena",
+    "url": "https://eg.pricena.com/en/product/c1-wireless-controller-dual-mode-six-axis-gyroscope-dual-hall-effect-gaming-controller-black-for-switch-pc-price-in-Egypt-35697101",
+    "checked": "2026-11-11"
+   }
   ]
  },
- "sigmaUpdated": "2026-11-11T00:07:49.192Z"
+ "sigmaUpdated": "2026-11-11T00:07:49.192Z",
+ "searched": {
+  "101": "2026-11-11",
+  "107": "2026-11-11",
+  "56": "2026-11-11",
+  "57": "2026-11-11",
+  "58": "2026-11-11",
+  "59": "2026-11-11",
+  "60": "2026-11-11",
+  "61": "2026-11-11",
+  "62": "2026-11-11",
+  "63": "2026-11-11",
+  "64": "2026-11-11",
+  "65": "2026-11-11",
+  "66": "2026-11-11",
+  "67": "2026-11-11",
+  "69": "2026-11-11"
+ }
 }
