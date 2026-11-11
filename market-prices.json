@@ -1,11 +1,12 @@
 {
  "updated": "2026-11-11",
- "note": "سيجما: بيتحدّث أوتوماتيك من موقعهم (السعر والتوفر) مع كل نشر. الباقي من نتايج البحث. افتح اللينك واتأكد قبل ما تطبّق.",
+ "note": "سيجما و2B (عن طريق Qarenly) بيتحدّثوا أوتوماتيك مع كل نشر. الباقي من نتايج البحث. افتح اللينك واتأكد قبل ما تطبّق.",
  "trusted": [
   "Games2Egypt",
   "Amazon.eg",
   "Sigma",
-  "Games World"
+  "Games World",
+  "2B"
  ],
  "items": {
   "14": [
@@ -147,6 +148,13 @@
     "store": "Games World",
     "price": 2099,
     "url": "https://www.gamesworldegypt.com/logitech-g305-lightspeed-wireless-gaming-mouse-black"
+   },
+   {
+    "store": "2B",
+    "price": 2199,
+    "stock": "out",
+    "url": "https://2b.com.eg/en/logitech-g305-lightspeed-wireless-gaming-mouse-black.html",
+    "checked": "2026-11-11"
    }
   ],
   "28": [
@@ -231,6 +239,12 @@
     "price": 3499,
     "url": "https://www.gamesworldegypt.com/logitech-g435-lightspeed-wireless-gaming-headset-white-2-4ghz",
     "note": "الأبيض"
+   },
+   {
+    "store": "2B",
+    "price": 3639,
+    "url": "https://2b.com.eg/en/audio/logitech-g435-lightspeed-wireless-rgb-gaming-headset-emea-981-001050-black.html",
+    "checked": "2026-11-11"
    }
   ],
   "36": [
@@ -307,16 +321,17 @@
     "url": "https://www.amazon.eg/-/en/WD-My-Passport-4TB-Worldwide/dp/B097BY24ZW"
    },
    {
-    "store": "2B",
-    "price": 8999,
-    "url": "https://qarenly.com/en/2b/western-digital-my-passport-4tb-black-13833"
-   },
-   {
     "store": "Sigma",
     "price": 8999,
     "url": "https://sigma-computer.com/en/item?id=western-digital-4tb-my-passport-portable-hard-drive-usb-32-model-wdbpkj0040bbk-wesn-k74vk0a6axhp",
     "note": "ضمان سنة",
     "checked": "2026-11-11T00:07:07.101Z"
+   },
+   {
+    "store": "2B",
+    "price": 8999,
+    "url": "https://qarenly.com/en/2b/western-digital-my-passport-4tb-black-13833",
+    "checked": "2026-11-11"
    }
   ],
   "45": [
@@ -437,6 +452,12 @@
     "store": "Games World",
     "price": 2250,
     "url": "https://www.gamesworldegypt.com/Logitech-G502-Performance-Gaming-Mouse"
+   },
+   {
+    "store": "2B",
+    "price": 2399,
+    "url": "https://2b.com.eg/en/logitech-g502-hero-high-performance-gaming-mouse-usb-ewr2-910-005471-black.html",
+    "checked": "2026-11-11"
    }
   ],
   "78": [

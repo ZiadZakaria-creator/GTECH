@@ -44,8 +44,8 @@ jobs:
         with:
           node-version: 20
 
-      # أسعار سيجما الحالية (السعر والتوفر) لقسم «أسعار السوق» في اللوحة. لو فشل، الأسعار القديمة بتفضل والنشر يكمّل.
-      - name: Refresh Sigma market prices
+      # أسعار سيجما و2B الحالية (السعر والتوفر) لقسم «أسعار السوق» في اللوحة. لو فشل، الأسعار القديمة بتفضل والنشر يكمّل.
+      - name: Refresh Sigma and 2B market prices
         continue-on-error: true
         timeout-minutes: 5
         run: node tools/sigma-prices.mjs _site/market-prices.json

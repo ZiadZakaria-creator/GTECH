@@ -41,7 +41,7 @@ function mkRender() {
   const box = $("#mkList");
   if (!mkData) return;
   $("#mkUpdated").textContent = (mkData.updated ? dateFmt(mkData.updated, { day: "numeric", month: "long" }) : "—")
-    + (mkData.sigmaUpdated ? ` · سيجما: ${dateFmt(mkData.sigmaUpdated, { day: "numeric", month: "long", hour: "numeric", minute: "2-digit" })}` : "");
+    + (mkData.sigmaUpdated ? ` · سيجما و2B: ${dateFmt(mkData.sigmaUpdated, { day: "numeric", month: "long", hour: "numeric", minute: "2-digit" })}` : "");
   const byId = new Map(adminProducts.map((p) => [p.id, p]));
   const prev = new Map(mkRows.map((r) => [r.p.id, r]));
   mkRows = adminProducts.filter((p) => p.active !== false).map((p) => {
