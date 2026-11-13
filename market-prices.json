@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-11",
+ "updated": "2026-11-13",
  "note": "سيجما و2B (عن طريق Qarenly) بيتحدّثوا أوتوماتيك مع كل نشر. الباقي من نتايج البحث. افتح اللينك واتأكد قبل ما تطبّق.",
  "trusted": [
   "Games2Egypt",
@@ -61,6 +61,12 @@
     "price": 2749,
     "url": "https://sigma-computer.com/en/item?id=logitech-g309-lightspeed-wireless-gaming-mouse-black-nbjwrtxrtzla",
     "checked": "2026-11-11T00:06:27.665Z"
+   },
+   {
+    "store": "2B",
+    "price": 3959,
+    "url": "https://2b.com.eg/en/logitech-lightspeed-g309-wireless-mouse-black.html",
+    "checked": "2026-11-13"
    }
   ],
   "19": [
@@ -69,6 +75,12 @@
     "price": 2499,
     "url": "https://sigma-computer.com/en/item?id=hyperx-pulsefire-fuse-wireless-mouse-6-buttons-up-to-12000-dpi-pixart-paw3311-sensor-85h-battery-usb-a-bluetooth-compatible-with-pc-ps5-xbox-tpw5kjnvlont",
     "checked": "2026-11-11T00:06:28.988Z"
+   },
+   {
+    "store": "2B",
+    "price": 2699,
+    "url": "https://2b.com.eg/en/hyperx-wireless-pulsefire-fuse-gaming-mouse-a1ky6aa-black.html",
+    "checked": "2026-11-13"
    }
   ],
   "20": [
@@ -304,6 +316,13 @@
     "price": 5555,
     "url": "https://sigma-computer.com/en/item?id=western-digital-1tb-my-passport-portable-hard-drive-usb-32-model-wdbyvg0010bbk-wesn-vbq1rzfmgndx",
     "checked": "2026-11-11T00:07:04.361Z"
+   },
+   {
+    "store": "2B",
+    "price": 5299,
+    "url": "https://2b.com.eg/en/computers/storage/hard-drives/western-digital.html",
+    "note": "WDBYVG0010BBK",
+    "checked": "2026-11-13"
    }
   ],
   "43": [
@@ -359,6 +378,13 @@
     "url": "https://sigma-computer.com/en/item?id=hyperx-cloud-stinger-gaming-headset-2-core-42ivq9brtz5r",
     "stock": "out",
     "checked": "2026-11-11T00:07:12.115Z"
+   },
+   {
+    "store": "2B",
+    "price": 2819,
+    "url": "https://2b.com.eg/en/gaming.html?p=3",
+    "note": "نسخة البلايستيشن الأسود 6H9B6AA، السعر من صفحة القسم",
+    "checked": "2026-11-13"
    }
   ],
   "48": [
@@ -391,6 +417,12 @@
     "price": 5000,
     "url": "https://sigma-computer.com/en/item?id=razer-kraken-kitty-v2-quartz-2cneqrpvqsqy",
     "checked": "2026-11-11T00:07:18.011Z"
+   },
+   {
+    "store": "Games2Egypt",
+    "price": 5999,
+    "url": "https://www.games2egypt.com/Product/41256/razer-kraken-kitty-v2-wired-rgb-gaming-headset-quartz-pink",
+    "checked": "2026-11-13"
    }
   ],
   "52": [
@@ -416,6 +448,19 @@
     "price": 2749,
     "url": "https://sigma-computer.com/en/item?id=logitech-g335-wired-gaming-headset-features-40mm-drivers-20hz-20khz-frequency-response-36-ohms-impedance-cardioid-mic-35mm-jack-compatibility-and-a-2-year-warranty-8hdthchtzql7",
     "checked": "2026-11-11T00:07:22.236Z"
+   },
+   {
+    "store": "Games2Egypt",
+    "price": 2699,
+    "url": "https://www.games2egypt.com/Product/27115/logitech-g335-wired-gaming-headset-white",
+    "checked": "2026-11-13"
+   },
+   {
+    "store": "2B",
+    "price": 2829,
+    "url": "https://2b.com.eg/en/logitech-g335-wired-gaming-headset-3-5m-white.html",
+    "stock": "out",
+    "checked": "2026-11-13"
    }
   ],
   "55": [
@@ -722,6 +767,14 @@
     "url": "https://eg.pricena.com/en/product/c1-wireless-controller-dual-mode-six-axis-gyroscope-dual-hall-effect-gaming-controller-black-for-switch-pc-price-in-Egypt-35697101",
     "checked": "2026-11-11"
    }
+  ],
+  "73": [
+   {
+    "store": "2B",
+    "price": 3299,
+    "url": "https://2b.com.eg/en/jbl-clip5-bluetooth-speaker-purple.html",
+    "checked": "2026-11-13"
+   }
   ]
  },
  "sigmaUpdated": "2026-11-11T00:07:49.192Z",
@@ -740,6 +793,21 @@
   "65": "2026-11-11",
   "66": "2026-11-11",
   "67": "2026-11-11",
-  "69": "2026-11-11"
+  "69": "2026-11-11",
+  "47": "2026-11-13",
+  "49": "2026-11-13",
+  "96": "2026-11-13",
+  "54": "2026-11-13",
+  "18": "2026-11-13",
+  "19": "2026-11-13",
+  "37": "2026-11-13",
+  "39": "2026-11-13",
+  "42": "2026-11-13",
+  "45": "2026-11-13",
+  "88": "2026-11-13",
+  "99": "2026-11-13",
+  "73": "2026-11-13",
+  "51": "2026-11-13",
+  "91": "2026-11-13"
  }
 }
