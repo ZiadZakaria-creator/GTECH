@@ -715,7 +715,8 @@ const I18N_EN = {
 "شوف المنتج ده في إيدينا قبل ما تطلبه": "See it in our hands before you order",
 "فيديو قصير صوّرناه بنفسنا: المميزات والعيوب من غير تجميل.": "A short video we shot ourselves: the pros and cons, no sugarcoating.",
 "فيديوهات أكتر على تيك توك ←": "More videos on TikTok →",
-"🔔 نبّهني أول ما يرجع": "🔔 Notify me when it's back"
+"🔔 نبّهني أول ما يرجع": "🔔 Notify me when it's back",
+"شغّل فيديو رأيي بصراحة": "Play the honest review video"
 };
 const I18N_PATTERNS = [
 // ---- أنماط لوحة التحكم (تلميحات فيها أرقام) ----

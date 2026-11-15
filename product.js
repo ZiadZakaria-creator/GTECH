@@ -43,7 +43,8 @@ function reviewVideoHtml(p) {
     <div class="container">
       <section class="pd-review" aria-labelledby="pdReviewTitle">
         <div class="pd-review__video">
-          <video controls playsinline preload="none" poster="${v.poster}" src="${v.src}"></video>
+          <video playsinline preload="none" poster="${v.poster}" src="${v.src}"></video>
+          <button type="button" class="pd-review__play" id="pdReviewPlay" aria-label="شغّل فيديو رأيي بصراحة"></button>
           <span class="pd-review__badge">جربناه بنفسنا 🎥</span>
         </div>
         <div class="pd-review__txt">
@@ -345,6 +346,13 @@ function bindDetail(p) {
 
   const add = () => addToCart(p.id, qty, selectedOptions());
   $("#addMain").addEventListener("click", add);
+  $("#pdReviewPlay")?.addEventListener("click", (e) => {
+    const video = e.currentTarget.previousElementSibling;
+    e.currentTarget.remove();
+    video.controls = true;
+    video.play().catch(() => {});
+  });
+
   const buy = () => { add(); openCart(true); };
   $("#addBar").addEventListener("click", buy);
   $("#buyNow").addEventListener("click", buy);
