@@ -33,6 +33,10 @@ function notFound() {
 }
 
 let gallery = views;
+// الصفحة الثابتة p/<رقم>.html فيها صورة المنتج الأولى بلينك ثابت (p/img/...). بنستخدمه للصورة الكبيرة على طول
+// بدل ما تستنى خريطة الصور: الصورة بتظهر أسرع، وجوجل بيشوف صورة المنتج نفسه مش صور المنتجات المقترحة
+const seoMainImg = document.querySelector(".seo-pd img[data-for]");
+const SEO_MAIN = seoMainImg ? { key: seoMainImg.dataset.for, src: seoMainImg.getAttribute("src") } : null;
 
 const WA_ICON = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3.5A11 11 0 0 0 3.4 17.2L2 22l4.9-1.3A11 11 0 0 0 20.5 3.5Zm-8.4 17a9 9 0 0 1-4.6-1.3l-.3-.2-2.9.8.8-2.8-.2-.3a9 9 0 1 1 7.2 3.8Zm5-6.7c-.3-.1-1.6-.8-1.9-.9s-.4-.1-.6.1-.7.9-.8 1-.3.2-.6.1a7.4 7.4 0 0 1-3.7-3.2c-.3-.5.3-.4.8-1.4a.5.5 0 0 0 0-.5l-.8-2c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.2c0-.1-.2-.2-.5-.3Z"/></svg>`;
 // «رأيي بصراحة»: فيديو تجربة حقيقية (REVIEW_VIDEOS في data.js) فوق الوصف والمواصفات
@@ -101,7 +105,7 @@ function renderDetail(p) {
       <div class="gallery">
         <div class="gallery__stage" id="stage" style="--tint:${p.tint}">
           ${tag ? `<span class="product__tag ${tag === "جديد" ? "product__tag--new" : tag === "نفد" ? "product__tag--out" : ""}">${esc(tag)}</span>` : ""}
-          ${productVisual(p, gallery[0].src, 'class="gallery__main" id="mainView"')}
+          ${productVisual(p, SEO_MAIN && SEO_MAIN.key === gallery[0].src ? SEO_MAIN.src : gallery[0].src, 'class="gallery__main" id="mainView" fetchpriority="high"')}
         </div>
         <div class="gallery__thumbs">
           ${gallery.map((v, i) => `

@@ -260,7 +260,7 @@ function productPage(template, p, images, reviews = []) {
   // نسخة مكتوبة من المنتج بتظهر لحد ما الصفحة تحمّل (وهي اللي جوجل بيقراها)
   const body = `
     <div class="container seo-pd">
-      ${images[0] ? `<img src="${esc(images[0])}" alt="${esc(p.name)}" width="600" height="600" />` : ""}
+      ${images[0] ? `<img src="${esc(images[0])}" alt="${esc(p.name)}" width="600" height="600" data-for="${esc(p.images?.[0] || "")}" />` : ""}
       <div>
         <p class="seo-pd__crumbs"><a href="./">الرئيسية</a> › <a href="${CATEGORIES[p.cat] ? `c/${esc(p.cat)}.html` : `./?cat=${esc(p.cat)}`}#products">${esc(cat)}</a></p>
         <h1>${esc(p.name)}</h1>
