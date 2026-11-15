@@ -30,7 +30,21 @@ const sizeRank = (v) => parseFloat(v) * (v.includes("تيرا") ? 1024 : 1);
 
 // مجموعات أقسام (شرايط الصفحة الرئيسية بتفتحها بـ "عرض الكل")
 const CAT_GROUPS = { gaming: ["mice", "keyboards", "controllers"], sound: ["audio", "earphones", "speakers"] };
-const inFilter = (p) => filter === "all" || p.cat === filter || (CAT_GROUPS[filter] || []).includes(p.cat);
+// تسوّق حسب الاستخدام: العميل بيدوّر على حل لاحتياجه مش على اسم قسم (فلتر "use:<key>")
+const usesText = (p) => `${p.name} ${Object.values(p.specs || {}).join(" ")} ${(p.highlights || []).join(" ")}`;
+const GAMING_RE = /جيمنج|ميكانيكال|مغناطيسي|Rapid Trigger/i;
+const USES = [
+  { key: "ps", icon: "🎮", title: "لاعب بلايستيشن", sub: "دراعات وسماعات للـ PS",
+    test: (p) => ["controllers", "audio"].includes(p.cat) && /بلايستيشن|PS5|PS4|DualSense/i.test(usesText(p)) },
+  { key: "pc", icon: "💻", title: "جيمنج على الكمبيوتر", sub: "ماوس وكيبورد وهيدسيت",
+    test: (p) => p.cat === "accessories" || (["mice", "keyboards", "audio"].includes(p.cat) && GAMING_RE.test(p.name)) },
+  { key: "out", icon: "🏖️", title: "للخروجة", sub: "سبيكرات وإيربودز",
+    test: (p) => ["speakers", "earphones"].includes(p.cat) },
+  { key: "work", icon: "🎧", title: "للمذاكرة والشغل", sub: "تخزين وإيربودز وكيبورد عادي",
+    test: (p) => p.cat === "storage" || p.cat === "earphones" || (["mice", "keyboards"].includes(p.cat) && !GAMING_RE.test(p.name)) },
+];
+const useOf = (f) => String(f).startsWith("use:") ? USES.find((u) => `use:${u.key}` === f) : null;
+const inFilter = (p) => filter === "all" || p.cat === filter || (CAT_GROUPS[filter] || []).includes(p.cat) || !!useOf(filter)?.test(p);
 
 function baseList() {
   const q = query.trim().toLowerCase();
@@ -190,12 +204,13 @@ function renderProducts() {
   grid.innerHTML = shelves ? "" : list.map(productCard).join("");
   $("#emptyState").hidden = shelves || list.length > 0;
   // قسم لسه مفيهوش منتجات خالص (مش فلتر أو بحث)
-  const soonCat = !list.length && filter !== "all" && !shopProducts().some((p) => p.cat === filter);
+  const soonCat = !list.length && filter !== "all" && !useOf(filter) && !shopProducts().some((p) => p.cat === filter);
   $("#emptyText").textContent = !catalogLoaded && !products.length ? "⏳ جاري تحميل المنتجات…" : catalogFailed && !products.length ? "📡 مقدرناش نحمّل المنتجات — اتأكد من النت وجرّب تاني" : soonCat ? `📦 قسم ${categoryLabel(filter)} هينزل فيه منتجات قريب جداً — تابعنا!` : "لا توجد منتجات مطابقة لبحثك 🔍";
   const count = activeFilterCount();
   $("#filterCount").hidden = !count;
   $("#filterCount").textContent = num(count);
-  $("#filterResult").textContent = shelves ? "" : `${num(list.length)} منتج`;
+  const use = useOf(filter);
+  $("#filterResult").innerHTML = shelves ? "" : `${use ? `<b>${use.icon} ${use.title}</b> · ` : ""}<span>${num(list.length)} منتج</span>`;
   $$("[data-clear-filters]").forEach((b) => { b.hidden = !count; });
   renderFilterPanel(base);
 }
@@ -408,6 +423,80 @@ renderOffer();
 document.addEventListener("productschange", renderOffer);
 document.addEventListener("catalogloaded", renderOffer);
 
+// ============ أول شاشة: «معاك كام؟» + صف منتجات بيتسحب ============
+// الافتراضي: أكبر خصم حقيقي (ولو مفيش خصومات كفاية: الأحدث). الميزانية: أغلى حاجة تحت الرقم الأول
+let quickMax = "";
+const QUICK_MAX = 10;
+// في صفحة قسم (c/mice.html) الصف بيعرض منتجات القسم ده بس
+const QUICK_CAT = document.documentElement.dataset.cat || params.get("cat") || "";
+function quickList() {
+  const live = shopProducts().filter((p) => inStock(p) && (!QUICK_CAT || p.cat === QUICK_CAT));
+  if (quickMax) return live.filter((p) => p.price <= Number(quickMax)).sort((a, b) => b.price - a.price);
+  const deals = live.filter((p) => discount(p) > 0).sort((a, b) => discount(b) - discount(a));
+  return deals.length >= 4 ? deals : [...deals, ...live.filter((p) => !discount(p)).sort((a, b) => b.id - a.id)];
+}
+function renderQuick() {
+  const row = $("#quickRow");
+  if (!row) return;
+  const list = quickList();
+  if (!products.length) { row.innerHTML = ""; $("#quick").hidden = catalogFailed; return; }
+  $("#quick").hidden = false;
+  row.innerHTML = list.length
+    ? list.slice(0, QUICK_MAX).map(productCard).join("")
+    : `<p class="muted quick__empty">مفيش منتجات متوفرة في الميزانية دي دلوقتي</p>`;
+  row.scrollLeft = 0;
+  $("#quickCount").textContent = list.length ? `(${num(list.length)})` : "";
+  $("#quickAll").hidden = !list.length;
+  const wa = quickMax ? `أهلاً GTECH MASR، معايا لحد ${fmt(Number(quickMax))} وعايز ترشيح` : "أهلاً GTECH MASR، عايز أطلب";
+  $("#quickWa").href = waLink(wa);
+}
+$("#quickChips")?.addEventListener("click", (e) => {
+  const chip = e.target.closest("[data-quick]");
+  if (!chip) return;
+  quickMax = chip.dataset.quick;
+  $$("#quickChips [data-quick]").forEach((c) => {
+    const on = c === chip;
+    c.classList.toggle("active", on);
+    c.setAttribute("aria-pressed", String(on));
+  });
+  renderQuick();
+});
+$("#quickAll")?.addEventListener("click", () => {
+  showAll = true;
+  if (quickMax) { filters.max = quickMax; filters.sort = "price-desc"; }
+  else filters.sort = "discount";
+  $("#sortSel").value = filters.sort;
+  setFilter("all");
+  $("#products").scrollIntoView({ behavior: "smooth" });
+});
+renderQuick();
+document.addEventListener("productschange", renderQuick);
+document.addEventListener("catalogloaded", renderQuick);
+
+// ============ تسوّق حسب الاستخدام ============
+function renderUses() {
+  const box = $("#useTiles");
+  if (!box) return;
+  const all = shopProducts();
+  box.innerHTML = USES.map((u) => {
+    const list = all.filter(u.test);
+    if (list.length < 2) return "";
+    const live = list.filter(inStock);
+    const from = Math.min(...(live.length ? live : list).map((p) => p.price));
+    // صور عايمة بس (من غير خلفية) عشان المربع يفضل شكله موحّد
+    const pics = (live.length ? live : list).filter(floatsFor).sort((a, b) => b.price - a.price).slice(0, 2);
+    return `
+      <a class="use-tile" data-jump="use:${u.key}" href="#products">
+        <span class="use-tile__icon" aria-hidden="true">${u.icon}</span>
+        <span class="use-tile__txt"><b>${u.title}</b><small>${u.sub}</small><em>من ${fmt(from)}</em></span>
+        <span class="use-tile__pics" aria-hidden="true">${pics.map((p) => `<img src="images/float/${p.id}.webp" alt="" loading="lazy">`).join("")}</span>
+      </a>`;
+  }).join("");
+}
+renderUses();
+document.addEventListener("productschange", renderUses);
+document.addEventListener("catalogloaded", renderUses);
+
 // ============ باكدجات السيت أب ============
 function renderBundles() {
   const list = (typeof BUNDLES === "undefined" ? [] : BUNDLES).filter(bundleAvailable);
@@ -428,7 +517,7 @@ function renderBundles() {
         </div>
         <div class="bundle__foot">
           <div class="bundle__price"><b>${fmt(bundlePrice(b))}</b><del>${fmt(bundleFull(b))}</del><span class="save">وفّر ${fmt(bundleFull(b) - bundlePrice(b))}</span></div>
-          <button type="button" class="btn btn--primary" data-bundle="${b.id}">🛒 أضف الباكدج للسلة</button>
+          <button type="button" class="btn btn--primary" data-bundle="${b.id}">🛒 خدهم مع بعض</button>
         </div>
       </article>`;
   }).join("");

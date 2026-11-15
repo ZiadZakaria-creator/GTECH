@@ -34,6 +34,28 @@ function notFound() {
 
 let gallery = views;
 
+const WA_ICON = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3.5A11 11 0 0 0 3.4 17.2L2 22l4.9-1.3A11 11 0 0 0 20.5 3.5Zm-8.4 17a9 9 0 0 1-4.6-1.3l-.3-.2-2.9.8.8-2.8-.2-.3a9 9 0 1 1 7.2 3.8Zm5-6.7c-.3-.1-1.6-.8-1.9-.9s-.4-.1-.6.1-.7.9-.8 1-.3.2-.6.1a7.4 7.4 0 0 1-3.7-3.2c-.3-.5.3-.4.8-1.4a.5.5 0 0 0 0-.5l-.8-2c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.2c0-.1-.2-.2-.5-.3Z"/></svg>`;
+// «رأيي بصراحة»: فيديو تجربة حقيقية (REVIEW_VIDEOS في data.js) فوق الوصف والمواصفات
+function reviewVideoHtml(p) {
+  const v = typeof REVIEW_VIDEOS !== "undefined" && REVIEW_VIDEOS[p.id];
+  if (!v) return "";
+  return `
+    <div class="container">
+      <section class="pd-review" aria-labelledby="pdReviewTitle">
+        <div class="pd-review__video">
+          <video controls playsinline preload="none" poster="${v.poster}" src="${v.src}"></video>
+          <span class="pd-review__badge">جربناه بنفسنا 🎥</span>
+        </div>
+        <div class="pd-review__txt">
+          <span class="eyebrow">رأيي بصراحة · ${escapeHtml(v.by)}</span>
+          <h2 id="pdReviewTitle">شوف المنتج ده في إيدينا قبل ما تطلبه</h2>
+          <p class="muted">فيديو قصير صوّرناه بنفسنا: المميزات والعيوب من غير تجميل.</p>
+          ${v.tiktok ? `<a class="btn btn--ghost btn--sm" href="${v.tiktok}" target="_blank" rel="noopener">فيديوهات أكتر على تيك توك ←</a>` : ""}
+        </div>
+      </section>
+    </div>`;
+}
+
 function renderDetail(p) {
   gallery = p.images?.length ? p.images.map((src, i) => ({ label: `صورة ${num(i + 1)}`, src })) : views;
   $("#pdTabs").parentElement.hidden = false;
@@ -93,13 +115,14 @@ function renderDetail(p) {
         <h1>${esc(p.name)}</h1>
         <div class="pd__meta">
           <span id="pdRating"></span>
-          <span class="stock ${soldOut ? "stock--out" : lowStock ? "stock--low" : ""}">${soldOut ? "✖ نفد من المخزون" : lowStock ? `⚠️ باقي ${num(p.stock)} قطع بس` : "✔ متوفر في المخزون"}</span>
+          <span class="stock ${soldOut ? "stock--out" : lowStock ? "stock--low" : ""}">${soldOut ? "خلص 😕" : lowStock ? `⚠️ باقي ${num(p.stock)} قطع بس` : "✔ متوفر في المخزون"}</span>
         </div>
 
         <div class="pd__price">
           <b>${fmt(p.price)}</b>
           ${p.old ? `<del>${fmt(p.old)}</del><span class="save">وفّر ${fmt(p.old - p.price)} (${num(off)}%)</span>` : ""}
         </div>
+        <p class="pd__terms">💵 الدفع عند الاستلام · 🚚 توصيل القاهرة والجيزة</p>
         ${(() => {
           const b = typeof BUNDLES !== "undefined" && BUNDLES.find((x) => x.items.includes(p.id) && bundleAvailable(x));
           return b ? `<a class="pd__bundle" href="./#bundles">🎁 موجود في <b>${b.name}</b> — اشتريه مع السيت أب ووفّر ${fmt(bundleFull(b) - bundlePrice(b))}</a>` : "";
@@ -117,8 +140,8 @@ function renderDetail(p) {
             <span id="qtyVal">${num(qty)}</span>
             <button id="qtyMinus" aria-label="نقص">−</button>
           </div>
-          <button class="btn btn--primary" id="addMain" ${soldOut ? "disabled" : ""}>${soldOut ? "نفد من المخزون" : `${cartPlusIcon} أضف للسلة`}</button>
-          <button class="btn btn--ghost pd__buynow" id="buyNow" ${soldOut ? "disabled" : ""}>⚡ اشتري الآن</button>
+          <button class="btn btn--primary pd__buynow" id="buyNow" ${soldOut ? "disabled" : ""}>${soldOut ? "خلص 😕" : "اطلبه دلوقتي"}</button>
+          <button class="btn btn--ghost pd__addcart" id="addMain" ${soldOut ? "disabled" : ""}>${cartPlusIcon} ${soldOut ? "مش متاح" : "أضف للسلة"}</button>
           <button class="icon-btn pd__wish ${wishlist.includes(p.id) ? "active" : ""}" data-wish="${p.id}" aria-label="أضف للمفضلة">${heartIcon}</button>
           <button class="icon-btn pd__compare ${compareList.includes(p.id) ? "active" : ""}" data-compare="${p.id}" aria-label="قارن" title="قارن بمنتج تاني">⚖️</button>
           <button class="icon-btn" id="shareBtn" aria-label="مشاركة">
@@ -128,12 +151,12 @@ function renderDetail(p) {
 
         ${soldOut ? "" : `<ul class="pd__assure">
           <li>💵 الدفع عند الاستلام</li>
-          <li>🔄 استرجاع خلال ١٤ يوم</li>
+          <li>🔄 مش عاجبك؟ رجّعه خلال 14 يوم</li>
           <li>🚚 توصيل القاهرة والجيزة</li>
         </ul>`}
 
         ${soldOut ? "" : `<a class="btn pd__wa" id="waOrder" href="#" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3.5A11 11 0 0 0 3.4 17.2L2 22l4.9-1.3A11 11 0 0 0 20.5 3.5Zm-8.4 17a9 9 0 0 1-4.6-1.3l-.3-.2-2.9.8.8-2.8-.2-.3a9 9 0 1 1 7.2 3.8Zm5-6.7c-.3-.1-1.6-.8-1.9-.9s-.4-.1-.6.1-.7.9-.8 1-.3.2-.6.1a7.4 7.4 0 0 1-3.7-3.2c-.3-.5.3-.4.8-1.4a.5.5 0 0 0 0-.5l-.8-2c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.2c0-.1-.2-.2-.5-.3Z"/></svg>
+          ${WA_ICON}
           اطلب أو اسأل على واتساب</a>`}
 
         <div class="pd__alerts" id="pdAlerts">${alertButtonsHtml(p)}</div>
@@ -149,9 +172,12 @@ function renderDetail(p) {
       </div>
     </div>
 
+    ${reviewVideoHtml(p)}
+
     <div class="buybar" id="buybar">
       <div class="buybar__info">${productVisual(p)}<div><small>${esc(p.name)}</small><b>${fmt(p.price)}</b></div></div>
-      <button class="btn btn--primary" id="addBar" ${soldOut ? "disabled" : ""}>${soldOut ? "نفد" : "أضف للسلة"}</button>
+      ${soldOut ? "" : `<a class="buybar__wa" id="waBar" href="#" target="_blank" rel="noopener" aria-label="اطلب على واتساب">${WA_ICON}</a>`}
+      <button class="btn btn--primary" id="addBar" ${soldOut ? "disabled" : ""}>${soldOut ? "خلص 😕" : "اطلبه"}</button>
     </div>`;
 
   $("#panel-desc").innerHTML = `
@@ -319,11 +345,12 @@ function bindDetail(p) {
 
   const add = () => addToCart(p.id, qty, selectedOptions());
   $("#addMain").addEventListener("click", add);
-  $("#addBar").addEventListener("click", add);
-  $("#buyNow").addEventListener("click", () => { add(); openCart(true); });
+  const buy = () => { add(); openCart(true); };
+  $("#addBar").addEventListener("click", buy);
+  $("#buyNow").addEventListener("click", buy);
 
   // طلب سريع على واتساب: رسالة جاهزة باسم المنتج والسعر والكمية والخيارات
-  $("#waOrder")?.addEventListener("click", (e) => {
+  const waOrder = (e) => {
     const opts = selectedOptions();
     const text = [
       "السلام عليكم، عايز أطلب:",
@@ -334,7 +361,9 @@ function bindDetail(p) {
     ].join("\n");
     e.currentTarget.href = waLink(text);
     if (typeof track === "function") track("whatsapp_order", { items: [{ id: p.id, name: p.name, price: p.price, qty }] });
-  });
+  };
+  $("#waOrder")?.addEventListener("click", waOrder);
+  $("#waBar")?.addEventListener("click", waOrder);
 
   $("#shareBtn").addEventListener("click", async () => {
     try {
@@ -345,7 +374,7 @@ function bindDetail(p) {
 
   // شريط الشراء السفلي للموبايل
   new IntersectionObserver(([e]) => $("#buybar").classList.toggle("show", !e.isIntersecting && e.boundingClientRect.top < 0))
-    .observe($("#addMain"));
+    .observe($("#buyNow"));
 }
 
 function showPanel(name) {

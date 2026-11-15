@@ -35,7 +35,7 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="GTECH MASR" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <link rel="stylesheet" href="styles.css?v=94" />
+  <link rel="stylesheet" href="styles.css?v=95" />
   <link rel="icon" href="favicon.ico" sizes="48x48" />
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
 </head>
@@ -112,7 +112,7 @@
             <img class="hb__img is-active" data-cat="audio" src="images/float/49.webp" alt="" width="520" height="499" fetchpriority="high" />
           </div>
           <div class="hb__copy">
-            <h1 class="hb__h1" id="hbTitle">إكسسوارات جيمنج أصلية بأسعار واضحة</h1>
+            <h1 class="hb__h1" id="hbTitle">جيمنج أصلي… والدفع لما يوصلك</h1>
             <p class="hb__kicker" id="hbKicker">اكتشف عالم <b id="hbBrand">HyperX</b></p>
             <a class="hb__product" id="hbProduct" href="#products" hidden></a>
             <div class="hb__cta">
@@ -123,6 +123,30 @@
           </div>
           <div class="hb__thumbs" id="hbThumbs" role="group" aria-label="اختار منتج"></div>
           <div class="hb__bar" aria-hidden="true"><i id="hbBarFill"></i></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- أول شاشة على الموبايل: «معاك كام؟» + صف منتجات بأسعارها + اطلب على واتساب (home.js ← renderQuick) -->
+    <section class="quick" id="quick" aria-labelledby="quickTitle">
+      <div class="container">
+        <div class="quick__head">
+          <h2 id="quickTitle">معاك كام؟</h2>
+          <div class="quick__chips" id="quickChips" role="group" aria-label="اختار ميزانيتك">
+            <button type="button" class="chip active" data-quick="" aria-pressed="true">🔥 عروض</button>
+            <button type="button" class="chip" data-quick="500" aria-pressed="false">لحد 500</button>
+            <button type="button" class="chip" data-quick="1000" aria-pressed="false">لحد 1,000</button>
+            <button type="button" class="chip" data-quick="2500" aria-pressed="false">لحد 2,500</button>
+            <a class="chip chip--setup" href="setup.html">🧮 سيت أب كامل</a>
+          </div>
+        </div>
+        <div class="quick__row" id="quickRow" aria-live="polite"></div>
+        <div class="quick__foot">
+          <button type="button" class="btn btn--ghost btn--sm" id="quickAll">عرض الكل <span id="quickCount"></span></button>
+          <a class="btn btn--wa btn--sm" id="quickWa" href="https://wa.me/201555541018" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.2 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.4.6-.4.4c-.1.1-.3.3-.1.6.2.3.7 1.2 1.6 2 1.1 1 2 1.3 2.3 1.4.3.1.4.1.6-.1l.8-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.6-.1 1.2z"/></svg>
+            اطلب على واتساب
+          </a>
         </div>
       </div>
     </section>
@@ -143,9 +167,12 @@
     <section class="section" id="categories">
       <div class="container">
         <div class="section__head">
-          <h2>تسوّق حسب القسم</h2>
+          <h2>إنت بتدوّر على إيه؟</h2>
         </div>
 
+        <div class="use-tiles" id="useTiles" role="group" aria-label="تسوّق حسب الاستخدام"></div>
+
+        <h3 class="cat-tiles__title">أو تسوّق حسب القسم</h3>
         <div class="cat-tiles" id="categoryCards"></div>
       </div>
     </section>
@@ -220,8 +247,8 @@
       <div class="container">
         <div class="section__head">
           <div>
-            <span class="eyebrow">🎮 سيت أب كامل</span>
-            <h2>باكدجات بخصم 10%</h2>
+            <span class="eyebrow">🎁 خصم 10% لما تاخدهم مع بعض</span>
+            <h2>كمّل السيت أب</h2>
           </div>
         </div>
         <div class="bundles" id="bundleCards"></div>

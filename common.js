@@ -31,6 +31,7 @@ const bellIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 
 const stars = (r) => "★".repeat(Math.round(r)) + "☆".repeat(5 - Math.round(r));
 
 // ============ كارت المنتج ============
+// كارت بسيط: صورة كبيرة + الاسم في سطرين بالكتير + السعر + زرار واحد
 function productCard(p, i = 0) {
   const url = productUrl(p.id);
   const tag = inStock(p) ? productTag(p) : "نفد";
@@ -42,10 +43,8 @@ function productCard(p, i = 0) {
         ${p.images?.[1] ? productVisual(p, p.images[1], 'class="product__alt" aria-hidden="true"') : ""}
       </a>
       <button class="product__wish ${wishlist.includes(p.id) ? "active" : ""}" data-wish="${p.id}" aria-label="أضف للمفضلة" aria-pressed="${wishlist.includes(p.id)}">${heartIcon}</button>
-      <button class="product__compare ${compareList.includes(p.id) ? "active" : ""}" data-compare="${p.id}" aria-label="قارن" title="قارن" aria-pressed="${compareList.includes(p.id)}">⚖️</button>
       <div class="product__body">
-        <span class="product__brand">${escapeHtml(p.brand)}</span>
-        <h3 class="product__name"><a href="${url}">${escapeHtml(p.name)}</a></h3>
+        <h3 class="product__name"><a href="${url}" title="${escapeHtml(p.name)}">${escapeHtml(p.name)}</a></h3>
         ${typeof ratingHtml === "function" ? ratingHtml(p.id) : ""}
         <div class="product__foot">
           <div class="product__price">

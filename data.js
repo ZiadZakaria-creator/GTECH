@@ -132,3 +132,9 @@ const DEFAULT_PRODUCTS = [
 
 // القايمة الحالية (catalog.js بيحدّثها من قاعدة البيانات)
 let products = DEFAULT_PRODUCTS;
+
+// فيديوهات «رأيي بصراحة»: تجربة حقيقية للمنتج بنفسنا — بتظهر في صفحة المنتج فوق المواصفات
+// ضيف هنا بس فيديو اتصوّر فعلاً للمنتج ده (id من الكتالوج)
+const REVIEW_VIDEOS = {
+  27: { src: "videos/g305-review.mp4", poster: "videos/g305-review.jpg", by: "زياد", tiktok: "https://www.tiktok.com/@gtech_masr" },
+};
