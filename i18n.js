@@ -346,6 +346,7 @@ const I18N_EN = {
 "ضمان لمدة": "Warranty for",
 "المنتج ده": "this product",
 "من غير ضمان": "No warranty",
+"بدون ضمان": "No warranty",
 "💳 أو قسّطها على 12 شهر بـ": "💳 Or pay in 12 monthly installments of",
 "شهرياً بدون فوائد": "per month, interest-free",
 "اشتري الآن": "Buy now",
@@ -717,7 +718,13 @@ const I18N_EN = {
 "فيديوهات أكتر على تيك توك ←": "More videos on TikTok →",
 "🔔 نبّهني أول ما يرجع": "🔔 Notify me when it's back",
 "شغّل فيديو رأيي بصراحة": "Play the honest review video",
-"آخر خطوة: أكّد رقمك بكود SMS عشان نبعت الطلب": "Last step: confirm your number with an SMS code to send the order"
+"آخر خطوة: أكّد رقمك بكود SMS عشان نبعت الطلب": "Last step: confirm your number with an SMS code to send the order",
+"لو الطلب ماكملش لأي سبب، ممكن نكلّمك على الرقم ده عشان نساعدك تكمّله.": "If the order isn't completed for any reason, we may contact you on this number to help you finish it.",
+"🤔 محتار بينه وبين": "🤔 Deciding between this and",
+"الفرق باختصار من مواصفات المنتجين:": "The key differences, from both products' specs:",
+"قارن كل المواصفات ←": "Compare all specs →",
+"شوف": "View",
+"📝 وصل لصفحة الطلب": "📝 Reached checkout"
 };
 const I18N_PATTERNS = [
 // ---- أنماط لوحة التحكم (تلميحات فيها أرقام) ----
@@ -762,6 +769,10 @@ const I18N_PATTERNS = [
 [
 "^⚖️ قارن (.+?)$",
 "⚖️ Compare {1}"
+],
+[
+"^أرخص بـ (.+?)$",
+"{1} cheaper"
 ],
 [
 "^✅ تمت إضافة \"(.+?)\" للسلة$",

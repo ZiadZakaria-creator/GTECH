@@ -154,7 +154,7 @@ function renderCarts() {
         ].filter(Boolean).join(" ");
     return `
       <tr class="${abandoned ? "" : "is-fresh"}">
-        <td><b>${escapeHtml(c.name || "—")}</b><br><small class="muted" dir="ltr">${escapeHtml(c.phone || c.email)}</small></td>
+        <td><b>${escapeHtml(c.name || "—")}</b>${c.source === "checkout" ? ` <span class="pill pill--idle" title="كتب رقمه في صفحة الطلب وماكملش">📝 وصل لصفحة الطلب</span>` : ""}<br><small class="muted" dir="ltr">${escapeHtml(c.phone || c.email)}</small></td>
         <td class="carts-items">${c.items.map((i) => `${escapeHtml(i.name)} <small class="muted">× ${num(i.qty)}</small>`).join("<br>")}</td>
         <td><b>${fmt(c.total)}</b></td>
         <td>${timeAgo(c.updatedAt)}</td>

@@ -182,6 +182,66 @@ form.addEventListener("click", (e) => {
 document.addEventListener("userchange", renderSummary);
 document.addEventListener("addrchange", renderSummary); // العنوان وصل من حساب Google
 
+// ============ «طلبات ماكملتش» ============
+// أول ما الضيف يكتب رقم موبايل صح، سلته ورقمه بيتحفظوا في carts/<حسابه المجهول> (نفس مكان السلات المتروكة).
+// لو ماكملش الطلب، بيظهر في لوحة التحكم ← سلات متروكة بزرار واتساب ورسالة جاهزة فيها لينك يرجّع السلة.
+// العملاء الداخلين بحساب (ليهم uid) سلتهم بتتحفظ أصلاً من common.js ← syncCart.
+let draftTimer = null, draftSig = "", draftUid = "";
+function scheduleDraft() {
+  clearTimeout(draftTimer);
+  draftTimer = setTimeout(saveDraft, 1500);
+}
+async function saveDraft() {
+  if (placed || !cart.length || user?.uid) return;
+  const phoneRaw = form.elements.phone.value;
+  if (!isValidPhone(phoneRaw)) return;
+  const items = cartSnapshot();
+  const doc = {
+    email: "",
+    phone: normalizePhone(phoneRaw).slice(0, 14),
+    name: form.elements.name.value.trim().replace(/\s+/g, " ").slice(0, 60),
+    items: items.slice(0, 50),
+    total: items.reduce((s, i) => s + i.price * i.qty, 0),
+    updatedAt: new Date().toISOString(),
+    source: "checkout",
+  };
+  const sig = JSON.stringify([doc.phone, doc.name, items.map((i) => [i.id, i.qty, i.opts])]);
+  if (sig === draftSig) return;
+  try {
+    if (!FIREBASE_CONFIG) {
+      draftUid ||= "guest-" + doc.phone;
+      const all = store.get(CARTS_LOCAL, {});
+      all[draftUid] = { ...doc, uid: draftUid };
+      store.set(CARTS_LOCAL, all);
+    } else {
+      const fbUser = await ensureCustomerAuth();
+      draftUid = fbUser.uid;
+      await firebase.firestore().collection("carts").doc(draftUid).set({ ...doc, uid: draftUid });
+    }
+    draftSig = sig;
+  } catch (err) {
+    console.warn("checkout draft", err);
+  }
+}
+// الطلب اتبعت: نشيل المسودة عشان ماتظهرش كسلة متروكة
+async function clearDraft() {
+  clearTimeout(draftTimer);
+  if (!draftUid) return;
+  try {
+    if (!FIREBASE_CONFIG) {
+      const all = store.get(CARTS_LOCAL, {});
+      delete all[draftUid];
+      store.set(CARTS_LOCAL, all);
+    } else {
+      await firebase.firestore().collection("carts").doc(draftUid).delete();
+    }
+  } catch (err) {
+    console.warn("clear draft", err);
+  }
+}
+form.addEventListener("input", (e) => { if (e.target.name === "phone" || e.target.name === "name") scheduleDraft(); });
+form.addEventListener("focusout", (e) => { if (e.target.name === "phone") saveDraft(); });
+
 // ============ إرسال الطلب ============
 const HEARD_FROM = [...form.elements.heardFrom.options].map((o) => o.value).filter(Boolean);
 // شكل الطلب ده هو اللي الداشبورد هيقراه بعدين
@@ -226,6 +286,7 @@ async function placeOrder() {
   btn.textContent = "جاري إرسال الطلب…";
   try {
     await submitOrder(order);
+    clearDraft();
     if (typeof track === "function") track("purchase", { items: order.items, value: order.totals.total, orderId: order.id });
     store.set(HAS_ORDERS_KEY, true);
     store.set(ADDR_KEY, { gov: order.address.gov, city: order.address.city.slice(0, 80), street: order.address.street.slice(0, 200) });

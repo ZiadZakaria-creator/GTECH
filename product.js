@@ -39,6 +39,72 @@ const seoMainImg = document.querySelector(".seo-pd img[data-for]");
 const SEO_MAIN = seoMainImg ? { key: seoMainImg.dataset.for, src: seoMainImg.getAttribute("src") } : null;
 
 const WA_ICON = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3.5A11 11 0 0 0 3.4 17.2L2 22l4.9-1.3A11 11 0 0 0 20.5 3.5Zm-8.4 17a9 9 0 0 1-4.6-1.3l-.3-.2-2.9.8.8-2.8-.2-.3a9 9 0 1 1 7.2 3.8Zm5-6.7c-.3-.1-1.6-.8-1.9-.9s-.4-.1-.6.1-.7.9-.8 1-.3.2-.6.1a7.4 7.4 0 0 1-3.7-3.2c-.3-.5.3-.4.8-1.4a.5.5 0 0 0 0-.5l-.8-2c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.2c0-.1-.2-.2-.5-.3Z"/></svg>`;
+// ============ «إيه الفرق؟»: مقارنة سريعة مع أقرب منتج ============
+// العملاء بيتلخبطوا بين المنتجات الشبه بعض (زي R60i NC و R50i NC). بنختار أقرب منتج متوفر في نفس القسم
+// (سعر قريب، ويفضّل نفس الماركة، ومش مجرد لون تاني من نفس الموديل) ونعرض الفروقات الحقيقية من المواصفات بس.
+const COMPARE_KEYS = {
+  earphones: ["عزل الضوضاء", "البطارية", "الصوت", "مقاومة المية", "المايك", "الشحن السريع", "التوصيل"],
+  audio: ["التوصيل", "التوافق", "الصوت", "السماعة", "المايك", "البطارية", "الإضاءة"],
+  mice: ["التوصيل", "الدقة (DPI)", "المستشعر", "الوزن", "البطارية", "الأزرار", "الإضاءة"],
+  keyboards: ["التوصيل", "السويتشات", "الحجم", "الإضاءة", "البطارية", "اللغة"],
+  storage: ["السعة", "سرعة القراءة", "سرعة الكتابة", "التوصيل", "الحجم", "النوع"],
+  speakers: ["القدرة", "البطارية", "مقاومة المية", "الوزن", "تشغيل أكتر من سبيكر"],
+  controllers: ["التوصيل", "التوافق", "البطارية", "الستيكات", "Polling Rate", "الاهتزاز"],
+  accessories: ["المقاس", "الإضاءة", "الخامة"],
+};
+const baseName = (n) => String(n).split(/\s[–-]\s/)[0].trim();
+const modelName = (p) => {
+  const m = String(p.specs?.["الموديل"] || "").split(/\s[–-]\s/)[0].trim();
+  return m && m.length <= 26 ? m : baseName(p.name).slice(0, 26);
+};
+const specDiffs = (a, b) => (COMPARE_KEYS[a.cat] || [])
+  .filter((k) => a.specs?.[k] && b.specs?.[k] && String(a.specs[k]).trim() !== String(b.specs[k]).trim());
+function compareTwin(p) {
+  if (!COMPARE_KEYS[p.cat] || !p.price) return null;
+  let best = null;
+  for (const q of shopProducts()) {
+    if (q.id === p.id || q.cat !== p.cat || !inStock(q) || !q.price || baseName(q.name) === baseName(p.name)) continue;
+    const ratio = q.price / p.price;
+    if (ratio < 0.6 || ratio > 1.6) continue;
+    const diffs = specDiffs(p, q);
+    if (!diffs.length) continue;
+    const score = Math.abs(Math.log(ratio)) + (q.brand === p.brand ? 0 : 0.35) - Math.min(diffs.length, 4) * 0.02;
+    if (!best || score < best.score) best = { q, score, diffs };
+  }
+  return best;
+}
+function compareBoxHtml(p) {
+  const t = compareTwin(p);
+  if (!t) return "";
+  const { q } = t;
+  const esc = escapeHtml;
+  const rows = t.diffs.slice(0, 4).map((k) => `<tr><th>${esc(k)}</th><td>${esc(p.specs[k])}</td><td>${esc(q.specs[k])}</td></tr>`).join("");
+  const w = (x) => (hasWarranty(x) ? esc(warrantyText(x)) : "بدون ضمان");
+  const diff = Math.abs(p.price - q.price);
+  const cheaper = (x) => (diff && x.price < (x === p ? q : p).price ? `<small class="pd-cmp__tag">أرخص بـ ${fmt(diff)}</small>` : "");
+  return `
+    <div class="container">
+      <section class="pd-cmp" aria-labelledby="pdCmpTitle">
+        <h2 id="pdCmpTitle">🤔 محتار بينه وبين <bdi>${esc(modelName(q))}</bdi>؟</h2>
+        <p class="muted">الفرق باختصار من مواصفات المنتجين:</p>
+        <div class="pd-cmp__wrap">
+          <table class="pd-cmp__table">
+            <thead><tr><th></th><th><bdi>${esc(modelName(p))}</bdi><small>المنتج ده</small></th><th><a href="${productUrl(q.id)}"><bdi>${esc(modelName(q))}</bdi></a></th></tr></thead>
+            <tbody>
+              <tr class="pd-cmp__price"><th>السعر</th><td><b>${fmt(p.price)}</b>${cheaper(p)}</td><td><b>${fmt(q.price)}</b>${cheaper(q)}</td></tr>
+              ${rows}
+              <tr><th>الضمان</th><td>${w(p)}</td><td>${w(q)}</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pd-cmp__actions">
+          <a class="btn btn--ghost btn--sm" href="${productUrl(q.id)}">شوف <bdi>${esc(modelName(q))}</bdi></a>
+          <a class="link-btn" href="compare.html?ids=${p.id},${q.id}">قارن كل المواصفات ←</a>
+        </div>
+      </section>
+    </div>`;
+}
+
 // «رأيي بصراحة»: فيديو تجربة حقيقية (REVIEW_VIDEOS في data.js) فوق الوصف والمواصفات
 function reviewVideoHtml(p) {
   const v = typeof REVIEW_VIDEOS !== "undefined" && REVIEW_VIDEOS[p.id];
@@ -176,6 +242,8 @@ function renderDetail(p) {
         </div>
       </div>
     </div>
+
+    ${compareBoxHtml(p)}
 
     ${reviewVideoHtml(p)}
 
