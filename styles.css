@@ -506,6 +506,9 @@ button.mini-offer { width: 100%; text-align: start; font: inherit; color: inheri
   transition: transform .35s cubic-bezier(.2,.8,.2,1), opacity .25s, visibility 0s .35s;
 }
 .toast.show { transform: translate(-50%, 0); opacity: 1; visibility: visible; transition: transform .35s cubic-bezier(.2,.8,.2,1), opacity .25s; }
+/* لما السلة أو شباك مفتوح: الرسالة تطلع فوق عشان ماتغطيش زرار «إتمام الشراء» */
+html body .toast.toast--top { top: calc(env(safe-area-inset-top, 0px) + 14px); bottom: auto; transform: translate(-50%, calc(-100% - 40px)); }
+html body .toast.toast--top.show { transform: translate(-50%, 0); }
 
 /* ============ Reveal ============ */
 .reveal { opacity: 0; transform: translateY(30px); transition: opacity .7s, transform .7s; }

@@ -357,7 +357,12 @@ function bindDetail(p) {
     video.play().catch(() => {});
   });
 
-  const buy = () => { add(); openCart(true); };
+  const buy = () => {
+    const opts = selectedOptions();
+    const has = () => cart.some((i) => i.id === p.id && (i.opts || "") === opts);
+    if (!has()) add(); // لو موجود في السلة مانزوّدش الكمية تاني
+    if (has()) location.href = "checkout.html";
+  };
   $("#addBar").addEventListener("click", buy);
   $("#buyNow").addEventListener("click", buy);
 

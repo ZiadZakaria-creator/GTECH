@@ -93,6 +93,7 @@ let toastTimer;
 function toast(msg) {
   const t = $("#toast");
   t.textContent = msg;
+  t.classList.toggle("toast--top", !!document.querySelector("#cart.open, .modal:not([hidden])"));
   t.classList.add("show");
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove("show"), Math.max(2600, String(msg).length * 55)); // الرسايل الطويلة بتقعد أكتر

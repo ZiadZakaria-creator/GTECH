@@ -21,22 +21,37 @@ if (GA_ID) {
   gtag("js", new Date());
   gtag("config", GA_ID);
 }
-if (PIXEL_ID) {
-  /* eslint-disable */
-  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;
-  s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
-  /* eslint-enable */
-  fbq("init", PIXEL_ID);
-  fbq("track", "PageView");
+// بيكسل فيسبوك وتيك توك حجمهم مع بعض حوالي 1.4 ميجا (نص وزن الصفحة الرئيسية على الموبايل).
+// بيتحمّلوا بعد ما الصفحة تظهر: مع أول تفاعل (لمس/سكرول/كيبورد) أو بعد 3 ثواني من التحميل، أيهم أسرع.
+// الأحداث اللي بتحصل قبلها بتستنى في طابور وبتتبعت أول ما يتحمّلوا، وأي حدث شراء أو سلة بيحمّلهم فوراً.
+let pixelsReady = false;
+const pixelQueue = [];
+function loadPixels() {
+  if (pixelsReady || (!PIXEL_ID && !TT_ID)) return;
+  pixelsReady = true;
+  if (PIXEL_ID) {
+    /* eslint-disable */
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;
+    s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    /* eslint-enable */
+    fbq("init", PIXEL_ID);
+    fbq("track", "PageView");
+  }
+  if (TT_ID) {
+    /* eslint-disable */
+    !function(w,d,t){w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js";ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=d.createElement("script");n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=d.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)}}(window,document,"ttq");
+    /* eslint-enable */
+    ttq.load(TT_ID);
+    ttq.page();
+  }
+  pixelQueue.splice(0).forEach((a) => sendPixels(...a));
 }
-
-if (TT_ID) {
-  /* eslint-disable */
-  !function(w,d,t){w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js";ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=d.createElement("script");n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=d.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)}}(window,document,"ttq");
-  /* eslint-enable */
-  ttq.load(TT_ID);
-  ttq.page();
+if (PIXEL_ID || TT_ID) {
+  const kick = () => { ["pointerdown", "touchstart", "scroll", "keydown"].forEach((ev) => removeEventListener(ev, kick)); loadPixels(); };
+  ["pointerdown", "touchstart", "scroll", "keydown"].forEach((ev) => addEventListener(ev, kick, { passive: true, once: true }));
+  const later = () => setTimeout(loadPixels, 3000);
+  document.readyState === "complete" ? later() : addEventListener("load", later, { once: true });
 }
 
 // track("view_item" | "add_to_cart" | "begin_checkout" | "purchase", { items: [{id, name, price, qty}], value, orderId })
@@ -51,6 +66,15 @@ function track(event, { items = [], value, orderId } = {}) {
       currency: "EGP", value: total, ...(orderId ? { transaction_id: orderId } : {}),
       items: items.map((i) => ({ item_id: String(i.id), item_name: i.name, price: i.price, quantity: i.qty || 1 })),
     });
+  } catch (err) { console.warn("analytics", err); }
+  if (!PIXEL_ID && !TT_ID) return;
+  // السلة والدفع والشراء بيحمّلوا البيكسل فوراً (مانستناش)، والمشاهدة بتستنى دورها في الطابور
+  if (event !== "view_item") loadPixels();
+  if (pixelsReady) sendPixels(event, items, total, orderId);
+  else pixelQueue.push([event, items, total, orderId]);
+}
+function sendPixels(event, items, total, orderId) {
+  try {
     if (PIXEL_ID) fbq("track", FB_EVENTS[event], {
       currency: "EGP", value: total, content_type: "product",
       content_ids: items.map((i) => String(i.id)), num_items: items.reduce((s, i) => s + (i.qty || 1), 0),

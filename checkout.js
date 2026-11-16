@@ -209,11 +209,14 @@ function buildOrder(d, t) {
 }
 
 async function placeOrder() {
-  if (user && SMS_ON && !(await phoneSessionMatches(user))) {
-    user = { ...user, verified: false };
-    store.set("gtech-user", user);
-    renderAccount();
-    return requireLogin(placeOrder, "محتاجين نأكد رقمك تاني بكود SMS عشان نبعت الطلب");
+  if (SMS_ON) {
+    const typed = normalizePhone(form.elements.phone.value);
+    const ok = user?.verified && normalizePhone(user.phone || "") === typed && (await phoneSessionMatches(user));
+    if (!ok) {
+      if (user?.verified) { user = { ...user, verified: false }; store.set("gtech-user", user); renderAccount(); }
+      afterLogin = placeOrder;
+      return openLogin("آخر خطوة: أكّد رقمك بكود SMS عشان نبعت الطلب", { name: form.elements.name.value.trim(), phone: typed });
+    }
   }
   const d = Object.fromEntries(new FormData(form));
   const order = buildOrder(d, totals());

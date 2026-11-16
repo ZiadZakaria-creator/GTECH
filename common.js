@@ -322,7 +322,8 @@ document.addEventListener("keydown", (e) => e.key === "Escape" && openCart(false
 $("#checkoutBtn").addEventListener("click", () => {
   if (!cart.length) return toast("السلة فاضية! ضيف منتجات الأول 🛍️");
   openCart(false);
-  requireLogin(() => (location.href = "checkout.html"), "سجّل دخولك عشان تكمّل الطلب");
+  // من غير شباك تسجيل دخول: صفحة الطلب نفسها فيها الاسم والرقم والعنوان (والدخول اختياري هناك)
+  location.href = "checkout.html";
 });
 
 // ============ تسجيل الدخول ============

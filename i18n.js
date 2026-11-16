@@ -716,7 +716,8 @@ const I18N_EN = {
 "فيديو قصير صوّرناه بنفسنا: المميزات والعيوب من غير تجميل.": "A short video we shot ourselves: the pros and cons, no sugarcoating.",
 "فيديوهات أكتر على تيك توك ←": "More videos on TikTok →",
 "🔔 نبّهني أول ما يرجع": "🔔 Notify me when it's back",
-"شغّل فيديو رأيي بصراحة": "Play the honest review video"
+"شغّل فيديو رأيي بصراحة": "Play the honest review video",
+"آخر خطوة: أكّد رقمك بكود SMS عشان نبعت الطلب": "Last step: confirm your number with an SMS code to send the order"
 };
 const I18N_PATTERNS = [
 // ---- أنماط لوحة التحكم (تلميحات فيها أرقام) ----
