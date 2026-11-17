@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-15",
+ "updated": "2026-11-17",
  "note": "سيجما و2B (عن طريق Qarenly) بيتحدّثوا أوتوماتيك مع كل نشر. الباقي من نتايج البحث. افتح اللينك واتأكد قبل ما تطبّق.",
  "trusted": [
   "Games2Egypt",
@@ -183,6 +183,13 @@
     "price": 1599,
     "url": "https://sigma-computer.com/en/item?id=redragon-k608-elite-valheim-mechanical-gaming-keyboard-rainbow-backlight-blue-switch-104-keys-wired-full-rollover-qmlg4quxvwr7",
     "checked": "2026-11-11T00:06:43.525Z"
+   },
+   {
+    "store": "Amazon.eg",
+    "price": 1590,
+    "url": "https://eg.pricena.com/ar/product/redragon-k608-valheim-mechanical-gaming-keyboard-tactile-and-clicky-blue-switch-104-keys-led-rainbow-backlit-wired-keyboard-full-key-rollover-ergonomic-keyboard-for-office-and-gaming-us-qwerty-price-in-Egypt-27591200",
+    "note": "عن طريق Pricena (K608-R Blue Switch)",
+    "checked": "2026-11-17T09:40:00.000Z"
    }
   ],
   "29": [
@@ -478,6 +485,12 @@
     "url": "https://sigma-computer.com/en/item?id=redragon-mento-h270-rgb-gaming-headphone-with-2-jacks-35mm-for-pc-ssvxncgslhwh",
     "note": "اللون مش مكتوب عندهم",
     "checked": "2026-11-11T00:07:20.810Z"
+   },
+   {
+    "store": "Games2Egypt",
+    "price": 1100,
+    "url": "https://www.games2egypt.com/Product/46546/redragon-h270-mento-wired-rgb-gaming-headphone-pink",
+    "checked": "2026-11-17T09:40:00.000Z"
    }
   ],
   "54": [
@@ -906,6 +919,23 @@
   "34": "2026-11-15",
   "23": "2026-11-15",
   "24": "2026-11-15",
-  "48": "2026-11-15"
+  "48": "2026-11-15",
+  "103": "2026-11-17",
+  "28": "2026-11-17",
+  "97": "2026-11-17",
+  "53": "2026-11-17",
+  "92": "2026-11-17",
+  "29": "2026-11-17",
+  "86": "2026-11-17",
+  "84": "2026-11-17",
+  "85": "2026-11-17",
+  "83": "2026-11-17",
+  "90": "2026-11-17",
+  "38": "2026-11-17",
+  "31": "2026-11-17",
+  "15": "2026-11-17",
+  "46": "2026-11-17",
+  "52": "2026-11-17",
+  "82": "2026-11-17"
  }
 }
