@@ -455,6 +455,7 @@ const I18N_EN = {
 "سماعات هيدسيت": "Headsets",
 "سماعات سلك وإيربودز": "Wired earphones & earbuds",
 "دراعات جيمنج": "Gaming controllers",
+"أجهزة ألعاب": "Gaming consoles",
 "سبيكرات بلوتوث": "Bluetooth speakers",
 "شاشات": "Monitors",
 "كروت شاشة": "Graphics cards",

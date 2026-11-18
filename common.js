@@ -208,6 +208,7 @@ const COMPLEMENTS = {
   earphones: ["storage", "mice"], storage: ["keyboards", "mice"],
   monitors: ["keyboards", "mice"], gpus: ["monitors", "storage"],
   controllers: ["audio", "earphones"], speakers: ["earphones", "storage"],
+  consoles: ["controllers", "audio"],
 };
 function complementsFor(sources, n = 2) {
   sources = sources.filter(Boolean);

@@ -9,6 +9,7 @@ const categories = {
   monitors: "شاشات",
   gpus: "كروت شاشة",
   controllers: "دراعات جيمنج",
+  consoles: "أجهزة ألعاب",
   accessories: "إكسسوارات وسيت أب",
 };
 

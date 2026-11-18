@@ -323,6 +323,7 @@ const CATEGORY_SEO = {
   speakers: "سبيكرات بلوتوث",
   storage: "هاردات خارجية وSSD",
   controllers: "دراعات جيمنج",
+  consoles: "أجهزة بلايستيشن وأجهزة ألعاب",
   monitors: "شاشات كمبيوتر",
   gpus: "كروت شاشة",
   accessories: "إكسسوارات جيمنج وإضاءة سيت أب",

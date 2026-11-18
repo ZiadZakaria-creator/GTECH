@@ -12,11 +12,11 @@ const LOCAL_IMAGES = "gtech-product-images-local";
 
 const CATEGORY_TINTS = {
   storage: "rgba(251,191,36,.25)", keyboards: "rgba(10,132,255,.35)", mice: "rgba(34,197,94,.28)",
-  audio: "rgba(124,92,255,.35)", earphones: "rgba(236,72,153,.3)", speakers: "rgba(45,212,191,.3)", monitors: "rgba(0,212,255,.35)", gpus: "rgba(255,77,109,.3)", controllers: "rgba(255,159,10,.3)",
+  audio: "rgba(124,92,255,.35)", earphones: "rgba(236,72,153,.3)", speakers: "rgba(45,212,191,.3)", monitors: "rgba(0,212,255,.35)", gpus: "rgba(255,77,109,.3)", controllers: "rgba(255,159,10,.3)", consoles: "rgba(99,102,241,.32)",
 };
 // لون كل قسم (أيقونات الأقسام وإضاءة كروت المنتجات)
-const CATEGORY_COLORS = { storage: "#fbbf24", keyboards: "#3b9bff", mice: "#22c55e", audio: "#a78bfa", earphones: "#ec4899", speakers: "#2dd4bf", monitors: "#00d4ff", gpus: "#ff4d6d", controllers: "#ff9f0a", accessories: "#a3e635" };
-const CATEGORY_ICONS = { storage: "💾", keyboards: "⌨️", mice: "🖱️", audio: "🎧", earphones: "🎵", speakers: "🔊", monitors: "🖥️", gpus: "🎮", controllers: "🕹️", accessories: "✨" };
+const CATEGORY_COLORS = { storage: "#fbbf24", keyboards: "#3b9bff", mice: "#22c55e", audio: "#a78bfa", earphones: "#ec4899", speakers: "#2dd4bf", monitors: "#00d4ff", gpus: "#ff4d6d", controllers: "#ff9f0a", consoles: "#818cf8", accessories: "#a3e635" };
+const CATEGORY_ICONS = { storage: "💾", keyboards: "⌨️", mice: "🖱️", audio: "🎧", earphones: "🎵", speakers: "🔊", monitors: "🖥️", gpus: "🎮", controllers: "🕹️", consoles: "🎮", accessories: "✨" };
 
 // المنتجات القديمة (قبل الأقسام الجديدة) بيتعرف قسمها من اسمها لحد ما تتعدّل من اللوحة
 const CATEGORY_GUESS = [
