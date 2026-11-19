@@ -324,6 +324,7 @@ const CATEGORY_SEO = {
   storage: "هاردات خارجية وSSD",
   controllers: "دراعات جيمنج",
   consoles: "أجهزة بلايستيشن وأجهزة ألعاب",
+  games: "ألعاب بلايستيشن",
   monitors: "شاشات كمبيوتر",
   gpus: "كروت شاشة",
   accessories: "إكسسوارات جيمنج وإضاءة سيت أب",

@@ -32,6 +32,7 @@ const catByLabel = {
   "سماعات": "audio", "هيدسيت": "audio", "إيربودز": "earphones", "ايربودز": "earphones", "سماعات سلك": "earphones",
   "دراعات": "controllers", "دراع": "controllers", "ذراع": "controllers", "دراعات تحكم": "controllers", "يد تحكم": "controllers",
   "أجهزة ألعاب": "consoles", "بلايستيشن": "consoles", "كونسول": "consoles", "جهاز ألعاب": "consoles",
+  "لعبة": "games", "العاب": "games", "ألعاب بلايستيشن": "games",
   "سبيكر": "speakers", "سبيكرات": "speakers", "سماعات بلوتوث": "speakers", "سماعات محمولة": "speakers", "سماعة محمولة": "speakers",
   ...Object.fromEntries(Object.entries(categories).map(([k, v]) => [v, k])),
 };

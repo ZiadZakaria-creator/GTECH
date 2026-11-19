@@ -277,6 +277,7 @@ const CATEGORY_SVG = {
   speakers: ["#2dd4bf", '<rect x="6" y="2.5" width="12" height="19" rx="3"/><circle cx="12" cy="14.5" r="3.5"/><circle cx="12" cy="7" r="1.3"/>'],
   controllers: ["#ff9f0a", '<path d="M6.5 7.5h11a4 4 0 0 1 3.9 3.1l1 4.6a2.6 2.6 0 0 1-4.5 2.2L16 15.5H8l-1.9 1.9a2.6 2.6 0 0 1-4.5-2.2l1-4.6a4 4 0 0 1 3.9-3.1z"/><path d="M7.5 10.5v3M6 12h3"/><path d="M15.5 11h.01M17.5 13h.01"/>'],
   consoles: ["#818cf8", '<path d="M9 2.5h6l1.5 1.5v15.5L15 21H9l-1.5-1.5V4z"/><path d="M9.5 7.5l5-2"/><path d="M7 21.5h10"/>'],
+  games: ["#e879f9", '<rect x="5" y="2.5" width="14" height="19" rx="2"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/>'],
   accessories: ["#a3e635", '<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/>'],
 };
 const categoryIconHtml = (k) => CATEGORY_SVG[k]

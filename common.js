@@ -209,6 +209,7 @@ const COMPLEMENTS = {
   monitors: ["keyboards", "mice"], gpus: ["monitors", "storage"],
   controllers: ["audio", "earphones"], speakers: ["earphones", "storage"],
   consoles: ["controllers", "audio"],
+  games: ["controllers", "audio"],
 };
 function complementsFor(sources, n = 2) {
   sources = sources.filter(Boolean);
