@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-17",
+ "updated": "2026-11-19",
  "note": "سيجما و2B (عن طريق Qarenly) بيتحدّثوا أوتوماتيك مع كل نشر. الباقي من نتايج البحث. افتح اللينك واتأكد قبل ما تطبّق.",
  "trusted": [
   "Games2Egypt",
@@ -230,6 +230,13 @@
     "price": 699,
     "url": "https://sigma-computer.com/en/item?id=t-dagger-bora-t-tgk313-blue-switch-rainbow-led-mechanical-gaming-keyboard-nubuy6tlbjgq",
     "checked": "2026-11-11T00:06:51.474Z"
+   },
+   {
+    "store": "Games World",
+    "price": 887,
+    "url": "https://www.gamesworldegypt.com/t-dagger-tgk313-bora-gaming-mechanical-keyboard-rainbow-led-lighting-hot-swappable-switches-(blue-switch),-usb",
+    "note": "Blue Switch",
+    "checked": "2026-11-19"
    }
   ],
   "34": [
@@ -325,6 +332,20 @@
     "price": 3675,
     "url": "https://sigma-computer.com/en/item?id=hiksemi-wave-512gb-pcie-gen-3-nvme-m2-qgqoz4pylto7",
     "checked": "2026-11-11T00:07:01.712Z"
+   },
+   {
+    "store": "Noon",
+    "price": 2950,
+    "url": "https://eg.pricena.com/ar/product/hiksemi-wave-p-512gb-nvme-pcie-3-0-m-2-ssd-price-in-Egypt-33033703",
+    "note": "عن طريق Pricena – WAVE(P)",
+    "checked": "2026-11-19"
+   },
+   {
+    "store": "Jumia",
+    "price": 2970,
+    "url": "https://eg.pricena.com/ar/product/hiksemi-wave-p-512gb-nvme-pcie-3-0-m-2-ssd-price-in-Egypt-33033703",
+    "note": "عن طريق Pricena – WAVE(P)",
+    "checked": "2026-11-19"
    }
   ],
   "41": [
@@ -520,6 +541,18 @@
     "price": 649,
     "url": "https://sigma-computer.com/en/item?id=onikuma-k19-gaming-headset-camouflage-color-with-mic-and-led-light-for-computer-soeleu48oldp",
     "checked": "2026-11-11T00:07:23.679Z"
+   },
+   {
+    "store": "Games2Egypt",
+    "price": 749,
+    "url": "https://www.games2egypt.com/Product/34943/onikuma-k19-rgb-wired-gaming-headset-grey-camouflage",
+    "checked": "2026-11-19"
+   },
+   {
+    "store": "Jumia",
+    "price": 795,
+    "url": "https://www.jumia.com.eg/onikuma-k19-rgb-wired-gaming-headset-grey-camouflage-131432963.html",
+    "checked": "2026-11-19"
    }
   ],
   "68": [
@@ -871,6 +904,24 @@
     "note": "مش واضح لو Jumia Mall",
     "checked": "2026-11-15"
    }
+  ],
+  "111": [
+   {
+    "store": "2B",
+    "price": 40999,
+    "url": "https://2b.com.eg/ar/sony-playstation-5-slim-digital-edition-825gb-1-year-warranty.html",
+    "note": "السعر من صفحة 2B على Halan – ضمان سنة",
+    "checked": "2026-11-19"
+   }
+  ],
+  "112": [
+   {
+    "store": "Games2Egypt",
+    "price": 52999,
+    "url": "https://games2egypt.com/Product/40079/playstation-5-pro-console-2tb",
+    "note": "ممكن يكون سعر قديم من 2024 – اتأكد من الصفحة",
+    "checked": "2026-11-19"
+   }
   ]
  },
  "sigmaUpdated": "2026-11-11T00:07:49.192Z",
@@ -936,6 +987,22 @@
   "15": "2026-11-17",
   "46": "2026-11-17",
   "52": "2026-11-17",
-  "82": "2026-11-17"
+  "82": "2026-11-17",
+  "111": "2026-11-19",
+  "112": "2026-11-19",
+  "113": "2026-11-19",
+  "108": "2026-11-19",
+  "87": "2026-11-19",
+  "32": "2026-11-19",
+  "30": "2026-11-19",
+  "40": "2026-11-19",
+  "78": "2026-11-19",
+  "33": "2026-11-19",
+  "55": "2026-11-19",
+  "20": "2026-11-19",
+  "21": "2026-11-19",
+  "80": "2026-11-19",
+  "79": "2026-11-19",
+  "93": "2026-11-19"
  }
 }
