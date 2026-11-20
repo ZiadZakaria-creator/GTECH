@@ -36,6 +36,8 @@ const toLatinDigits = (s) => s.replace(/[٠-٩]/g, (d) => "٠١٢٣٤٥٦٧٨٩"
 const normalizePhone = (s) => toLatinDigits(s).replace(/[\s()-]/g, "").replace(/^(?:\+|00)?20(?=1\d{9}$)/, "0");
 const isValidPhone = (s) => /^01[0125]\d{8}$/.test(normalizePhone(s));
 const escapeHtml = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+// خانة CSV آمنة: النص اللي بيبدأ بـ = أو + أو - أو @ بيتحط قبله ' عشان Excel مايشغّلوش كمعادلة
+const csvCell = (v) => { let s = String(v ?? ""); if (typeof v !== "number" && /^[=+\-@\t\r]/.test(s)) s = "'" + s; return `"${s.replace(/"/g, '""')}"`; };
 
 // ============ صاحبك عليا ============
 // كل رقم موبايل ليه كود ثابت (مش بيكشف الرقم). صاحبك اللي يدخل من لينكك ياخد 10% على أول أوردر،

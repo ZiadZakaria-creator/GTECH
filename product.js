@@ -360,7 +360,7 @@ function renderReviews(p) {
       reviewFormOpen = true;
       btn.disabled = false;
       btn.textContent = "جرّب تاني";
-      toast("❌ التقييم ماتحفظش، جرّب تاني");
+      toast(err.code === "not-buyer" ? "⭐ التقييم متاح للي اشترى المنتج واستلمه بس، من نفس الجهاز اللي طلب منه" : "❌ التقييم ماتحفظش، جرّب تاني");
     }
   });
 }

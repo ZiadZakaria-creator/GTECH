@@ -57,7 +57,16 @@ async function loadReviews() {
 }
 
 // العميل لازم يكون داخل بحسابه (requireLogin) قبل ما يوصل هنا
-async function saveReview(productId, starsValue, text) {
+// التقييم للي اشترى المنتج واستلمه بس: بندوّر على طلب متسلّم للعميل ده فيه المنتج
+async function deliveredOrderFor(productId, uid) {
+  const snap = await firebase.firestore().collection("orders").where("customer.uid", "==", uid).get();
+  const o = snap.docs.map((d) => d.data())
+    .filter((x) => x.status === "delivered" && (x.items || []).some((i) => i.id === productId))
+    .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)))[0];
+  return o ? o.id : null;
+}
+
+async function saveReview(productId, starsValue, text, orderId) {
   const now = new Date().toISOString();
   const name = (user?.name || "عميل").trim().slice(0, 60);
   const mine = store.get(MY_REVIEWS, {});
@@ -71,9 +80,11 @@ async function saveReview(productId, starsValue, text) {
     return setReviews(store.get(REVIEWS_LOCAL, []));
   }
   const u = await ensureCustomerAuth();
+  const order = orderId || (await deliveredOrderFor(productId, u.uid));
+  if (!order) throw Object.assign(new Error("التقييم للي استلم المنتج بس"), { code: "not-buyer" });
   const id = `${productId}_${u.uid}`;
   const old = allReviews.find((r) => r.id === id);
-  const review = { productId, uid: u.uid, name, stars: starsValue, text, createdAt: old?.createdAt || now, updatedAt: now };
+  const review = { productId, uid: u.uid, orderId: order, name, stars: starsValue, text, createdAt: old?.createdAt || now, updatedAt: now };
   await firebase.firestore().collection("reviews").doc(id).set(review);
   store.set(MY_REVIEWS, { ...mine, [productId]: id });
   setReviews([...allReviews.filter((r) => r.id !== id), { ...review, id }]);

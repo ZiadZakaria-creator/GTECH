@@ -109,3 +109,48 @@ document.addEventListener("privchange", () => {
 });
 document.addEventListener("dashboardready", () => privLoad("customers"));
 if (!$("#dashboard").hidden) privLoad("customers");
+
+// ============ فحص أسعار الطلب ============
+// الطلب بيتبني في متصفح العميل، فممكن حد يعدّل الأسعار قبل ما يبعته.
+// هنا بنقارن كل طلب بأسعار المنتجات على الموقع وبحسابه هو نفسه، ونعلّم بالأحمر على أي حاجة مش مظبوطة.
+function priceIssues(o) {
+  const issues = [];
+  const t = o.totals || {};
+  const items = Array.isArray(o.items) ? o.items : [];
+  const n = (v) => (typeof v === "number" && isFinite(v) ? v : NaN);
+  const sum = items.reduce((s, i) => s + n(i.price) * n(i.qty), 0);
+  if (items.some((i) => !Number.isInteger(i.qty) || i.qty < 1 || !(n(i.price) > 0))) issues.push("فيه منتج كميته أو سعره مش منطقي");
+  if (!(Math.abs(sum - n(t.subtotal)) <= 1)) issues.push(`مجموع المنتجات ${fmt(sum)} مش زي المجموع المكتوب ${fmt(t.subtotal || 0)}`);
+  if (!(Math.abs(n(t.subtotal) + n(t.shipping) - n(t.discount) - n(t.total)) <= 1)) issues.push("الإجمالي مش مطابق للمجموع + الشحن − الخصم");
+  if (n(t.shipping) < 0 || n(t.discount) < 0) issues.push("شحن أو خصم بالسالب");
+  if (n(t.discount) > n(t.subtotal) * 0.3) issues.push(`خصم ${fmt(t.discount)} أكبر من 30% من المجموع`);
+  // مقارنة بسعر الموقع: بس للطلبات اللي لسه ماتشحنتش (الطلبات القديمة ممكن السعر اتغير بعدها)
+  const catalog = typeof productsLoaded !== "undefined" && productsLoaded && adminProducts.length ? adminProducts : null;
+  if (catalog && ["new", "confirmed"].includes(o.status)) {
+    items.forEach((i) => {
+      const p = catalog.find((x) => x.id === i.id);
+      if (!p) issues.push(`«${i.name}» مش موجود في منتجات الموقع`);
+      else if (n(i.price) < p.price * 0.9) issues.push(`«${p.name}» في الطلب بـ ${fmt(i.price)} وسعره على الموقع ${fmt(p.price)}`);
+    });
+  }
+  return issues;
+}
+
+const priceChip = (o) => {
+  const issues = priceIssues(o);
+  return issues.length ? `<span class="risk-chip risk-chip--red" title="${escapeHtml(issues.join(" · "))}">⚠️ السعر مش مطابق</span>` : "";
+};
+
+function priceBox(o) {
+  const issues = priceIssues(o);
+  if (!issues.length) return "";
+  return `
+    <div class="risk-box risk-box--red">
+      <p><b>⚠️ أسعار الطلب ده مش مطابقة للموقع</b></p>
+      <ul class="price-issues">${issues.map((x) => `<li>${escapeHtml(x)}</li>`).join("")}</ul>
+      <p class="risk-advice">💡 ماتأكدش الطلب بالسعر ده. كلّم العميل بالسعر الصح، أو الغي الطلب لو شكله متلاعب فيه.</p>
+    </div>`;
+}
+
+// أول ما المنتجات تتحمّل نعيد رسم الطلبات عشان مقارنة الأسعار بالموقع تظهر
+document.addEventListener("adminproducts", () => { if (typeof render === "function" && typeof orders !== "undefined" && orders.length) render(); });

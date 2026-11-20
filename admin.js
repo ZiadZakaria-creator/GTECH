@@ -133,7 +133,9 @@ function handleCustomerCancels() {
 }
 
 function notifyNew(fresh) {
-  toast(fresh.length === 1 ? `🔔 طلب جديد من ${fresh[0].customer.name} — ${fmt(fresh[0].totals.total)}` : `🔔 وصل ${num(fresh.length)} طلبات جديدة`);
+  const bad = typeof priceIssues === "function" ? fresh.filter((o) => priceIssues(o).length) : [];
+  toast(bad.length ? `⚠️ طلب جديد أسعاره مش مطابقة للموقع: ${bad[0].id} — راجعه قبل ما تأكده`
+    : fresh.length === 1 ? `🔔 طلب جديد من ${fresh[0].customer.name} — ${fmt(fresh[0].totals.total)}` : `🔔 وصل ${num(fresh.length)} طلبات جديدة`);
   if (soundOn) beep();
 }
 
@@ -195,7 +197,7 @@ function render() {
     <tr data-id="${escapeHtml(o.id)}" class="${o.status === "new" ? "is-new" : ""}">
       <td data-label="رقم الطلب"><b class="mono">${escapeHtml(o.id)}</b></td>
       <td data-label="التاريخ">${shortDate(o.createdAt)}</td>
-      <td data-label="العميل"><b>${escapeHtml(o.customer.name)}</b><small class="mono" dir="ltr">${escapeHtml(o.customer.phone)}</small>${["new", "confirmed", "shipped"].includes(o.status) && typeof riskChip === "function" ? riskChip(o) : ""}</td>
+      <td data-label="العميل"><b>${escapeHtml(o.customer.name)}</b><small class="mono" dir="ltr">${escapeHtml(o.customer.phone)}</small>${["new", "confirmed", "shipped"].includes(o.status) && typeof riskChip === "function" ? riskChip(o) : ""}${typeof priceChip === "function" ? priceChip(o) : ""}</td>
       <td data-label="المحافظة">${escapeHtml(o.address.gov)}</td>
       <td data-label="المنتجات">${num(itemsCount(o))} منتج</td>
       <td data-label="الإجمالي"><b>${fmt(o.totals.total)}</b></td>
@@ -434,6 +436,7 @@ function openOrder(id, show = true) {
           <a class="btn btn--sm btn--danger" href="${waLink(cancelMsg, intlPhone)}" target="_blank" rel="noopener" data-cancel-notify title="بيلغي الطلب (والمخزون يرجع) ويفتح واتساب برسالة الإلغاء للعميل">✖ العميل اختار الإلغاء</a>` : ""}
       </div>
       ${confirmBox}
+      ${typeof priceBox === "function" ? priceBox(o) : ""}
       ${typeof riskBox === "function" && ["new", "confirmed", "shipped"].includes(o.status) ? riskBox(o) : ""}
     </section>
 
@@ -650,7 +653,7 @@ $("#exportBtn").addEventListener("click", () => {
     o.items.map((i) => `${i.name}${i.options ? ` (${i.options})` : ""} x${i.qty}`).join(" | "), itemsCount(o),
     o.totals.subtotal, o.totals.shipping, o.totals.discount, o.totals.total, o.payment.label, o.shipping.label, o.heardFrom || "",
   ]);
-  const csv = [head, ...rows].map((r) => r.map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",")).join("\r\n");
+  const csv = [head, ...rows].map((r) => r.map(csvCell).join(",")).join("\r\n");
   const a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8" }));
   a.download = `gtech-orders-${new Date().toISOString().slice(0, 10)}.csv`;

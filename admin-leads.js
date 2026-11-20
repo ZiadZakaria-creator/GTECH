@@ -185,7 +185,7 @@ $("#leadsExport").addEventListener("click", () => {
   const status = { buyer: "اشترى", cart: "ساب سلة", lead: "لسه ماشتراش" };
   const rows = [["phone", "name", "status", "orders", "spent", "governorate", "last_active", "source"],
     ...filteredCustomers(buildCustomers()).map((c) => [c.phone, c.name, status[c.status], c.orders, c.spent, c.gov, c.lastActive.slice(0, 10), c.source])];
-  const csv = "﻿" + rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+  const csv = "﻿" + rows.map((r) => r.map(csvCell).join(",")).join("\n");
   const a = Object.assign(document.createElement("a"), { href: URL.createObjectURL(new Blob([csv], { type: "text/csv" })), download: `gtech-customers-${custFilter}.csv` });
   a.click();
   URL.revokeObjectURL(a.href);

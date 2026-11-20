@@ -220,7 +220,7 @@ $("#rateForm").addEventListener("submit", async (e) => {
   btn.disabled = true;
   btn.textContent = "جاري النشر…";
   try {
-    for (const x of picks) await saveReview(x.id, x.stars, x.text);
+    for (const x of picks) await saveReview(x.id, x.stars, x.text, rateOrder?.id);
     if (rateOpener && rateOrder) rateOpener.textContent = rateLabel(rateOrder);
     closeRate();
     toast("⭐ شكراً! رأيك اتنشر في صفحة المنتج");

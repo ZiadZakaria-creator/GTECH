@@ -1108,3 +1108,4 @@ td .risk-chip { display: table; }
   .pf-nums { justify-content: flex-start; }
   .fu-row { flex-direction: column; align-items: stretch; }
 }
+.price-issues { margin: 0 0 6px; padding-inline-start: 18px; line-height: 1.7; color: var(--danger); font-size: .85rem; }

@@ -280,7 +280,7 @@ $("#ovExport").addEventListener("click", () => {
   const rows = [["رقم الطلب", "التاريخ", "العميل", "الموبايل", "المحافظة", "المنتجات", "الإجمالي", "الدفع", "الحالة"],
     ...list.map((o) => [o.id, new Date(o.createdAt).toLocaleString("en-GB"), o.customer.name, o.customer.phone, o.address?.gov || "",
       o.items.map((i) => `${i.name} × ${i.qty}`).join(" | "), o.totals.total, o.payment?.label || "", ORDER_STATUSES[o.status]])];
-  const csv = "﻿" + rows.map((r) => r.map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
+  const csv = "﻿" + rows.map((r) => r.map(csvCell).join(",")).join("\n");
   const a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
   a.download = `GTECH-MASR-report-${new Date().toISOString().slice(0, 10)}.csv`;
