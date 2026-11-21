@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-19",
+ "updated": "2026-11-21",
  "note": "سيجما و2B (عن طريق Qarenly) بيتحدّثوا أوتوماتيك مع كل نشر. الباقي من نتايج البحث. افتح اللينك واتأكد قبل ما تطبّق.",
  "trusted": [
   "Games2Egypt",
@@ -29,6 +29,12 @@
     "url": "https://sigma-computer.com/en/item?id=logitech-g102-lightsync-gaming-mouse-features-8000-dpi-6-programmable-buttons-lightsync-rgb-lighting-1000hz-report-rate-and-a-21m-cable-910-005824-5vqic6nlth9w",
     "note": "ضمان سنتين",
     "checked": "2026-11-11T00:06:21.947Z"
+   },
+   {
+    "store": "Noon",
+    "price": 899,
+    "note": "السعر من Pricena",
+    "checked": "2026-11-21"
    }
   ],
   "15": [
@@ -105,6 +111,12 @@
     "price": 225,
     "url": "https://sigma-computer.com/en/item?id=aula-s50-7-button-gaming-mouse-2400-dpi-optical-usb-wired-0vkt1yxlupih",
     "checked": "2026-11-11T00:06:33.965Z"
+   },
+   {
+    "store": "Games2Egypt",
+    "price": 299,
+    "url": "https://www.games2egypt.com/Product/45574/aula-s50-led-backlight-wired-gaming-mouse",
+    "checked": "2026-11-21"
    }
   ],
   "23": [
@@ -149,13 +161,16 @@
   "27": [
    {
     "store": "Games2Egypt",
-    "price": 2099,
-    "url": "https://www.games2egypt.com/Product/24559/logitech-g305-lightspeed-wireless-gaming-mouse-black"
+    "price": 2049,
+    "url": "https://www.games2egypt.com/Product/24559/logitech-g305-lightspeed-wireless-gaming-mouse-black",
+    "checked": "2026-11-21"
    },
    {
     "store": "Amazon.eg",
-    "price": 2099,
-    "url": "https://www.amazon.eg/-/en/Logitech-Lightspeed-Wireless-Gaming-Mouse/dp/B07CGPZ3ZQ"
+    "price": 2047,
+    "url": "https://www.amazon.eg/-/en/Logitech-Lightspeed-Wireless-Gaming-Mouse/dp/B07CGPZ3ZQ",
+    "note": "السعر من Pricena",
+    "checked": "2026-11-21"
    },
    {
     "store": "Sigma",
@@ -175,6 +190,12 @@
     "stock": "out",
     "url": "https://2b.com.eg/en/logitech-g305-lightspeed-wireless-gaming-mouse-black.html",
     "checked": "2026-11-11"
+   },
+   {
+    "store": "Jumia",
+    "price": 2199,
+    "url": "https://www.jumia.com.eg/logitech-g305-lightspeed-wireless-gaming-mouse-black-38454698.html",
+    "checked": "2026-11-21"
    }
   ],
   "28": [
@@ -589,6 +610,12 @@
     "price": 2399,
     "url": "https://2b.com.eg/en/logitech-g502-hero-high-performance-gaming-mouse-usb-ewr2-910-005471-black.html",
     "checked": "2026-11-11"
+   },
+   {
+    "store": "Jumia",
+    "price": 2399,
+    "url": "https://www.jumia.com.eg/logitech-mouse-gaming-logitech-g502-910-005471-131932950.html",
+    "checked": "2026-11-21"
    }
   ],
   "78": [
@@ -727,7 +754,9 @@
    {
     "store": "Games World",
     "price": 8559,
-    "url": "https://www.gamesworldegypt.com/hyperx-cloud-iii-s-wireless-gaming-headset-black-red"
+    "url": "https://www.gamesworldegypt.com/hyperx-cloud-iii-s-wireless-gaming-headset-black-red",
+    "stock": "out",
+    "checked": "2026-11-21"
    },
    {
     "store": "Sigma",
@@ -1003,6 +1032,18 @@
   "21": "2026-11-19",
   "80": "2026-11-19",
   "79": "2026-11-19",
-  "93": "2026-11-19"
+  "93": "2026-11-19",
+  "16": "2026-11-21",
+  "17": "2026-11-21",
+  "22": "2026-11-21",
+  "25": "2026-11-21",
+  "26": "2026-11-21",
+  "50": "2026-11-21",
+  "89": "2026-11-21",
+  "14": "2026-11-21",
+  "27": "2026-11-21",
+  "35": "2026-11-21",
+  "68": "2026-11-21",
+  "95": "2026-11-21"
  }
 }
