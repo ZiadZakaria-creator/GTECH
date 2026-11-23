@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-21",
+ "updated": "2026-11-23",
  "note": "سيجما و2B (عن طريق Qarenly) بيتحدّثوا أوتوماتيك مع كل نشر. الباقي من نتايج البحث. افتح اللينك واتأكد قبل ما تطبّق.",
  "trusted": [
   "Games2Egypt",
@@ -629,8 +629,9 @@
   "81": [
    {
     "store": "Games2Egypt",
-    "price": 4590,
-    "url": "https://www.games2egypt.com/Product/24887/dualsense-ps5-controller-white"
+    "price": 4199,
+    "url": "https://www.games2egypt.com/Product/24887/dualsense-ps5-controller-white",
+    "checked": "2026-11-23"
    },
    {
     "store": "Games2Egypt",
@@ -738,6 +739,18 @@
     "url": "https://sigma-computer.com/en/item?id=playstation-dualsense-ps5-controller-midnight-black-5pr4s0wsznr0",
     "stock": "out",
     "checked": "2026-11-11T00:07:39.895Z"
+   },
+   {
+    "store": "Jumia",
+    "price": 5409,
+    "url": "https://www.jumia.com.eg/sony-sony-dualsense-ps5-controller-midnight-black-45016390.html",
+    "checked": "2026-11-23"
+   },
+   {
+    "store": "Amazon.eg",
+    "price": 4374,
+    "note": "السعر من Pricena",
+    "checked": "2026-11-23"
    }
   ],
   "95": [
@@ -797,8 +810,10 @@
    },
    {
     "store": "Noon",
-    "price": 4419,
-    "url": "https://www.noon.com/egypt-en/dualsense-wireless-ps5-controller-grey-camouflage-official-version/N53358520A/p/"
+    "price": 4307,
+    "url": "https://www.noon.com/egypt-en/dualsense-wireless-ps5-controller-grey-camouflage-official-version/N53358520A/p/",
+    "note": "السعر من موقع مقارنة",
+    "checked": "2026-11-23"
    }
   ],
   "100": [
@@ -842,9 +857,16 @@
    {
     "store": "Noon",
     "price": 2399,
-    "note": "الأسود · من Pricena",
+    "note": "السعر من Pricena",
     "url": "https://eg.pricena.com/en/product/liberty-4-nc-earbuds-98-5-percent-noise-reduction-adaptive-cancelling-to-ears-and-environment-hi-res-sound-50h-battery-wireless-charging-bluetooth-5-3-black-price-in-Egypt-25668962",
-    "checked": "2026-11-11"
+    "checked": "2026-11-23"
+   },
+   {
+    "store": "2B",
+    "price": 3699,
+    "url": "https://2b.com.eg/en/anker-soundcore-liberty-4-earphone-tws-nc-black.html",
+    "stock": "out",
+    "checked": "2026-11-23"
    }
   ],
   "57": [
@@ -870,15 +892,21 @@
     "note": "الأسود · من Pricena",
     "url": "https://eg.pricena.com/en/product/liberty-4-pro-by-anker-noise-cancelling-wireless-earbuds-7-sensor-and-real-time-adaptive-noise-cancelling-2-faster-charging-studio-level-hi-fi-music-clear-calls-with-9-mics-and-ai-black-price-in-Egypt-30265611",
     "checked": "2026-11-11"
+   },
+   {
+    "store": "2B",
+    "price": 7499,
+    "url": "https://2b.com.eg/en/anker-soundcore-liberty-4-pro-earbuds-blue.html",
+    "checked": "2026-11-23"
    }
   ],
   "65": [
    {
     "store": "Noon",
     "price": 1199,
-    "note": "من Pricena",
+    "note": "السعر من Pricena",
     "url": "https://eg.pricena.com/en/product/c1-wireless-controller-dual-mode-six-axis-gyroscope-dual-hall-effect-gaming-controller-black-for-switch-pc-price-in-Egypt-35697101",
-    "checked": "2026-11-11"
+    "checked": "2026-11-23"
    }
   ],
   "73": [
@@ -957,16 +985,16 @@
  "searched": {
   "101": "2026-11-11",
   "107": "2026-11-11",
-  "56": "2026-11-11",
-  "57": "2026-11-11",
+  "56": "2026-11-23",
+  "57": "2026-11-23",
   "58": "2026-11-11",
-  "59": "2026-11-11",
+  "59": "2026-11-23",
   "60": "2026-11-11",
   "61": "2026-11-11",
   "62": "2026-11-11",
   "63": "2026-11-11",
   "64": "2026-11-11",
-  "65": "2026-11-11",
+  "65": "2026-11-23",
   "66": "2026-11-11",
   "67": "2026-11-11",
   "69": "2026-11-11",
@@ -974,7 +1002,7 @@
   "49": "2026-11-13",
   "96": "2026-11-13",
   "54": "2026-11-13",
-  "18": "2026-11-13",
+  "18": "2026-11-23",
   "19": "2026-11-13",
   "37": "2026-11-13",
   "39": "2026-11-13",
@@ -1044,6 +1072,14 @@
   "27": "2026-11-21",
   "35": "2026-11-21",
   "68": "2026-11-21",
-  "95": "2026-11-21"
+  "95": "2026-11-21",
+  "102": "2026-11-23",
+  "104": "2026-11-23",
+  "105": "2026-11-23",
+  "44": "2026-11-23",
+  "81": "2026-11-23",
+  "94": "2026-11-23",
+  "98": "2026-11-23",
+  "100": "2026-11-23"
  }
 }
