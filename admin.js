@@ -484,7 +484,7 @@ function openOrder(id, show = true) {
     <section class="od-sec">
       <dl class="totals">
         <div><dt>المجموع الفرعي</dt><dd>${fmt(t.subtotal)}</dd></div>
-        <div><dt>الشحن <small>· ${escapeHtml(o.shipping.label)}</small></dt><dd>${t.shipping ? fmt(t.shipping) : "مجاناً"}</dd></div>
+        <div><dt>الشحن <small>· ${escapeHtml(o.shipping.label)}</small>${["new", "confirmed", "shipped"].includes(o.status) ? ` <button class="btn btn--ghost btn--sm" data-edit-ship title="غيّر سعر الشحن (مثلاً العميل حوّل من السريع للعادي) والإجمالي بيتحسب لوحده">✏️ تعديل</button>` : ""}</dt><dd>${t.shipping ? fmt(t.shipping) : "مجاناً"}</dd></div>
         ${t.discount ? `<div class="totals__discount"><dt>الخصم ${o.promo ? `(${escapeHtml(promoLabel(o.promo))})` : ""}</dt><dd>− ${fmt(t.discount)}</dd></div>` : ""}
         <div class="totals__grand"><dt>الإجمالي</dt><dd>${fmt(t.total)}</dd></div>
       </dl>
@@ -601,6 +601,7 @@ document.addEventListener("keydown", (e) => e.key === "Escape" && closeOrder());
 
 $("#drawerBody").addEventListener("click", async (e) => {
   if (e.target.id === "printBtn") return printInvoice(orders.find((x) => x.id === openId));
+  if (e.target.closest("[data-edit-ship]") && openId) return editShipping(orders.find((x) => x.id === openId));
   const b = e.target.closest("[data-set-status]");
   if (!b || !openId) return;
   const o = orders.find((x) => x.id === openId);
@@ -609,6 +610,34 @@ $("#drawerBody").addEventListener("click", async (e) => {
   if (status === "cancelled" && !confirm(`متأكد إنك عايز تلغي الطلب ${o.id}؟`)) return;
   await setOrderStatus(o, status);
 });
+
+// تعديل سعر الشحن على طلب موجود (مثلاً العميل اختار السريع وبعدين اتفقنا على العادي).
+// المنتجات والخصم مابيتغيروش، والإجمالي = المجموع − الخصم + الشحن الجديد (وقواعد الأمان بتتأكد من ده)،
+// فرسالة التأكيد والفاتورة ومبلغ التحصيل في بوسطة كلهم بياخدوا الرقم الجديد
+async function editShipping(o) {
+  const t = o.totals || {};
+  const std = typeof shipCost === "function" ? shipCost(o.address?.gov, "standard", t.subtotal) : null;
+  const typed = prompt(`سعر الشحن الجديد للطلب ${o.id} (ج.م)\nالحالي: ${t.shipping || 0} ج.م · ${o.shipping?.label || ""}`, String(std ?? t.shipping ?? 0));
+  if (typed === null) return;
+  const fee = Number(String(typed).replace(/[٠-٩]/g, (d) => "٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(/[^\d.]/g, ""));
+  if (String(typed).trim() === "" || !Number.isFinite(fee) || fee < 0 || fee > 1000) return toast("⚠️ اكتب سعر شحن صح (من 0 لـ 1000)");
+  const shipping = Math.round(fee);
+  if (shipping === (t.shipping || 0)) return toast("نفس سعر الشحن الحالي");
+  const total = t.subtotal - (t.discount || 0) + shipping;
+  // لو كان سريع واتغير سعره، بيتحوّل لشحن عادي
+  const toStandard = o.shipping?.method === "express";
+  if (!confirm(`الشحن: ${fmt(t.shipping || 0)} ← ${fmt(shipping)}\nالإجمالي: ${fmt(t.total)} ← ${fmt(total)}${toStandard ? "\nوطريقة الشحن هتبقى: شحن عادي" : ""}`)) return;
+  try {
+    await updateOrder(o.id, {
+      totals: { subtotal: t.subtotal, shipping, discount: t.discount || 0, total },
+      shipping: { ...o.shipping, cost: shipping, ...(toStandard ? { method: "standard", label: "شحن عادي (2-4 أيام)" } : {}) },
+    });
+    toast(`✅ الشحن بقى ${fmt(shipping)} والإجمالي ${fmt(total)}`);
+  } catch (err) {
+    console.error(err);
+    toast(err?.code === "permission-denied" ? "⛔ لازم تنشر قواعد الأمان الجديدة في Firebase الأول" : "❌ مقدرناش نعدّل الشحن");
+  }
+}
 
 // تغيير حالة الطلب: المخزون، ومكافآت "صاحبك عليا"، وإيميل العميل
 async function setOrderStatus(o, status) {

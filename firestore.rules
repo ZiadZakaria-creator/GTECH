@@ -12,6 +12,17 @@ service cloud.firestore {
         && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
+    // تعديل الشحن من اللوحة: المجموع والخصم مايتغيروش، والشحن رقم من 0 لـ 1000، والإجمالي = المجموع − الخصم + الشحن
+    function validShippingEdit() {
+      let n = request.resource.data.totals;
+      let o = resource.data.totals;
+      return n.keys().hasOnly(["subtotal", "shipping", "discount", "total"])
+        && n.subtotal == o.subtotal
+        && n.get("discount", 0) == o.get("discount", 0)
+        && n.shipping is number && n.shipping >= 0 && n.shipping <= 1000
+        && n.total == n.subtotal - n.get("discount", 0) + n.shipping;
+    }
+
     match /orders/{orderId} {
       // العميل لازم يكون له حساب Firebase (Google أو مجهول) والطلب مربوط بيه
       allow create: if request.auth != null
@@ -28,10 +39,11 @@ service cloud.firestore {
       allow read: if isAdmin()
         || (request.auth != null && resource.data.customer.uid == request.auth.uid);
 
-      // الأدمن يغيّر الحالة ورقم التتبع بس، من غير ما يعدّل بيانات العميل أو الأسعار
+      // الأدمن يغيّر الحالة ورقم التتبع، ويعدّل سعر الشحن بس (المنتجات والخصم ثابتين والإجمالي لازم يطابق الحساب)
       // والعميل يقدر يلغي طلبه هو بس، طول ما لسه جديد أو متأكد ومفيش رقم تتبع (يعني ماتشحنش)
       allow update: if (isAdmin()
-          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status", "updatedAt", "shipment", "payment", "stockReleased", "confirmSent"]))
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status", "updatedAt", "shipment", "payment", "stockReleased", "confirmSent", "totals", "shipping"])
+          && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(["totals"]) || validShippingEdit()))
         || (request.auth != null
           && resource.data.customer.uid == request.auth.uid
           && resource.data.status in ["new", "confirmed"]
