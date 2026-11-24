@@ -67,5 +67,10 @@ jobs:
         with:
           path: _site
 
+      # خطوة النشر ساعات بتدوّر على الملف المرفوع قبل ما GitHub يسجّله فتفشل ("No artifacts named github-pages")،
+      # فبنستنى شوية بعد الرفع
+      - name: Wait for the uploaded artifact to register
+        run: sleep 30
+
       - id: deployment
         uses: actions/deploy-pages@v4
