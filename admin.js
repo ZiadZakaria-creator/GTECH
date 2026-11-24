@@ -410,6 +410,24 @@ function openOrder(id, show = true) {
     `رد علينا برقم الاختيار، ونعتذر جداً عن الإزعاج 🙏`,
   ].join("\n");
 
+  // تأكيد العنوان: العميل يأكد العنوان أو يصححه، ويبعت اللوكيشن من واتساب عشان المندوب يوصل بسهولة
+  const addrMsg = [
+    `أهلاً ${c.name} 👋`,
+    `معاك GTECH MASR بخصوص طلبك رقم ${o.id} 📦`,
+    ``,
+    `عشان المندوب يوصلك بسهولة، من فضلك أكّدلنا العنوان ده:`,
+    `📍 ${[a.street, a.city, a.gov].filter(Boolean).join("، ")}`,
+    a.notes ? `📝 ${a.notes}` : null,
+    ``,
+    `✅ لو العنوان صح: رد علينا بكلمة «تمام»`,
+    `✏️ لو فيه تعديل: اكتبلنا العنوان بالتفصيل (رقم العمارة، الدور، الشقة، وعلامة مميزة جنبك)`,
+    ``,
+    `📌 ويا ريت تبعتلنا اللوكيشن بتاعك هنا على واتساب:`,
+    `اضغط على 📎 ← «الموقع» (Location) ← «إرسال موقعك الحالي»`,
+    ``,
+    `شكراً لحضرتك 🙏`,
+  ].filter((l) => l !== null).join("\n");
+
   $("#drawerTitle").innerHTML = `طلب <span class="mono">${escapeHtml(o.id)}</span>`;
   $("#drawerBody").innerHTML = `
     <div class="od-status">
@@ -429,6 +447,7 @@ function openOrder(id, show = true) {
       <div class="od-contact">
         <a class="btn btn--ghost btn--sm" href="tel:${escapeHtml(c.phone)}">📞 اتصال</a>
         <a class="btn ${waiting ? "btn--ghost" : "btn--primary"} btn--sm" href="${waLink(greet, intlPhone)}" target="_blank" rel="noopener" ${o.status === "new" ? "data-confirm-send" : ""} title="رسالة جاهزة فيها المنتجات والإجمالي والعنوان ولينك التتبع">✅ ${waiting ? "تأكيد الطلب (الرسالة الأولى)" : "ابعت تأكيد الطلب"}</a>
+        ${["new", "confirmed", "shipped"].includes(o.status) ? `<a class="btn btn--ghost btn--sm" href="${waLink(addrMsg, intlPhone)}" target="_blank" rel="noopener" title="رسالة للعميل يأكد فيها العنوان أو يصححه ويبعت اللوكيشن بتاعه">📍 تأكيد العنوان واللوكيشن</a>` : ""}
         ${shipMsg ? `<a class="btn btn--ghost btn--sm" href="${waLink(shipMsg, intlPhone)}" target="_blank" rel="noopener">🚚 ابعت إنه اتشحن</a>` : ""}
         ${rateMsg ? `<a class="btn btn--ghost btn--sm" href="${waLink(rateMsg, intlPhone)}" target="_blank" rel="noopener" title="رسالة للعميل فيها لينك يقيّم المنتج بالنجوم">⭐ اطلب رأيه</a>` : ""}
         <a class="btn btn--sm btn--warn" href="${waLink(zoneMsg, intlPhone)}" target="_blank" rel="noopener" title="ابعت للعميل إن منطقته خارج نطاق التوصيل">⚠️ مشكلة توصيل</a>
