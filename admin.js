@@ -428,6 +428,24 @@ function openOrder(id, show = true) {
     `شكراً لحضرتك 🙏`,
   ].filter((l) => l !== null).join("\n");
 
+  // المنتج نفد قبل ما نجهّز الطلب: اعتذار + اختيارات (بديل، يستنى، إلغاء)
+  // لو الطلب فيه أكتر من منتج، امسح من الرسالة في واتساب المنتجات اللي متوفرة
+  const multi = o.items.length > 1;
+  const outMsg = [
+    `أهلاً ${c.name} 👋`,
+    `معاك GTECH MASR بخصوص طلبك رقم ${o.id} 📦`,
+    ``,
+    `للأسف ${multi ? "المنتج ده" : "المنتج اللي طلبته"} نفد من المخزون قبل ما نلحق نجهّز طلبك 😔`,
+    ...o.items.map((i) => `• ${i.name}${i.options ? ` (${i.options})` : ""}`),
+    ``,
+    `وإحنا آسفين جداً على ده. عشان نكمّل، اختار اللي يناسبك:`,
+    `1️⃣ نرشّحلك منتج بديل قريب منه في المواصفات والسعر`,
+    `2️⃣ تستنى لحد ما يرجع، ونبلّغك أول ما يتوفر`,
+    `3️⃣ نلغي ${multi ? "المنتج ده من الطلب" : "الطلب"}${paid ? " ونرجّعلك المبلغ كامل خلال 3 لـ 7 أيام عمل" : " من غير أي مصاريف"}`,
+    ``,
+    `رد علينا برقم الاختيار، وشكراً لتفهّم حضرتك 🙏`,
+  ].join("\n");
+
   $("#drawerTitle").innerHTML = `طلب <span class="mono">${escapeHtml(o.id)}</span>`;
   $("#drawerBody").innerHTML = `
     <div class="od-status">
@@ -451,6 +469,7 @@ function openOrder(id, show = true) {
         ${shipMsg ? `<a class="btn btn--ghost btn--sm" href="${waLink(shipMsg, intlPhone)}" target="_blank" rel="noopener">🚚 ابعت إنه اتشحن</a>` : ""}
         ${rateMsg ? `<a class="btn btn--ghost btn--sm" href="${waLink(rateMsg, intlPhone)}" target="_blank" rel="noopener" title="رسالة للعميل فيها لينك يقيّم المنتج بالنجوم">⭐ اطلب رأيه</a>` : ""}
         <a class="btn btn--sm btn--warn" href="${waLink(zoneMsg, intlPhone)}" target="_blank" rel="noopener" title="ابعت للعميل إن منطقته خارج نطاق التوصيل">⚠️ مشكلة توصيل</a>
+        ${["new", "confirmed"].includes(o.status) ? `<a class="btn btn--sm btn--warn" href="${waLink(outMsg, intlPhone)}" target="_blank" rel="noopener" title="ابعت للعميل إن المنتج نفد، ويختار: بديل، يستنى، أو إلغاء${multi ? " — امسح من الرسالة المنتجات المتوفرة" : ""}">🚫 الكمية نفدت</a>` : ""}
         ${["confirmed", "shipped"].includes(o.status) ? `<a class="btn btn--sm btn--warn" href="${waLink(noAnswerMsg, intlPhone)}" target="_blank" rel="noopener" data-no-answer title="المندوب كلّم العميل أكتر من مرة ومحدش رد: يختار يعيد التوصيل خلال 4 أيام عمل أو يلغي">📵 العميل مابيردش</a>
           <a class="btn btn--sm btn--danger" href="${waLink(cancelMsg, intlPhone)}" target="_blank" rel="noopener" data-cancel-notify title="بيلغي الطلب (والمخزون يرجع) ويفتح واتساب برسالة الإلغاء للعميل">✖ العميل اختار الإلغاء</a>` : ""}
       </div>
